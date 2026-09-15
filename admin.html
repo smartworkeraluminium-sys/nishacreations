@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nisha Creations • অ্যাডমিন ও ফটো আপলোডার (Boutique Manager)</title>
+  <meta name="theme-color" content="#9c27b0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #9c27b0;
+      --primary-dark: #7b1fa2;
+      --secondary: #f59e0b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --green: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 50px;
+    }
+    .admin-header {
+      background: #ffffff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo-preview {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--secondary);
+    }
+    .btn-view-store {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(156,39,176,0.1);
+    }
+    .photo-upload-zone {
+      border: 2px dashed var(--primary);
+      background: #fdf4ff;
+      border-radius: 14px;
+      padding: 20px 14px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .photo-upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .preview-box {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .preview-img {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #c026d3);
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(156,39,176,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .product-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 10px;
+    }
+    .product-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+    .order-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: #ffffff;
+    }
+    /* PIN Modal */
+    #pinModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .pin-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 350px;
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PIN Protection Modal -->
+  <div id="pinModal">
+    <div class="pin-box">
+      <div style="font-size:2.5rem; margin-bottom:8px;">🔒</div>
+      <div style="font-size:1.15rem; font-weight:800; color:#0f172a;">নিশা ক্রিয়েশনস • অ্যাডমিন</div>
+      <div style="font-size:0.78rem; color:#64748b; margin:6px 0 16px 0;">মালিকের প্যানেলে ঢুকতে সিক্রেট পিন কোড দিন:</div>
+      <input type="password" id="pinInput" placeholder="৪ সংখ্যার পিন (Default: 1234)" style="width:100%; text-align:center; font-size:1.2rem; letter-spacing:4px; padding:10px; border:2px solid var(--primary); border-radius:10px; margin-bottom:14px; outline:none;">
+      <button onclick="checkAdminPin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer;">
+        প্রবেশ করুন &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="brand-title-wrap">
+      <img id="adminHeaderLogo" src="logo.png" alt="Logo" class="brand-logo-preview" onerror="this.style.display='none'">
+      <div>
+        <div style="font-weight:800; font-size:0.95rem; color:var(--primary);">Nisha Creations</div>
+        <div style="font-size:0.68rem; color:#64748b;">ম্যানেজার ও ফটো আপলোডার</div>
+      </div>
+    </div>
+    <a href="index.html" class="btn-view-store">
+      <i class="fa-solid fa-store"></i> গ্রাহক শপ
+    </a>
+  </header>
+
+  <main class="container">
+    
+    <!-- 1. ADD NEW PRODUCT CARD -->
+    <section class="card">
+      <div class="card-title">
+        <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+        <span>নতুন শাড়ি / গহনা আপলোড করুন</span>
+      </div>
+
+      <!-- Photo Upload Zone -->
+      <div class="photo-upload-zone" id="uploadDropZone">
+        <input type="file" id="prodPhotoInput" accept="image/*" onchange="handleProductPhotoSelect(this)">
+        <div id="uploadPrompt">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem; color:var(--primary); margin-bottom:6px;"></i>
+          <div style="font-size:0.88rem; font-weight:800; color:#334155;">মোবাইল ক্যামেরা বা গ্যালারি থেকে ছবি তুলুন</div>
+          <div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">ছবি স্বয়ংক্রিয়ভাবে কম্প্রেস হয়ে দ্রুত আপলোড হবে</div>
+        </div>
+        <div class="preview-box" id="previewBox">
+          <img id="previewImgEl" src="" class="preview-img">
+          <div style="font-size:0.75rem; color:var(--green); font-weight:700; margin-top:6px;" id="photoSizeLabel">✓ ছবি প্রস্তুত হয়েছে</div>
+          <button type="button" onclick="clearSelectedPhoto()" style="background:#fee2e2; color:#ef4444; border:none; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:700; margin-top:6px; cursor:pointer;">
+            <i class="fa-solid fa-trash"></i> অন্য ছবি বাছুন
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>প্রোডাক্টের নাম (Title):</label>
+        <input type="text" id="p_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী জরি)">
+      </div>
+
+      <div class="form-group">
+        <label>ক্যাটাগরি (Category):</label>
+        <select id="p_category">
+          <option value="jamdani">ঢাকাই জামদানি শাড়ি (Dhakai Jamdani)</option>
+          <option value="silk">সফট সিল্ক / কাতান শাড়ি (Soft Silk)</option>
+          <option value="tant">তাঁত ও সুতি শাড়ি (Handloom Tant)</option>
+          <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti & Sets)</option>
+          <option value="necklace">ব্রাইডাল গহনা সেট (Jewellery Sets)</option>
+          <option value="earrings">কানের দুল ও ঝুমকা (Earrings)</option>
+          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+          <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bags)</option>
+          <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfumes)</option>
+        </select>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>বিক্রয় মূল্য (Price ₹):</label>
+          <input type="number" id="p_price" placeholder="799">
+        </div>
+        <div class="form-group">
+          <label>আসল MRP (₹):</label>
+          <input type="number" id="p_mrp" placeholder="1599">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>সংক্ষিপ্ত বিবরণ (Description):</label>
+        <textarea id="p_desc" rows="2" placeholder="ফেব্রিক, ব্লাউজ পিস ও কাজের বিবরণ..."></textarea>
+      </div>
+
+      <button type="button" class="btn-submit" onclick="submitProductToShop()">
+        <i class="fa-solid fa-rocket"></i> লাইভ শপে আপলোড করুন &rarr;
+      </button>
+    </section>
+
+    <!-- 2. BOUTIQUE LOGO & BRANDING -->
+    <section class="card">
+      <div class="card-title">
+        <i class="fa-solid fa-crown" style="color:var(--secondary);"></i>
+        <span>দোকানের লোগো ম্যানেজমেন্ট</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+        <img id="currentLogoPreview" src="logo.png" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--secondary); background:#fff;" onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'">
+        <div style="flex:1;">
+          <div style="font-size:0.85rem; font-weight:800;">নিশা ক্রিয়েশনস লোগো</div>
+          <div style="font-size:0.72rem; color:#64748b;">গ্যালারি থেকে আপনার দোকানের ছবি দিন:</div>
+          <input type="file" accept="image/*" onchange="uploadAdminLogo(this)" style="font-size:0.75rem; margin-top:5px; width:100%;">
+        </div>
+      </div>
+      <button onclick="resetToGitHubLogo()" style="background:#f1f5f9; border:1px solid #cbd5e1; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:700; color:#475569; cursor:pointer;">
+        🔄 গিটহাবের মূল logo.png রিসেট করুন
+      </button>
+    </section>
+
+    <!-- 3. CLOUD REALTIME SYNC CONFIGURATION -->
+    <section class="card">
+      <div class="card-title">
+        <i class="fa-solid fa-cloud" style="color:#0284c7;"></i>
+        <span>ক্লাউড রিয়েল-টাইম সিঙ্ক (স্বয়ংক্রিয় লাইভ শো)</span>
+      </div>
+      <p style="font-size:0.78rem; color:#475569; line-height:1.4; margin-bottom:10px;">
+        এখানে ছবি আপলোড করলে কীভাবে সমস্ত কাস্টমারের ফোনে সাথে সাথে ফুটে উঠবে? গুগলের সম্পূর্ণ ফ্রি <strong>Firebase Realtime Database</strong> লিংক এখানে একবার বসিয়ে দিন:
+      </p>
+      <div class="form-group">
+        <input type="text" id="cloudDbUrlInput" placeholder="https://nishacreations-default-rtdb.firebaseio.com">
+      </div>
+      <button onclick="saveCloudDbUrl()" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
+        ✓ ক্লাউড ডাটাবেস লিংক সেভ করুন
+      </button>
+    </section>
+
+    <!-- 4. ACTIVE INVENTORY MANAGEMENT -->
+    <section class="card">
+      <div class="card-title" style="justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i>
+          <span>দোকানের শাড়ি ও গহনার তালিকা (<span id="totalProdCount">0</span>)</span>
+        </div>
+        <button onclick="downloadProductsBackup()" style="background:#f1f5f9; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:700;">
+          <i class="fa-solid fa-download"></i> ব্যাকআপ
+        </button>
+      </div>
+      <div id="adminProductList"></div>
+    </section>
+
+    <!-- 5. LIVE CUSTOMER ORDERS -->
+    <section class="card">
+      <div class="card-title">
+        <i class="fa-solid fa-receipt" style="color:var(--green);"></i>
+        <span>কাস্টমারদের অর্ডার ও ডেলিভারি কন্ট্রোল</span>
+      </div>
+      <div id="adminOrdersContainer"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // ==========================================
+    // INITIAL PRODUCTS & LOCAL/CLOUD DATA
+    // ==========================================
+    const DEFAULT_PRODUCTS = [
+      { id: "NC-101", title: "Pure Dhakai Jamdani Saree (Traditional Red)", category: "jamdani", price: 799, mrp: 1599, img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400" },
+      { id: "NC-102", title: "Soft Silk Katan Saree with Golden Pallu", category: "silk", price: 950, mrp: 1899, img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400" },
+      { id: "NC-103", title: "Bengal Handloom Tant Cotton Saree", category: "tant", price: 499, mrp: 899, img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=400" },
+      { id: "NC-104", title: "Traditional Bengali Bridal Jewellery Choker Set", category: "necklace", price: 399, mrp: 899, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400" },
+      { id: "NC-105", title: "Antique Silver-Oxidised Choker with Pearls", category: "necklace", price: 299, mrp: 699, img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400" },
+      { id: "NC-106", title: "Designer Gold-Plated Churi / Bangles (Pair)", category: "bangles", price: 349, mrp: 799, img: "https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=400" }
+    ];
+
+    let customProducts = [];
+    let compressedPhotoBase64 = "";
+
+    // PIN Check
+    function checkAdminPin() {
+      const pin = document.getElementById('pinInput').value.trim();
+      if (pin === "1234") {
+        document.getElementById('pinModal').style.display = 'none';
+        initAdminDashboard();
+      } else {
+        alert("ভুল পিন কোড! সঠিক পিন দিন (Default: 1234)।");
+      }
+    }
+
+    function initAdminDashboard() {
+      loadSavedLogo();
+      loadSavedCloudUrl();
+      loadCustomProducts();
+      renderAdminProductList();
+      renderCustomerOrders();
+    }
+
+    // 1. SMART IMAGE COMPRESSOR (Mobile Gallery / Camera)
+    function handleProductPhotoSelect(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            // Compress using Canvas to max width 800px & 0.8 quality
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('previewImgEl').src = compressedPhotoBase64;
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('previewBox').style.display = 'block';
+            document.getElementById('photoSizeLabel').textContent = `✓ ছবি প্রস্তুত হয়েছে (${Math.round(compressedPhotoBase64.length / 1024)} KB)`;
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearSelectedPhoto() {
+      compressedPhotoBase64 = "";
+      document.getElementById('prodPhotoInput').value = "";
+      document.getElementById('previewBox').style.display = 'none';
+      document.getElementById('uploadPrompt').style.display = 'block';
+    }
+
+    // 2. SUBMIT PRODUCT TO SHOP (Cloud + Local)
+    function submitProductToShop() {
+      const title = document.getElementById('p_title').value.trim();
+      const category = document.getElementById('p_category').value;
+      const price = parseFloat(document.getElementById('p_price').value);
+      const mrp = parseFloat(document.getElementById('p_mrp').value) || price * 1.5;
+      const desc = document.getElementById('p_desc').value.trim() || "১০০% প্রিমিয়াম এক্সক্লুসিভ কালেকশন।";
+      const photo = compressedPhotoBase64 || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400";
+
+      if (!title || !price) {
+        alert("দয়া করে প্রোডাক্টের নাম ও বিক্রয় মূল্য লিখুন!");
+        return;
+      }
+
+      const pType = ['necklace', 'earrings', 'bangles'].includes(category) ? 'jewel' : (category === 'kurti' ? 'kurti' : (category === 'bag' ? 'bag' : (category === 'perfume' ? 'perfume' : 'saree')));
+      const newProd = {
+        id: "NC-" + Math.floor(100 + Math.random() * 900),
+        title: title,
+        category: category,
+        type: pType,
+        price: price,
+        mrp: mrp,
+        upiOffer: Math.round(price * 0.95),
+        rating: 4.8,
+        reviews: Math.floor(20 + Math.random() * 100),
+        img: photo,
+        desc: desc,
+        date: new Date().toLocaleDateString('bn-IN')
+      };
+
+      // 1. Save Locally
+      customProducts.unshift(newProd);
+      localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
+
+      // 2. If Cloud DB URL exists, send to Cloud Firebase in real-time!
+      const cloudUrl = localStorage.getItem('nc_cloud_db_url');
+      if (cloudUrl) {
+        const postUrl = cloudUrl.replace(/\/$/, '') + '/products.json';
+        fetch(postUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProd)
+        }).then(() => {
+          console.log("Uploaded to Cloud Database successfully!");
+        }).catch(err => console.log("Cloud sync note:", err));
+      }
+
+      alert("🎉 অভিনন্দন! নতুন প্রোডাক্টটি সফলভাবে লাইভ শপে আপলোড হয়েছে। কাস্টমারদের পেজে ফুটে উঠেছে।");
+      
+      // Reset Form
+      document.getElementById('p_title').value = "";
+      document.getElementById('p_price').value = "";
+      document.getElementById('p_mrp').value = "";
+      document.getElementById('p_desc').value = "";
+      clearSelectedPhoto();
+      renderAdminProductList();
+    }
+
+    // 3. INVENTORY DISPLAY & MANAGEMENT
+    function loadCustomProducts() {
+      const stored = localStorage.getItem('nc_custom_products');
+      if (stored) {
+        try { customProducts = JSON.parse(stored); } catch(e) {}
+      }
+    }
+
+    function renderAdminProductList() {
+      const container = document.getElementById('adminProductList');
+      const allList = [...customProducts, ...DEFAULT_PRODUCTS];
+      document.getElementById('totalProdCount').textContent = allList.length;
+
+      container.innerHTML = "";
+      allList.forEach((p, idx) => {
+        const isCustom = idx < customProducts.length;
+        container.innerHTML += `
+          <div class="product-row">
+            <img src="${p.img}" class="product-thumb">
+            <div style="flex:1;">
+              <div style="font-size:0.85rem; font-weight:800; color:#0f172a; line-height:1.2;">${p.title}</div>
+              <div style="font-size:0.72rem; color:var(--primary); font-weight:700;">₹${p.price} <span style="text-decoration:line-through; color:#94a3b8;">₹${p.mrp}</span> • ${p.category.toUpperCase()}</div>
+            </div>
+            ${isCustom ? `<button onclick="deleteCustomProduct(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i> মুছুন</button>` : `<span style="font-size:0.68rem; color:#94a3b8; font-weight:700;">ডিফল্ট</span>`}
+          </div>
+        `;
+      });
+    }
+
+    function deleteCustomProduct(index) {
+      if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি লাইভ শপ থেকে মুছে ফেলতে চান?")) {
+        customProducts.splice(index, 1);
+        localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
+        renderAdminProductList();
+      }
+    }
+
+    // 4. LOGO MANAGEMENT
+    function loadSavedLogo() {
+      const savedLogo = localStorage.getItem('nc_boutique_logo');
+      const img1 = document.getElementById('adminHeaderLogo');
+      const img2 = document.getElementById('currentLogoPreview');
+      if (savedLogo) {
+        img1.src = savedLogo;
+        img2.src = savedLogo;
+      }
+    }
+
+    function uploadAdminLogo(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64 = e.target.result;
+          localStorage.setItem('nc_boutique_logo', base64);
+          loadSavedLogo();
+          alert("🎉 অভিনন্দন! দোকানের লোগো সফলভাবে আপডেট হয়েছে।");
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function resetToGitHubLogo() {
+      localStorage.removeItem('nc_boutique_logo');
+      const img1 = document.getElementById('adminHeaderLogo');
+      const img2 = document.getElementById('currentLogoPreview');
+      img1.src = 'logo.png?v=' + Date.now();
+      img2.src = 'logo.png?v=' + Date.now();
+      alert("গিটহাবের logo.png-তে রিসেট করা হয়েছে!");
+    }
+
+    // 5. CLOUD URL
+    function loadSavedCloudUrl() {
+      const saved = localStorage.getItem('nc_cloud_db_url');
+      if (saved) document.getElementById('cloudDbUrlInput').value = saved;
+    }
+
+    function saveCloudDbUrl() {
+      const url = document.getElementById('cloudDbUrlInput').value.trim();
+      localStorage.setItem('nc_cloud_db_url', url);
+      alert("✅ ক্লাউড ডাটাবেস লিংক সেভ হয়েছে! এখন যেকোনো ফটো আপলোড সাথে সাথে ক্লাউডে সিঙ্ক হবে।");
+    }
+
+    // 6. CUSTOMER ORDERS & STATUS
+    function renderCustomerOrders() {
+      const container = document.getElementById('adminOrdersContainer');
+      const orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+
+      if (orders.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.85rem;">কোনো নতুন কাস্টমার অর্ডার নেই।</div>';
+        return;
+      }
+
+      container.innerHTML = "";
+      orders.forEach(o => {
+        const giftBadge = o.isGift ? '<span style="background:#fae8ff; color:#86198f; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800;">🎁 গিফট র‍্যাপ</span>' : '';
+        container.innerHTML += `
+          <div class="order-card">
+            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.88rem;">
+              <span>#${o.id} - ${o.name} ${giftBadge}</span>
+              <span style="color:var(--primary);">₹${o.total}</span>
+            </div>
+            <div style="font-size:0.75rem; color:#64748b; margin:4px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
+            <div style="font-size:0.75rem; color:#334155; margin-bottom:8px;"><strong>আইটেম:</strong> ${o.items.map(i => i.title).join(', ')}</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.75rem; font-weight:700;">স্ট্যাটাস:</span>
+              <select onchange="updateOrderStatus('${o.id}', this.value)" style="flex:1; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">
+                <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed (অর্ডার গৃহীত)</option>
+                <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed & Checked (প্যাক সম্পন্ন)</option>
+                <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery (বের হয়েছে)</option>
+                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered (ডেলিভারি সম্পন্ন)</option>
+              </select>
+              <button onclick="window.open('https://wa.me/91${o.phone}?text=নমস্কার ${encodeURIComponent(o.name)}, আপনার অর্ডার #${o.id} এর স্ট্যাটাস: ${o.status}', '_blank')" style="background:#25D366; color:#fff; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+                <i class="fa-brands fa-whatsapp"></i> মেসেজ
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateOrderStatus(id, newStatus) {
+      let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      orders = orders.map(o => o.id === id ? { ...o, status: newStatus } : o);
+      localStorage.setItem('nc_orders', JSON.stringify(orders));
+      alert("✅ অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
+    }
+
+    function downloadProductsBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(customProducts, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "nisha_creations_products_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+  </script>
+</body>
+  </html>
