@@ -766,20 +766,27 @@
   <header class="app-header">
     <div class="top-brand-bar">
       <div class="brand-logo-wrap" onclick="showScreen('home')">
-        <img id="mainBrandLogoImg" src="logo.png" alt="Logo" class="brand-logo-img" onerror="handleLogoFallback(this)" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1.5px solid #f59e0b; display:none;">
+        <img id="mainBrandLogoImg" src="logo.png" alt="Logo" class="brand-logo-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #f59e0b; display:none; background:#fff;">
         <div class="brand-logo-icon" id="mainBrandLogoIcon">NC</div>
         <div>
           <div class="brand-title">Nisha Creations</div>
-          <div class="brand-sub">নিশা ক্রিয়েশনস • এক্সক্লুসিভ বুটিক</div>
+          <div class="brand-sub" id="t-brandSub">এক্সক্লুসিভ বুটিক</div>
         </div>
       </div>
       <div class="header-icons">
-        <button class="header-icon-btn" onclick="openCustomerAuthModal()" title="Customer Account" id="userAuthIconBtn">
+        <!-- Quick Language Switcher Button -->
+        <button class="header-icon-btn" onclick="toggleLanguage()" title="Switch Language / ভাষা পরিবর্তন">
+          <span id="langQuickBadge" style="font-size:0.75rem; font-weight:800; color:var(--primary); background:#fdf4ff; border:1px solid #f0abfc; padding:3px 7px; border-radius:6px;">EN</span>
+        </button>
+        <!-- Customer Settings Button -->
+        <button class="header-icon-btn" onclick="showScreen('customer-settings')" title="Customer Settings" id="userAuthIconBtn">
           <i class="fa-regular fa-circle-user"></i>
         </button>
-        <button class="header-icon-btn" onclick="openAdminSecret()" title="Admin Panel">
-          <i class="fa-solid fa-gear"></i>
+        <!-- Private Admin Settings Button (PIN Protected) -->
+        <button class="header-icon-btn" onclick="openAdminSecret()" title="Private Admin Settings (PIN)">
+          <i class="fa-solid fa-lock"></i>
         </button>
+        <!-- Cart -->
         <button class="header-icon-btn" onclick="openCartModal()" title="Cart">
           <i class="fa-solid fa-bag-shopping"></i>
           <span class="badge-count" id="cartCountBadge">0</span>
@@ -787,26 +794,25 @@
       </div>
     </div>
 
-    <!-- Location Indicator (Amta Special) -->
+    <!-- Location Indicator -->
     <div class="location-strip">
       <div style="display:flex; align-items:center; gap:5px;">
         <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-        <span>ডেলিভারি: আমতা, হাওড়া - ৭১১৪০১</span>
+        <span id="t-deliveryLoc">ডেলিভারি: আমতা, হাওড়া - ৭১১৪০১</span>
       </div>
-      <span style="background:#fae8ff; padding:2px 8px; border-radius:10px; font-size:0.68rem; color:#86198f;">ফ্রি হোম ডেলিভারি</span>
+      <span style="background:#fae8ff; padding:2px 8px; border-radius:10px; font-size:0.68rem; color:#86198f;" id="t-freeDeliveryBadge">ফ্রি হোম ডেলিভারি</span>
     </div>
 
-    
-    <!-- 📲 App Install Promo Banner (PWA - Like Native App) -->
+    <!-- 📲 App Install Promo Banner -->
     <div id="pwaInstallBanner" style="display:none; background:linear-gradient(135deg, #2e1065, #581c87); color:#fff; padding:10px 14px; margin:8px 12px 10px 12px; border-radius:12px; align-items:center; justify-content:space-between; box-shadow:0 3px 10px rgba(88,28,135,0.25);">
       <div style="display:flex; align-items:center; gap:10px;">
         <div style="background:var(--primary); width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.9rem;">NC</div>
         <div>
-          <div style="font-size:0.8rem; font-weight:800;">নিশা ক্রিয়েশনস অ্যাপ ইনস্টল করুন</div>
-          <div style="font-size:0.68rem; opacity:0.85;">ফোনে একদম সাধারণ অ্যাপের মতো চলবে!</div>
+          <div style="font-size:0.8rem; font-weight:800;" id="t-pwaTitle">নিশা ক্রিয়েশনস অ্যাপ ইনস্টল করুন</div>
+          <div style="font-size:0.68rem; opacity:0.85;" id="t-pwaSub">ফোনে একদম আসল অ্যাপের মতো চলবে!</div>
         </div>
       </div>
-      <button onclick="triggerAppInstall()" style="background:#facc15; color:#78350f; border:none; padding:7px 12px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer; box-shadow:0 2px 6px rgba(250,204,21,0.4);">
+      <button onclick="triggerAppInstall()" style="background:#facc15; color:#78350f; border:none; padding:7px 12px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer; box-shadow:0 2px 6px rgba(250,204,21,0.4);" id="t-pwaBtn">
         ইনস্টল
       </button>
     </div>
@@ -815,7 +821,7 @@
     <div class="search-box-wrap">
       <div class="search-input-box">
         <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8;"></i>
-        <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি, বা গহনা খুঁজুন..." oninput="handleSearch(this.value)">
+        <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." oninput="handleSearch(this.value)">
         <i class="fa-solid fa-camera" style="color:#94a3b8;"></i>
       </div>
     </div>
@@ -893,6 +899,77 @@
   </main>
 
   <!-- ================= 3. SHOPPABLE VIDEO REELS ("Video Finds" Like Meesho Image 20 & 21) ================= -->
+  
+  <!-- ================= 2. CATEGORIES SCREEN (MEESHO 2-COLUMN STYLE) ================= -->
+  <div id="screen-categories" class="screen-view" style="padding:0; padding-bottom:60px;">
+    <!-- Top Bar -->
+    <div class="cat-header">
+      <div class="cat-header-title" id="t-catPageTitle">CATEGORIES</div>
+      <div class="cat-header-actions">
+        <i class="fa-solid fa-magnifying-glass" onclick="showScreen('home'); document.getElementById('searchInput').focus();" style="cursor:pointer;" title="Search"></i>
+        <i class="fa-regular fa-heart" onclick="filterWishlistProducts()" style="cursor:pointer;" title="Wishlist"></i>
+        <div style="position:relative; cursor:pointer;" onclick="openCartModal()" title="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge-count" id="catCartCountBadge">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Split View Layout -->
+    <div class="categories-layout">
+      <!-- Left Vertical Sidebar -->
+      <aside class="cat-sidebar">
+        <div class="cat-sidebar-item" id="sidebar-popular" onclick="selectCategoryTab('popular')">
+          <div class="cat-icon-circle" style="background:#fef9c3; color:#ca8a04;">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <span id="side-t-popular">জনপ্রিয়</span>
+        </div>
+        <div class="cat-sidebar-item active" id="sidebar-saree_kurti" onclick="selectCategoryTab('saree_kurti')">
+          <div class="cat-icon-circle" style="background:#fce7f3; color:#db2777;">
+            <i class="fa-solid fa-person-dress"></i>
+          </div>
+          <span id="side-t-saree">শাড়ি ও কুর্তি</span>
+        </div>
+        <div class="cat-sidebar-item" id="sidebar-jewellery" onclick="selectCategoryTab('jewellery')">
+          <div class="cat-icon-circle" style="background:#fef3c7; color:#d97706;">
+            <i class="fa-solid fa-gem"></i>
+          </div>
+          <span id="side-t-jewel">জুয়েলারি</span>
+        </div>
+        <div class="cat-sidebar-item" id="sidebar-bags" onclick="selectCategoryTab('bags')">
+          <div class="cat-icon-circle" style="background:#ffe4e6; color:#e11d48;">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <span id="side-t-bags">ব্যাগ ও পার্স</span>
+        </div>
+        <div class="cat-sidebar-item" id="sidebar-perfume" onclick="selectCategoryTab('perfume')">
+          <div class="cat-icon-circle" style="background:#f3e8ff; color:#9333ea;">
+            <i class="fa-solid fa-spray-can-sparkles"></i>
+          </div>
+          <span id="side-t-perfume">পারফিউম</span>
+        </div>
+        <div class="cat-sidebar-item" id="sidebar-western" onclick="selectCategoryTab('western')">
+          <div class="cat-icon-circle" style="background:#e0f2fe; color:#0284c7;">
+            <i class="fa-solid fa-shirt"></i>
+          </div>
+          <span id="side-t-western">ওয়েস্টার্ন</span>
+        </div>
+        <div class="cat-sidebar-item" id="sidebar-lingerie" onclick="selectCategoryTab('lingerie')">
+          <div class="cat-icon-circle" style="background:#fee2e2; color:#ef4444;">
+            <i class="fa-solid fa-heart"></i>
+          </div>
+          <span id="side-t-lingerie">নাইটওয়্যার</span>
+        </div>
+      </aside>
+
+      <!-- Right Scrollable Content Panel -->
+      <section class="cat-content" id="catContentArea">
+        <!-- Rendered by selectCategoryTab() -->
+      </section>
+    </div>
+  </div>
+
   <div id="screen-videos" class="screen-view" style="padding:12px; padding-bottom:75px;">
     <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
       <i class="fa-solid fa-clapperboard" style="color:var(--primary);"></i>
@@ -1139,11 +1216,107 @@
   </div>
 
   <!-- ================= 9. SECRET ADMIN PANEL ================= -->
+  
+  <!-- ================= 6. DEDICATED CUSTOMER SETTINGS SCREEN ================= -->
+  <div id="screen-customer-settings" class="screen-view" style="padding:14px; padding-bottom:75px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;" id="t-custSettingsHeading">কাস্টমার সেটিংস ও অ্যাকাউন্ট</div>
+    </div>
+
+    <!-- Customer Profile Card -->
+    <div style="background:linear-gradient(135deg, #9c27b0, #c026d3); color:#fff; border-radius:16px; padding:16px; margin-bottom:14px; display:flex; align-items:center; gap:14px;">
+      <div style="width:50px; height:50px; border-radius:50%; background:#fff; color:var(--primary); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center;" id="custAvatarChar">👤</div>
+      <div>
+        <div style="font-size:1.05rem; font-weight:800;" id="custDisplayTitle">গ্রাহক অ্যাকাউন্ট</div>
+        <div style="font-size:0.75rem; opacity:0.9;" id="custDisplayPhone">লগইন করুন বা তথ্য সেভ করুন</div>
+        <div style="margin-top:6px; display:inline-block; background:rgba(255,255,255,0.25); padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:700;">
+          🪙 <span id="custDisplayCoins">150</span> নিশা রিওয়ার্ডস কয়েন
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Language Setting Card -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
+        <span id="t-langSettingTitle">ভাষা নির্বাচন (Language Selection)</span>
+      </div>
+      <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;" id="t-langSettingSub">পছন্দের ভাষায় সম্পূর্ণ অ্যাপটি ব্যবহার করুন:</div>
+      <div class="lang-pill-wrap">
+        <button class="lang-pill-btn" id="btnLangBn" onclick="setLanguage('bn')">বাংলা (Bengali)</button>
+        <button class="lang-pill-btn" id="btnLangEn" onclick="setLanguage('en')">English</button>
+      </div>
+    </div>
+
+    <!-- 2. Customer Profile & Delivery Address Card -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
+        <span id="t-profileSettingTitle">আপনার বিবরণ ও ডেলিভারি ঠিকানা</span>
+      </div>
+      <div class="form-group">
+        <label id="t-lblCustName">আপনার নাম:</label>
+        <input type="text" id="settings_cust_name" placeholder="যেমন: রীতা দাস">
+      </div>
+      <div class="form-group">
+        <label id="t-lblCustPhone">মোবাইল নম্বর:</label>
+        <input type="text" id="settings_cust_phone" placeholder="যেমন: 9876543210">
+      </div>
+      <div class="form-group">
+        <label id="t-lblCustAddr">ডেলিভারি ঠিকানা (আমতা, হাওড়া):</label>
+        <textarea id="settings_cust_addr" rows="2" placeholder="পাড়া / গ্রাম / ল্যান্ডমার্ক (যেমন: আমতা চাঁদনী মোড়)"></textarea>
+      </div>
+      <button onclick="saveCustomerSettings()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer;" id="t-btnSaveProfile">
+        তথ্য সেভ করুন
+      </button>
+    </div>
+
+    <!-- 3. Quick Navigation Hub -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-bars" style="color:var(--primary);"></i>
+        <span id="t-quickLinksTitle">প্রয়োজনীয় সেবা</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button onclick="showScreen('orders')" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
+          <span><i class="fa-solid fa-truck-fast" style="color:var(--primary); margin-right:8px;"></i> <span id="t-linkOrders">আমার সমস্ত অর্ডার ও ট্র্যাকিং</span></span>
+          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
+        </button>
+        <button onclick="filterWishlistProducts()" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
+          <span><i class="fa-regular fa-heart" style="color:#e11d48; margin-right:8px;"></i> <span id="t-linkWishlist">পছন্দের শাড়ি ও গহনা তালিকা</span></span>
+          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
+        </button>
+        <button onclick="openReferModal()" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
+          <span><i class="fa-solid fa-gift" style="color:#8b5cf6; margin-right:8px;"></i> <span id="t-linkRefer">রেফার করুন ও ৫০ টাকা ছাড় পান</span></span>
+          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. Direct Customer Support -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
+        <span id="t-supportTitle">সরাসরি সহায়তা ও অর্ডার বুকিং</span>
+      </div>
+      <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;" id="t-supportSub">যেকোনো প্রশ্ন বা স্পেশাল ডিজাইনের জন্য নিশা দিদির সাথে যোগাযোগ করুন:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <a href="https://wa.me/919239413517?text=Hello%20Nisha%20Creations" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:6px; background:#25d366; color:#fff; text-decoration:none; padding:10px; border-radius:8px; font-size:0.78rem; font-weight:800;">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="tel:9239413517" style="display:flex; align-items:center; justify-content:center; gap:6px; background:#f1f5f9; color:#334155; text-decoration:none; padding:10px; border-radius:8px; font-size:0.78rem; font-weight:800; border:1px solid #cbd5e1;">
+          <i class="fa-solid fa-phone"></i> সরাসরি ফোন
+        </a>
+      </div>
+    </div>
+  </div>
+
   <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
       <div style="display:flex; align-items:center; gap:8px;">
         <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);">নিশা ক্রিয়েশনস • অ্যাডমিন কন্ট্রোল</div>
+        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);"><i class="fa-solid fa-lock"></i> প্রাইভেট অ্যাডমিন সেটিংস (Private Admin)</div>
       </div>
       <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700;">বন্ধ করুন</button>
     </div>
@@ -1218,28 +1391,399 @@
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tab-home" onclick="showScreen('home')">
       <i class="fa-solid fa-house"></i>
-      <span>হোম</span>
+      <span id="nav-t-home">হোম</span>
     </button>
     <button class="nav-tab" id="tab-categories" onclick="showScreen('categories')">
       <i class="fa-solid fa-table-cells-large"></i>
-      <span>ক্যাটাগরি</span>
+      <span id="nav-t-categories">ক্যাটাগরি</span>
     </button>
     <button class="nav-tab" id="tab-videos" onclick="showScreen('videos')">
       <i class="fa-solid fa-circle-play"></i>
-      <span>রিলস</span>
+      <span id="nav-t-videos">রিলস</span>
     </button>
     <button class="nav-tab" id="tab-orders" onclick="showScreen('orders')">
       <i class="fa-solid fa-truck-fast"></i>
-      <span>অর্ডার ট্র্যাকিং</span>
+      <span id="nav-t-orders">অর্ডার</span>
     </button>
-    <button class="nav-tab" id="tab-cart" onclick="openCartModal()">
-      <i class="fa-solid fa-bag-shopping"></i>
-      <span>ব্যাগ</span>
+    <button class="nav-tab" id="tab-customer-settings" onclick="showScreen('customer-settings')">
+      <i class="fa-solid fa-circle-user"></i>
+      <span id="nav-t-account">অ্যাকাউন্ট</span>
     </button>
   </nav>
 
   <script>
     // ==========================================
+
+    // ==========================================
+    // BILINGUAL (BENGALI & ENGLISH) DICTIONARY
+    // ==========================================
+    let currentLang = localStorage.getItem('nc_lang') || 'bn';
+
+    const I18N = {
+      bn: {
+        quickBadge: "EN",
+        brandSub: "এক্সক্লুসিভ বুটিক",
+        deliveryLoc: "ডেলিভারি: আমতা, হাওড়া - ৭১১৪০১",
+        freeDeliveryBadge: "ফ্রি হোম ডেলিভারি",
+        pwaTitle: "নিশা ক্রিয়েশনস অ্যাপ ইনস্টল করুন",
+        pwaSub: "ফোনে একদম আসল অ্যাপের মতো চলবে!",
+        pwaBtn: "ইনস্টল",
+        searchPlaceholder: "শাড়ির নাম, জামদানি বা গহনা খুঁজুন...",
+        // Nav
+        navHome: "হোম",
+        navCategories: "ক্যাটাগরি",
+        navVideos: "রিলস",
+        navOrders: "অর্ডার",
+        navAccount: "অ্যাকাউন্ট",
+        // Categories Screen
+        catPageTitle: "ক্যাটাগরি",
+        sidePopular: "জনপ্রিয়",
+        sideSaree: "শাড়ি ও কুর্তি",
+        sideJewel: "জুয়েলারি",
+        sideBags: "ব্যাগ ও পার্স",
+        sidePerfume: "পারফিউম",
+        sideWestern: "ওয়েস্টার্ন",
+        sideLingerie: "নাইটওয়্যার",
+        // Subcategories
+        subCottonSarees: "সুতি শাড়ি",
+        subNetSarees: "নেট ও জর্জেট",
+        subBudgetSarees: "বাজেট শাড়ি",
+        subSilkSarees: "সফট সিল্ক শাড়ি",
+        subJamdani: "ঢাকাই জামদানি",
+        subBridalSarees: "বউভাত ও ব্রাইডাল",
+        subAllKurtis: "সব কুর্তি",
+        subAnarkali: "আনারকলি কুর্তি",
+        subRayonKurti: "রেয়ন কুর্তি",
+        subCottonKurti: "কটন কুর্তি",
+        subStraightKurti: "স্ট্রেট কুর্তি",
+        subLongKurti: "লং কুর্তি",
+        subAllSets: "সব কুর্তা সেট",
+        subPalazzoSets: "প্যালাজো সেট",
+        subPantSets: "প্যান্ট সেট",
+        subShararaSets: "সারারা সেট",
+        // Jewellery
+        subAllJewel: "সকল গহনা",
+        subJewelSets: "গহনা ও চোকার",
+        subEarrings: "কানের দুল ও ঝুমকা",
+        subMangalsutra: "মঙ্গলসূত্র",
+        subChains: "নেকলেস ও চেইন",
+        subBangles: "বালা ও চুড়ি",
+        subAnklets: "নুপুর ও নথ",
+        subKamarbandh: "কোমরবন্ধ ও টিকলি",
+        // Bags
+        subHandbags: "লেডিস হ্যান্ডব্যাগ",
+        subSlingBags: "স্লিং ব্যাগ",
+        subBridalPotli: "ব্রাইডাল বটুয়া",
+        subClutches: "পার্টি ক্লাচ",
+        subToteBags: "টোট ব্যাগ",
+        subOfficeBags: "অফিস ব্যাগ",
+        // Perfume
+        subFloralPerfume: "ফ্লোরাল সেন্ট",
+        subRoyalAttar: "খাঁটি সুগন্ধি আতর",
+        subPartyPerfume: "পার্টি পারফিউম",
+        subPocketPerfume: "পকেট সেন্ট",
+        subBodyMist: "ফ্রেশ বডি মিস্ট",
+        subGiftBox: "ব্রাইডাল সেন্ট বক্স",
+        // Customer Settings
+        custHeading: "কাস্টমার সেটিংস ও অ্যাকাউন্ট",
+        custTitle: "গ্রাহক অ্যাকাউন্ট",
+        custCoins: "নিশা রিওয়ার্ডস কয়েন",
+        langTitle: "ভাষা নির্বাচন (Language)",
+        langSub: "পছন্দের ভাষায় সম্পূর্ণ অ্যাপটি ব্যবহার করুন:",
+        profileTitle: "আপনার বিবরণ ও ডেলিভারি ঠিকানা",
+        lblCustName: "আপনার নাম:",
+        lblCustPhone: "মোবাইল নম্বর:",
+        lblCustAddr: "ডেলিভারি ঠিকানা (আমতা, হাওড়া):",
+        btnSaveProfile: "তথ্য সেভ করুন",
+        quickLinks: "প্রয়োজনীয় সেবা",
+        linkOrders: "আমার সমস্ত অর্ডার ও ট্র্যাকিং",
+        linkWishlist: "পছন্দের শাড়ি ও গহনা তালিকা",
+        linkRefer: "রেফার করুন ও ৫০ টাকা ছাড় পান",
+        supportTitle: "সরাসরি সহায়তা ও অর্ডার বুকিং",
+        supportSub: "যেকোনো প্রশ্ন বা পছন্দের শাড়ির জন্য নিশা দিদির সাথে যোগাযোগ করুন:"
+      },
+      en: {
+        quickBadge: "বাং",
+        brandSub: "Exclusive Boutique",
+        deliveryLoc: "Delivery: Amta, Howrah - 711401",
+        freeDeliveryBadge: "Free Home Delivery",
+        pwaTitle: "Install Nisha Creations App",
+        pwaSub: "Runs full screen like a native mobile app!",
+        pwaBtn: "Install",
+        searchPlaceholder: "Search sarees, jewellery or kurtis...",
+        // Nav
+        navHome: "Home",
+        navCategories: "Categories",
+        navVideos: "Reels",
+        navOrders: "Orders",
+        navAccount: "Account",
+        // Categories Screen
+        catPageTitle: "CATEGORIES",
+        sidePopular: "Popular",
+        sideSaree: "Kurti & Saree",
+        sideJewel: "Jewellery",
+        sideBags: "Bags",
+        sidePerfume: "Perfumes",
+        sideWestern: "Western",
+        sideLingerie: "Sleepwear",
+        // Subcategories
+        subCottonSarees: "Cotton Sarees",
+        subNetSarees: "Net Sarees",
+        subBudgetSarees: "Under 499",
+        subSilkSarees: "Silk Sarees",
+        subJamdani: "Dhakai Jamdani",
+        subBridalSarees: "Bridal Sarees",
+        subAllKurtis: "All Kurtis",
+        subAnarkali: "Anarkali Kurtis",
+        subRayonKurti: "Rayon Kurtis",
+        subCottonKurti: "Cotton Kurtis",
+        subStraightKurti: "Straight Kurtis",
+        subLongKurti: "Long Kurtis",
+        subAllSets: "All Kurta Sets",
+        subPalazzoSets: "Palazzo Sets",
+        subPantSets: "Pant Sets",
+        subShararaSets: "Sharara Sets",
+        // Jewellery
+        subAllJewel: "All Jewellery",
+        subJewelSets: "Jewellery Sets",
+        subEarrings: "Earrings",
+        subMangalsutra: "Mangalsutra",
+        subChains: "Necklaces & Chains",
+        subBangles: "Bangles & Bracelets",
+        subAnklets: "Anklets & Nosepins",
+        subKamarbandh: "Kamarbandh & Maangtika",
+        // Bags
+        subHandbags: "Handbags",
+        subSlingBags: "Sling Bags",
+        subBridalPotli: "Bridal Potli",
+        subClutches: "Party Clutches",
+        subToteBags: "Tote Bags",
+        subOfficeBags: "Office Bags",
+        // Perfume
+        subFloralPerfume: "Floral Perfumes",
+        subRoyalAttar: "Royal Attar",
+        subPartyPerfume: "Party Perfumes",
+        subPocketPerfume: "Pocket Perfumes",
+        subBodyMist: "Fresh Body Mist",
+        subGiftBox: "Bridal Scent Box",
+        // Customer Settings
+        custHeading: "Customer Settings & Account",
+        custTitle: "Customer Account",
+        custCoins: "Nisha Rewards Coins",
+        langTitle: "Language Selection",
+        langSub: "Choose your preferred language across the entire app:",
+        profileTitle: "Profile Details & Delivery Address",
+        lblCustName: "Your Name:",
+        lblCustPhone: "Mobile Number:",
+        lblCustAddr: "Delivery Address (Amta, Howrah):",
+        btnSaveProfile: "Save Profile",
+        quickLinks: "Quick Services",
+        linkOrders: "My Orders & Live Tracking",
+        linkWishlist: "My Wishlist Items",
+        linkRefer: "Refer & Earn ₹50 Discount",
+        supportTitle: "Direct Support & Inquiries",
+        supportSub: "For any questions or custom designs, connect with Nisha Boutique:"
+      }
+    };
+
+    function t(key) {
+      return (I18N[currentLang] && I18N[currentLang][key]) || (I18N['bn'] && I18N['bn'][key]) || key;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('nc_lang', lang);
+      applyLanguage();
+    }
+
+    function toggleLanguage() {
+      setLanguage(currentLang === 'bn' ? 'en' : 'bn');
+    }
+
+    function applyLanguage() {
+      // Header and Quick Toggle
+      const qb = document.getElementById('langQuickBadge');
+      if (qb) qb.textContent = t('quickBadge');
+      const bs = document.getElementById('t-brandSub');
+      if (bs) bs.textContent = t('brandSub');
+      const dl = document.getElementById('t-deliveryLoc');
+      if (dl) dl.textContent = t('deliveryLoc');
+      const fd = document.getElementById('t-freeDeliveryBadge');
+      if (fd) fd.textContent = t('freeDeliveryBadge');
+
+      // PWA
+      const pt = document.getElementById('t-pwaTitle');
+      if (pt) pt.textContent = t('pwaTitle');
+      const ps = document.getElementById('t-pwaSub');
+      if (ps) ps.textContent = t('pwaSub');
+      const pb = document.getElementById('t-pwaBtn');
+      if (pb) pb.textContent = t('pwaBtn');
+
+      // Search Placeholder
+      const si = document.getElementById('searchInput');
+      if (si) si.placeholder = t('searchPlaceholder');
+
+      // Nav Tabs
+      const nh = document.getElementById('nav-t-home');
+      if (nh) nh.textContent = t('navHome');
+      const nc = document.getElementById('nav-t-categories');
+      if (nc) nc.textContent = t('navCategories');
+      const nv = document.getElementById('nav-t-videos');
+      if (nv) nv.textContent = t('navVideos');
+      const no = document.getElementById('nav-t-orders');
+      if (no) no.textContent = t('navOrders');
+      const na = document.getElementById('nav-t-account');
+      if (na) na.textContent = t('navAccount');
+
+      // Categories Sidebar
+      const cpt = document.getElementById('t-catPageTitle');
+      if (cpt) cpt.textContent = t('catPageTitle');
+      const sp = document.getElementById('side-t-popular');
+      if (sp) sp.textContent = t('sidePopular');
+      const ss = document.getElementById('side-t-saree');
+      if (ss) ss.textContent = t('sideSaree');
+      const sj = document.getElementById('side-t-jewel');
+      if (sj) sj.textContent = t('sideJewel');
+      const sb = document.getElementById('side-t-bags');
+      if (sb) sb.textContent = t('sideBags');
+      const spf = document.getElementById('side-t-perfume');
+      if (spf) spf.textContent = t('sidePerfume');
+      const sw = document.getElementById('side-t-western');
+      if (sw) sw.textContent = t('sideWestern');
+      const sl = document.getElementById('side-t-lingerie');
+      if (sl) sl.textContent = t('sideLingerie');
+
+      // Customer Settings Page Strings
+      const csh = document.getElementById('t-custSettingsHeading');
+      if (csh) csh.textContent = t('custHeading');
+      const cdt = document.getElementById('custDisplayTitle');
+      if (cdt) cdt.textContent = currentCustomer ? currentCustomer.name : t('custTitle');
+      const lst = document.getElementById('t-langSettingTitle');
+      if (lst) lst.textContent = t('langTitle');
+      const lss = document.getElementById('t-langSettingSub');
+      if (lss) lss.textContent = t('langSub');
+      const pst = document.getElementById('t-profileSettingTitle');
+      if (pst) pst.textContent = t('profileTitle');
+      const lcn = document.getElementById('t-lblCustName');
+      if (lcn) lcn.textContent = t('lblCustName');
+      const lcp = document.getElementById('t-lblCustPhone');
+      if (lcp) lcp.textContent = t('lblCustPhone');
+      const lca = document.getElementById('t-lblCustAddr');
+      if (lca) lca.textContent = t('lblCustAddr');
+      const bsp = document.getElementById('t-btnSaveProfile');
+      if (bsp) bsp.textContent = t('btnSaveProfile');
+      const qlt = document.getElementById('t-quickLinksTitle');
+      if (qlt) qlt.textContent = t('quickLinks');
+      const lko = document.getElementById('t-linkOrders');
+      if (lko) lko.textContent = t('linkOrders');
+      const lkw = document.getElementById('t-linkWishlist');
+      if (lkw) lkw.textContent = t('linkWishlist');
+      const lkr = document.getElementById('t-linkRefer');
+      if (lkr) lkr.textContent = t('linkRefer');
+      const spt = document.getElementById('t-supportTitle');
+      if (spt) spt.textContent = t('supportTitle');
+      const sps = document.getElementById('t-supportSub');
+      if (sps) sps.textContent = t('supportSub');
+
+      // Language Buttons active state
+      const btnBn = document.getElementById('btnLangBn');
+      const btnEn = document.getElementById('btnLangEn');
+      if (btnBn && btnEn) {
+        if (currentLang === 'bn') {
+          btnBn.classList.add('active');
+          btnEn.classList.remove('active');
+        } else {
+          btnEn.classList.add('active');
+          btnBn.classList.remove('active');
+        }
+      }
+
+      // Re-render categories content panel to update language cleanly
+      if (typeof selectCategoryTab === 'function') {
+        selectCategoryTab(currentCategoryTab || 'saree_kurti');
+      }
+    }
+
+    // ==========================================
+    // BOUTIQUE LOGO PROBE & CACHE-BUSTING
+    // ==========================================
+    function initBrandLogo() {
+      const customLogo = localStorage.getItem('nc_boutique_logo');
+      const logoImg = document.getElementById('mainBrandLogoImg');
+      const logoIcon = document.getElementById('mainBrandLogoIcon');
+      if (!logoImg || !logoIcon) return;
+
+      if (customLogo) {
+        logoImg.src = customLogo;
+        logoImg.style.display = 'block';
+        logoIcon.style.display = 'none';
+      } else {
+        // Probe logo.png with cache-busting timestamp
+        const probe = new Image();
+        probe.onload = function() {
+          logoImg.src = probe.src;
+          logoImg.style.display = 'block';
+          logoIcon.style.display = 'none';
+        };
+        probe.onerror = function() {
+          logoImg.style.display = 'none';
+          logoIcon.style.display = 'flex';
+        };
+        probe.src = 'logo.png?v=' + Date.now();
+      }
+    }
+
+    function resetToGitHubLogo() {
+      localStorage.removeItem('nc_boutique_logo');
+      initBrandLogo();
+      alert(currentLang === 'bn' ? "লোগো রিসেট হয়েছে! গিটহাবের logo.png লোড করা হচ্ছে।" : "Logo reset to GitHub logo.png!");
+    }
+
+    // ==========================================
+    // CUSTOMER SETTINGS HANDLING
+    // ==========================================
+    function openCustomerSettings() {
+      showScreen('customer-settings');
+      loadCustomerSettingsData();
+    }
+
+    function loadCustomerSettingsData() {
+      const stored = localStorage.getItem('nc_customer_profile');
+      if (stored) {
+        try { currentCustomer = JSON.parse(stored); } catch(e) {}
+      }
+      if (currentCustomer) {
+        document.getElementById('settings_cust_name').value = currentCustomer.name || '';
+        document.getElementById('settings_cust_phone').value = currentCustomer.phone || '';
+        document.getElementById('settings_cust_addr').value = currentCustomer.address || '';
+        document.getElementById('custDisplayTitle').textContent = currentCustomer.name || t('custTitle');
+        document.getElementById('custDisplayPhone').textContent = currentCustomer.phone || '';
+        document.getElementById('custDisplayCoins').textContent = currentCustomer.coins || 150;
+        document.getElementById('custAvatarChar').textContent = (currentCustomer.name || 'U').charAt(0).toUpperCase();
+      }
+    }
+
+    function saveCustomerSettings() {
+      const name = document.getElementById('settings_cust_name').value.trim();
+      const phone = document.getElementById('settings_cust_phone').value.trim();
+      const addr = document.getElementById('settings_cust_addr').value.trim();
+
+      if (!name || !phone) {
+        alert(currentLang === 'bn' ? "দয়া করে নাম ও মোবাইল নম্বর লিখুন!" : "Please provide name and phone number!");
+        return;
+      }
+
+      currentCustomer = currentCustomer || {};
+      currentCustomer.name = name;
+      currentCustomer.phone = phone;
+      currentCustomer.address = addr;
+      currentCustomer.coins = currentCustomer.coins || 150;
+
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+      loadCustomerSettingsData();
+      alert(currentLang === 'bn' ? "✅ প্রোফাইল ও ঠিকানা সফলভাবে সেভ হয়েছে!" : "✅ Profile and address saved successfully!");
+    }
+
     // INITIAL PRODUCTS & CLOUD DATABASE SETUP
     // ==========================================
     const INITIAL_PRODUCTS = [
@@ -1372,6 +1916,7 @@
 
     window.onload = function() {
       initBrandLogo();
+    applyLanguage();
     renderProducts(products);
       updateCartBadge();
       renderOrders();
@@ -1384,6 +1929,7 @@
     // ==========================================
     let currentCategoryTab = 'saree_kurti';
 
+    
     function selectCategoryTab(tabKey) {
       currentCategoryTab = tabKey;
       document.querySelectorAll('.cat-sidebar-item').forEach(el => el.classList.remove('active'));
@@ -1393,479 +1939,289 @@
       const content = document.getElementById('catContentArea');
       if (!content) return;
 
+      const isBn = currentLang === 'bn';
+
       if (tabKey === 'popular') {
         content.innerHTML = `
-          <div class="cat-banner-title">POPULAR • জনপ্রিয় সেরা কালেকশন</div>
+          <div class="cat-banner-title">${isBn ? "জনপ্রিয় সেরা কালেকশন" : "POPULAR PICKS"}</div>
           <div class="cat-subgrid">
             <div class="cat-subcard" onclick="categoryClick('saree', 'jamdani')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Jamdani">
               </div>
-              <span class="cat-subcard-label">ঢাকাই জামদানি</span>
+              <span class="cat-subcard-label">${isBn ? "ঢাকাই জামদানি" : "Dhakai Jamdani"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'silk')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Silk">
               </div>
-              <span class="cat-subcard-label">সফট সিল্ক</span>
+              <span class="cat-subcard-label">${isBn ? "সফট সিল্ক" : "Soft Silk"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'tant')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Tant">
               </div>
-              <span class="cat-subcard-label">শান্তিপুরী তাঁত</span>
+              <span class="cat-subcard-label">${isBn ? "শান্তিপুরী তাঁত" : "Tant Cotton"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Jewellery">
               </div>
-              <span class="cat-subcard-label">ব্রাইডাল গহনা</span>
+              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল গহনা" : "Bridal Jewellery"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'earrings')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=200" alt="Earrings">
               </div>
-              <span class="cat-subcard-label">ঝুমকা দুল</span>
+              <span class="cat-subcard-label">${isBn ? "ঝুমকা দুল" : "Jhumka Earrings"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'bangles')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=200" alt="Bangles">
               </div>
-              <span class="cat-subcard-label">ডিজাইনার চুড়ি</span>
-            </div>
-          </div>
-
-          <div class="cat-section-header">
-            <span>আজকের ট্রেন্ডিং অফার</span>
-            <span style="font-size:0.68rem; color:var(--primary); font-weight:700;">সব দেখুন</span>
-          </div>
-          <div style="background:linear-gradient(135deg, #fdf4ff, #fae8ff); border:1px solid #f0abfc; border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="categoryClick('saree', 'all')">
-            <div style="font-size:1.8rem;">🎉</div>
-            <div>
-              <div style="font-size:0.82rem; font-weight:800; color:#86198f;">উৎসব স্পেশাল ফ্ল্যাট ৫০% ছাড়</div>
-              <div style="font-size:0.7rem; color:#701a75;">আমতার গ্রাহকদের জন্য স্পেশাল ফ্রি হোম ডেলিভারি!</div>
+              <span class="cat-subcard-label">${isBn ? "ডিজাইনার চুড়ি" : "Designer Bangles"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'saree_kurti') {
         content.innerHTML = `
-          <div class="cat-banner-title">KURTI, SAREE & LEHENGA</div>
-          <!-- Sarees Grid (Meesho Image 1000028412) -->
+          <div class="cat-banner-title">${isBn ? "শাড়ি কালেকশন" : "SAREES"}</div>
           <div class="cat-subgrid">
             <div class="cat-subcard" onclick="categoryClick('saree', 'tant')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Cotton Sarees">
               </div>
-              <span class="cat-subcard-label">Cotton Sarees</span>
+              <span class="cat-subcard-label">${isBn ? "সুতি শাড়ি" : "Cotton Sarees"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'net')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Net Sarees">
               </div>
-              <span class="cat-subcard-label">Net Sarees</span>
+              <span class="cat-subcard-label">${isBn ? "নেট ও জর্জেট" : "Net Sarees"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'budget')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Under 499">
               </div>
-              <span class="cat-subcard-label">Under 499</span>
+              <span class="cat-subcard-label">${isBn ? "বাজেট শাড়ি" : "Under 499"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'silk')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Silk Sarees">
               </div>
-              <span class="cat-subcard-label">Silk Sarees</span>
+              <span class="cat-subcard-label">${isBn ? "সফট সিল্ক" : "Silk Sarees"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'jamdani')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="New Collection">
               </div>
-              <span class="cat-subcard-label">New Collection</span>
+              <span class="cat-subcard-label">${isBn ? "ঢাকাই জামদানি" : "Jamdani Sarees"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('saree', 'bridal')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Bridal Sarees">
               </div>
-              <span class="cat-subcard-label">Bridal Sarees</span>
+              <span class="cat-subcard-label">${isBn ? "বউভাত ও ব্রাইডাল" : "Bridal Sarees"}</span>
             </div>
           </div>
 
-          <!-- Kurtis Section -->
           <div class="cat-section-header">
-            <span>Kurtis (কুর্তি)</span>
+            <span>${isBn ? "কুর্তি কালেকশন" : "Kurtis"}</span>
           </div>
           <div class="cat-subgrid">
             <div class="cat-subcard" onclick="categoryClick('kurti', 'all')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="All Kurtis">
               </div>
-              <span class="cat-subcard-label">All Kurtis</span>
+              <span class="cat-subcard-label">${isBn ? "সব কুর্তি" : "All Kurtis"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('kurti', 'anarkali')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Anarkali">
               </div>
-              <span class="cat-subcard-label">Anarkali Kurtis</span>
+              <span class="cat-subcard-label">${isBn ? "আনারকলি কুর্তি" : "Anarkali Kurtis"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('kurti', 'rayon')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Rayon">
               </div>
-              <span class="cat-subcard-label">Rayon Kurtis</span>
+              <span class="cat-subcard-label">${isBn ? "রেয়ন কুর্তি" : "Rayon Kurtis"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('kurti', 'cotton')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Cotton Kurtis">
               </div>
-              <span class="cat-subcard-label">Cotton Kurtis</span>
+              <span class="cat-subcard-label">${isBn ? "কটন কুর্তি" : "Cotton Kurtis"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('kurti', 'straight')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Straight Kurtis">
               </div>
-              <span class="cat-subcard-label">Straight Kurtis</span>
+              <span class="cat-subcard-label">${isBn ? "স্ট্রেট কুর্তি" : "Straight Kurtis"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('kurti', 'long')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Long Kurtis">
               </div>
-              <span class="cat-subcard-label">Long Kurtis</span>
-            </div>
-          </div>
-
-          <!-- Kurta Sets Section -->
-          <div class="cat-section-header">
-            <span>Kurta Sets (কুর্তা ও ওড়না সেট)</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'all')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="All Sets">
-              </div>
-              <span class="cat-subcard-label">All Kurta Sets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'palazzo')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Palazzo Sets">
-              </div>
-              <span class="cat-subcard-label">Kurta Palazzo Sets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'pant')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Pant Sets">
-              </div>
-              <span class="cat-subcard-label">Kurta Pant Sets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'sharara')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Sharara">
-              </div>
-              <span class="cat-subcard-label">Sharara Sets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'anarkali')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Anarkali Sets">
-              </div>
-              <span class="cat-subcard-label">Anarkali Kurta Sets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'cotton')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Cotton Sets">
-              </div>
-              <span class="cat-subcard-label">Cotton Kurta Sets</span>
+              <span class="cat-subcard-label">${isBn ? "লং কুর্তি" : "Long Kurtis"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'jewellery') {
         content.innerHTML = `
-          <div class="cat-banner-title">JEWELLERY & ACCESSORIES</div>
-          <div class="cat-section-header">
-            <span>Jewellery (গহনা)</span>
-          </div>
+          <div class="cat-banner-title">${isBn ? "গহনা ও অলঙ্কার" : "JEWELLERY & ACCESSORIES"}</div>
           <div class="cat-subgrid">
             <div class="cat-subcard" onclick="categoryClick('jewel', 'all')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="All Jewellery">
               </div>
-              <span class="cat-subcard-label">All Jewellery</span>
+              <span class="cat-subcard-label">${isBn ? "সকল গহনা" : "All Jewellery"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200" alt="Jewellery Sets">
               </div>
-              <span class="cat-subcard-label">Jewellery Sets</span>
+              <span class="cat-subcard-label">${isBn ? "নেকলেস ও চোকার" : "Jewellery Sets"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'earrings')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=200" alt="Earrings">
               </div>
-              <span class="cat-subcard-label">Earrings</span>
+              <span class="cat-subcard-label">${isBn ? "কানের দুল ও ঝুমকা" : "Earrings & Jhumka"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Mangalsutras">
               </div>
-              <span class="cat-subcard-label">Mangalsutras</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200" alt="Necklaces & Chains">
-              </div>
-              <span class="cat-subcard-label">Necklaces & Chains</span>
+              <span class="cat-subcard-label">${isBn ? "মঙ্গলসূত্র" : "Mangalsutras"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'bangles')">
               <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=200" alt="Bangles & Bracelets">
+                <img src="https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=200" alt="Bangles">
               </div>
-              <span class="cat-subcard-label">Bangles & Bracelets</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'anklet')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200" alt="Anklets & Nosepins">
-              </div>
-              <span class="cat-subcard-label">Anklets & Nosepins</span>
+              <span class="cat-subcard-label">${isBn ? "বালা ও চুড়ি" : "Bangles & Churi"}</span>
             </div>
             <div class="cat-subcard" onclick="categoryClick('jewel', 'kamarbandh')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Kamarbandh">
               </div>
-              <span class="cat-subcard-label">Kamarbandh & Maangtika</span>
-            </div>
-          </div>
-
-          <div class="cat-section-header">
-            <span>Men Accessories (পুরুষদের এক্সেসরিজ)</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('পুরুষদের ঘড়ি ও এক্সেসরিজ', 'ঘড়ি, লেদার বেল্ট ও ওয়ালেট কালেকশন শীঘ্রই শুরু হচ্ছে!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=200" alt="Men Watches">
-                <div class="cat-badge-cs">শীঘ্রই</div>
-              </div>
-              <span class="cat-subcard-label">Men Watches</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('লেদার ওয়ালেট', 'প্রিমিয়াম ওয়ালেট ও মানিব্যাগ কালেকশন শীঘ্রই আসছে!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=200" alt="Wallets">
-                <div class="cat-badge-cs">শীঘ্রই</div>
-              </div>
-              <span class="cat-subcard-label">Wallets</span>
+              <span class="cat-subcard-label">${isBn ? "কোমরবন্ধ ও টিকলি" : "Kamarbandh"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'bags') {
         content.innerHTML = `
-          <div class="cat-banner-title">BAGS & FOOTWEAR (লেডিস ব্যাগ ও পার্স)</div>
+          <div class="cat-banner-title">${isBn ? "লেডিস ব্যাগ ও পার্স" : "BAGS & PURSES"}</div>
           <div style="background:#fff1f2; border:1px dashed #f43f5e; color:#9f1239; padding:10px; border-radius:10px; font-size:0.75rem; margin-bottom:12px; line-height:1.4;">
-            <i class="fa-solid fa-sparkles"></i> <strong>নতুন কালেকশন আসছে!</strong><br>
-            আমতার মা-বোনেদের জন্য এক্সক্লুসিভ লেডিস ব্যাগ, ক্লাচ ও স্লিং ব্যাগ শীঘ্রই নিশা ক্রিয়েশনসে যুক্ত হচ্ছে। প্রি-অর্ডার ও পছন্দের ডিজাইন হোয়াটসঅ্যাপে পাঠাতে পারেন।
-          </div>
-
-          <div class="cat-section-header">
-            <span>Ladies Bags (লেডিস ব্যাগ কালেকশন)</span>
+            <i class="fa-solid fa-sparkles"></i> <strong>${isBn ? "নতুন কালেকশন আসছে!" : "Coming Soon!"}</strong><br>
+            ${isBn ? "আমতার মা-বোনেদের জন্য এক্সক্লুসিভ লেডিস ব্যাগ, ক্লাচ ও স্লিং ব্যাগ শীঘ্রই স্টকে আসছে। প্রি-অর্ডার করতে ক্লিক করুন।" : "Exclusive ladies handbags and clutches launching soon! Click below to pre-order."}
           </div>
           <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('লেডিস হ্যান্ডব্যাগ', 'লেডিস স্টাইলিশ হ্যান্ডব্যাগ কালেকশন শীঘ্রই স্টকে আসছে!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "লেডিস হ্যান্ডব্যাগ" : "Ladies Handbags"}', '${isBn ? "হ্যান্ডব্যাগ কালেকশন শীঘ্রই আসছে!" : "Handbags launching soon!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200" alt="Handbags">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">All Handbags</span>
+              <span class="cat-subcard-label">${isBn ? "হ্যান্ডব্যাগ" : "Handbags"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('লেডিস স্লিং ব্যাগ', 'ট্রেন্ডি ও স্মার্ট স্লিং ব্যাগ কালেকশন শীঘ্রই পাওয়া যাবে!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "স্লিং ব্যাগ" : "Sling Bags"}', '${isBn ? "ট্রেন্ডি স্লিং ব্যাগ কালেকশন শীঘ্রই আসছে!" : "Sling bags launching soon!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200" alt="Sling Bags">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Sling Bags</span>
+              <span class="cat-subcard-label">${isBn ? "স্লিং ব্যাগ" : "Sling Bags"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('ব্রাইডাল বটুয়া ও পটলি', 'বিয়ে ও পুজোর স্পেশাল সোনালী জরির ব্রাইডাল বটুয়া!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ব্রাইডাল বটুয়া" : "Bridal Potli"}', '${isBn ? "বিয়ে স্পেশাল ব্রাইডাল বটুয়া কালেকশন!" : "Bridal potli batua collection!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=200" alt="Bridal Potli">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Bridal Potli</span>
+              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল বটুয়া" : "Bridal Potli"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('পার্টি ক্লাচ', 'পার্টির জমকালো শাড়ির সাথে ম্যাচিং ক্লাচ কালেকশন!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "পার্টি ক্লাচ" : "Party Clutches"}', '${isBn ? "পার্টি শাড়ির সাথে ম্যাচিং ক্লাচ!" : "Party clutches collection!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=200" alt="Clutches">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Party Clutches</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('টোট ব্যাগ', 'দৈনন্দিন কেনাকাটা ও ভ্রমণের হালকা টোট ব্যাগ!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=200" alt="Tote Bags">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Tote Bags</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('লেডিস অফিস ব্যাগ', 'অফিস ও কলেজের জন্য প্রিমিয়াম ওয়াটারপ্রুফ ব্যাগ!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=200" alt="Office Bags">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Office Bags</span>
-            </div>
-          </div>
-
-          <div class="cat-section-header">
-            <span>Footwear (জুতো ও চটি)</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('কোলহাপুরী ও জুতি', 'শাড়ির সাথে সাবেকি কোলহাপুরী চটি কালেকশন!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200" alt="Jutti">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Kolhapuri & Jutti</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('পার্টি হিলস', 'পার্টি শাড়ির সাথে মানানসই হিলস ও স্যান্ডেল!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200" alt="Heels">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Party Heels</span>
+              <span class="cat-subcard-label">${isBn ? "পার্টি ক্লাচ" : "Party Clutches"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'perfume') {
         content.innerHTML = `
-          <div class="cat-banner-title">BEAUTY & PERFUME (লেডিস পারফিউম ও সেন্ট)</div>
+          <div class="cat-banner-title">${isBn ? "লেডিস পারফিউম ও সেন্ট" : "BEAUTY & PERFUMES"}</div>
           <div style="background:#f5f3ff; border:1px dashed #8b5cf6; color:#5b21b6; padding:10px; border-radius:10px; font-size:0.75rem; margin-bottom:12px; line-height:1.4;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> <strong>লং-লাস্টিং মিষ্টি সুবাস!</strong><br>
-            সারাদিন ধরে সতেজ ও মিষ্টি গন্ধ ছড়াতে অরিজিনাল লেডিস পারফিউম, খাঁটি সুগন্ধি আতর ও বডি মিস্ট খুব শীঘ্রই নিশা ক্রিয়েশনসে যোগ করা হচ্ছে।
-          </div>
-
-          <div class="cat-section-header">
-            <span>Fragrances & Scent (সুগন্ধি ও সেন্ট)</span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i> <strong>${isBn ? "মিষ্টি সুবাসিত কালেকশন!" : "Sweet Fragrance Collection!"}</strong><br>
+            ${isBn ? "লং-লাস্টিং লেডিস পারফিউম ও খাঁটি সুগন্ধি আতর শীঘ্রই স্টকে আসছে। প্রি-অর্ডার করতে ক্লিক করুন।" : "Long-lasting perfumes and pure attar launching soon! Click below to pre-order."}
           </div>
           <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('ফ্লোরাল সুবাসিত সেন্ট', 'গোলাপ, জুঁই ও মিষ্টি বেলি ফুলের লং-লাস্টিং ফ্লোরাল সেন্ট!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ফ্লোরাল সেন্ট" : "Floral Perfumes"}', '${isBn ? "গোলাপ ও জুঁইয়ের মিষ্টি ফ্লোরাল সেন্ট!" : "Sweet floral perfume collection!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200" alt="Floral Perfume">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Floral Perfumes</span>
+              <span class="cat-subcard-label">${isBn ? "ফ্লোরাল সেন্ট" : "Floral Scent"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('খাঁটি সুগন্ধি আতর', 'অ্যালকোহল-মুক্ত খাঁটি মিষ্টি আরবি আতর (রজনীগন্ধা, উদ, মেশক)!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "খাঁটি সুগন্ধি আতর" : "Royal Attar"}', '${isBn ? "অ্যালকোহল-মুক্ত খাঁটি মিষ্টি আরবি আতর!" : "Alcohol-free pure royal attar!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200" alt="Royal Attar">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Royal Attar</span>
+              <span class="cat-subcard-label">${isBn ? "খাঁটি আতর" : "Royal Attar"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('লাক্সারি পার্টি পারফিউম', 'পার্টি ও বিয়ের জন্য অভিজাত প্রিমিয়াম পারফিউম!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200" alt="Party Perfume">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Party Perfume</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('পকেট সেন্ট ও রোল-অন', 'হ্যান্ডব্যাগে রাখার মতো মিনি পকেট সেন্ট!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200" alt="Pocket Perfume">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Pocket Perfume</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('ফ্রেশ বডি মিস্ট', 'গরমে সারাদিন ফ্রেশ থাকতে রিফ্রেশিং বডি মিস্ট!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "বডি মিস্ট" : "Body Mist"}', '${isBn ? "গরমে সারাদিন ফ্রেশ থাকতে রিফ্রেশিং বডি মিস্ট!" : "Refreshing daily body mist!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?w=200" alt="Body Mist">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Body Mist</span>
+              <span class="cat-subcard-label">${isBn ? "বডি মিস্ট" : "Body Mist"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('ব্রাইডাল সেন্ট গিফট বক্স', 'নতুন কনে বা প্রিয়জনকে উপহার দেওয়ার লাক্সারি সুগন্ধি সেট!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ব্রাইডাল সেন্ট বক্স" : "Bridal Scent Box"}', '${isBn ? "নতুন কনে বা প্রিয়জনের জন্য লাক্সারি সুগন্ধি সেট!" : "Luxury bridal fragrance gift box!"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=200" alt="Scent Gift Box">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Scent Gift Box</span>
+              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল সেন্ট বক্স" : "Scent Gift Box"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'western') {
         content.innerHTML = `
-          <div class="cat-banner-title">WOMEN WESTERN</div>
-          <div class="cat-section-header">
-            <span>Topwear</span>
-          </div>
+          <div class="cat-banner-title">${isBn ? "ওয়েস্টার্ন পোশাক" : "WOMEN WESTERN"}</div>
           <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('ওয়েস্টার্ন টপস ও টিউনিক', 'স্মার্ট ও কমফোর্টেবল লেডিস টপস কালেকশন!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ওয়েস্টার্ন টপস" : "Western Tops"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=200" alt="Topwear">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">All Topwear</span>
+              <span class="cat-subcard-label">${isBn ? "টপস ও টিউনিক" : "Tops & Tunics"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('ওয়েস্টার্ন ড্রেস ও গাউন', 'পার্টি স্পেশাল স্টাইলিশ ওয়ান পিস ও গাউন!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ড্রেস ও গাউন" : "Dresses & Gowns"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200" alt="Dresses">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Dresses</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('লেডিস টি-শার্ট ও শার্ট', 'ক্যাজুয়াল ও সুতি প্রিন্টেড টি-শার্ট!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200" alt="T-shirts">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">T-shirts</span>
-            </div>
-          </div>
-          <div class="cat-section-header">
-            <span>Bottomwear</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('জিন্স ও জেগিংস', 'স্ট্রেচেবল কমফোর্ট জিন্স ও লেগিংস কালেকশন!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=200" alt="Jeans">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Jeans & Jeggings</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('প্যালাজো ও ট্রাউজার', 'গরমে আরামদায়ক কটন ও রেয়ন প্যালাজো!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=200" alt="Palazzos">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Palazzos</span>
+              <span class="cat-subcard-label">${isBn ? "ড্রেস ও গাউন" : "Dresses & Gowns"}</span>
             </div>
           </div>
         `;
       } else if (tabKey === 'lingerie') {
         content.innerHTML = `
-          <div class="cat-banner-title">LINGERIE & SLEEPWEAR</div>
-          <div class="cat-section-header">
-            <span>Sleepwear</span>
-          </div>
+          <div class="cat-banner-title">${isBn ? "নাইটওয়্যার ও স্লিপওয়্যার" : "LINGERIE & SLEEPWEAR"}</div>
           <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('নাইট স্যুট ও নাইট ড্রেস', 'আরামদায়ক সুতি নাইট স্যুট ও নাইটি!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "নাইট স্যুট" : "Nightsuits"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200" alt="Nightsuits">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Nightsuits</span>
+              <span class="cat-subcard-label">${isBn ? "সুতি নাইট স্যুট" : "Nightsuits"}</span>
             </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('নাইট ড্রেস ও স্যাতিন রোব', 'সিল্কি ও স্যাতিন নাইটওয়্যার!')">
+            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "স্যাতিন নাইট ড্রেস" : "Satin Robes"}')">
               <div class="cat-subcard-img-wrap">
                 <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200" alt="Nightdress">
-                <div class="cat-badge-cs">Coming Soon</div>
+                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
               </div>
-              <span class="cat-subcard-label">Nightdress</span>
-            </div>
-          </div>
-          <div class="cat-section-header">
-            <span>Innerwear</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('ব্রা ও ব্রালেট', 'হান্ড্রেড পারসেন্ট পিওর কটন কমফোর্ট ব্রা!')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200" alt="Bra">
-                <div class="cat-badge-cs">Coming Soon</div>
-              </div>
-              <span class="cat-subcard-label">Bra & Bralettes</span>
+              <span class="cat-subcard-label">${isBn ? "স্যাতিন নাইট ড্রেস" : "Satin Robes"}</span>
             </div>
           </div>
         `;
@@ -1924,6 +2280,7 @@
       if (wishlist.length === 0) {
         alert("আপনার উইশলিস্টে কোনো প্রোডাক্ট সেভ করা নেই! প্রোডাক্টের ওপর হার্ট আইকন চাপুন।");
         initBrandLogo();
+    applyLanguage();
     renderProducts(products);
       } else {
         renderProducts(products.filter(p => wishlist.includes(p.id)));
@@ -1984,6 +2341,7 @@
       document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
       if (cat === 'all') {
         initBrandLogo();
+    applyLanguage();
     renderProducts(products);
         document.querySelectorAll('.cat-item')[0].classList.add('active');
       } else if (cat === 'saree') {
@@ -1998,6 +2356,7 @@
     function handleSearch(query) {
       const q = query.toLowerCase().trim();
       if (!q) { initBrandLogo();
+    applyLanguage();
     renderProducts(products); return; }
       const filtered = products.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
       renderProducts(filtered);
@@ -2011,6 +2370,7 @@
       }
       localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
       initBrandLogo();
+    applyLanguage();
     renderProducts(products);
     }
 
@@ -2407,6 +2767,7 @@
       const navBtn = document.getElementById(`tab-${screenId}`);
       if (navBtn) navBtn.classList.add('active');
 
+      if (screenId === 'customer-settings') { loadCustomerSettingsData(); }
       if (screenId === 'categories') {
         selectCategoryTab(currentCategoryTab || 'saree_kurti');
       }
@@ -2517,6 +2878,7 @@
       products.unshift(newProd);
       localStorage.setItem('nc_products', JSON.stringify(products));
       initBrandLogo();
+    applyLanguage();
     renderProducts(products);
 
       alert("🎉 নতুন প্রোডাক্ট সফলভাবে লাইভ শপে যুক্ত হয়েছে!");
@@ -2565,4 +2927,4 @@
     }
   </script>
 </body>
-      </html>
+  </html>
