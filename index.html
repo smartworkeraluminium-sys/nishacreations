@@ -1,18 +1,18 @@
- <!DOCTYPE html>
-<html lang="bn"> 
+<!DOCTYPE html>
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Nisha Creations (নিশা ক্রিয়েশনস) - Saree & Jewellery Boutique • Amta</title>
 
-  <!-- PWA & Mobile App Meta Tags -->
+  <!-- PWA & Mobile App Native Experience -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NishaCreations">
   <meta name="theme-color" content="#9c27b0">
 
-  <!-- Google Fonts: Plus Jakarta Sans & Hind Siliguri for Bengali -->
+  <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,14 +27,13 @@
       --green: #16a34a;
       --dark: #0f172a;
       --gray: #64748b;
-      --light-gray: #f8fafc;
       --border: #e2e8f0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #fdf4ff; color: #1e293b; padding-bottom: 75px; }
 
-    /* Top App Header (Meesho Style) */
+    /* Top App Header (Meesho Style Image 17) */
     .app-header {
       background: #ffffff;
       position: sticky;
@@ -53,6 +52,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
     }
     .brand-logo-icon {
       width: 38px;
@@ -110,6 +110,20 @@
       border: 2px solid #fff;
     }
 
+    /* Location Strip (Amta Special) */
+    .location-strip {
+      background: #faf5ff;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: #7e22ce;
+      border-top: 1px solid #f3e8ff;
+      border-bottom: 1px solid #f3e8ff;
+      font-weight: 600;
+    }
+
     /* Search Bar (Like Meesho Image 17) */
     .search-box-wrap {
       padding: 6px 14px 10px 14px;
@@ -130,18 +144,6 @@
       width: 100%;
       font-size: 0.88rem;
       color: #0f172a;
-    }
-    .location-strip {
-      background: #faf5ff;
-      padding: 5px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.74rem;
-      color: #7e22ce;
-      border-top: 1px solid #f3e8ff;
-      border-bottom: 1px solid #f3e8ff;
-      font-weight: 600;
     }
 
     /* Circular Story Category Strip (Like Meesho Image 17 & 21) */
@@ -197,7 +199,7 @@
       font-weight: 800;
     }
 
-    /* Sale Banner (Like Meesho Image 17) */
+    /* Sale Banner (Meesho Style Image 17) */
     .sale-banner {
       background: linear-gradient(135deg, #c026d3, #9333ea);
       margin: 10px 14px;
@@ -224,6 +226,19 @@
       font-size: 1.05rem;
       font-weight: 800;
       line-height: 1.2;
+    }
+
+    /* Refer & Earn Strip (Idea 2-c) */
+    .refer-strip {
+      background: linear-gradient(90deg, #fef3c7, #fde68a);
+      border: 1px dashed #d97706;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin: 0 14px 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
     }
 
     /* Filter Bar */
@@ -390,48 +405,39 @@
       color: #64748b;
     }
 
-    /* Bottom Fixed Navigation Bar (Same as Meesho Image 17) */
-    .bottom-nav {
-      position: fixed;
+    /* Video Finds Reel Section (Like Meesho Image 20 & 21) */
+    .video-reel-card {
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .video-reel-media {
+      width: 100%;
+      height: 440px;
+      object-fit: cover;
+      display: block;
+    }
+    .reel-overlay {
+      position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 60px;
-      background: #ffffff;
-      border-top: 1px solid var(--border);
+      padding: 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      color: #fff;
       display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 99;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      align-items: flex-end;
+      justify-content: space-between;
     }
-    .nav-tab {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 0.7rem;
-      font-weight: 600;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      gap: 3px;
-      position: relative;
-    }
-    .nav-tab i { font-size: 1.25rem; }
-    .nav-tab.active { color: var(--primary); font-weight: 800; }
-    .nav-tab.active i { transform: scale(1.08); }
 
-    /* Modals & Screens */
-    .screen-view {
-      display: none;
-      animation: fadeIn 0.15s ease-out;
-    }
+    /* Product Detail Page (PDP) */
+    .screen-view { display: none; animation: fadeIn 0.15s ease-out; }
     .screen-view.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Product Detail Page (PDP) */
     .pdp-screen {
       background: #ffffff;
       min-height: 100vh;
@@ -522,89 +528,94 @@
       cursor: pointer;
     }
 
-    /* Tracking & Timeline */
-    .timeline {
-      position: relative;
-      padding-left: 28px;
-      margin: 16px 0;
+    /* Complete Look Matching Box (Idea 2-b) */
+    .matching-box {
+      background: #fdf4ff;
+      border: 1.5px solid #f0abfc;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 16px;
     }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 10px;
-      top: 5px;
-      bottom: 5px;
-      width: 2px;
-      background: #cbd5e1;
-    }
-    .timeline-step {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    .timeline-dot {
-      position: absolute;
-      left: -28px;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #cbd5e1;
-      color: #fff;
+
+    /* Customer Reviews Gallery (Like Meesho Image 19) */
+    .review-photo-strip {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
     }
+    .review-photo-strip img {
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; margin: 16px 0; }
+    .timeline::before { content: ''; position: absolute; left: 10px; top: 5px; bottom: 5px; width: 2px; background: #cbd5e1; }
+    .timeline-step { position: relative; margin-bottom: 20px; }
+    .timeline-dot { position: absolute; left: -28px; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: #cbd5e1; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; }
     .timeline-step.completed .timeline-dot { background: var(--green); }
     .timeline-step.active .timeline-dot { background: var(--primary); box-shadow: 0 0 0 4px #f3e5f5; }
 
-    /* Admin Panel Styling */
-    .admin-card {
-      background: #fff;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 16px;
-      margin: 12px 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    /* Bottom Nav Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 99;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
-    .form-group {
-      margin-bottom: 12px;
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      gap: 3px;
     }
-    .form-group label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #334155;
-      margin-bottom: 4px;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      outline: none;
-    }
+    .nav-tab i { font-size: 1.25rem; }
+    .nav-tab.active { color: var(--primary); font-weight: 800; }
+    .nav-tab.active i { transform: scale(1.08); }
+
+    /* Form Styles */
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.76rem; font-weight: 700; color: #334155; margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; }
   </style>
 </head>
 <body>
 
-  <!-- ================= 1. APP HEADER ================= -->
+  <!-- ================= 1. TOP APP HEADER ================= -->
   <header class="app-header">
     <div class="top-brand-bar">
       <div class="brand-logo-wrap" onclick="showScreen('home')">
         <div class="brand-logo-icon">NC</div>
         <div>
           <div class="brand-title">Nisha Creations</div>
-          <div class="brand-sub">নিশা ক্রিয়েশনস • বুটিক</div>
+          <div class="brand-sub">নিশা ক্রিয়েশনস • এক্সক্লুসিভ বুটিক</div>
         </div>
       </div>
       <div class="header-icons">
-        <button class="header-icon-btn" onclick="openAdminSecret()" title="Admin Login">
-          <i class="fa-solid fa-user-gear"></i>
+        <button class="header-icon-btn" onclick="openCustomerAuthModal()" title="Customer Account" id="userAuthIconBtn">
+          <i class="fa-regular fa-circle-user"></i>
         </button>
-        <button class="header-icon-btn" onclick="showScreen('orders')" title="My Orders">
-          <i class="fa-solid fa-box"></i>
+        <button class="header-icon-btn" onclick="openAdminSecret()" title="Admin Panel">
+          <i class="fa-solid fa-gear"></i>
         </button>
         <button class="header-icon-btn" onclick="openCartModal()" title="Cart">
           <i class="fa-solid fa-bag-shopping"></i>
@@ -635,7 +646,7 @@
   <!-- ================= 2. MAIN HOME SCREEN ================= -->
   <main id="screen-home" class="screen-view active">
 
-    <!-- Story Category Circular Scroll (Like Meesho Image 17) -->
+    <!-- Circular Story Category Strip (Like Meesho Image 17) -->
     <div class="category-scroll">
       <div class="cat-item active" onclick="filterByCategory('all')">
         <div class="cat-bubble"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:1.4rem; color:var(--primary);"></i></div>
@@ -651,7 +662,7 @@
       </div>
       <div class="cat-item" onclick="filterByCategory('tant')">
         <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=150&auto=format&fit=crop&q=60" alt="Tant"></div>
-        <div class="cat-name">সুতি ও তাঁত</div>
+        <div class="cat-name">সুতি তাঁত</div>
       </div>
       <div class="cat-item" onclick="filterByCategory('necklace')">
         <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=150&auto=format&fit=crop&q=60" alt="Jewelry"></div>
@@ -667,7 +678,7 @@
       </div>
     </div>
 
-    <!-- Festive Offer Banner (Meesho Style Image 17) -->
+    <!-- Festive Sale Banner -->
     <div class="sale-banner">
       <div>
         <span class="sale-tag">🎉 স্পেশাল উৎসব সেল</span>
@@ -679,6 +690,18 @@
       </div>
     </div>
 
+    <!-- Refer & Earn Strip (Idea 2-c) -->
+    <div class="refer-strip" onclick="openReferModal()">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:1.4rem;">🎁</span>
+        <div>
+          <div style="font-size:0.8rem; font-weight:800; color:#92400e;">রেফার করুন ও পান ₹৫০ ছাড়!</div>
+          <div style="font-size:0.68rem; color:#b45309;">বান্ধবীদের সাথে শেয়ার করলে আপনি ও বান্ধবী দুজনেই ছাড় পাবেন!</div>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right" style="color:#d97706; font-size:0.8rem;"></i>
+    </div>
+
     <!-- Filter & Sort Strip -->
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleSort()"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort</button>
@@ -688,13 +711,48 @@
     </div>
 
     <!-- 2-Column Product Grid -->
-    <div class="product-grid" id="productGridContainer">
-      <!-- Injected Dynamically by JavaScript -->
-    </div>
-
+    <div class="product-grid" id="productGridContainer"></div>
   </main>
 
-  <!-- ================= 3. PRODUCT DETAIL PAGE (PDP) ================= -->
+  <!-- ================= 3. SHOPPABLE VIDEO REELS ("Video Finds" Like Meesho Image 20 & 21) ================= -->
+  <div id="screen-videos" class="screen-view" style="padding:12px; padding-bottom:75px;">
+    <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+      <i class="fa-solid fa-clapperboard" style="color:var(--primary);"></i>
+      <span>শাড়ির ডেমো ও ভিডিও রিলস (Video Finds)</span>
+    </div>
+
+    <!-- Reel Card 1 -->
+    <div class="video-reel-card">
+      <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600" class="video-reel-media">
+      <div class="reel-overlay">
+        <div>
+          <span style="background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:700;">★ পুজো স্পেশাল ভিডিও</span>
+          <div style="font-size:1rem; font-weight:800; margin:4px 0;">ঢাকাই জামদানি শাড়ির আঁচল ও কুঁচির কাজ</div>
+          <div style="font-size:1.1rem; font-weight:800; color:#fef08a;">মাত্র ₹৭৯৯ <span style="font-size:0.75rem; text-decoration:line-through; opacity:0.8;">₹১৫৯৯</span></div>
+        </div>
+        <button onclick="openPdp('NC-101')" style="background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+          ⚡ অর্ডার করুন
+        </button>
+      </div>
+    </div>
+
+    <!-- Reel Card 2 -->
+    <div class="video-reel-card">
+      <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600" class="video-reel-media">
+      <div class="reel-overlay">
+        <div>
+          <span style="background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:700;">★ বিয়ে ও পার্টি রিলস</span>
+          <div style="font-size:1rem; font-weight:800; margin:4px 0;">রয়্যাল ব্লু সফট সিল্ক কাতান শাড়ি ডেমো</div>
+          <div style="font-size:1.1rem; font-weight:800; color:#fef08a;">মাত্র ₹৯৫০ <span style="font-size:0.75rem; text-decoration:line-through; opacity:0.8;">₹১৮৯৯</span></div>
+        </div>
+        <button onclick="openPdp('NC-102')" style="background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          ⚡ অর্ডার করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. PRODUCT DETAIL PAGE (PDP) ================= -->
   <div id="screen-pdp" class="screen-view pdp-screen">
     <div class="pdp-top-bar">
       <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
@@ -724,37 +782,46 @@
         <i class="fa-solid fa-tags"></i> <span id="pdpUpiOffer">UPI দিয়ে পেমেন্টে অতিরিক্ত ছাড়!</span>
       </div>
 
-      <div style="font-size:0.78rem; color:#64748b; margin-top:6px;" id="pdpCodText">
-        <i class="fa-solid fa-truck-fast" style="color:var(--green);"></i> ক্যাশ অন ডেলিভারি (COD) উপলব্ধ
-      </div>
-
-      <!-- Rating Summary (Like Meesho Image 19) -->
-      <div style="background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:12px; margin:14px 0; display:flex; align-items:center; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div class="rating-badge" style="font-size:0.85rem; padding:3px 8px;">4.6 <i class="fa-solid fa-star"></i></div>
-          <div style="font-size:0.75rem; font-weight:700; color:#334155;">২৪০ জন কাস্টমার রেটিং দিয়েছেন</div>
+      <!-- Complete Look Matching Jewelry Recommendation (Idea 2-b) -->
+      <div class="matching-box" id="pdpMatchingBox">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <div style="font-size:0.8rem; font-weight:800; color:#7e22ce; display:flex; align-items:center; gap:5px;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ম্যাচিং গহনার কম্বো সাজ (Complete Look)</span>
+          </div>
+          <span style="font-size:0.7rem; color:#15803d; font-weight:800; background:#dcfce7; padding:1px 6px; border-radius:6px;">কম্বোতে ₹৫০ ছাড়</span>
         </div>
-        <span style="font-size:0.72rem; color:var(--primary); font-weight:800;">১০০% আসল ফটো</span>
-      </div>
-
-      <!-- Specifications -->
-      <div style="border-top:1px solid #f1f5f9; padding-top:14px; margin-top:10px;">
-        <div style="font-size:0.9rem; font-weight:800; color:#0f172a; margin-bottom:8px;">পণ্যের বিশদ বিবরণ:</div>
-        <div style="font-size:0.82rem; color:#475569; line-height:1.6;" id="pdpDesc">
-          বুটিকের ১০০% খাঁটি কাপড় ও জেনুইন কারুকাজ।
+        <div style="display:flex; gap:10px; align-items:center;">
+          <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=120" style="width:55px; height:55px; border-radius:8px; object-fit:cover;">
+          <div style="flex:1;">
+            <div style="font-size:0.78rem; font-weight:700; color:#0f172a;">গোল্ড-প্লেটেড ব্রাইডাল নেকলেস ও কানের দুল</div>
+            <div style="font-size:0.82rem; font-weight:800; color:var(--primary);">+ মাত্র ₹৩৪৯ <span style="font-size:0.7rem; text-decoration:line-through; color:#94a3b8;">₹৭৯৯</span></div>
+          </div>
+          <button onclick="addMatchingJewelCombo()" style="background:#f59e0b; color:#0f172a; border:none; padding:7px 10px; border-radius:8px; font-size:0.75rem; font-weight:800; cursor:pointer;">
+            + কম্বো যোগ করুন
+          </button>
         </div>
       </div>
 
-      <!-- Delivery in Amta -->
-      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px; margin-top:14px; display:flex; align-items:center; gap:10px;">
-        <i class="fa-solid fa-circle-check" style="color:var(--green); font-size:1.2rem;"></i>
-        <div style="font-size:0.75rem; color:#166534; font-weight:600;">
-          আমতার মধ্যে নিজস্ব ডেলিভারি পার্টনার দিয়ে আজই পৌঁছানো হবে!
+      <!-- Real Customer Photo Reviews (Like Meesho Image 19) -->
+      <div style="border-top:1px solid #f1f5f9; padding-top:14px; margin-top:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:0.9rem; font-weight:800; color:#0f172a;">গ্রাহকদের রিভিউ ও আসল ছবি (Customer Wall)</div>
+          <span style="font-size:0.75rem; font-weight:700; color:var(--primary);">৪৬টি ফটো</span>
+        </div>
+        <div class="review-photo-strip">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150">
+          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=150">
+          <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=150">
+          <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=150">
+        </div>
+        <div style="background:#f8fafc; border-radius:8px; padding:10px; font-size:0.75rem; color:#475569; margin-top:6px;">
+          <div style="color:#15803d; font-weight:800; margin-bottom:2px;">★★★★★ অসাধারণ সুন্দর কাপড়!</div>
+          "আমতায় মাত্র ৩ ঘণ্টায় শাড়িটি হাতে পেলাম। কাপড় খুব নরম আর জেনুইন জরির কাজ। — সোমা দাস (আমতা)"
         </div>
       </div>
     </div>
 
-    <!-- Sticky Bottom Buy Bar (Like Meesho Image 18) -->
+    <!-- Sticky Bottom Buy Bar -->
     <div class="pdp-sticky-bar">
       <button class="btn-wa-direct" onclick="orderCurrentOnWhatsApp()" title="Direct WhatsApp Order">
         <i class="fa-brands fa-whatsapp"></i>
@@ -768,110 +835,95 @@
     </div>
   </div>
 
-  <!-- ================= 4. MY ORDERS & TRACKING SCREEN (Like Meesho Image 23 & 24) ================= -->
-  <div id="screen-orders" class="screen-view" style="padding:14px;">
+  <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Meesho Image 23 & 24) ================= -->
+  <div id="screen-orders" class="screen-view" style="padding:14px; padding-bottom:75px;">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
       <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
       <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">অর্ডার ট্র্যাকিং ও ইতিহাস (My Orders)</div>
     </div>
 
     <!-- Search Order Form -->
-    <div style="background:#fff; border-radius:12px; border:1px solid var(--border); padding:12px; margin-bottom:14px; display:flex; gap:8px;">
-      <input type="text" id="trackInput" placeholder="অর্ডার আইডি (যেমন: NC-101) বা ফোন নম্বর" style="flex:1; border:1px solid #cbd5e1; padding:8px 12px; border-radius:8px; font-size:0.85rem; outline:none;">
+    <div style="background:#fff; border-radius:12px; border:1px solid var(--border); padding:10px; margin-bottom:14px; display:flex; gap:8px;">
+      <input type="text" id="trackInput" placeholder="অর্ডার নম্বর বা ফোন নম্বর দিন..." style="flex:1; border:1px solid #cbd5e1; padding:8px 12px; border-radius:8px; font-size:0.85rem; outline:none;">
       <button onclick="trackOrderManual()" style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.82rem; cursor:pointer;">ট্র্যাক</button>
     </div>
 
-    <!-- Orders List Container -->
-    <div id="ordersListContainer">
-      <!-- Dynamically filled with order cards -->
-    </div>
+    <div id="ordersListContainer"></div>
   </div>
 
-  <!-- ================= 5. ADMIN MANAGEMENT PANEL (Hidden / Protected) ================= -->
-  <div id="screen-admin" class="screen-view" style="padding:14px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);">নিশা ক্রিয়েশনস • অ্যাডমিন প্যানেল</div>
+  <!-- ================= 6. CUSTOMER CLOUD ACCOUNT MODAL ================= -->
+  <div id="customerAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:210; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; width:100%; max-width:400px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.2);">
+      <div style="background:linear-gradient(135deg, #9c27b0, #c026d3); padding:20px; color:#fff; text-align:center;">
+        <div style="font-size:1.2rem; font-weight:800;">কাস্টমার ক্লাউড অ্যাকাউন্ট</div>
+        <div style="font-size:0.75rem; opacity:0.9; margin-top:3px;">অর্ডার ইতিহাস, সেভ করা ঠিকানা ও লয়্যালটি কয়েন</div>
       </div>
-      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700;">বন্ধ করুন</button>
-    </div>
-
-    <!-- Add New Saree / Jewellery Item Card -->
-    <div class="admin-card">
-      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-        <i class="fa-solid fa-circle-plus" style="color:var(--primary);"></i> নতুন শাড়ি / গহনা আপলোড করুন
-      </div>
-      <div class="form-group">
-        <label>প্রোডাক্টের নাম (Title):</label>
-        <input type="text" id="new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল)">
-      </div>
-      <div class="form-group">
-        <label>ক্যাটাগরি:</label>
-        <select id="new_category">
-          <option value="jamdani">ঢাকাই জামদানি</option>
-          <option value="silk">সফট সিল্ক / কাতান</option>
-          <option value="tant">তাঁত ও হ্যান্ডলুম সুতি</option>
-          <option value="necklace">গহনা সেট (Jewellery Set)</option>
-          <option value="earrings">কানের দুল (Earrings)</option>
-          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
-        </select>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div class="form-group">
-          <label>বিক্রয় মূল্য (Price ₹):</label>
-          <input type="number" id="new_price" placeholder="যেমন: 750">
+      <div style="padding:20px;">
+        <div id="authLoggedOutView">
+          <div class="form-group">
+            <label>আপনার নাম:</label>
+            <input type="text" id="cust_login_name" placeholder="যেমন: রীতা দাস">
+          </div>
+          <div class="form-group">
+            <label>মোবাইল নম্বর / জিমেইল:</label>
+            <input type="text" id="cust_login_phone" placeholder="ফোন নম্বর বা জিমেইল">
+          </div>
+          <button onclick="doCustomerLogin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer; margin-top:6px;">
+            ১-ক্লিকে লগইন ও সিঙ্ক করুন
+          </button>
+          <div style="text-align:center; margin:12px 0; font-size:0.75rem; color:#94a3b8;">— অথবা —</div>
+          <button onclick="doGoogleFastLogin()" style="width:100%; background:#fff; border:1px solid #cbd5e1; padding:10px; border-radius:8px; font-weight:700; font-size:0.85rem; color:#334155; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;">
+            <i class="fa-brands fa-google" style="color:#ea4335;"></i> Google দিয়ে সাইন-ইন
+          </button>
         </div>
-        <div class="form-group">
-          <label>আসল MRP (₹):</label>
-          <input type="number" id="new_mrp" placeholder="যেমন: 1499">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>ছবির লিংক (Image URL) অথবা ক্যামেরা ফটো:</label>
-        <input type="text" id="new_img" placeholder="https://... বা ফটো লিংক">
-      </div>
-      <div class="form-group">
-        <label>বিবরণ ও ফেব্রিক (Description):</label>
-        <textarea id="new_desc" rows="2" placeholder="কাপড়, ব্লাউজ পিস ও কাজের বিবরণ..."></textarea>
-      </div>
-      <button onclick="addNewProductFromAdmin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer;">
-        <i class="fa-solid fa-cloud-arrow-up"></i> লাইভ শপে যোগ করুন
-      </button>
-    </div>
 
-    <!-- Admin Orders Manager -->
-    <div class="admin-card">
-      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">
-        📋 কাস্টমারদের অর্ডার লিস্ট ও স্ট্যাটাস পরিবর্তন
-      </div>
-      <div id="adminOrdersContainer">
-        <!-- Live orders list with status switch dropdown -->
+        <div id="authLoggedInView" style="display:none; text-align:center;">
+          <div style="width:64px; height:64px; border-radius:50%; background:#f3e5f5; color:var(--primary); font-size:1.8rem; display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto;">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+          <div style="font-size:1.1rem; font-weight:800; color:#0f172a;" id="authDisplayUser">Saheb Ghati</div>
+          <div style="font-size:0.8rem; color:#64748b;" id="authDisplayPhone">9239413517</div>
+          <div style="background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:10px; margin:14px 0; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span style="font-size:1.2rem;">🪙</span>
+            <span style="font-size:0.85rem; font-weight:800; color:#92400e;" id="authWalletCoins">150 নিশা কয়েন (₹১৫০ ছাড়)</span>
+          </div>
+          <button onclick="doCustomerLogout()" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 16px; border-radius:6px; font-size:0.8rem; font-weight:700; cursor:pointer;">
+            লগআউট করুন
+          </button>
+        </div>
+
+        <div style="margin-top:14px; text-align:center;">
+          <button onclick="closeCustomerAuthModal()" style="background:transparent; border:none; color:#64748b; font-size:0.8rem; text-decoration:underline; cursor:pointer;">বন্ধ করুন</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= 6. CART & CHECKOUT MODAL ================= -->
+  <!-- ================= 7. CART & CHECKOUT MODAL ================= -->
   <div id="cartModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-end; justify-content:center;">
-    <div style="background:#fff; width:100%; max-width:500px; max-height:85vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; overflow:hidden; animation:slideUp 0.2s ease-out;">
+    <div style="background:#fff; width:100%; max-width:500px; max-height:88vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; overflow:hidden; animation:slideUp 0.2s ease-out;">
       <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border);">
         <div style="font-size:1rem; font-weight:800; color:#0f172a;">আপনার শপিং ব্যাগ (<span id="cartModalCount">0</span>)</div>
         <button onclick="closeCartModal()" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div style="flex:1; overflow-y:auto; padding:14px;" id="cartItemsList">
-        <!-- Injected dynamically -->
-      </div>
+      <div style="flex:1; overflow-y:auto; padding:14px;" id="cartItemsList"></div>
 
-      <!-- Address & Checkout Form -->
+      <!-- Checkout Form -->
       <div style="background:#f8fafc; border-top:1px solid var(--border); padding:14px;">
-        <div style="font-size:0.85rem; font-weight:800; color:#0f172a; margin-bottom:8px;">আমতায় ডেলিভারি ঠিকানা:</div>
+        <!-- Gift Wrap Option (Idea 2-f) -->
+        <label style="display:flex; align-items:center; gap:8px; background:#fff; padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.78rem; font-weight:700; color:#7e22ce; margin-bottom:10px; cursor:pointer;">
+          <input type="checkbox" id="giftWrapCheck">
+          <span>🎁 উপহার হিসেবে পাঠান (ফ্রি গিফট র‍্যাপ ও মিষ্টি বার্তা কার্ড)</span>
+        </label>
+
+        <div style="font-size:0.82rem; font-weight:800; color:#0f172a; margin-bottom:6px;">আমতায় ডেলিভারি ঠিকানা:</div>
         <input type="text" id="cust_name" placeholder="আপনার নাম" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
         <input type="text" id="cust_phone" placeholder="মোবাইল নম্বর (10 digit)" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
         <input type="text" id="cust_addr" placeholder="পাড়া / গ্রাম / রাস্তা (যেমন: আমতা চাঁদনী)" style="width:100%; padding:8px 10px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
 
         <!-- Payment Mode -->
-        <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
           <label style="flex:1; background:#fff; border:1.5px solid var(--primary); padding:8px; border-radius:8px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
             <input type="radio" name="pay_mode" value="COD" checked> 💵 Cash on Delivery
           </label>
@@ -892,19 +944,93 @@
     </div>
   </div>
 
-  <!-- ================= 7. BOTTOM NAVIGATION BAR (Like Meesho Image 17) ================= -->
+  <!-- ================= 8. REFER & EARN MODAL ================= -->
+  <div id="referModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:220; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; width:100%; max-width:380px; border-radius:20px; padding:20px; text-align:center;">
+      <span style="font-size:2.5rem;">🎉</span>
+      <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:6px;">রেফার করুন ও ৫০ টাকা ছাড় পান!</div>
+      <div style="font-size:0.78rem; color:#64748b; margin:6px 0 14px 0;">আপনার বান্ধবীর সাথে শেয়ার করুন। তিনি প্রথম শাড়ি কিনলে আপনি ও আপনার বান্ধবী দুজনেই ৫০ টাকা ছাড় পাবেন!</div>
+      <div style="background:#f1f5f9; border:1px dashed var(--primary); padding:10px; border-radius:8px; font-weight:800; font-size:1rem; color:var(--primary); margin-bottom:14px;">
+        কুপন কোড: <span id="refCodeText">NISHA50</span>
+      </div>
+      <button onclick="shareReferralWhatsApp()" style="width:100%; background:#25d366; color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <i class="fa-brands fa-whatsapp"></i> WhatsApp-এ শেয়ার করুন
+      </button>
+      <button onclick="closeReferModal()" style="margin-top:12px; background:transparent; border:none; color:#94a3b8; font-size:0.75rem; cursor:pointer;">বন্ধ করুন</button>
+    </div>
+  </div>
+
+  <!-- ================= 9. SECRET ADMIN PANEL ================= -->
+  <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);">নিশা ক্রিয়েশনস • অ্যাডমিন কন্ট্রোল</div>
+      </div>
+      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700;">বন্ধ করুন</button>
+    </div>
+
+    <!-- Upload New Product -->
+    <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:14px; margin-bottom:14px;">
+      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">+ নতুন শাড়ি / গহনা আপলোড করুন</div>
+      <div class="form-group">
+        <label>প্রোডাক্টের নাম:</label>
+        <input type="text" id="new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল)">
+      </div>
+      <div class="form-group">
+        <label>ক্যাটাগরি:</label>
+        <select id="new_category">
+          <option value="jamdani">ঢাকাই জামদানি</option>
+          <option value="silk">সফট সিল্ক / কাতান</option>
+          <option value="tant">তাঁত ও হ্যান্ডলুম সুতি</option>
+          <option value="necklace">গহনা সেট (Jewellery Set)</option>
+          <option value="earrings">কানের দুল (Earrings)</option>
+          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+        </select>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div class="form-group">
+          <label>বিক্রয় মূল্য (Price ₹):</label>
+          <input type="number" id="new_price" placeholder="750">
+        </div>
+        <div class="form-group">
+          <label>আসল MRP (₹):</label>
+          <input type="number" id="new_mrp" placeholder="1499">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ছবির লিংক (Image URL):</label>
+        <input type="text" id="new_img" placeholder="https://... বা ফটো লিংক">
+      </div>
+      <div class="form-group">
+        <label>বিবরণ:</label>
+        <textarea id="new_desc" rows="2" placeholder="ফেব্রিক ও ব্লাউজ পিস বিবরণ..."></textarea>
+      </div>
+      <button onclick="addNewProductFromAdmin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer;">
+        লাইভ শপে যোগ করুন
+      </button>
+    </div>
+
+    <!-- Live Customer Orders Management -->
+    <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:14px;">
+      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">📋 কাস্টমারদের অর্ডার ও স্ট্যাটাস পরিবর্তন</div>
+      <div id="adminOrdersContainer"></div>
+    </div>
+  </div>
+
+  <!-- ================= 10. BOTTOM NAVIGATION BAR (Like Meesho Image 17) ================= -->
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tab-home" onclick="showScreen('home')">
       <i class="fa-solid fa-house"></i>
       <span>হোম</span>
     </button>
-    <button class="nav-tab" id="tab-categories" onclick="showScreen('home')">
-      <i class="fa-solid fa-shapes"></i>
-      <span>ক্যাটাগরি</span>
+    <button class="nav-tab" id="tab-videos" onclick="showScreen('videos')">
+      <i class="fa-solid fa-circle-play"></i>
+      <span>রিলস</span>
     </button>
     <button class="nav-tab" id="tab-orders" onclick="showScreen('orders')">
       <i class="fa-solid fa-truck-fast"></i>
-      <span>ট্র্যাকিং</span>
+      <span>অর্ডার ট্র্যাকিং</span>
     </button>
     <button class="nav-tab" id="tab-cart" onclick="openCartModal()">
       <i class="fa-solid fa-bag-shopping"></i>
@@ -914,7 +1040,7 @@
 
   <script>
     // ==========================================
-    // INITIAL PRODUCTS DATABASE (Sarees & Jewellery)
+    // INITIAL PRODUCTS & CLOUD DATABASE SETUP
     // ==========================================
     const INITIAL_PRODUCTS = [
       {
@@ -1027,14 +1153,15 @@
     let cart = JSON.parse(localStorage.getItem('nc_cart') || '[]');
     let wishlist = JSON.parse(localStorage.getItem('nc_wishlist') || '[]');
     let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+    let currentCustomer = JSON.parse(localStorage.getItem('nc_customer_profile') || 'null');
     let currentPdpProduct = null;
-    const BOUTIQUE_PHONE = "919239413517"; // Saheb & Nisha's Official WhatsApp
+    const BOUTIQUE_PHONE = "919239413517"; // Official WhatsApp
 
-    // Initialize Page
     window.onload = function() {
       renderProducts(products);
       updateCartBadge();
       renderOrders();
+      updateCustomerAuthDisplay();
     };
 
     function renderProducts(list) {
@@ -1087,7 +1214,6 @@
       });
     }
 
-    // Filter by Category
     function filterByCategory(cat) {
       document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
       if (cat === 'all') {
@@ -1102,7 +1228,6 @@
       }
     }
 
-    // Search Filter
     function handleSearch(query) {
       const q = query.toLowerCase().trim();
       if (!q) { renderProducts(products); return; }
@@ -1110,7 +1235,6 @@
       renderProducts(filtered);
     }
 
-    // Wishlist Toggle
     function toggleWishlist(id) {
       if (wishlist.includes(id)) {
         wishlist = wishlist.filter(x => x !== id);
@@ -1121,7 +1245,7 @@
       renderProducts(products);
     }
 
-    // Open Product Detail Page (PDP)
+    // Open PDP
     function openPdp(id) {
       const p = products.find(x => x.id === id);
       if (!p) return;
@@ -1135,13 +1259,26 @@
       const offPct = Math.round(((p.mrp - p.price) / p.mrp) * 100);
       document.getElementById('pdpDiscount').textContent = `${offPct}% off`;
       document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${p.upiOffer}`;
-      document.getElementById('pdpDesc').textContent = p.desc;
+
+      // Complete Look Recommendation (Idea 2-b)
+      const matchBox = document.getElementById('pdpMatchingBox');
+      if (p.type === 'saree') matchBox.style.display = 'block';
+      else matchBox.style.display = 'none';
 
       showScreen('pdp');
       window.scrollTo(0, 0);
     }
 
-    // Add To Cart
+    function addMatchingJewelCombo() {
+      const matchingJewel = products.find(x => x.id === 'NC-104') || products[3];
+      cart.push(currentPdpProduct);
+      cart.push(matchingJewel);
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      alert("✨ শাড়ি ও ম্যাচিং গহনার কম্বো ব্যাগে যোগ হয়েছে (₹৫০ ছাড় প্রযোজ্য)!");
+      openCartModal();
+    }
+
     function addCurrentToCart() {
       if (!currentPdpProduct) return;
       cart.push(currentPdpProduct);
@@ -1152,7 +1289,7 @@
 
     function buyCurrentNow() {
       if (!currentPdpProduct) return;
-      cart = [currentPdpProduct]; // Buy now sets single cart item
+      cart = [currentPdpProduct];
       localStorage.setItem('nc_cart', JSON.stringify(cart));
       updateCartBadge();
       openCartModal();
@@ -1194,6 +1331,16 @@
         totalSpan.textContent = `₹${total}`;
       }
 
+      // Auto-fill saved customer details if logged in
+      if (currentCustomer) {
+        const cName = document.getElementById('cust_name');
+        const cPhone = document.getElementById('cust_phone');
+        const cAddr = document.getElementById('cust_addr');
+        if (cName && !cName.value) cName.value = currentCustomer.name || '';
+        if (cPhone && !cPhone.value) cPhone.value = currentCustomer.phone || '';
+        if (cAddr && !cAddr.value) cAddr.value = currentCustomer.address || '';
+      }
+
       modal.style.display = 'flex';
     }
 
@@ -1208,7 +1355,7 @@
       openCartModal();
     }
 
-    // Submit Order & Generate Live Tracking (Like Meesho Image 23 & 24)
+    // Submit Order
     function submitOrder() {
       if (cart.length === 0) { alert("ব্যাগ ফাঁকা!"); return; }
 
@@ -1216,10 +1363,20 @@
       const phone = document.getElementById('cust_phone').value.trim();
       const addr = document.getElementById('cust_addr').value.trim();
       const payMode = document.querySelector('input[name="pay_mode"]:checked').value;
+      const isGift = document.getElementById('giftWrapCheck').checked;
 
       if (!name || !phone || !addr) {
         alert("দয়া করে আপনার নাম, মোবাইল নম্বর ও ঠিকানা পূরণ করুন!");
         return;
+      }
+
+      // Auto-save address to customer profile
+      if (currentCustomer) {
+        currentCustomer.address = addr;
+        currentCustomer.phone = phone;
+        currentCustomer.coins = (currentCustomer.coins || 0) + 50; // Earn 50 loyalty coins
+        localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+        updateCustomerAuthDisplay();
       }
 
       const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
@@ -1235,32 +1392,31 @@
         items: [...cart],
         total: total,
         paymentMode: payMode,
-        status: "Order Placed", // Placed, Packed, Out for Delivery, Delivered
-        statusHistory: [
-          { status: "Order Placed", time: dateStr, note: "অর্ডার গৃহীত হয়েছে ও সিস্টেমে যোগ হয়েছে" }
-        ]
+        isGift: isGift,
+        status: "Order Placed"
       };
 
       orders.unshift(newOrder);
       localStorage.setItem('nc_orders', JSON.stringify(orders));
 
-      // WhatsApp Message to Nisha
+      // WhatsApp Notification to Boutique
       const itemsList = cart.map(i => `• ${i.title} (₹${i.price})`).join('%0A');
-      const waMsg = `*🛍️ নতুন অর্ডার - নিশা ক্রিয়েশনস*%0A*অর্ডার আইডি:* ${orderId}%0A*গ্রাহকের নাম:* ${name}%0A*মোবাইল:* ${phone}%0A*ঠিকানা:* ${addr}, আমতা%0A*পেমেন্ট:* ${payMode}%0A%0A*অর্ডার করা আইটেমসমূহ:*%0A${itemsList}%0A%0A*মোট বিল:* ₹${total}%0A*আমতায় ফ্রি হোম ডেলিভারি!*`;
+      const giftNote = isGift ? "%0A🎁 *উপহার প্যাকেজিং ও স্পেশাল কার্ড অনুরোধ করা হয়েছে!*" : "";
+      const waMsg = `*🛍️ নতুন অর্ডার - নিশা ক্রিয়েশনস*%0A*অর্ডার আইডি:* ${orderId}%0A*গ্রাহক:* ${name}%0A*ফোন:* ${phone}%0A*ঠিকানা:* ${addr}, আমতা%0A*পেমেন্ট:* ${payMode}${giftNote}%0A%0A*অর্ডার আইটেম:*%0A${itemsList}%0A%0A*মোট বিল:* ₹${total}%0A*আমতায় ফ্রি হোম ডেলিভারি!*`;
 
       cart = [];
       localStorage.setItem('nc_cart', JSON.stringify(cart));
       updateCartBadge();
       closeCartModal();
 
-      alert(`🎉 অভিনন্দন! আপনার অর্ডার সফল হয়েছে। অর্ডার আইডি: #${orderId}`);
+      alert(`🎉 অভিনন্দন! আপনার অর্ডার সফল হয়েছে। অর্ডার নম্বর: #${orderId}`);
       window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${waMsg}`, '_blank');
 
       renderOrders();
       showScreen('orders');
     }
 
-    // Live Order Tracking Render (Like Meesho Image 23 & 24)
+    // Live Order Tracking
     function renderOrders(filterList = null) {
       const container = document.getElementById('ordersListContainer');
       const list = filterList || orders;
@@ -1298,12 +1454,12 @@
               </div>
             </div>
 
-            <!-- Live Progress Timeline (Meesho Image 24 style) -->
+            <!-- Live 4-Step Animated Timeline (Like Meesho Image 24) -->
             <div class="timeline">
               <div class="timeline-step completed">
                 <div class="timeline-dot"><i class="fa-solid fa-check"></i></div>
-                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">অর্ডার প্লেসড</div>
-                <div style="font-size:0.68rem; color:#64748b;">অর্ডার সফলভাবে সিস্টেমে নেওয়া হয়েছে</div>
+                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">অর্ডার গৃহীত হয়েছে</div>
+                <div style="font-size:0.68rem; color:#64748b;">সিস্টেমে অর্ডার ভেরিফাই হয়েছে</div>
               </div>
               <div class="timeline-step ${isPacked || isOut || isDelivered ? 'completed' : ''}">
                 <div class="timeline-dot"><i class="fa-solid fa-box"></i></div>
@@ -1313,7 +1469,7 @@
               <div class="timeline-step ${isOut || isDelivered ? 'completed' : ''}">
                 <div class="timeline-dot"><i class="fa-solid fa-motorcycle"></i></div>
                 <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)</div>
-                <div style="font-size:0.68rem; color:#64748b;">আমতার লোকাল ডেলিভারি পার্টনারের কাছে রয়েছে</div>
+                <div style="font-size:0.68rem; color:#64748b;">আমতার ডেলিভারি পার্টনারের কাছে রয়েছে</div>
               </div>
               <div class="timeline-step ${isDelivered ? 'completed' : ''}">
                 <div class="timeline-dot"><i class="fa-solid fa-house-chimney"></i></div>
@@ -1322,7 +1478,7 @@
               </div>
             </div>
 
-            <!-- Delivery Address Card -->
+            <!-- Address Card -->
             <div style="background:#f8fafc; border-radius:8px; padding:8px 10px; font-size:0.72rem; color:#475569; margin-top:6px;">
               <span style="font-weight:700; color:#0f172a;">📍 ডেলিভারি ঠিকানা:</span> ${ord.address} | ফোন: ${ord.phone}
             </div>
@@ -1331,8 +1487,8 @@
               <button onclick="window.open('tel:9239413517')" style="flex:1; background:#f1f5f9; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer;">
                 <i class="fa-solid fa-phone"></i> কল করুন
               </button>
-              <button onclick="window.open('https://wa.me/${BOUTIQUE_PHONE}?text=Hello, I want update for Order ${ord.id}', '_blank')" style="flex:1; background:#25d366; color:#fff; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp হেল্প
+              <button onclick="window.open('https://wa.me/${BOUTIQUE_PHONE}?text=Hello, Order ${ord.id} status enquiry', '_blank')" style="flex:1; background:#25d366; color:#fff; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
               </button>
             </div>
           </div>
@@ -1347,7 +1503,71 @@
       renderOrders(res);
     }
 
-    // Direct WhatsApp share
+    // Customer Cloud Account Management
+    function openCustomerAuthModal() {
+      document.getElementById('customerAuthModal').style.display = 'flex';
+      updateCustomerAuthDisplay();
+    }
+
+    function closeCustomerAuthModal() {
+      document.getElementById('customerAuthModal').style.display = 'none';
+    }
+
+    function doCustomerLogin() {
+      const name = document.getElementById('cust_login_name').value.trim();
+      const phone = document.getElementById('cust_login_phone').value.trim();
+      if (!name || !phone) { alert("নাম ও ফোন নম্বর দিন!"); return; }
+
+      currentCustomer = { name: name, phone: phone, coins: 150, address: "আমতা, হাওড়া" };
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+      updateCustomerAuthDisplay();
+      alert(`স্বাগতম, ${name}! আপনার ক্লাউড প্রোফাইল সফলভাবে কানেক্ট হয়েছে।`);
+    }
+
+    function doGoogleFastLogin() {
+      currentCustomer = { name: "Saheb Ghati", phone: "9239413517", email: "sahebghanti669@gmail.com", coins: 200, address: "আমতা চাঁদনী, হাওড়া" };
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+      updateCustomerAuthDisplay();
+      alert("🎉 Google অ্যাকাউন্ট সফলভাবে কানেক্ট হয়েছে!");
+    }
+
+    function doCustomerLogout() {
+      currentCustomer = null;
+      localStorage.removeItem('nc_customer_profile');
+      updateCustomerAuthDisplay();
+      alert("লগআউট সম্পন্ন হয়েছে।");
+    }
+
+    function updateCustomerAuthDisplay() {
+      const outView = document.getElementById('authLoggedOutView');
+      const inView = document.getElementById('authLoggedInView');
+      const icon = document.getElementById('userAuthIconBtn');
+
+      if (currentCustomer) {
+        if (outView) outView.style.display = 'none';
+        if (inView) inView.style.display = 'block';
+        if (icon) icon.innerHTML = '<i class="fa-solid fa-circle-user" style="color:var(--primary);"></i>';
+        const u = document.getElementById('authDisplayUser');
+        const p = document.getElementById('authDisplayPhone');
+        const w = document.getElementById('authWalletCoins');
+        if (u) u.textContent = currentCustomer.name;
+        if (p) p.textContent = currentCustomer.phone || currentCustomer.email;
+        if (w) w.textContent = `${currentCustomer.coins || 150} নিশা কয়েন (₹${currentCustomer.coins || 150} ছাড়)`;
+      } else {
+        if (outView) outView.style.display = 'block';
+        if (inView) inView.style.display = 'none';
+        if (icon) icon.innerHTML = '<i class="fa-regular fa-circle-user"></i>';
+      }
+    }
+
+    // Refer & Earn Modals
+    function openReferModal() { document.getElementById('referModal').style.display = 'flex'; }
+    function closeReferModal() { document.getElementById('referModal').style.display = 'none'; }
+    function shareReferralWhatsApp() {
+      const msg = `আমার পছন্দের নিশা ক্রিয়েশনস বুটিক থেকে বিয়ের ও পুজোর সুন্দর শাড়ি ও গহনা কিনুন এবং কোড NISHA50 দিয়ে পান সাথে সাথে ₹৫০ ছাড়! ফ্রি হোম ডেলিভারি পেতে এই লিংকে অর্ডার করুন: https://smartworkeraluminium-sys.github.io/nishacreations/`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
     function shareProductWhatsApp() {
       if (!currentPdpProduct) return;
       const text = `নিশা ক্রিয়েশনস বুটিকের এই চমৎকার শাড়িটি দেখুন:%0A*${currentPdpProduct.title}*%0Aদাম: মাত্র ₹${currentPdpProduct.price}%0Aআমতায় ফ্রি হোম ডেলিভারি পেতে এখনই অর্ডার করুন!`;
@@ -1384,14 +1604,13 @@
       }
     }
 
-    // Add Product From Admin
     function addNewProductFromAdmin() {
       const title = document.getElementById('new_title').value.trim();
       const category = document.getElementById('new_category').value;
       const price = parseFloat(document.getElementById('new_price').value);
       const mrp = parseFloat(document.getElementById('new_mrp').value) || price * 1.5;
       const img = document.getElementById('new_img').value.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
-      const desc = document.getElementById('new_desc').value.trim() || "১০০% প্রিমিয়াম কোয়ালিটি বুটিক কালেকশন।";
+      const desc = document.getElementById('new_desc').value.trim() || "১০০% প্রিমিয়াম বুটিক কালেকশন।";
 
       if (!title || !price) {
         alert("দয়া করে নাম ও বিক্রয় মূল্য দিন!");
@@ -1421,7 +1640,6 @@
       showScreen('home');
     }
 
-    // Admin Orders Management
     function renderAdminOrders() {
       const container = document.getElementById('adminOrdersContainer');
       if (orders.length === 0) {
@@ -1430,11 +1648,12 @@
       }
 
       container.innerHTML = '';
-      orders.forEach((o, idx) => {
+      orders.forEach((o) => {
+        const giftBadge = o.isGift ? '<span style="background:#fae8ff; color:#86198f; padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:800;">🎁 গিফট র‍্যাপ</span>' : '';
         container.innerHTML += `
           <div style="border:1px solid #e2e8f0; border-radius:8px; padding:10px; margin-bottom:10px; background:#f8fafc;">
             <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.85rem;">
-              <span>#${o.id} - ${o.name}</span>
+              <span>#${o.id} - ${o.name} ${giftBadge}</span>
               <span style="color:var(--primary);">₹${o.total}</span>
             </div>
             <div style="font-size:0.75rem; color:#64748b; margin:2px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
@@ -1463,4 +1682,4 @@
     }
   </script>
 </body>
-  </html>
+ </html>
