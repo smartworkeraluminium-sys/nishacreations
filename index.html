@@ -1,0 +1,1466 @@
+ <!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Nisha Creations (নিশা ক্রিয়েশনস) - Saree & Jewellery Boutique • Amta</title>
+
+  <!-- PWA & Mobile App Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NishaCreations">
+  <meta name="theme-color" content="#9c27b0">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Hind Siliguri for Bengali -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #9c27b0;        /* Meesho Signature Magenta */
+      --primary-dark: #7b1fa2;
+      --primary-light: #f3e5f5;
+      --accent: #f59e0b;         /* Warm Gold for Sarees & Jewels */
+      --green: #16a34a;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --light-gray: #f8fafc;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #fdf4ff; color: #1e293b; padding-bottom: 75px; }
+
+    /* Top App Header (Meesho Style) */
+    .app-header {
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(156, 39, 176, 0.08);
+      border-bottom: 1px solid var(--border);
+    }
+    .top-brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 6px 14px;
+    }
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #9c27b0, #f59e0b);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+    }
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.3px;
+      line-height: 1.1;
+    }
+    .brand-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #f59e0b;
+      letter-spacing: 0.2px;
+    }
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: #475569;
+      cursor: pointer;
+      position: relative;
+    }
+    .badge-count {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+    }
+
+    /* Search Bar (Like Meesho Image 17) */
+    .search-box-wrap {
+      padding: 6px 14px 10px 14px;
+    }
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 24px;
+      padding: 8px 14px;
+      gap: 10px;
+    }
+    .search-input-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.88rem;
+      color: #0f172a;
+    }
+    .location-strip {
+      background: #faf5ff;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: #7e22ce;
+      border-top: 1px solid #f3e8ff;
+      border-bottom: 1px solid #f3e8ff;
+      font-weight: 600;
+    }
+
+    /* Circular Story Category Strip (Like Meesho Image 17 & 21) */
+    .category-scroll {
+      display: flex;
+      overflow-x: auto;
+      padding: 12px 14px 8px 14px;
+      gap: 14px;
+      background: #ffffff;
+      scrollbar-width: none;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .cat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 62px;
+      cursor: pointer;
+    }
+    .cat-bubble {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #fdf4ff;
+      border: 2px solid #f0abfc;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(156, 39, 176, 0.12);
+      transition: transform 0.15s;
+    }
+    .cat-bubble img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .cat-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 5px;
+      line-height: 1.15;
+    }
+    .cat-item.active .cat-bubble {
+      border-color: var(--primary);
+      transform: scale(1.06);
+    }
+    .cat-item.active .cat-name {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* Sale Banner (Like Meesho Image 17) */
+    .sale-banner {
+      background: linear-gradient(135deg, #c026d3, #9333ea);
+      margin: 10px 14px;
+      border-radius: 14px;
+      padding: 12px 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 14px rgba(168, 85, 247, 0.25);
+    }
+    .sale-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      background: #fef08a;
+      color: #854d0e;
+      padding: 2px 7px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .sale-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .filter-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+    }
+
+    /* 2-Column Product Grid (Same as Meesho Image 17 & 20) */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px 12px;
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+    }
+    .product-img-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 125%; /* 4:5 Aspect Ratio like Meesho */
+      background: #f8fafc;
+      overflow: hidden;
+    }
+    .product-img-wrap img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+    .wish-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      color: #64748b;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+    .wish-btn.active { color: #e11d48; }
+
+    .product-info {
+      padding: 8px 10px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+    .p-cat-tag {
+      font-size: 0.68rem;
+      color: #9333ea;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .p-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+      margin: 2px 0 6px 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 2.3em;
+    }
+    .p-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .p-price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .p-mrp {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+    .p-off {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+    .upi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #f0fdf4;
+      color: #166534;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-top: 3px;
+    }
+    .cod-tag {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .p-rating-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .rating-badge {
+      background: #15803d;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .rating-count {
+      font-size: 0.68rem;
+      color: #64748b;
+    }
+
+    /* Bottom Fixed Navigation Bar (Same as Meesho Image 17) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 99;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      gap: 3px;
+      position: relative;
+    }
+    .nav-tab i { font-size: 1.25rem; }
+    .nav-tab.active { color: var(--primary); font-weight: 800; }
+    .nav-tab.active i { transform: scale(1.08); }
+
+    /* Modals & Screens */
+    .screen-view {
+      display: none;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .screen-view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Product Detail Page (PDP) */
+    .pdp-screen {
+      background: #ffffff;
+      min-height: 100vh;
+      padding-bottom: 75px;
+    }
+    .pdp-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+    .pdp-img-slider {
+      width: 100%;
+      height: 380px;
+      background: #f8fafc;
+      position: relative;
+    }
+    .pdp-img-slider img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .pdp-details-box {
+      padding: 16px;
+    }
+    .pdp-sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      z-index: 100;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.08);
+    }
+    .btn-add-cart {
+      flex: 1;
+      height: 44px;
+      border: 1.5px solid var(--primary);
+      background: #ffffff;
+      color: var(--primary);
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-buy-now {
+      flex: 1.2;
+      height: 44px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+    }
+    .btn-wa-direct {
+      width: 44px;
+      height: 44px;
+      background: #25d366;
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Tracking & Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin: 16px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 5px;
+      bottom: 5px;
+      width: 2px;
+      background: #cbd5e1;
+    }
+    .timeline-step {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+    }
+    .timeline-step.completed .timeline-dot { background: var(--green); }
+    .timeline-step.active .timeline-dot { background: var(--primary); box-shadow: 0 0 0 4px #f3e5f5; }
+
+    /* Admin Panel Styling */
+    .admin-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin: 12px 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= 1. APP HEADER ================= -->
+  <header class="app-header">
+    <div class="top-brand-bar">
+      <div class="brand-logo-wrap" onclick="showScreen('home')">
+        <div class="brand-logo-icon">NC</div>
+        <div>
+          <div class="brand-title">Nisha Creations</div>
+          <div class="brand-sub">নিশা ক্রিয়েশনস • বুটিক</div>
+        </div>
+      </div>
+      <div class="header-icons">
+        <button class="header-icon-btn" onclick="openAdminSecret()" title="Admin Login">
+          <i class="fa-solid fa-user-gear"></i>
+        </button>
+        <button class="header-icon-btn" onclick="showScreen('orders')" title="My Orders">
+          <i class="fa-solid fa-box"></i>
+        </button>
+        <button class="header-icon-btn" onclick="openCartModal()" title="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge-count" id="cartCountBadge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Location Indicator (Amta Special) -->
+    <div class="location-strip">
+      <div style="display:flex; align-items:center; gap:5px;">
+        <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
+        <span>ডেলিভারি: আমতা, হাওড়া - ৭১১৪০১</span>
+      </div>
+      <span style="background:#fae8ff; padding:2px 8px; border-radius:10px; font-size:0.68rem; color:#86198f;">ফ্রি হোম ডেলিভারি</span>
+    </div>
+
+    <!-- Search Box -->
+    <div class="search-box-wrap">
+      <div class="search-input-box">
+        <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8;"></i>
+        <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি, বা গহনা খুঁজুন..." oninput="handleSearch(this.value)">
+        <i class="fa-solid fa-camera" style="color:#94a3b8;"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 2. MAIN HOME SCREEN ================= -->
+  <main id="screen-home" class="screen-view active">
+
+    <!-- Story Category Circular Scroll (Like Meesho Image 17) -->
+    <div class="category-scroll">
+      <div class="cat-item active" onclick="filterByCategory('all')">
+        <div class="cat-bubble"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:1.4rem; color:var(--primary);"></i></div>
+        <div class="cat-name">সব কালেকশন</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('jamdani')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150&auto=format&fit=crop&q=60" alt="Jamdani"></div>
+        <div class="cat-name">জামদানি</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('silk')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=150&auto=format&fit=crop&q=60" alt="Silk"></div>
+        <div class="cat-name">সফট সিল্ক</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('tant')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=150&auto=format&fit=crop&q=60" alt="Tant"></div>
+        <div class="cat-name">সুতি ও তাঁত</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('necklace')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=150&auto=format&fit=crop&q=60" alt="Jewelry"></div>
+        <div class="cat-name">গহনা সেট</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('earrings')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=150&auto=format&fit=crop&q=60" alt="Earrings"></div>
+        <div class="cat-name">কানের দুল</div>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('bangles')">
+        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=150&auto=format&fit=crop&q=60" alt="Bangles"></div>
+        <div class="cat-name">বালা ও চুড়ি</div>
+      </div>
+    </div>
+
+    <!-- Festive Offer Banner (Meesho Style Image 17) -->
+    <div class="sale-banner">
+      <div>
+        <span class="sale-tag">🎉 স্পেশাল উৎসব সেল</span>
+        <div class="sale-title">পুজো ও বিয়ের স্পেশাল শাড়ি</div>
+        <div style="font-size:0.75rem; margin-top:2px; opacity:0.9;">আমতায় মাত্র ২ ঘণ্টায় ফ্রি হোম ডেলিভারি!</div>
+      </div>
+      <div style="background:#fff; color:#9333ea; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:20px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+        UPTO ৬০% ছাড়
+      </div>
+    </div>
+
+    <!-- Filter & Sort Strip -->
+    <div class="filter-bar">
+      <button class="filter-btn" onclick="toggleSort()"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort</button>
+      <button class="filter-btn" onclick="filterByCategory('saree')">শাড়ি কালেকশন</button>
+      <button class="filter-btn" onclick="filterByCategory('jewel')">গহনা</button>
+      <button class="filter-btn"><i class="fa-solid fa-sliders"></i> Filters</button>
+    </div>
+
+    <!-- 2-Column Product Grid -->
+    <div class="product-grid" id="productGridContainer">
+      <!-- Injected Dynamically by JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- ================= 3. PRODUCT DETAIL PAGE (PDP) ================= -->
+  <div id="screen-pdp" class="screen-view pdp-screen">
+    <div class="pdp-top-bar">
+      <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+      <div style="font-weight:700; font-size:0.95rem; color:#0f172a;">প্রোডাক্ট বিবরণ</div>
+      <div style="display:flex; gap:14px; font-size:1.15rem; color:#475569;">
+        <i class="fa-solid fa-share-nodes" onclick="shareProductWhatsApp()"></i>
+        <i class="fa-solid fa-bag-shopping" onclick="openCartModal()"></i>
+      </div>
+    </div>
+
+    <div class="pdp-img-slider">
+      <img id="pdpMainImg" src="" alt="Product">
+    </div>
+
+    <div class="pdp-details-box">
+      <div style="font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase;" id="pdpCategory">SAREES</div>
+      <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin:4px 0 8px 0; line-height:1.3;" id="pdpTitle">Product Name</div>
+
+      <!-- Price Block -->
+      <div style="display:flex; align-items:baseline; gap:8px;">
+        <span style="font-size:1.4rem; font-weight:800; color:#0f172a;" id="pdpPrice">₹0</span>
+        <span style="font-size:0.9rem; color:#94a3b8; text-decoration:line-through;" id="pdpMrp">₹0</span>
+        <span style="font-size:0.85rem; font-weight:800; color:var(--green);" id="pdpDiscount">0% off</span>
+      </div>
+
+      <div class="upi-badge" style="margin-top:6px; font-size:0.75rem; padding:4px 8px;">
+        <i class="fa-solid fa-tags"></i> <span id="pdpUpiOffer">UPI দিয়ে পেমেন্টে অতিরিক্ত ছাড়!</span>
+      </div>
+
+      <div style="font-size:0.78rem; color:#64748b; margin-top:6px;" id="pdpCodText">
+        <i class="fa-solid fa-truck-fast" style="color:var(--green);"></i> ক্যাশ অন ডেলিভারি (COD) উপলব্ধ
+      </div>
+
+      <!-- Rating Summary (Like Meesho Image 19) -->
+      <div style="background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:12px; margin:14px 0; display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="rating-badge" style="font-size:0.85rem; padding:3px 8px;">4.6 <i class="fa-solid fa-star"></i></div>
+          <div style="font-size:0.75rem; font-weight:700; color:#334155;">২৪০ জন কাস্টমার রেটিং দিয়েছেন</div>
+        </div>
+        <span style="font-size:0.72rem; color:var(--primary); font-weight:800;">১০০% আসল ফটো</span>
+      </div>
+
+      <!-- Specifications -->
+      <div style="border-top:1px solid #f1f5f9; padding-top:14px; margin-top:10px;">
+        <div style="font-size:0.9rem; font-weight:800; color:#0f172a; margin-bottom:8px;">পণ্যের বিশদ বিবরণ:</div>
+        <div style="font-size:0.82rem; color:#475569; line-height:1.6;" id="pdpDesc">
+          বুটিকের ১০০% খাঁটি কাপড় ও জেনুইন কারুকাজ।
+        </div>
+      </div>
+
+      <!-- Delivery in Amta -->
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px; margin-top:14px; display:flex; align-items:center; gap:10px;">
+        <i class="fa-solid fa-circle-check" style="color:var(--green); font-size:1.2rem;"></i>
+        <div style="font-size:0.75rem; color:#166534; font-weight:600;">
+          আমতার মধ্যে নিজস্ব ডেলিভারি পার্টনার দিয়ে আজই পৌঁছানো হবে!
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Bottom Buy Bar (Like Meesho Image 18) -->
+    <div class="pdp-sticky-bar">
+      <button class="btn-wa-direct" onclick="orderCurrentOnWhatsApp()" title="Direct WhatsApp Order">
+        <i class="fa-brands fa-whatsapp"></i>
+      </button>
+      <button class="btn-add-cart" onclick="addCurrentToCart()">
+        <i class="fa-solid fa-cart-plus"></i> কার্টে রাখুন
+      </button>
+      <button class="btn-buy-now" onclick="buyCurrentNow()">
+        <i class="fa-solid fa-bolt"></i> এখনই কিনুন
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 4. MY ORDERS & TRACKING SCREEN (Like Meesho Image 23 & 24) ================= -->
+  <div id="screen-orders" class="screen-view" style="padding:14px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">অর্ডার ট্র্যাকিং ও ইতিহাস (My Orders)</div>
+    </div>
+
+    <!-- Search Order Form -->
+    <div style="background:#fff; border-radius:12px; border:1px solid var(--border); padding:12px; margin-bottom:14px; display:flex; gap:8px;">
+      <input type="text" id="trackInput" placeholder="অর্ডার আইডি (যেমন: NC-101) বা ফোন নম্বর" style="flex:1; border:1px solid #cbd5e1; padding:8px 12px; border-radius:8px; font-size:0.85rem; outline:none;">
+      <button onclick="trackOrderManual()" style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.82rem; cursor:pointer;">ট্র্যাক</button>
+    </div>
+
+    <!-- Orders List Container -->
+    <div id="ordersListContainer">
+      <!-- Dynamically filled with order cards -->
+    </div>
+  </div>
+
+  <!-- ================= 5. ADMIN MANAGEMENT PANEL (Hidden / Protected) ================= -->
+  <div id="screen-admin" class="screen-view" style="padding:14px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);">নিশা ক্রিয়েশনস • অ্যাডমিন প্যানেল</div>
+      </div>
+      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700;">বন্ধ করুন</button>
+    </div>
+
+    <!-- Add New Saree / Jewellery Item Card -->
+    <div class="admin-card">
+      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-circle-plus" style="color:var(--primary);"></i> নতুন শাড়ি / গহনা আপলোড করুন
+      </div>
+      <div class="form-group">
+        <label>প্রোডাক্টের নাম (Title):</label>
+        <input type="text" id="new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল)">
+      </div>
+      <div class="form-group">
+        <label>ক্যাটাগরি:</label>
+        <select id="new_category">
+          <option value="jamdani">ঢাকাই জামদানি</option>
+          <option value="silk">সফট সিল্ক / কাতান</option>
+          <option value="tant">তাঁত ও হ্যান্ডলুম সুতি</option>
+          <option value="necklace">গহনা সেট (Jewellery Set)</option>
+          <option value="earrings">কানের দুল (Earrings)</option>
+          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+        </select>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>বিক্রয় মূল্য (Price ₹):</label>
+          <input type="number" id="new_price" placeholder="যেমন: 750">
+        </div>
+        <div class="form-group">
+          <label>আসল MRP (₹):</label>
+          <input type="number" id="new_mrp" placeholder="যেমন: 1499">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ছবির লিংক (Image URL) অথবা ক্যামেরা ফটো:</label>
+        <input type="text" id="new_img" placeholder="https://... বা ফটো লিংক">
+      </div>
+      <div class="form-group">
+        <label>বিবরণ ও ফেব্রিক (Description):</label>
+        <textarea id="new_desc" rows="2" placeholder="কাপড়, ব্লাউজ পিস ও কাজের বিবরণ..."></textarea>
+      </div>
+      <button onclick="addNewProductFromAdmin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer;">
+        <i class="fa-solid fa-cloud-arrow-up"></i> লাইভ শপে যোগ করুন
+      </button>
+    </div>
+
+    <!-- Admin Orders Manager -->
+    <div class="admin-card">
+      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">
+        📋 কাস্টমারদের অর্ডার লিস্ট ও স্ট্যাটাস পরিবর্তন
+      </div>
+      <div id="adminOrdersContainer">
+        <!-- Live orders list with status switch dropdown -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. CART & CHECKOUT MODAL ================= -->
+  <div id="cartModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-end; justify-content:center;">
+    <div style="background:#fff; width:100%; max-width:500px; max-height:85vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; overflow:hidden; animation:slideUp 0.2s ease-out;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border);">
+        <div style="font-size:1rem; font-weight:800; color:#0f172a;">আপনার শপিং ব্যাগ (<span id="cartModalCount">0</span>)</div>
+        <button onclick="closeCartModal()" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div style="flex:1; overflow-y:auto; padding:14px;" id="cartItemsList">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Address & Checkout Form -->
+      <div style="background:#f8fafc; border-top:1px solid var(--border); padding:14px;">
+        <div style="font-size:0.85rem; font-weight:800; color:#0f172a; margin-bottom:8px;">আমতায় ডেলিভারি ঠিকানা:</div>
+        <input type="text" id="cust_name" placeholder="আপনার নাম" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+        <input type="text" id="cust_phone" placeholder="মোবাইল নম্বর (10 digit)" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+        <input type="text" id="cust_addr" placeholder="পাড়া / গ্রাম / রাস্তা (যেমন: আমতা চাঁদনী)" style="width:100%; padding:8px 10px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+
+        <!-- Payment Mode -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <label style="flex:1; background:#fff; border:1.5px solid var(--primary); padding:8px; border-radius:8px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="radio" name="pay_mode" value="COD" checked> 💵 Cash on Delivery
+          </label>
+          <label style="flex:1; background:#fff; border:1px solid #cbd5e1; padding:8px; border-radius:8px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="radio" name="pay_mode" value="UPI"> 📲 PhonePe / GPay
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1rem; margin-bottom:10px;">
+          <span>মোট বিল (Free Delivery):</span>
+          <span style="color:var(--primary);" id="cartTotalAmount">₹0</span>
+        </div>
+
+        <button onclick="submitOrder()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 12px rgba(156, 39, 176, 0.3);">
+          অর্ডার কনফার্ম করুন &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 7. BOTTOM NAVIGATION BAR (Like Meesho Image 17) ================= -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="tab-home" onclick="showScreen('home')">
+      <i class="fa-solid fa-house"></i>
+      <span>হোম</span>
+    </button>
+    <button class="nav-tab" id="tab-categories" onclick="showScreen('home')">
+      <i class="fa-solid fa-shapes"></i>
+      <span>ক্যাটাগরি</span>
+    </button>
+    <button class="nav-tab" id="tab-orders" onclick="showScreen('orders')">
+      <i class="fa-solid fa-truck-fast"></i>
+      <span>ট্র্যাকিং</span>
+    </button>
+    <button class="nav-tab" id="tab-cart" onclick="openCartModal()">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span>ব্যাগ</span>
+    </button>
+  </nav>
+
+  <script>
+    // ==========================================
+    // INITIAL PRODUCTS DATABASE (Sarees & Jewellery)
+    // ==========================================
+    const INITIAL_PRODUCTS = [
+      {
+        id: "NC-101",
+        title: "Pure Dhakai Jamdani Saree (Traditional Red & Zari Weave)",
+        category: "jamdani",
+        type: "saree",
+        price: 799,
+        mrp: 1599,
+        upiOffer: 749,
+        rating: 4.7,
+        reviews: 312,
+        img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80",
+        desc: "খাঁটি সুতির নরম জমিন, আভিজাত্যপূর্ণ ঢাকাই নকশা এবং জরির আঁচল। বিয়ে বা পুজোর জন্য সেরা পছন্দ। সাথে ব্লাউজ পিস রয়েছে।"
+      },
+      {
+        id: "NC-102",
+        title: "Soft Silk Katan Saree with Rich Golden Pallu (Royal Blue)",
+        category: "silk",
+        type: "saree",
+        price: 950,
+        mrp: 1899,
+        upiOffer: 899,
+        rating: 4.8,
+        reviews: 480,
+        img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600&auto=format&fit=crop&q=80",
+        desc: "রয়্যাল ব্লু প্রিমিয়াম সফট সিল্ক। শরীরে খুব সুন্দরভাবে বসে এবং পরতে অত্যন্ত আরামদায়ক। বিশেষ পার্টি ও রিসেপশন লুক।"
+      },
+      {
+        id: "NC-103",
+        title: "Bengal Handloom Tant Cotton Saree (Pastel Floral Border)",
+        category: "tant",
+        type: "saree",
+        price: 499,
+        mrp: 899,
+        upiOffer: 460,
+        rating: 4.5,
+        reviews: 185,
+        img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=600&auto=format&fit=crop&q=80",
+        desc: "শান্তিপুরী ১০০% পিওর সুতি তাঁত শাড়ি। গরমে ও রোজকার ব্যবহারে অত্যন্ত হালকা এবং টেকসই। সুন্দর কন্ট্রাস্ট পাড়।"
+      },
+      {
+        id: "NC-104",
+        title: "Traditional Bengali Gold-Plated Bridal Jewellery Choker Set",
+        category: "necklace",
+        type: "jewel",
+        price: 399,
+        mrp: 799,
+        upiOffer: 360,
+        rating: 4.6,
+        reviews: 142,
+        img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
+        desc: "১ গ্রাম গোল্ড প্লেটেড রানি নেকলেস ও ম্যাচিং ঝুমকো দুল। খাঁটি সোনার মতো ফিনিশ এবং দীর্ঘদিন রঙ অপরিবর্তিত থাকে।"
+      },
+      {
+        id: "NC-105",
+        title: "Antique Silver-Oxidised Choker with Hanging Pearls Set",
+        category: "necklace",
+        type: "jewel",
+        price: 249,
+        mrp: 499,
+        upiOffer: 220,
+        rating: 4.4,
+        reviews: 98,
+        img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&auto=format&fit=crop&q=80",
+        desc: "তাঁত বা বাটিক শাড়ির সাথে পরার জন্য সেরা ট্রেন্ডি অক্সিডাইজড সেট। সাথে মানানসই কানের দুল রয়েছে।"
+      },
+      {
+        id: "NC-106",
+        title: "Designer Handcrafted Gold-Plated Churi / Bangles (Pair of 2)",
+        category: "bangles",
+        type: "jewel",
+        price: 299,
+        mrp: 599,
+        upiOffer: 270,
+        rating: 4.7,
+        reviews: 120,
+        img: "https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=600&auto=format&fit=crop&q=80",
+        desc: "হাতে পরার প্রিমিয়াম ডিজাইনার বালা (২ পিস সেট)। সাইজ: ২.৪, ২.৬ এবং ২.৮ উপলব্ধ। জল বা সাবানে সহজে রঙ নষ্ট হয় না।"
+      },
+      {
+        id: "NC-107",
+        title: "Semi-Katan Party Saree with Heavy Embroidered Border (Emerald Green)",
+        category: "silk",
+        type: "saree",
+        price: 850,
+        mrp: 1699,
+        upiOffer: 799,
+        rating: 4.8,
+        reviews: 210,
+        img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80",
+        desc: "পান্না সবুজ রঙের চোখজুড়ানো কাতান শাড়ি। বড় বর্ডার ও জমকালো কুঁচি ডিজাইন।"
+      },
+      {
+        id: "NC-108",
+        title: "Royal Kundan Floral Drop Earrings / Jhumka with Red Stones",
+        category: "earrings",
+        type: "jewel",
+        price: 180,
+        mrp: 350,
+        upiOffer: 160,
+        rating: 4.6,
+        reviews: 84,
+        img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&auto=format&fit=crop&q=80",
+        desc: "কুন্দন কারুকাজ ও লাল পাথরের ঝুমকো। ওজনে হালকা এবং কানে পরলে কোনো ব্যথা হয় না।"
+      }
+    ];
+
+    let products = JSON.parse(localStorage.getItem('nc_products') || JSON.stringify(INITIAL_PRODUCTS));
+    let cart = JSON.parse(localStorage.getItem('nc_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('nc_wishlist') || '[]');
+    let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+    let currentPdpProduct = null;
+    const BOUTIQUE_PHONE = "919239413517"; // Saheb & Nisha's Official WhatsApp
+
+    // Initialize Page
+    window.onload = function() {
+      renderProducts(products);
+      updateCartBadge();
+      renderOrders();
+    };
+
+    function renderProducts(list) {
+      const grid = document.getElementById('productGridContainer');
+      grid.innerHTML = '';
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">কোনো পণ্য পাওয়া যায়নি!</div>`;
+        return;
+      }
+
+      list.forEach(p => {
+        const offPct = Math.round(((p.mrp - p.price) / p.mrp) * 100);
+        const isWished = wishlist.includes(p.id);
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.onclick = () => openPdp(p.id);
+
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <img src="${p.img}" alt="${p.title}" loading="lazy">
+            <button class="wish-btn ${isWished ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${p.id}')">
+              <i class="fa-${isWished ? 'solid' : 'regular'} fa-heart"></i>
+            </button>
+          </div>
+          <div class="product-info">
+            <div>
+              <div class="p-cat-tag">${p.category}</div>
+              <div class="p-title">${p.title}</div>
+            </div>
+            <div>
+              <div class="p-price-row">
+                <span class="p-price">₹${p.price}</span>
+                <span class="p-mrp">₹${p.mrp}</span>
+                <span class="p-off">${offPct}% off</span>
+              </div>
+              <div class="upi-badge">
+                <i class="fa-solid fa-tag"></i> <span>₹${p.upiOffer} with UPI</span>
+              </div>
+              <div class="cod-tag">₹${p.price} with COD</div>
+              <div class="p-rating-strip">
+                <div class="rating-badge">${p.rating} <i class="fa-solid fa-star"></i></div>
+                <div class="rating-count">(${p.reviews})</div>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Filter by Category
+    function filterByCategory(cat) {
+      document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+      if (cat === 'all') {
+        renderProducts(products);
+        document.querySelectorAll('.cat-item')[0].classList.add('active');
+      } else if (cat === 'saree') {
+        renderProducts(products.filter(p => p.type === 'saree'));
+      } else if (cat === 'jewel') {
+        renderProducts(products.filter(p => p.type === 'jewel'));
+      } else {
+        renderProducts(products.filter(p => p.category === cat));
+      }
+    }
+
+    // Search Filter
+    function handleSearch(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) { renderProducts(products); return; }
+      const filtered = products.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      renderProducts(filtered);
+    }
+
+    // Wishlist Toggle
+    function toggleWishlist(id) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(x => x !== id);
+      } else {
+        wishlist.push(id);
+      }
+      localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
+      renderProducts(products);
+    }
+
+    // Open Product Detail Page (PDP)
+    function openPdp(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      currentPdpProduct = p;
+
+      document.getElementById('pdpMainImg').src = p.img;
+      document.getElementById('pdpCategory').textContent = p.category.toUpperCase();
+      document.getElementById('pdpTitle').textContent = p.title;
+      document.getElementById('pdpPrice').textContent = `₹${p.price}`;
+      document.getElementById('pdpMrp').textContent = `₹${p.mrp}`;
+      const offPct = Math.round(((p.mrp - p.price) / p.mrp) * 100);
+      document.getElementById('pdpDiscount').textContent = `${offPct}% off`;
+      document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${p.upiOffer}`;
+      document.getElementById('pdpDesc').textContent = p.desc;
+
+      showScreen('pdp');
+      window.scrollTo(0, 0);
+    }
+
+    // Add To Cart
+    function addCurrentToCart() {
+      if (!currentPdpProduct) return;
+      cart.push(currentPdpProduct);
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      alert("✅ শপিং ব্যাগে যুক্ত হয়েছে!");
+    }
+
+    function buyCurrentNow() {
+      if (!currentPdpProduct) return;
+      cart = [currentPdpProduct]; // Buy now sets single cart item
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      openCartModal();
+    }
+
+    function updateCartBadge() {
+      const b = document.getElementById('cartCountBadge');
+      if (b) b.textContent = cart.length;
+    }
+
+    // Cart Modal
+    function openCartModal() {
+      const modal = document.getElementById('cartModal');
+      const list = document.getElementById('cartItemsList');
+      const countSpan = document.getElementById('cartModalCount');
+      const totalSpan = document.getElementById('cartTotalAmount');
+
+      countSpan.textContent = cart.length;
+      list.innerHTML = '';
+
+      if (cart.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">আপনার ব্যাগ ফাঁকা আছে!</div>`;
+        totalSpan.textContent = '₹0';
+      } else {
+        let total = 0;
+        cart.forEach((item, idx) => {
+          total += item.price;
+          list.innerHTML += `
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+              <img src="${item.img}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+              <div style="flex:1;">
+                <div style="font-size:0.8rem; font-weight:700; color:#0f172a;">${item.title}</div>
+                <div style="font-size:0.85rem; font-weight:800; color:var(--primary);">₹${item.price}</div>
+              </div>
+              <button onclick="removeCartItem(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:1rem; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+          `;
+        });
+        totalSpan.textContent = `₹${total}`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
+
+    function removeCartItem(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      openCartModal();
+    }
+
+    // Submit Order & Generate Live Tracking (Like Meesho Image 23 & 24)
+    function submitOrder() {
+      if (cart.length === 0) { alert("ব্যাগ ফাঁকা!"); return; }
+
+      const name = document.getElementById('cust_name').value.trim();
+      const phone = document.getElementById('cust_phone').value.trim();
+      const addr = document.getElementById('cust_addr').value.trim();
+      const payMode = document.querySelector('input[name="pay_mode"]:checked').value;
+
+      if (!name || !phone || !addr) {
+        alert("দয়া করে আপনার নাম, মোবাইল নম্বর ও ঠিকানা পূরণ করুন!");
+        return;
+      }
+
+      const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
+      const total = cart.reduce((a, b) => a + b.price, 0);
+      const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+      const newOrder = {
+        id: orderId,
+        date: dateStr,
+        name: name,
+        phone: phone,
+        address: `${addr}, আমতা, হাওড়া - ৭১১৪০১`,
+        items: [...cart],
+        total: total,
+        paymentMode: payMode,
+        status: "Order Placed", // Placed, Packed, Out for Delivery, Delivered
+        statusHistory: [
+          { status: "Order Placed", time: dateStr, note: "অর্ডার গৃহীত হয়েছে ও সিস্টেমে যোগ হয়েছে" }
+        ]
+      };
+
+      orders.unshift(newOrder);
+      localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+      // WhatsApp Message to Nisha
+      const itemsList = cart.map(i => `• ${i.title} (₹${i.price})`).join('%0A');
+      const waMsg = `*🛍️ নতুন অর্ডার - নিশা ক্রিয়েশনস*%0A*অর্ডার আইডি:* ${orderId}%0A*গ্রাহকের নাম:* ${name}%0A*মোবাইল:* ${phone}%0A*ঠিকানা:* ${addr}, আমতা%0A*পেমেন্ট:* ${payMode}%0A%0A*অর্ডার করা আইটেমসমূহ:*%0A${itemsList}%0A%0A*মোট বিল:* ₹${total}%0A*আমতায় ফ্রি হোম ডেলিভারি!*`;
+
+      cart = [];
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      closeCartModal();
+
+      alert(`🎉 অভিনন্দন! আপনার অর্ডার সফল হয়েছে। অর্ডার আইডি: #${orderId}`);
+      window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${waMsg}`, '_blank');
+
+      renderOrders();
+      showScreen('orders');
+    }
+
+    // Live Order Tracking Render (Like Meesho Image 23 & 24)
+    function renderOrders(filterList = null) {
+      const container = document.getElementById('ordersListContainer');
+      const list = filterList || orders;
+
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; background:#fff; border-radius:12px;">কোনো চলমান অর্ডার নেই!</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      list.forEach(ord => {
+        const firstItem = ord.items[0] || {};
+        const isDelivered = ord.status === "Delivered";
+        const isOut = ord.status === "Out for Delivery";
+        const isPacked = ord.status === "Packed";
+
+        container.innerHTML += `
+          <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:8px; margin-bottom:10px;">
+              <div>
+                <span style="font-size:0.75rem; font-weight:800; color:var(--primary);">ORDER #${ord.id}</span>
+                <div style="font-size:0.68rem; color:#64748b;">${ord.date}</div>
+              </div>
+              <span style="background:${isDelivered ? '#dcfce7' : '#fef08a'}; color:${isDelivered ? '#15803d' : '#854d0e'}; font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:6px;">
+                ${ord.status}
+              </span>
+            </div>
+
+            <div style="display:flex; gap:12px; align-items:center;">
+              <img src="${firstItem.img || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
+              <div style="flex:1;">
+                <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">${firstItem.title || 'Product'}</div>
+                <div style="font-size:0.75rem; color:#64748b;">মোট আইটেম: ${ord.items.length} টি • ${ord.paymentMode}</div>
+                <div style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-top:2px;">মোট: ₹${ord.total}</div>
+              </div>
+            </div>
+
+            <!-- Live Progress Timeline (Meesho Image 24 style) -->
+            <div class="timeline">
+              <div class="timeline-step completed">
+                <div class="timeline-dot"><i class="fa-solid fa-check"></i></div>
+                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">অর্ডার প্লেসড</div>
+                <div style="font-size:0.68rem; color:#64748b;">অর্ডার সফলভাবে সিস্টেমে নেওয়া হয়েছে</div>
+              </div>
+              <div class="timeline-step ${isPacked || isOut || isDelivered ? 'completed' : ''}">
+                <div class="timeline-dot"><i class="fa-solid fa-box"></i></div>
+                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">প্যাকিং ও কোয়ালিটি চেক</div>
+                <div style="font-size:0.68rem; color:#64748b;">নিশা ক্রিয়েশনস বুটিক দ্বারা চেক করা হয়েছে</div>
+              </div>
+              <div class="timeline-step ${isOut || isDelivered ? 'completed' : ''}">
+                <div class="timeline-dot"><i class="fa-solid fa-motorcycle"></i></div>
+                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)</div>
+                <div style="font-size:0.68rem; color:#64748b;">আমতার লোকাল ডেলিভারি পার্টনারের কাছে রয়েছে</div>
+              </div>
+              <div class="timeline-step ${isDelivered ? 'completed' : ''}">
+                <div class="timeline-dot"><i class="fa-solid fa-house-chimney"></i></div>
+                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">ডেলিভারি সম্পন্ন</div>
+                <div style="font-size:0.68rem; color:#64748b;">কাস্টমারের হাতে পার্সেল পৌঁছে গেছে</div>
+              </div>
+            </div>
+
+            <!-- Delivery Address Card -->
+            <div style="background:#f8fafc; border-radius:8px; padding:8px 10px; font-size:0.72rem; color:#475569; margin-top:6px;">
+              <span style="font-weight:700; color:#0f172a;">📍 ডেলিভারি ঠিকানা:</span> ${ord.address} | ফোন: ${ord.phone}
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button onclick="window.open('tel:9239413517')" style="flex:1; background:#f1f5f9; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer;">
+                <i class="fa-solid fa-phone"></i> কল করুন
+              </button>
+              <button onclick="window.open('https://wa.me/${BOUTIQUE_PHONE}?text=Hello, I want update for Order ${ord.id}', '_blank')" style="flex:1; background:#25d366; color:#fff; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp হেল্প
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function trackOrderManual() {
+      const q = document.getElementById('trackInput').value.trim().toLowerCase();
+      if (!q) { renderOrders(); return; }
+      const res = orders.filter(o => o.id.toLowerCase().includes(q) || o.phone.includes(q));
+      renderOrders(res);
+    }
+
+    // Direct WhatsApp share
+    function shareProductWhatsApp() {
+      if (!currentPdpProduct) return;
+      const text = `নিশা ক্রিয়েশনস বুটিকের এই চমৎকার শাড়িটি দেখুন:%0A*${currentPdpProduct.title}*%0Aদাম: মাত্র ₹${currentPdpProduct.price}%0Aআমতায় ফ্রি হোম ডেলিভারি পেতে এখনই অর্ডার করুন!`;
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function orderCurrentOnWhatsApp() {
+      if (!currentPdpProduct) return;
+      const text = `নমস্কার, আমি নিশা ক্রিয়েশনস থেকে এই শাড়িটি অর্ডার করতে চাই:%0A*${currentPdpProduct.title}*%0Aদাম: ₹${currentPdpProduct.price}%0Aআমতায় ডেলিভারির জন্য বুকিং কনফার্ম করুন।`;
+      window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${text}`, '_blank');
+    }
+
+    // Screen Switcher
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      const navBtn = document.getElementById(`tab-${screenId}`);
+      if (navBtn) navBtn.classList.add('active');
+
+      window.scrollTo(0, 0);
+    }
+
+    // Admin Access Protection
+    function openAdminSecret() {
+      const pin = prompt("অ্যাডমিন পিন কোড লিখুন (Default: 1234):");
+      if (pin === "1234") {
+        renderAdminOrders();
+        showScreen('admin');
+      } else if (pin !== null) {
+        alert("ভুল পিন কোড!");
+      }
+    }
+
+    // Add Product From Admin
+    function addNewProductFromAdmin() {
+      const title = document.getElementById('new_title').value.trim();
+      const category = document.getElementById('new_category').value;
+      const price = parseFloat(document.getElementById('new_price').value);
+      const mrp = parseFloat(document.getElementById('new_mrp').value) || price * 1.5;
+      const img = document.getElementById('new_img').value.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
+      const desc = document.getElementById('new_desc').value.trim() || "১০০% প্রিমিয়াম কোয়ালিটি বুটিক কালেকশন।";
+
+      if (!title || !price) {
+        alert("দয়া করে নাম ও বিক্রয় মূল্য দিন!");
+        return;
+      }
+
+      const pType = ['necklace', 'earrings', 'bangles'].includes(category) ? 'jewel' : 'saree';
+      const newProd = {
+        id: "NC-" + Math.floor(100 + Math.random() * 900),
+        title: title,
+        category: category,
+        type: pType,
+        price: price,
+        mrp: mrp,
+        upiOffer: Math.round(price * 0.95),
+        rating: 4.8,
+        reviews: 1,
+        img: img,
+        desc: desc
+      };
+
+      products.unshift(newProd);
+      localStorage.setItem('nc_products', JSON.stringify(products));
+      renderProducts(products);
+
+      alert("🎉 নতুন প্রোডাক্ট সফলভাবে লাইভ শপে যুক্ত হয়েছে!");
+      showScreen('home');
+    }
+
+    // Admin Orders Management
+    function renderAdminOrders() {
+      const container = document.getElementById('adminOrdersContainer');
+      if (orders.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:#94a3b8;">কোনো কাস্টমার অর্ডার নেই।</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      orders.forEach((o, idx) => {
+        container.innerHTML += `
+          <div style="border:1px solid #e2e8f0; border-radius:8px; padding:10px; margin-bottom:10px; background:#f8fafc;">
+            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.85rem;">
+              <span>#${o.id} - ${o.name}</span>
+              <span style="color:var(--primary);">₹${o.total}</span>
+            </div>
+            <div style="font-size:0.75rem; color:#64748b; margin:2px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+              <span style="font-size:0.72rem; font-weight:700;">স্ট্যাটাস:</span>
+              <select onchange="updateOrderStatus('${o.id}', this.value)" style="flex:1; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">
+                <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
+                <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed & Checked</option>
+                <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered & Paid</option>
+              </select>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateOrderStatus(id, newStatus) {
+      const ord = orders.find(o => o.id === id);
+      if (ord) {
+        ord.status = newStatus;
+        localStorage.setItem('nc_orders', JSON.stringify(orders));
+        alert(`অর্ডার #${id} এখন '${newStatus}' স্ট্যাটাসে আপডেট হয়েছে! কাস্টমার লাইভ দেখতে পাবে।`);
+        renderOrders();
+      }
+    }
+  </script>
+</body>
+  </html>
