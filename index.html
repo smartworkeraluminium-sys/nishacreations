@@ -1272,6 +1272,14 @@
           <i class="fa-solid fa-phone"></i> সরাসরি ফোন
         </a>
       </div>
+    
+    <!-- 🔐 Secret Owner Login Portal Button -->
+    <div style="text-align:center; margin-top:20px; padding-top:14px; border-top:1px dashed #cbd5e1;">
+      <button type="button" onclick="openOwnerPinModal()" style="background:#f8fafc; border:1px solid #cbd5e1; color:#64748b; padding:8px 16px; border-radius:20px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+        <i class="fa-solid fa-lock" style="color:var(--primary);"></i> দোকান মালিকের অ্যাডমিন কন্ট্রোল (Owner Login)
+      </button>
+    </div>
+
     </div>
   </div>
 
@@ -1749,6 +1757,211 @@
     // ==========================================
     // CUSTOMER SETTINGS HANDLING
     // ==========================================
+    
+    // ==========================================
+    // INTEGRATED OWNER ADMIN & SLOTS
+    // ==========================================
+    let uploadedSlotImages = ["", "", "", ""];
+
+    function openOwnerPinModal() {
+      document.getElementById('ownerPinInput').value = '';
+      document.getElementById('ownerPinModal').style.display = 'flex';
+    }
+
+    function closeOwnerPinModal() {
+      document.getElementById('ownerPinModal').style.display = 'none';
+    }
+
+    function checkOwnerPin() {
+      const pin = document.getElementById('ownerPinInput').value.trim();
+      if (pin === "1234") {
+        closeOwnerPinModal();
+        renderAdminDashboardLive();
+        showScreen('admin');
+      } else {
+        alert("ভুল পিন কোড! সঠিক পিন দিন (Default: 1234)।");
+      }
+    }
+
+    function handleDirectSlotFile(input, slotIdx) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          compressImage(e.target.result, 800, 0.8, function(compressed) {
+            uploadedSlotImages[slotIdx] = compressed;
+            document.getElementById(`slot-img-${slotIdx}`).src = compressed;
+            document.getElementById(`slot-img-${slotIdx}`).style.display = 'block';
+            document.getElementById(`slot-del-${slotIdx}`).style.display = 'flex';
+            document.getElementById(`slot-placeholder-${slotIdx}`).style.display = 'none';
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeSlotPhoto(idx) {
+      uploadedSlotImages[idx] = "";
+      document.getElementById(`slot-img-${idx}`).style.display = 'none';
+      document.getElementById(`slot-del-${idx}`).style.display = 'none';
+      document.getElementById(`slot-placeholder-${idx}`).style.display = 'block';
+    }
+
+    function compressImage(src, maxDim, quality, callback) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let w = img.width;
+        let h = img.height;
+        if (w > h) {
+          if (w > maxDim) { h *= maxDim / w; w = maxDim; }
+        } else {
+          if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = src;
+    }
+
+    function submitProductFromAdmin() {
+      const title = document.getElementById('admin_new_title').value.trim();
+      const cat = document.getElementById('admin_new_cat').value;
+      const price = parseFloat(document.getElementById('admin_new_price').value);
+      const mrp = parseFloat(document.getElementById('admin_new_mrp').value) || price * 1.5;
+      const stock = parseInt(document.getElementById('admin_new_stock').value) || 100;
+      const desc = document.getElementById('admin_new_desc').value.trim() || "১০০% প্রিমিয়াম বুটিক কালেকশন।";
+
+      if (!title || !price) {
+        alert("দয়া করে প্রোডাক্টের নাম ও বিক্রয় মূল্য লিখুন!");
+        return;
+      }
+      if (!uploadedSlotImages[0]) {
+        alert("দয়া করে ১ নম্বর বক্সে চাপ দিয়ে শাড়ির মূল ছবিটি সিলেক্ট করুন!");
+        return;
+      }
+
+      const pType = ['necklace', 'earrings', 'bangles'].includes(cat) ? 'jewel' : (cat === 'kurti' ? 'kurti' : (cat === 'bag' ? 'bag' : (cat === 'perfume' ? 'perfume' : 'saree')));
+      const newProd = {
+        id: "NC-" + Math.floor(100 + Math.random() * 900),
+        title: title,
+        category: cat,
+        type: pType,
+        price: price,
+        mrp: mrp,
+        upiOffer: Math.round(price * 0.95),
+        stock: stock,
+        initialStock: stock,
+        sold: 0,
+        inStock: stock > 0,
+        img: uploadedSlotImages[0],
+        subImages: uploadedSlotImages.filter((im, i) => i > 0 && im !== ""),
+        desc: desc,
+        date: new Date().toLocaleDateString('bn-IN')
+      };
+
+      products.unshift(newProd);
+      localStorage.setItem('nc_products', JSON.stringify(products));
+      const customOnly = products.filter(p => !p.id.startsWith('NC-10'));
+      localStorage.setItem('nc_custom_products', JSON.stringify(customOnly));
+
+      alert("🎉 অভিনন্দন! নতুন শাড়িটি সফলভাবে শপে লাইভ যুক্ত হয়েছে।");
+
+      document.getElementById('admin_new_title').value = '';
+      document.getElementById('admin_new_price').value = '';
+      document.getElementById('admin_new_mrp').value = '';
+      document.getElementById('admin_new_desc').value = '';
+      for (let i = 0; i < 4; i++) removeSlotPhoto(i);
+
+      renderAdminDashboardLive();
+      renderProducts(products);
+    }
+
+    function renderAdminDashboardLive() {
+      // Inventory
+      const invContainer = document.getElementById('adminLiveInventory');
+      if (invContainer) {
+        invContainer.innerHTML = '';
+        products.forEach((p, idx) => {
+          const curStock = (p.stock !== undefined) ? p.stock : (p.inStock !== false ? 100 : 0);
+          const isOut = curStock <= 0 || p.inStock === false;
+          invContainer.innerHTML += `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:8px; border-bottom:1px solid #f1f5f9;">
+              <img src="${p.img}" style="width:45px; height:45px; border-radius:6px; object-fit:cover;">
+              <div style="flex:1; margin-left:8px;">
+                <div style="font-size:0.82rem; font-weight:800;">${p.title}</div>
+                <div style="font-size:0.7rem; color:var(--primary); font-weight:700;">₹${p.price} • স্টক: <strong>${curStock}</strong> পিস ${isOut ? '(স্টক শেষ)' : ''}</div>
+              </div>
+              <div style="display:flex; gap:4px;">
+                <button onclick="adminQuickRestock(${idx})" style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:4px 8px; border-radius:6px; font-size:0.68rem; font-weight:800; cursor:pointer;">
+                  +রিস্টক
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      // Orders
+      const ordContainer = document.getElementById('adminLiveOrders');
+      if (ordContainer) {
+        const orderList = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+        if (orderList.length === 0) {
+          ordContainer.innerHTML = '<div style="font-size:0.75rem; color:#94a3b8; text-align:center; padding:10px;">কোনো অর্ডার নেই।</div>';
+        } else {
+          ordContainer.innerHTML = '';
+          orderList.forEach(o => {
+            ordContainer.innerHTML += `
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; margin-bottom:8px; font-size:0.75rem;">
+                <div style="display:flex; justify-content:space-between; font-weight:800;">
+                  <span>#${o.id} - ${o.name}</span>
+                  <span style="color:var(--primary);">₹${o.total}</span>
+                </div>
+                <div style="color:#64748b; margin:2px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
+                <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+                  <span style="font-weight:700;">স্ট্যাটাস:</span>
+                  <select onchange="updateLiveOrderStatus('${o.id}', this.value)" style="padding:3px 6px; font-size:0.72rem; font-weight:700; border-radius:4px;">
+                    <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
+                    <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
+                    <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                  </select>
+                </div>
+              </div>
+            `;
+          });
+        }
+      }
+    }
+
+    function adminQuickRestock(idx) {
+      const added = prompt("কত পিস নতুন শাড়ি স্টকে যোগ করতে চান? (যেমন: 50):", "50");
+      if (added !== null) {
+        const num = parseInt(added);
+        if (!isNaN(num) && num > 0) {
+          products[idx].stock = (products[idx].stock || 0) + num;
+          products[idx].inStock = true;
+          localStorage.setItem('nc_products', JSON.stringify(products));
+          const customOnly = products.filter(p => !p.id.startsWith('NC-10'));
+          localStorage.setItem('nc_custom_products', JSON.stringify(customOnly));
+          alert(`✅ +${num} পিস স্টক যুক্ত হয়েছে!`);
+          renderAdminDashboardLive();
+          renderProducts(products);
+        }
+      }
+    }
+
+    function updateLiveOrderStatus(id, newStatus) {
+      let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      orders = orders.map(o => o.id === id ? { ...o, status: newStatus } : o);
+      localStorage.setItem('nc_orders', JSON.stringify(orders));
+      alert("✅ অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
+      renderCustomerAccountOrders();
+    }
+
     function openCustomerSettings() {
       showScreen('customer-settings');
       loadCustomerSettingsData();
@@ -3614,5 +3827,226 @@
       }
     }
   </script>
+
+  <!-- ================= DELIVERY COMPLETED 5-STAR REVIEW & PHOTO MODAL ================= -->
+  <div id="deliveryReviewModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:250; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; width:100%; max-width:420px; border-radius:20px; overflow:hidden; box-shadow:0 12px 35px rgba(0,0,0,0.25); max-height:90vh; display:flex; flex-direction:column;">
+      <div style="background:linear-gradient(135deg, #f59e0b, #d97706); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.5rem;">🌟</span>
+          <div>
+            <div style="font-size:1rem; font-weight:800;">ডেলিভারি রিভিউ ও রেটিং</div>
+            <div style="font-size:0.72rem; opacity:0.9;">আপনার অভিজ্ঞতা নিশা ক্রিয়েশনসের সাথে শেয়ার করুন</div>
+          </div>
+        </div>
+        <button onclick="closeDeliveryReviewModal()" style="background:transparent; border:none; color:#fff; font-size:1.3rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div style="padding:16px 20px; overflow-y:auto; flex:1;">
+        <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:10px; padding:8px 12px; margin-bottom:14px; display:flex; align-items:center; gap:10px;">
+          <div style="font-size:1.4rem;">👗</div>
+          <div>
+            <div style="font-size:0.72rem; color:#92400e; font-weight:700;">ডেলিভারি সম্পন্ন হওয়া শাড়ি:</div>
+            <div style="font-size:0.85rem; font-weight:800; color:#78350f;" id="delivReviewProdTitle">ঢাকাই জামদানি শাড়ি</div>
+          </div>
+        </div>
+
+        <!-- 5-Star Interactive Box (এক খুব খারাপ, দুই খারাপ, তিন মোটামুটি ভালো, চার ভালো, পাঁচ খুব ভালো) -->
+        <div style="text-align:center; margin-bottom:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px;">
+          <div style="font-size:0.8rem; font-weight:700; color:#475569; margin-bottom:6px;">পাঁচ তারায় ক্লিক করে রেট করুন:</div>
+          <div id="delivStarGroup" style="font-size:2.2rem; color:#cbd5e1; cursor:pointer; display:flex; justify-content:center; gap:10px; user-select:none;">
+            <i class="fa-solid fa-star" onclick="setDelivStar(1)"></i>
+            <i class="fa-solid fa-star" onclick="setDelivStar(2)"></i>
+            <i class="fa-solid fa-star" onclick="setDelivStar(3)"></i>
+            <i class="fa-solid fa-star" onclick="setDelivStar(4)"></i>
+            <i class="fa-solid fa-star" onclick="setDelivStar(5)"></i>
+          </div>
+          <div id="delivRatingLabel" style="font-size:0.95rem; font-weight:800; color:#d97706; margin-top:8px; background:#fef3c7; display:inline-block; padding:4px 12px; border-radius:20px;">
+            ⭐⭐⭐⭐⭐ পাঁচ - খুব ভালো
+          </div>
+        </div>
+
+        <!-- Customer Photo Upload -->
+        <div class="form-group">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:800; font-size:0.82rem; color:#0f172a; margin-bottom:6px;">
+            <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+            <span>শাড়ির ছবি আপলোড করুন (মোবাইল গ্যালারি বা ক্যামেরা):</span>
+          </label>
+          <div style="border:1.5px dashed var(--primary); background:#fdf4ff; border-radius:12px; padding:14px; text-align:center; cursor:pointer;" onclick="document.getElementById('delivPhotoInput').click()">
+            <input type="file" id="delivPhotoInput" accept="image/*" onchange="handleDelivReviewPhoto(this)" style="display:none;">
+            <div id="delivPhotoPrompt">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.8rem; color:var(--primary); margin-bottom:4px;"></i>
+              <div style="font-size:0.82rem; font-weight:700; color:#334155;">ছবি তুলতে বা বাছতে এখানে চাপুন</div>
+              <div style="font-size:0.68rem; color:#94a3b8; margin-top:2px;">(শাড়ি পরা বা হাতে ধরা ছবি দিয়ে অন্য মা-বোনেদের উৎসাহিত করুন)</div>
+            </div>
+            <div id="delivPhotoPreviewBox" style="display:none; text-align:center;">
+              <img id="delivPhotoPreviewImg" src="" style="width:100px; height:100px; object-fit:cover; border-radius:10px; border:2px solid var(--primary); box-shadow:0 3px 10px rgba(0,0,0,0.1);">
+              <div style="font-size:0.72rem; color:#16a34a; font-weight:700; margin-top:4px;">✓ ছবি প্রস্তুত হয়েছে</div>
+              <button type="button" onclick="event.stopPropagation(); clearDelivReviewPhoto()" style="background:#fee2e2; color:#ef4444; border:none; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:700; margin-top:6px; cursor:pointer;">
+                অন্য ছবি বাছুন
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Feedback Comments -->
+        <div class="form-group">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:800; font-size:0.82rem; color:#0f172a; margin-bottom:6px;">
+            <i class="fa-solid fa-pen-nib" style="color:var(--primary);"></i>
+            <span>আপনার মূল্যবান মতামত ও অভিজ্ঞতা লিখুন:</span>
+          </label>
+          <textarea id="delivReviewText" rows="3" placeholder="শাড়ির কোয়ালিটি, কাপড়ের আরাম, রঙ বা কাজের ফিনিশিং কেমন হয়েছে লিখুন..."></textarea>
+        </div>
+
+        <button type="button" onclick="submitDelivReviewModal()" style="width:100%; background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; border:none; padding:13px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 14px rgba(245,158,11,0.35); display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fa-solid fa-star"></i> রিভিউ সাবমিট করুন (+২০ কয়েন বোনাস)
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= PIN AUTH MODAL FOR OWNER ================= -->
+  <div id="ownerPinModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.88); z-index:1000; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; width:100%; max-width:350px; border-radius:20px; padding:24px 20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+      <div style="font-size:2.5rem; margin-bottom:8px;">🔐</div>
+      <div style="font-size:1.15rem; font-weight:800; color:#0f172a;">নিশা ক্রিয়েশনস • অ্যাডমিন</div>
+      <div style="font-size:0.78rem; color:#64748b; margin:6px 0 16px 0;">মালিকের প্যানেলে ঢুকতে সিক্রেট পিন কোড দিন:</div>
+      <input type="password" id="ownerPinInput" placeholder="পিন দিন (Default: 1234)" style="width:100%; text-align:center; font-size:1.2rem; letter-spacing:4px; padding:10px; border:2px solid var(--primary); border-radius:10px; margin-bottom:14px; outline:none;">
+      <button onclick="checkOwnerPin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer;">প্রবেশ করুন &rarr;</button>
+      <button onclick="closeOwnerPinModal()" style="margin-top:10px; background:transparent; border:none; color:#94a3b8; font-size:0.8rem; cursor:pointer;">বাতিল করুন</button>
+    </div>
+  </div>
+
+  <!-- ================= 9. INTEGRATED OWNER ADMIN PANEL ================= -->
+  <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button onclick="showScreen('customer-settings')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+        <div style="font-size:1.05rem; font-weight:800; color:var(--primary);">মালিকের কন্ট্রোল প্যানেল (Boutique Manager)</div>
+      </div>
+      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;">শপ দেখুন</button>
+    </div>
+
+    <!-- 1. Add Product with Multi-Photo & Stock Quantity -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+        <span>নতুন শাড়ি / গহনা আপলোড ও স্টক নির্ধারণ</span>
+      </div>
+
+      <div class="form-group">
+        <label>শাড়ির ছবি নির্বাচন করুন (১ নম্বর মূল ছবি আবশ্যক):</label>
+        <div class="multi-photo-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed var(--primary); background:#fdf4ff; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 0)" style="display:none;">
+            <div id="slot-placeholder-0">
+              <i class="fa-solid fa-camera" style="color:var(--primary); font-size:1.3rem;"></i>
+              <div style="font-size:0.6rem; font-weight:800; color:#7e22ce; margin-top:3px;">১. মূল ছবি *</div>
+            </div>
+            <img id="slot-img-0" style="width:100%; height:100%; object-fit:cover; display:none;">
+            <button type="button" id="slot-del-0" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(0)">✕</button>
+          </label>
+          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 1)" style="display:none;">
+            <div id="slot-placeholder-1">
+              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">২. আঁচল</div>
+            </div>
+            <img id="slot-img-1" style="width:100%; height:100%; object-fit:cover; display:none;">
+            <button type="button" id="slot-del-1" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(1)">✕</button>
+          </label>
+          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 2)" style="display:none;">
+            <div id="slot-placeholder-2">
+              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৩. পাড়</div>
+            </div>
+            <img id="slot-img-2" style="width:100%; height:100%; object-fit:cover; display:none;">
+            <button type="button" id="slot-del-2" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(2)">✕</button>
+          </label>
+          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 3)" style="display:none;">
+            <div id="slot-placeholder-3">
+              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৪. ব্লাউজ</div>
+            </div>
+            <img id="slot-img-3" style="width:100%; height:100%; object-fit:cover; display:none;">
+            <button type="button" id="slot-del-3" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(3)">✕</button>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>প্রোডাক্টের নাম:</label>
+        <input type="text" id="admin_new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (রানী গোলাপী ও জরি)">
+      </div>
+
+      <div class="form-group">
+        <label>ক্যাটাগরি:</label>
+        <select id="admin_new_cat">
+          <option value="jamdani">ঢাকাই জামদানি শাড়ি (Jamdani)</option>
+          <option value="silk">সফট সিল্ক / কাতান শাড়ি (Silk)</option>
+          <option value="tant">শান্তিপুরী তাঁত ও সুতি শাড়ি (Tant)</option>
+          <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti)</option>
+          <option value="necklace">ব্রাইডাল গহনা সেট (Jewellery Set)</option>
+          <option value="earrings">কানের দুল ও ঝুমকা (Earrings)</option>
+          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+          <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bag)</option>
+          <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfume)</option>
+        </select>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>বিক্রয় মূল্য (Price ₹):</label>
+          <input type="number" id="admin_new_price" placeholder="799">
+        </div>
+        <div class="form-group">
+          <label>আসল MRP (₹):</label>
+          <input type="number" id="admin_new_mrp" placeholder="1599">
+        </div>
+      </div>
+
+      <!-- Total Stock Input -->
+      <div class="form-group" style="background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:10px;">
+        <label style="color:#92400e; font-weight:800;">
+          <i class="fa-solid fa-boxes-stacked"></i> মোট শাড়ির স্টক সংখ্যা (শাড়ির পিস / Quantity):
+        </label>
+        <input type="number" id="admin_new_stock" placeholder="যেমন: 100" value="100" style="background:#fff; font-weight:800; color:#b45309; border-color:#f59e0b;">
+        <div style="font-size:0.68rem; color:#78350f; margin-top:4px;">
+          ✓ কাস্টমার অর্ডার দিলে নিজে থেকেই স্টক কমবে। ১০টি বাকি থাকলে সতর্কতা দেখাবে, ০ হলে "আউট অফ স্টক" হবে!
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>বিবরণ:</label>
+        <textarea id="admin_new_desc" rows="2" placeholder="ফেব্রিক ও কাজের বিস্তারিত বিবরণ..."></textarea>
+      </div>
+
+      <button type="button" onclick="submitProductFromAdmin()" style="width:100%; background:linear-gradient(135deg, var(--primary), #c026d3); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 12px rgba(156,39,176,0.3);">
+        <i class="fa-solid fa-rocket"></i> লাইভ শপে আপলোড করুন &rarr;
+      </button>
+    </div>
+
+    <!-- 2. Inventory & Stock Control -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i>
+        <span>দোকানের শাড়ি তালিকা ও রিস্টক কন্ট্রোল</span>
+      </div>
+      <div id="adminLiveInventory"></div>
+    </div>
+
+    <!-- 3. Customer Orders & Delivery Slip -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        <i class="fa-solid fa-truck-fast" style="color:var(--green);"></i>
+        <span>কাস্টমার অর্ডার ও ডেলিভারি চালান (Challan)</span>
+      </div>
+      <div id="adminLiveOrders"></div>
+    </div>
+  </div>
+
 </body>
-  </html>
+      </html>
