@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Nisha Creations • অ্যাডমিন ও ফটো আপলোডার (Boutique Manager)</title>
+  <title>Nisha Creations • কমপ্লিট বুটিক অ্যাডমিন প্যানেল (Boutique Manager)</title>
   <meta name="theme-color" content="#9c27b0">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
+
   <style>
     :root {
       --primary: #9c27b0;
@@ -22,17 +22,20 @@
       --muted: #64748b;
       --border: #e2e8f0;
       --green: #16a34a;
+      --danger: #ef4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 50px;
+      padding-bottom: 70px;
     }
+
+    /* Top Bar */
     .admin-header {
       background: #ffffff;
-      padding: 14px 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -48,8 +51,8 @@
       gap: 10px;
     }
     .brand-logo-preview {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
       border: 1.5px solid var(--secondary);
@@ -67,8 +70,42 @@
       font-weight: 700;
       border: 1px solid #cbd5e1;
     }
+
+    /* Admin Navigation Tabs */
+    .admin-nav-bar {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      padding: 6px 10px;
+      gap: 6px;
+      position: sticky;
+      top: 65px;
+      z-index: 90;
+    }
+    .admin-nav-btn {
+      white-space: nowrap;
+      border: none;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .admin-nav-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(156,39,176,0.3);
+    }
+
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       padding: 14px;
     }
@@ -81,13 +118,13 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
     .card-title {
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 800;
       color: #0f172a;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
     }
     .form-group {
       margin-bottom: 12px;
@@ -112,80 +149,105 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(156,39,176,0.1);
     }
-    .photo-upload-zone {
-      border: 2px dashed var(--primary);
-      background: #fdf4ff;
-      border-radius: 14px;
-      padding: 20px 14px;
-      text-align: center;
-      cursor: pointer;
-      margin-bottom: 12px;
-      position: relative;
+
+    /* Multi-Photo Grid Upload */
+    .multi-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
     }
-    .photo-upload-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
+    .photo-slot {
+      aspect-ratio: 1;
+      border: 1.5px dashed var(--primary);
+      background: #fdf4ff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
       cursor: pointer;
+      overflow: hidden;
+      text-align: center;
+      padding: 4px;
+    }
+    .photo-slot img {
       width: 100%;
       height: 100%;
-    }
-    .preview-box {
-      display: none;
-      margin-top: 10px;
-      text-align: center;
-    }
-    .preview-img {
-      width: 130px;
-      height: 130px;
       object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid var(--primary);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .btn-submit {
+    .photo-slot-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #7e22ce;
+      margin-top: 4px;
+    }
+    .btn-remove-slot {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      background: rgba(239,68,68,0.9);
+      color: #fff;
+      border: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-primary {
       width: 100%;
       background: linear-gradient(135deg, var(--primary), #c026d3);
       color: #ffffff;
       border: none;
-      padding: 13px;
+      padding: 12px;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(156,39,176,0.35);
+      box-shadow: 0 4px 14px rgba(156,39,176,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    .product-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px;
-      border-bottom: 1px solid #f1f5f9;
-      gap: 10px;
-    }
-    .product-thumb {
-      width: 50px;
-      height: 50px;
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
       border-radius: 8px;
-      object-fit: cover;
-      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
     }
-    .order-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-      background: #ffffff;
+
+    /* Stock Switch Badge */
+    .stock-toggle-btn {
+      border: none;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
+    .stock-in { background: #dcfce7; color: #15803d; }
+    .stock-out { background: #fee2e2; color: #b91c1c; }
+
     /* PIN Modal */
     #pinModal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -201,397 +263,747 @@
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
+
+    /* Printable Delivery Slip Modal */
+    #slipModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .slip-box {
+      background: #fff;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 16px;
+      overflow: hidden;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .slip-paper {
+      background: #ffffff;
+      padding: 16px;
+      font-size: 0.85rem;
+      color: #0f172a;
+      border: 2px dashed #94a3b8;
+      border-radius: 10px;
+      margin: 14px;
+      font-family: 'Hind Siliguri', monospace;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- PIN Protection Modal -->
+  <!-- PIN Modal -->
   <div id="pinModal">
     <div class="pin-box">
       <div style="font-size:2.5rem; margin-bottom:8px;">🔒</div>
       <div style="font-size:1.15rem; font-weight:800; color:#0f172a;">নিশা ক্রিয়েশনস • অ্যাডমিন</div>
-      <div style="font-size:0.78rem; color:#64748b; margin:6px 0 16px 0;">মালিকের প্যানেলে ঢুকতে সিক্রেট পিন কোড দিন:</div>
+      <div style="font-size:0.78rem; color:#64748b; margin:6px 0 16px 0;">ম্যানেজমেন্ট প্যানেলে ঢুকতে সিক্রেট পিন দিন:</div>
       <input type="password" id="pinInput" placeholder="৪ সংখ্যার পিন (Default: 1234)" style="width:100%; text-align:center; font-size:1.2rem; letter-spacing:4px; padding:10px; border:2px solid var(--primary); border-radius:10px; margin-bottom:14px; outline:none;">
-      <button onclick="checkAdminPin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer;">
-        প্রবেশ করুন &rarr;
-      </button>
+      <button onclick="checkAdminPin()" class="btn-primary">প্রবেশ করুন &rarr;</button>
     </div>
   </div>
 
-  <!-- Admin Header -->
+  <!-- Header -->
   <header class="admin-header">
     <div class="brand-title-wrap">
-      <img id="adminHeaderLogo" src="logo.png" alt="Logo" class="brand-logo-preview" onerror="this.style.display='none'">
+      <img id="adminHeaderLogo" src="logo.png" alt="Logo" class="brand-logo-preview" onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'">
       <div>
         <div style="font-weight:800; font-size:0.95rem; color:var(--primary);">Nisha Creations</div>
-        <div style="font-size:0.68rem; color:#64748b;">ম্যানেজার ও ফটো আপলোডার</div>
+        <div style="font-size:0.68rem; color:#64748b;">ম্যানেজার ও আপলোডার হাব</div>
       </div>
     </div>
     <a href="index.html" class="btn-view-store">
-      <i class="fa-solid fa-store"></i> গ্রাহক শপ
+      <i class="fa-solid fa-store"></i> লাইভ শপ
     </a>
   </header>
 
+  <!-- Navigation Bar -->
+  <div class="admin-nav-bar">
+    <button class="admin-nav-btn active" onclick="switchSection('products')"><i class="fa-solid fa-shirt"></i> প্রোডাক্ট ও স্টক</button>
+    <button class="admin-nav-btn" onclick="switchSection('reels')"><i class="fa-solid fa-circle-play"></i> ভিডিও রিলস</button>
+    <button class="admin-nav-btn" onclick="switchSection('orders')"><i class="fa-solid fa-truck-fast"></i> অর্ডার ও চালান</button>
+    <button class="admin-nav-btn" onclick="switchSection('banners')"><i class="fa-solid fa-image"></i> ব্যানার অফার</button>
+    <button class="admin-nav-btn" onclick="switchSection('coupons')"><i class="fa-solid fa-ticket"></i> কুপন কোড</button>
+    <button class="admin-nav-btn" onclick="switchSection('reviews')"><i class="fa-solid fa-star"></i> কাস্টমার রিভিউ</button>
+    <button class="admin-nav-btn" onclick="switchSection('settings')"><i class="fa-solid fa-gear"></i> ক্লাউড ও লোগো</button>
+  </div>
+
   <main class="container">
-    
-    <!-- 1. ADD NEW PRODUCT CARD -->
-    <section class="card">
-      <div class="card-title">
-        <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
-        <span>নতুন শাড়ি / গহনা আপলোড করুন</span>
-      </div>
 
-      <!-- Photo Upload Zone -->
-      <div class="photo-upload-zone" id="uploadDropZone">
-        <input type="file" id="prodPhotoInput" accept="image/*" onchange="handleProductPhotoSelect(this)">
-        <div id="uploadPrompt">
-          <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem; color:var(--primary); margin-bottom:6px;"></i>
-          <div style="font-size:0.88rem; font-weight:800; color:#334155;">মোবাইল ক্যামেরা বা গ্যালারি থেকে ছবি তুলুন</div>
-          <div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">ছবি স্বয়ংক্রিয়ভাবে কম্প্রেস হয়ে দ্রুত আপলোড হবে</div>
+    <!-- ================= 1. PRODUCTS & MULTI-PHOTO UPLOAD ================= -->
+    <div id="sec-products">
+      <!-- Add Product Form -->
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+            <span>নতুন শাড়ি / গহনা আপলোড (Multi-Photo)</span>
+          </div>
         </div>
-        <div class="preview-box" id="previewBox">
-          <img id="previewImgEl" src="" class="preview-img">
-          <div style="font-size:0.75rem; color:var(--green); font-weight:700; margin-top:6px;" id="photoSizeLabel">✓ ছবি প্রস্তুত হয়েছে</div>
-          <button type="button" onclick="clearSelectedPhoto()" style="background:#fee2e2; color:#ef4444; border:none; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:700; margin-top:6px; cursor:pointer;">
-            <i class="fa-solid fa-trash"></i> অন্য ছবি বাছুন
-          </button>
-        </div>
-      </div>
 
-      <div class="form-group">
-        <label>প্রোডাক্টের নাম (Title):</label>
-        <input type="text" id="p_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী জরি)">
-      </div>
-
-      <div class="form-group">
-        <label>ক্যাটাগরি (Category):</label>
-        <select id="p_category">
-          <option value="jamdani">ঢাকাই জামদানি শাড়ি (Dhakai Jamdani)</option>
-          <option value="silk">সফট সিল্ক / কাতান শাড়ি (Soft Silk)</option>
-          <option value="tant">তাঁত ও সুতি শাড়ি (Handloom Tant)</option>
-          <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti & Sets)</option>
-          <option value="necklace">ব্রাইডাল গহনা সেট (Jewellery Sets)</option>
-          <option value="earrings">কানের দুল ও ঝুমকা (Earrings)</option>
-          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
-          <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bags)</option>
-          <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfumes)</option>
-        </select>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <!-- 4 Multi-Photo Slots -->
         <div class="form-group">
-          <label>বিক্রয় মূল্য (Price ₹):</label>
-          <input type="number" id="p_price" placeholder="799">
+          <label>শাড়ির একাধিক ছবি যোগ করুন (আঁচল, পাড় ও ব্লাউজ পিস):</label>
+          <div class="multi-photo-grid">
+            <div class="photo-slot" onclick="triggerSlotUpload(0)">
+              <div id="slot-placeholder-0">
+                <i class="fa-solid fa-camera" style="color:var(--primary); font-size:1.2rem;"></i>
+                <div class="photo-slot-label">১. মূল ছবি</div>
+              </div>
+              <img id="slot-img-0" style="display:none;">
+              <button type="button" class="btn-remove-slot" id="slot-del-0" style="display:none;" onclick="event.stopPropagation(); removeSlotPhoto(0)">✕</button>
+            </div>
+            <div class="photo-slot" onclick="triggerSlotUpload(1)">
+              <div id="slot-placeholder-1">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.2rem;"></i>
+                <div class="photo-slot-label">২. আঁচল</div>
+              </div>
+              <img id="slot-img-1" style="display:none;">
+              <button type="button" class="btn-remove-slot" id="slot-del-1" style="display:none;" onclick="event.stopPropagation(); removeSlotPhoto(1)">✕</button>
+            </div>
+            <div class="photo-slot" onclick="triggerSlotUpload(2)">
+              <div id="slot-placeholder-2">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.2rem;"></i>
+                <div class="photo-slot-label">৩. পাড় ও কুঁচি</div>
+              </div>
+              <img id="slot-img-2" style="display:none;">
+              <button type="button" class="btn-remove-slot" id="slot-del-2" style="display:none;" onclick="event.stopPropagation(); removeSlotPhoto(2)">✕</button>
+            </div>
+            <div class="photo-slot" onclick="triggerSlotUpload(3)">
+              <div id="slot-placeholder-3">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.2rem;"></i>
+                <div class="photo-slot-label">৪. ব্লাউজ পিস</div>
+              </div>
+              <img id="slot-img-3" style="display:none;">
+              <button type="button" class="btn-remove-slot" id="slot-del-3" style="display:none;" onclick="event.stopPropagation(); removeSlotPhoto(3)">✕</button>
+            </div>
+          </div>
+          <input type="file" id="slotFileInput" accept="image/*" style="display:none;" onchange="handleSlotFile(this)">
+          <div style="font-size:0.68rem; color:#64748b; margin-top:4px;">✓ ছবিগুলো স্বয়ংক্রিয়ভাবে ছোট সাইজে (~৭০ কেবি) অপটিমাইজ হয়ে যাবে।</div>
         </div>
+
         <div class="form-group">
-          <label>আসল MRP (₹):</label>
-          <input type="number" id="p_mrp" placeholder="1599">
+          <label>প্রোডাক্টের নাম:</label>
+          <input type="text" id="prod_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী জরির কাজ)">
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>সংক্ষিপ্ত বিবরণ (Description):</label>
-        <textarea id="p_desc" rows="2" placeholder="ফেব্রিক, ব্লাউজ পিস ও কাজের বিবরণ..."></textarea>
-      </div>
-
-      <button type="button" class="btn-submit" onclick="submitProductToShop()">
-        <i class="fa-solid fa-rocket"></i> লাইভ শপে আপলোড করুন &rarr;
-      </button>
-    </section>
-
-    <!-- 2. BOUTIQUE LOGO & BRANDING -->
-    <section class="card">
-      <div class="card-title">
-        <i class="fa-solid fa-crown" style="color:var(--secondary);"></i>
-        <span>দোকানের লোগো ম্যানেজমেন্ট</span>
-      </div>
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
-        <img id="currentLogoPreview" src="logo.png" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--secondary); background:#fff;" onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'">
-        <div style="flex:1;">
-          <div style="font-size:0.85rem; font-weight:800;">নিশা ক্রিয়েশনস লোগো</div>
-          <div style="font-size:0.72rem; color:#64748b;">গ্যালারি থেকে আপনার দোকানের ছবি দিন:</div>
-          <input type="file" accept="image/*" onchange="uploadAdminLogo(this)" style="font-size:0.75rem; margin-top:5px; width:100%;">
+        <div class="form-group">
+          <label>ক্যাটাগরি:</label>
+          <select id="prod_cat">
+            <option value="jamdani">ঢাকাই জামদানি শাড়ি (Jamdani)</option>
+            <option value="silk">সফট সিল্ক / কাতান শাড়ি (Silk)</option>
+            <option value="tant">শান্তিপুরী তাঁত ও সুতি শাড়ি (Tant)</option>
+            <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti)</option>
+            <option value="necklace">ব্রাইডাল গহনা সেট (Jewellery Set)</option>
+            <option value="earrings">কানের দুল ও ঝুমকা (Earrings)</option>
+            <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+            <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bag)</option>
+            <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfume)</option>
+          </select>
         </div>
-      </div>
-      <button onclick="resetToGitHubLogo()" style="background:#f1f5f9; border:1px solid #cbd5e1; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:700; color:#475569; cursor:pointer;">
-        🔄 গিটহাবের মূল logo.png রিসেট করুন
-      </button>
-    </section>
 
-    <!-- 3. CLOUD REALTIME SYNC CONFIGURATION -->
-    <section class="card">
-      <div class="card-title">
-        <i class="fa-solid fa-cloud" style="color:#0284c7;"></i>
-        <span>ক্লাউড রিয়েল-টাইম সিঙ্ক (স্বয়ংক্রিয় লাইভ শো)</span>
-      </div>
-      <p style="font-size:0.78rem; color:#475569; line-height:1.4; margin-bottom:10px;">
-        এখানে ছবি আপলোড করলে কীভাবে সমস্ত কাস্টমারের ফোনে সাথে সাথে ফুটে উঠবে? গুগলের সম্পূর্ণ ফ্রি <strong>Firebase Realtime Database</strong> লিংক এখানে একবার বসিয়ে দিন:
-      </p>
-      <div class="form-group">
-        <input type="text" id="cloudDbUrlInput" placeholder="https://nishacreations-default-rtdb.firebaseio.com">
-      </div>
-      <button onclick="saveCloudDbUrl()" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
-        ✓ ক্লাউড ডাটাবেস লিংক সেভ করুন
-      </button>
-    </section>
-
-    <!-- 4. ACTIVE INVENTORY MANAGEMENT -->
-    <section class="card">
-      <div class="card-title" style="justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i>
-          <span>দোকানের শাড়ি ও গহনার তালিকা (<span id="totalProdCount">0</span>)</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label>বিক্রয় মূল্য (Price ₹):</label>
+            <input type="number" id="prod_price" placeholder="799">
+          </div>
+          <div class="form-group">
+            <label>আসল MRP (₹):</label>
+            <input type="number" id="prod_mrp" placeholder="1599">
+          </div>
         </div>
-        <button onclick="downloadProductsBackup()" style="background:#f1f5f9; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:700;">
-          <i class="fa-solid fa-download"></i> ব্যাকআপ
+
+        <div class="form-group">
+          <label>বিবরণ (Description):</label>
+          <textarea id="prod_desc" rows="2" placeholder="ফেব্রিক, ব্লাউজ পিস ও কাজের বিবরণ..."></textarea>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="submitProduct()">
+          <i class="fa-solid fa-rocket"></i> লাইভ শপে আপলোড করুন &rarr;
         </button>
-      </div>
-      <div id="adminProductList"></div>
-    </section>
+      </section>
 
-    <!-- 5. LIVE CUSTOMER ORDERS -->
-    <section class="card">
-      <div class="card-title">
-        <i class="fa-solid fa-receipt" style="color:var(--green);"></i>
-        <span>কাস্টমারদের অর্ডার ও ডেলিভারি কন্ট্রোল</span>
-      </div>
-      <div id="adminOrdersContainer"></div>
-    </section>
+      <!-- Inventory Management with Stock Toggle -->
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i>
+            <span>ইনভেন্টরি ও স্টক শেষ (Out of Stock) কন্ট্রোল (<span id="totalProductCount">0</span>)</span>
+          </div>
+        </div>
+        <div id="adminInventoryList"></div>
+      </section>
+    </div>
+
+    <!-- ================= 2. REELS VIDEO UPLOADER ================= -->
+    <div id="sec-reels" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-circle-play" style="color:var(--primary);"></i>
+            <span>নতুন ভিডিও রিলস পোস্ট করুন</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:#64748b; margin-bottom:12px;">নিশা দিদির তোলা শাড়ির ১৫-২০ সেকেন্ডের ভিডিও বা ইউটিউব শর্টস লিংক দিয়ে পোস্ট করুন। গ্রাহকদের অ্যাপে ভিডিওর ওপর সরাসরি <strong>[ ⚡ অর্ডার করুন ]</strong> বাটন ফুটে উঠবে।</p>
+
+        <div class="form-group">
+          <label>রিলসের শিরোনাম:</label>
+          <input type="text" id="reel_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ির আঁচল ও কুঁচির কাজ">
+        </div>
+
+        <div class="form-group">
+          <label>ট্যাগ করা শাড়ির নাম (যে প্রোডাক্টটি অর্ডার হবে):</label>
+          <input type="text" id="reel_product_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল)">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label>অফার মূল্য (₹):</label>
+            <input type="number" id="reel_price" placeholder="799">
+          </div>
+          <div class="form-group">
+            <label>আসল MRP (₹):</label>
+            <input type="number" id="reel_mrp" placeholder="1599">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>রিলস কভার ফটো / ভিডিও থাম্বনেল (মোবাইল গ্যালারি):</label>
+          <input type="file" id="reel_cover_input" accept="image/*" onchange="handleReelCoverPhoto(this)">
+          <div id="reel_cover_preview_box" style="display:none; margin-top:6px;">
+            <img id="reel_cover_preview_img" style="width:80px; height:110px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>ভিডিও লিংক (ঐচ্ছিক - YouTube Shorts / Direct MP4 URL):</label>
+          <input type="text" id="reel_video_url" placeholder="https://youtube.com/shorts/... বা খালি রাখুন">
+        </div>
+
+        <button type="button" class="btn-primary" onclick="submitReel()">
+          <i class="fa-solid fa-clapperboard"></i> গ্রাহকদের রিলস ট্যাবে লাইভ করুন &rarr;
+        </button>
+      </section>
+
+      <!-- Active Reels List -->
+      <section class="card">
+        <div class="card-title">
+          <span>লাইভ রিলস ভিডিওসমূহ (<span id="totalReelsCount">0</span>)</span>
+        </div>
+        <div id="adminReelsList"></div>
+      </section>
+    </div>
+
+    <!-- ================= 3. CUSTOMER ORDERS & DELIVERY SLIP ================= -->
+    <div id="sec-orders" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-truck-fast" style="color:var(--green);"></i>
+            <span>কাস্টমার অর্ডার ও ডেলিভারি চালান (Challan)</span>
+          </div>
+        </div>
+        <div id="adminOrdersListFull"></div>
+      </section>
+    </div>
+
+    <!-- ================= 4. OFFER BANNER MANAGER ================= -->
+    <div id="sec-banners" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-image" style="color:#d97706;"></i>
+            <span>হোম পেজ অফার ব্যানার ম্যানেজার</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:#64748b; margin-bottom:12px;">পুজো, দিওয়ালি বা বিশেষ ছাড়ের সময় হোম পেজের মূল ব্যানার এখান থেকে পরিবর্তন করুন:</p>
+
+        <div class="form-group">
+          <label>ব্যানারের মূল শিরোনাম (Offer Title):</label>
+          <input type="text" id="banner_title" placeholder="যেমন: উৎসব স্পেশাল ফ্ল্যাট ৫০% ছাড়">
+        </div>
+        <div class="form-group">
+          <label>সাবটাইটেল (Subtitle):</label>
+          <input type="text" id="banner_sub" placeholder="যেমন: আমতায় ফ্রি হোম ডেলিভারি ও উপহার">
+        </div>
+        <div class="form-group">
+          <label>অফার ট্যাগ (Tag):</label>
+          <input type="text" id="banner_tag" placeholder="যেমন: পুজো ধামাকা ২০২৬">
+        </div>
+        <button type="button" class="btn-primary" onclick="saveBannerSettings()">
+          <i class="fa-solid fa-floppy-disk"></i> ব্যানার আপডেট করুন
+        </button>
+      </section>
+    </div>
+
+    <!-- ================= 5. COUPON CODE MANAGER ================= -->
+    <div id="sec-coupons" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-ticket" style="color:#8b5cf6;"></i>
+            <span>ডিসকাউন্ট কুপন তৈরি ও নিয়ন্ত্রণ</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>কুপন কোড (যেমন: PUJA100 বা AMTA50):</label>
+          <input type="text" id="coupon_code" placeholder="PUJA100" style="text-transform:uppercase; font-weight:800;">
+        </div>
+        <div class="form-group">
+          <label>ছাড়ের পরিমাণ (টাকা ₹):</label>
+          <input type="number" id="coupon_discount" placeholder="100">
+        </div>
+        <button type="button" class="btn-primary" onclick="createNewCoupon()">
+          <i class="fa-solid fa-plus"></i> কুপন কোড চালু করুন
+        </button>
+      </section>
+
+      <!-- Active Coupons List -->
+      <section class="card">
+        <div class="card-title">চালু থাকা কুপন কোড তালিকা</div>
+        <div id="adminCouponsList"></div>
+      </section>
+    </div>
+
+    <!-- ================= 6. CUSTOMER REVIEWS MODERATION ================= -->
+    <div id="sec-reviews" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
+            <span>কাস্টমারদের ৫-স্টার রিভিউ ও ফটো কন্ট্রোল</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:#64748b; margin-bottom:12px;">ডেলিভারি পাওয়ার পর গ্রাহকরা যেসব রিভিউ এবং ছবি পাঠিয়েছেন তা নিচে প্রদর্শিত হলো:</p>
+        <div id="adminReviewsList"></div>
+      </section>
+    </div>
+
+    <!-- ================= 7. LOGO & CLOUD SYNC SETTINGS ================= -->
+    <div id="sec-settings" style="display:none;">
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-crown" style="color:var(--secondary);"></i>
+            <span>দোকানের লোগো পরিবর্তন</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+          <img id="adminLogoDisplay" src="logo.png" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--secondary); background:#fff;" onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'">
+          <div style="flex:1;">
+            <div style="font-size:0.85rem; font-weight:800;">নিশা ক্রিয়েশনস লোগো</div>
+            <div style="font-size:0.72rem; color:#64748b;">মোবাইল গ্যালারি থেকে ছবি বাছুন:</div>
+            <input type="file" accept="image/*" onchange="uploadLogoFromAdmin(this)" style="font-size:0.75rem; margin-top:5px; width:100%;">
+          </div>
+        </div>
+        <button onclick="resetLogoToGitHub()" class="btn-secondary">
+          🔄 গিটহাবের মূল logo.png রিসেট করুন
+        </button>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-cloud" style="color:#0284c7;"></i>
+            <span>ক্লাউড রিয়েল-টাইম সিঙ্ক (Google Firebase)</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:#475569; line-height:1.4; margin-bottom:10px;">
+          এখানে ফটো আপলোড করলে যাতে সমস্ত কাস্টমারের ফোনে সাথে সাথে ফুটে ওঠে, তার জন্য গুগলের ফ্রি <strong>Firebase Realtime Database</strong> লিংক দিন:
+        </p>
+        <div class="form-group">
+          <input type="text" id="adminCloudUrlInput" placeholder="https://nishacreations-default-rtdb.firebaseio.com">
+        </div>
+        <button onclick="saveAdminCloudUrl()" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
+          ✓ ক্লাউড লিংক সেভ করুন
+        </button>
+      </section>
+    </div>
 
   </main>
 
+  <!-- ================= PRINTABLE DELIVERY SLIP MODAL ================= -->
+  <div id="slipModal">
+    <div class="slip-box">
+      <div style="background:var(--primary); padding:12px 16px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-weight:800; font-size:0.95rem;">📦 ডেলিভারি চালান / রসিদ</div>
+        <button onclick="closeSlipModal()" style="background:transparent; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div style="overflow-y:auto; flex:1;" id="printArea">
+        <div class="slip-paper" id="slipPaperContent">
+          <!-- Populated by generateSlip() -->
+        </div>
+      </div>
+
+      <div style="padding:12px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; gap:8px;">
+        <button onclick="window.print()" style="flex:1; background:var(--primary); color:#fff; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          <i class="fa-solid fa-print"></i> প্রিন্ট স্লিপ
+        </button>
+        <button onclick="shareSlipWhatsApp()" style="flex:1; background:#25D366; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ চালান
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ==========================================
-    // INITIAL PRODUCTS & LOCAL/CLOUD DATA
+    // INITIAL DATA & STORAGE
     // ==========================================
     const DEFAULT_PRODUCTS = [
-      { id: "NC-101", title: "Pure Dhakai Jamdani Saree (Traditional Red)", category: "jamdani", price: 799, mrp: 1599, img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400" },
-      { id: "NC-102", title: "Soft Silk Katan Saree with Golden Pallu", category: "silk", price: 950, mrp: 1899, img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400" },
-      { id: "NC-103", title: "Bengal Handloom Tant Cotton Saree", category: "tant", price: 499, mrp: 899, img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=400" },
-      { id: "NC-104", title: "Traditional Bengali Bridal Jewellery Choker Set", category: "necklace", price: 399, mrp: 899, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400" },
-      { id: "NC-105", title: "Antique Silver-Oxidised Choker with Pearls", category: "necklace", price: 299, mrp: 699, img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400" },
-      { id: "NC-106", title: "Designer Gold-Plated Churi / Bangles (Pair)", category: "bangles", price: 349, mrp: 799, img: "https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=400" }
+      { id: "NC-101", title: "Pure Dhakai Jamdani Saree (Traditional Red)", category: "jamdani", price: 799, mrp: 1599, inStock: true, img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400", subImages: [] },
+      { id: "NC-102", title: "Soft Silk Katan Saree with Golden Pallu", category: "silk", price: 950, mrp: 1899, inStock: true, img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400", subImages: [] },
+      { id: "NC-103", title: "Bengal Handloom Tant Cotton Saree", category: "tant", price: 499, mrp: 899, inStock: true, img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=400", subImages: [] },
+      { id: "NC-104", title: "Traditional Bengali Bridal Jewellery Choker Set", category: "necklace", price: 399, mrp: 899, inStock: true, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400", subImages: [] }
     ];
 
     let customProducts = [];
-    let compressedPhotoBase64 = "";
+    let uploadedSlotImages = ["", "", "", ""];
+    let activeSlotIndex = 0;
+    let currentReelCoverPhoto = "";
+    let activeSlipData = null;
 
     // PIN Check
     function checkAdminPin() {
       const pin = document.getElementById('pinInput').value.trim();
       if (pin === "1234") {
         document.getElementById('pinModal').style.display = 'none';
-        initAdminDashboard();
+        initDashboard();
       } else {
         alert("ভুল পিন কোড! সঠিক পিন দিন (Default: 1234)।");
       }
     }
 
-    function initAdminDashboard() {
-      loadSavedLogo();
-      loadSavedCloudUrl();
-      loadCustomProducts();
-      renderAdminProductList();
-      renderCustomerOrders();
+    function initDashboard() {
+      loadProductsData();
+      renderInventory();
+      renderReels();
+      renderOrdersList();
+      renderCoupons();
+      renderReviews();
+      loadLogo();
+      loadCloudUrl();
+      loadBannerSettings();
     }
 
-    // 1. SMART IMAGE COMPRESSOR (Mobile Gallery / Camera)
-    function handleProductPhotoSelect(input) {
+    // Navigation Switcher
+    function switchSection(secId) {
+      document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const sections = ['products', 'reels', 'orders', 'banners', 'coupons', 'reviews', 'settings'];
+      sections.forEach(s => {
+        const el = document.getElementById(`sec-${s}`);
+        if (el) el.style.display = (s === secId) ? 'block' : 'none';
+      });
+      window.scrollTo(0, 0);
+    }
+
+    // ==========================================
+    // 1. MULTI-PHOTO UPLOAD & STOCK CONTROL
+    // ==========================================
+    function triggerSlotUpload(idx) {
+      activeSlotIndex = idx;
+      document.getElementById('slotFileInput').click();
+    }
+
+    function handleSlotFile(input) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
         const reader = new FileReader();
         reader.onload = function(e) {
-          const img = new Image();
-          img.onload = function() {
-            // Compress using Canvas to max width 800px & 0.8 quality
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 800;
-            const MAX_HEIGHT = 800;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height;
-                height = MAX_HEIGHT;
-              }
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
-            document.getElementById('previewImgEl').src = compressedPhotoBase64;
-            document.getElementById('uploadPrompt').style.display = 'none';
-            document.getElementById('previewBox').style.display = 'block';
-            document.getElementById('photoSizeLabel').textContent = `✓ ছবি প্রস্তুত হয়েছে (${Math.round(compressedPhotoBase64.length / 1024)} KB)`;
-          };
-          img.src = e.target.result;
+          compressImage(e.target.result, 800, 0.8, function(compressed) {
+            uploadedSlotImages[activeSlotIndex] = compressed;
+            document.getElementById(`slot-img-${activeSlotIndex}`).src = compressed;
+            document.getElementById(`slot-img-${activeSlotIndex}`).style.display = 'block';
+            document.getElementById(`slot-del-${activeSlotIndex}`).style.display = 'flex';
+            document.getElementById(`slot-placeholder-${activeSlotIndex}`).style.display = 'none';
+          });
         };
         reader.readAsDataURL(file);
       }
     }
 
-    function clearSelectedPhoto() {
-      compressedPhotoBase64 = "";
-      document.getElementById('prodPhotoInput').value = "";
-      document.getElementById('previewBox').style.display = 'none';
-      document.getElementById('uploadPrompt').style.display = 'block';
+    function removeSlotPhoto(idx) {
+      uploadedSlotImages[idx] = "";
+      document.getElementById(`slot-img-${idx}`).style.display = 'none';
+      document.getElementById(`slot-del-${idx}`).style.display = 'none';
+      document.getElementById(`slot-placeholder-${idx}`).style.display = 'block';
     }
 
-    // 2. SUBMIT PRODUCT TO SHOP (Cloud + Local)
-    function submitProductToShop() {
-      const title = document.getElementById('p_title').value.trim();
-      const category = document.getElementById('p_category').value;
-      const price = parseFloat(document.getElementById('p_price').value);
-      const mrp = parseFloat(document.getElementById('p_mrp').value) || price * 1.5;
-      const desc = document.getElementById('p_desc').value.trim() || "১০০% প্রিমিয়াম এক্সক্লুসিভ কালেকশন।";
-      const photo = compressedPhotoBase64 || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400";
-
-      if (!title || !price) {
-        alert("দয়া করে প্রোডাক্টের নাম ও বিক্রয় মূল্য লিখুন!");
-        return;
-      }
-
-      const pType = ['necklace', 'earrings', 'bangles'].includes(category) ? 'jewel' : (category === 'kurti' ? 'kurti' : (category === 'bag' ? 'bag' : (category === 'perfume' ? 'perfume' : 'saree')));
-      const newProd = {
-        id: "NC-" + Math.floor(100 + Math.random() * 900),
-        title: title,
-        category: category,
-        type: pType,
-        price: price,
-        mrp: mrp,
-        upiOffer: Math.round(price * 0.95),
-        rating: 4.8,
-        reviews: Math.floor(20 + Math.random() * 100),
-        img: photo,
-        desc: desc,
-        date: new Date().toLocaleDateString('bn-IN')
+    function compressImage(src, maxDim, quality, callback) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let w = img.width;
+        let h = img.height;
+        if (w > h) {
+          if (w > maxDim) { h *= maxDim / w; w = maxDim; }
+        } else {
+          if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        callback(canvas.toDataURL('image/jpeg', quality));
       };
-
-      // 1. Save Locally
-      customProducts.unshift(newProd);
-      localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
-
-      // 2. If Cloud DB URL exists, send to Cloud Firebase in real-time!
-      const cloudUrl = localStorage.getItem('nc_cloud_db_url');
-      if (cloudUrl) {
-        const postUrl = cloudUrl.replace(/\/$/, '') + '/products.json';
-        fetch(postUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProd)
-        }).then(() => {
-          console.log("Uploaded to Cloud Database successfully!");
-        }).catch(err => console.log("Cloud sync note:", err));
-      }
-
-      alert("🎉 অভিনন্দন! নতুন প্রোডাক্টটি সফলভাবে লাইভ শপে আপলোড হয়েছে। কাস্টমারদের পেজে ফুটে উঠেছে।");
-      
-      // Reset Form
-      document.getElementById('p_title').value = "";
-      document.getElementById('p_price').value = "";
-      document.getElementById('p_mrp').value = "";
-      document.getElementById('p_desc').value = "";
-      clearSelectedPhoto();
-      renderAdminProductList();
+      img.src = src;
     }
 
-    // 3. INVENTORY DISPLAY & MANAGEMENT
-    function loadCustomProducts() {
+    function loadProductsData() {
       const stored = localStorage.getItem('nc_custom_products');
       if (stored) {
         try { customProducts = JSON.parse(stored); } catch(e) {}
       }
     }
 
-    function renderAdminProductList() {
-      const container = document.getElementById('adminProductList');
+    function submitProduct() {
+      const title = document.getElementById('prod_title').value.trim();
+      const cat = document.getElementById('prod_cat').value;
+      const price = parseFloat(document.getElementById('prod_price').value);
+      const mrp = parseFloat(document.getElementById('prod_mrp').value) || price * 1.5;
+      const desc = document.getElementById('prod_desc').value.trim() || "১০০% প্রিমিয়াম বুটিক শাড়ি কালেকশন।";
+
+      if (!title || !price) {
+        alert("দয়া করে প্রোডাক্টের নাম ও বিক্রয় মূল্য লিখুন!");
+        return;
+      }
+
+      const mainImg = uploadedSlotImages[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400";
+      const extraImages = uploadedSlotImages.filter((img, idx) => idx > 0 && img !== "");
+
+      const pType = ['necklace', 'earrings', 'bangles'].includes(cat) ? 'jewel' : (cat === 'kurti' ? 'kurti' : (cat === 'bag' ? 'bag' : (cat === 'perfume' ? 'perfume' : 'saree')));
+
+      const newProd = {
+        id: "NC-" + Math.floor(100 + Math.random() * 900),
+        title: title,
+        category: cat,
+        type: pType,
+        price: price,
+        mrp: mrp,
+        upiOffer: Math.round(price * 0.95),
+        inStock: true,
+        img: mainImg,
+        subImages: extraImages,
+        desc: desc,
+        date: new Date().toLocaleDateString('bn-IN')
+      };
+
+      customProducts.unshift(newProd);
+      localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
+
+      // Sync with cloud if configured
+      syncProductWithCloud(newProd);
+
+      alert("🎉 অভিনন্দন! নতুন প্রোডাক্ট সফলভাবে লাইভ শপে আপলোড হয়েছে।");
+
+      // Reset form
+      document.getElementById('prod_title').value = "";
+      document.getElementById('prod_price').value = "";
+      document.getElementById('prod_mrp').value = "";
+      document.getElementById('prod_desc').value = "";
+      for (let i = 0; i < 4; i++) removeSlotPhoto(i);
+
+      renderInventory();
+    }
+
+    function renderInventory() {
+      const container = document.getElementById('adminInventoryList');
       const allList = [...customProducts, ...DEFAULT_PRODUCTS];
-      document.getElementById('totalProdCount').textContent = allList.length;
+      document.getElementById('totalProductCount').textContent = allList.length;
 
       container.innerHTML = "";
       allList.forEach((p, idx) => {
         const isCustom = idx < customProducts.length;
+        const isStock = p.inStock !== false;
+        const stockBadge = isStock 
+          ? `<button class="stock-toggle-btn stock-in" onclick="toggleStockStatus(${idx}, ${isCustom})"><i class="fa-solid fa-circle-check"></i> ইন স্টক</button>`
+          : `<button class="stock-toggle-btn stock-out" onclick="toggleStockStatus(${idx}, ${isCustom})"><i class="fa-solid fa-circle-xmark"></i> স্টক শেষ</button>`;
+
         container.innerHTML += `
-          <div class="product-row">
-            <img src="${p.img}" class="product-thumb">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:10px; border-bottom:1px solid #f1f5f9; gap:8px;">
+            <img src="${p.img}" style="width:50px; height:50px; border-radius:8px; object-fit:cover; border:1px solid #cbd5e1;">
             <div style="flex:1;">
               <div style="font-size:0.85rem; font-weight:800; color:#0f172a; line-height:1.2;">${p.title}</div>
-              <div style="font-size:0.72rem; color:var(--primary); font-weight:700;">₹${p.price} <span style="text-decoration:line-through; color:#94a3b8;">₹${p.mrp}</span> • ${p.category.toUpperCase()}</div>
+              <div style="font-size:0.72rem; color:var(--primary); font-weight:700;">₹${p.price} • ${p.category.toUpperCase()}</div>
+              <div style="margin-top:4px;">${stockBadge}</div>
             </div>
-            ${isCustom ? `<button onclick="deleteCustomProduct(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i> মুছুন</button>` : `<span style="font-size:0.68rem; color:#94a3b8; font-weight:700;">ডিফল্ট</span>`}
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <button onclick="replaceSingleProductPhoto(${idx}, ${isCustom})" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; font-size:0.68rem; font-weight:700; cursor:pointer;">
+                <i class="fa-solid fa-camera"></i> ছবি বদলান
+              </button>
+              ${isCustom ? `<button onclick="deleteProduct(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:4px 8px; border-radius:6px; font-size:0.68rem; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i> মুছুন</button>` : ''}
+            </div>
           </div>
         `;
       });
     }
 
-    function deleteCustomProduct(index) {
-      if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি লাইভ শপ থেকে মুছে ফেলতে চান?")) {
-        customProducts.splice(index, 1);
+    function toggleStockStatus(idx, isCustom) {
+      if (isCustom) {
+        customProducts[idx].inStock = !(customProducts[idx].inStock !== false);
         localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
-        renderAdminProductList();
+      } else {
+        const defaultIdx = idx - customProducts.length;
+        DEFAULT_PRODUCTS[defaultIdx].inStock = !(DEFAULT_PRODUCTS[defaultIdx].inStock !== false);
+        localStorage.setItem('nc_default_stock_state', JSON.stringify(DEFAULT_PRODUCTS.map(p => ({ id: p.id, inStock: p.inStock }))));
+      }
+      renderInventory();
+    }
+
+    function replaceSingleProductPhoto(idx, isCustom) {
+      const fileInp = document.createElement('input');
+      fileInp.type = 'file';
+      fileInp.accept = 'image/*';
+      fileInp.onchange = function(e) {
+        if (fileInp.files && fileInp.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(ev) {
+            compressImage(ev.target.result, 800, 0.8, function(compressed) {
+              if (isCustom) {
+                customProducts[idx].img = compressed;
+                localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
+              } else {
+                const defaultIdx = idx - customProducts.length;
+                DEFAULT_PRODUCTS[defaultIdx].img = compressed;
+              }
+              alert("✅ ছবি সফলভাবে পরিবর্তন হয়েছে!");
+              renderInventory();
+            });
+          };
+          reader.readAsDataURL(fileInp.files[0]);
+        }
+      };
+      fileInp.click();
+    }
+
+    function deleteProduct(idx) {
+      if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি মুছে ফেলতে চান?")) {
+        customProducts.splice(idx, 1);
+        localStorage.setItem('nc_custom_products', JSON.stringify(customProducts));
+        renderInventory();
       }
     }
 
-    // 4. LOGO MANAGEMENT
-    function loadSavedLogo() {
-      const savedLogo = localStorage.getItem('nc_boutique_logo');
-      const img1 = document.getElementById('adminHeaderLogo');
-      const img2 = document.getElementById('currentLogoPreview');
-      if (savedLogo) {
-        img1.src = savedLogo;
-        img2.src = savedLogo;
-      }
-    }
-
-    function uploadAdminLogo(input) {
+    // ==========================================
+    // 2. VIDEO REELS MANAGEMENT
+    // ==========================================
+    function handleReelCoverPhoto(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const base64 = e.target.result;
-          localStorage.setItem('nc_boutique_logo', base64);
-          loadSavedLogo();
-          alert("🎉 অভিনন্দন! দোকানের লোগো সফলভাবে আপডেট হয়েছে।");
+          compressImage(e.target.result, 600, 0.8, function(compressed) {
+            currentReelCoverPhoto = compressed;
+            document.getElementById('reel_cover_preview_img').src = compressed;
+            document.getElementById('reel_cover_preview_box').style.display = 'block';
+          });
         };
         reader.readAsDataURL(input.files[0]);
       }
     }
 
-    function resetToGitHubLogo() {
-      localStorage.removeItem('nc_boutique_logo');
-      const img1 = document.getElementById('adminHeaderLogo');
-      const img2 = document.getElementById('currentLogoPreview');
-      img1.src = 'logo.png?v=' + Date.now();
-      img2.src = 'logo.png?v=' + Date.now();
-      alert("গিটহাবের logo.png-তে রিসেট করা হয়েছে!");
+    function submitReel() {
+      const title = document.getElementById('reel_title').value.trim();
+      const pTitle = document.getElementById('reel_product_title').value.trim() || title;
+      const price = parseFloat(document.getElementById('reel_price').value) || 799;
+      const mrp = parseFloat(document.getElementById('reel_mrp').value) || price * 1.5;
+      const vidUrl = document.getElementById('reel_video_url').value.trim();
+      const cover = currentReelCoverPhoto || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
+
+      if (!title) {
+        alert("দয়া করে রিলসের শিরোনাম লিখুন!");
+        return;
+      }
+
+      const reels = JSON.parse(localStorage.getItem('nc_reels') || '[]');
+      const newReel = {
+        id: "REEL-" + Date.now(),
+        title: title,
+        productTitle: pTitle,
+        price: price,
+        mrp: mrp,
+        badge: "★ পুজো স্পেশাল ভিডিও",
+        coverImg: cover,
+        videoUrl: vidUrl,
+        date: new Date().toLocaleDateString('bn-IN')
+      };
+
+      reels.unshift(newReel);
+      localStorage.setItem('nc_reels', JSON.stringify(reels));
+
+      alert("🎉 রিলস ভিডিও গ্রাহকদের অ্যাপে সফলভাবে লাইভ হয়েছে!");
+      document.getElementById('reel_title').value = '';
+      document.getElementById('reel_product_title').value = '';
+      document.getElementById('reel_price').value = '';
+      document.getElementById('reel_mrp').value = '';
+      document.getElementById('reel_video_url').value = '';
+      currentReelCoverPhoto = "";
+      document.getElementById('reel_cover_preview_box').style.display = 'none';
+
+      renderReels();
     }
 
-    // 5. CLOUD URL
-    function loadSavedCloudUrl() {
-      const saved = localStorage.getItem('nc_cloud_db_url');
-      if (saved) document.getElementById('cloudDbUrlInput').value = saved;
+    function renderReels() {
+      const container = document.getElementById('adminReelsList');
+      const reels = JSON.parse(localStorage.getItem('nc_reels') || '[]');
+      document.getElementById('totalReelsCount').textContent = reels.length;
+
+      if (reels.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:16px; color:#94a3b8; font-size:0.8rem;">কোনো রিলস পোস্ট করা নেই। উপরে নতুন রিলস পোস্ট করুন।</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      reels.forEach((r, idx) => {
+        container.innerHTML += `
+          <div style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #f1f5f9;">
+            <img src="${r.coverImg}" style="width:50px; height:70px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1;">
+            <div style="flex:1;">
+              <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">${r.title}</div>
+              <div style="font-size:0.75rem; color:var(--primary); font-weight:700;">শাড়ি: ${r.productTitle} (₹${r.price})</div>
+              <div style="font-size:0.68rem; color:#64748b;">${r.date}</div>
+            </div>
+            <button onclick="deleteReel(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">
+              <i class="fa-solid fa-trash"></i> মুছুন
+            </button>
+          </div>
+        `;
+      });
     }
 
-    function saveCloudDbUrl() {
-      const url = document.getElementById('cloudDbUrlInput').value.trim();
-      localStorage.setItem('nc_cloud_db_url', url);
-      alert("✅ ক্লাউড ডাটাবেস লিংক সেভ হয়েছে! এখন যেকোনো ফটো আপলোড সাথে সাথে ক্লাউডে সিঙ্ক হবে।");
+    function deleteReel(idx) {
+      if (confirm("আপনি কি এই রিলস ভিডিওটি মুছে ফেলতে চান?")) {
+        const reels = JSON.parse(localStorage.getItem('nc_reels') || '[]');
+        reels.splice(idx, 1);
+        localStorage.setItem('nc_reels', JSON.stringify(reels));
+        renderReels();
+      }
     }
 
-    // 6. CUSTOMER ORDERS & STATUS
-    function renderCustomerOrders() {
-      const container = document.getElementById('adminOrdersContainer');
+    // ==========================================
+    // 3. ORDERS & 1-CLICK DELIVERY SLIP (CHALLAN)
+    // ==========================================
+    function renderOrdersList() {
+      const container = document.getElementById('adminOrdersListFull');
       const orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
 
       if (orders.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.85rem;">কোনো নতুন কাস্টমার অর্ডার নেই।</div>';
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.85rem;">কোনো কাস্টমার অর্ডার নেই।</div>';
         return;
       }
 
@@ -599,22 +1011,25 @@
       orders.forEach(o => {
         const giftBadge = o.isGift ? '<span style="background:#fae8ff; color:#86198f; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800;">🎁 গিফট র‍্যাপ</span>' : '';
         container.innerHTML += `
-          <div class="order-card">
+          <div class="card" style="margin-bottom:12px; border:1px solid #cbd5e1;">
             <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.88rem;">
               <span>#${o.id} - ${o.name} ${giftBadge}</span>
               <span style="color:var(--primary);">₹${o.total}</span>
             </div>
             <div style="font-size:0.75rem; color:#64748b; margin:4px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
             <div style="font-size:0.75rem; color:#334155; margin-bottom:8px;"><strong>আইটেম:</strong> ${o.items.map(i => i.title).join(', ')}</div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:0.75rem; font-weight:700;">স্ট্যাটাস:</span>
-              <select onchange="updateOrderStatus('${o.id}', this.value)" style="flex:1; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <span style="font-size:0.72rem; font-weight:700;">স্ট্যাটাস:</span>
+              <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">
                 <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed (অর্ডার গৃহীত)</option>
                 <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed & Checked (প্যাক সম্পন্ন)</option>
                 <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery (বের হয়েছে)</option>
                 <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered (ডেলিভারি সম্পন্ন)</option>
               </select>
-              <button onclick="window.open('https://wa.me/91${o.phone}?text=নমস্কার ${encodeURIComponent(o.name)}, আপনার অর্ডার #${o.id} এর স্ট্যাটাস: ${o.status}', '_blank')" style="background:#25D366; color:#fff; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+              <button onclick="openDeliverySlipModal('${o.id}')" style="background:var(--primary); color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">
+                <i class="fa-solid fa-file-invoice"></i> চালান (Slip)
+              </button>
+              <button onclick="window.open('https://wa.me/91${o.phone}?text=নমস্কার ${encodeURIComponent(o.name)}, আপনার অর্ডার #${o.id} এর স্ট্যাটাস: ${o.status}', '_blank')" style="background:#25D366; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
                 <i class="fa-brands fa-whatsapp"></i> মেসেজ
               </button>
             </div>
@@ -630,15 +1045,231 @@
       alert("✅ অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
     }
 
-    function downloadProductsBackup() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(customProducts, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "nisha_creations_products_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+    function openDeliverySlipModal(orderId) {
+      const orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      const ord = orders.find(x => x.id === orderId);
+      if (!ord) return;
+      activeSlipData = ord;
+
+      const itemsRows = ord.items.map((it, idx) => `<div>${idx + 1}. ${it.title} - ₹${it.price}</div>`).join('');
+      const payDesc = ord.paymentMode === 'UPI' ? 'অনলাইন UPI (পেইড)' : '💵 ক্যাশ অন ডেলিভারি (COD)';
+
+      document.getElementById('slipPaperContent').innerHTML = `
+        <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:10px;">
+          <div style="font-size:1.1rem; font-weight:800; text-transform:uppercase;">নিশা ক্রিয়েশনস • হোম ডেলিভারি চালান</div>
+          <div style="font-size:0.72rem; color:#475569;">আমতা, হাওড়া - ৭১১৪০১ | হেল্পলাইন: ৯২৩৯৪১৩৫১৭</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.78rem;">
+          <span><strong>অর্ডার নং:</strong> #${ord.id}</span>
+          <span><strong>তারিখ:</strong> ${ord.date}</span>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:8px; border-radius:6px; margin-bottom:10px; font-size:0.78rem;">
+          <div><strong>গ্রাহকের নাম:</strong> ${ord.name}</div>
+          <div><strong>মোবাইল নম্বর:</strong> ${ord.phone}</div>
+          <div><strong>ডেলিভারি ঠিকানা:</strong> ${ord.address}</div>
+        </div>
+
+        <div style="margin-bottom:10px; font-size:0.78rem;">
+          <strong>অর্ডার আইটেমসমূহ:</strong>
+          <div style="padding-left:6px; margin-top:3px;">${itemsRows}</div>
+        </div>
+
+        <div style="border-top:2px dashed #0f172a; padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:0.72rem; color:#64748b;">পেমেন্ট মোড:</div>
+            <div style="font-weight:800; font-size:0.85rem;">${payDesc}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.72rem; color:#64748b;">কাস্টমারের থেকে সংগ্রহযোগ্য মোট বিল:</div>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--primary);">₹${ord.total}</div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:14px; font-size:0.68rem; color:#64748b; border-top:1px solid #e2e8f0; padding-top:6px;">
+          🙏 নিশা ক্রিয়েশনস থেকে শপিং করার জন্য ধন্যবাদ। ভিজিট করুন: nishacreations
+        </div>
+      `;
+
+      document.getElementById('slipModal').style.display = 'flex';
+    }
+
+    function closeSlipModal() {
+      document.getElementById('slipModal').style.display = 'none';
+    }
+
+    function shareSlipWhatsApp() {
+      if (!activeSlipData) return;
+      const text = `*📦 নিশা ক্রিয়েশনস - হোম ডেলিভারি চালান*%0A*অর্ডার নং:* #${activeSlipData.id}%0A*গ্রাহক:* ${activeSlipData.name}%0A*ফোন:* ${activeSlipData.phone}%0A*ঠিকানা:* ${activeSlipData.address}%0A%0A*আইটেম:*%0A${activeSlipData.items.map(i => `• ${i.title} (₹${i.price})`).join('%0A')}%0A%0A*সংগ্রহযোগ্য টাকা (COD):* ₹${activeSlipData.total}%0A*পেমেন্ট মোড:* ${activeSlipData.paymentMode}`;
+      window.open(`https://wa.me/91${activeSlipData.phone}?text=${text}`, '_blank');
+    }
+
+    // ==========================================
+    // 4. BANNER SETTINGS
+    // ==========================================
+    function loadBannerSettings() {
+      const banner = JSON.parse(localStorage.getItem('nc_banner_config') || '{}');
+      if (banner.title) document.getElementById('banner_title').value = banner.title;
+      if (banner.sub) document.getElementById('banner_sub').value = banner.sub;
+      if (banner.tag) document.getElementById('banner_tag').value = banner.tag;
+    }
+
+    function saveBannerSettings() {
+      const banner = {
+        title: document.getElementById('banner_title').value.trim() || "উৎসব স্পেশাল ফ্ল্যাট ৫০% ছাড়",
+        sub: document.getElementById('banner_sub').value.trim() || "আমতায় ফ্রি হোম ডেলিভারি ও আকর্ষণীয় উপহার",
+        tag: document.getElementById('banner_tag').value.trim() || "পুজো ধামাকা ২০২৬"
+      };
+      localStorage.setItem('nc_banner_config', JSON.stringify(banner));
+      alert("✅ হোম পেজের ব্যানার সফলভাবে আপডেট হয়েছে!");
+    }
+
+    // ==========================================
+    // 5. COUPON CODES MANAGER
+    // ==========================================
+    function createNewCoupon() {
+      const code = document.getElementById('coupon_code').value.trim().toUpperCase();
+      const disc = parseFloat(document.getElementById('coupon_discount').value);
+
+      if (!code || !disc) {
+        alert("দয়া করে কুপন কোড ও ছাড়ের পরিমাণ লিখুন!");
+        return;
+      }
+
+      const coupons = JSON.parse(localStorage.getItem('nc_coupons') || '[]');
+      coupons.unshift({ code: code, discount: disc, active: true });
+      localStorage.setItem('nc_coupons', JSON.stringify(coupons));
+
+      alert(`✅ নতুন কুপন ${code} সফলভাবে চালু হয়েছে!`);
+      document.getElementById('coupon_code').value = '';
+      document.getElementById('coupon_discount').value = '';
+      renderCoupons();
+    }
+
+    function renderCoupons() {
+      const container = document.getElementById('adminCouponsList');
+      const coupons = JSON.parse(localStorage.getItem('nc_coupons') || '[{"code":"NISHA50","discount":50,"active":true},{"code":"PUJA100","discount":100,"active":true}]');
+
+      container.innerHTML = "";
+      coupons.forEach((c, idx) => {
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f1f5f9;">
+            <div>
+              <span style="font-weight:800; color:var(--primary); font-size:0.9rem;">${c.code}</span>
+              <span style="font-size:0.75rem; color:#64748b; margin-left:8px;">(₹${c.discount} ছাড়)</span>
+            </div>
+            <button onclick="deleteCoupon(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:700; cursor:pointer;">
+              মুছুন
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    function deleteCoupon(idx) {
+      let coupons = JSON.parse(localStorage.getItem('nc_coupons') || '[]');
+      coupons.splice(idx, 1);
+      localStorage.setItem('nc_coupons', JSON.stringify(coupons));
+      renderCoupons();
+    }
+
+    // ==========================================
+    // 6. CUSTOMER REVIEWS MODERATION
+    // ==========================================
+    function renderReviews() {
+      const container = document.getElementById('adminReviewsList');
+      const reviews = JSON.parse(localStorage.getItem('nc_user_reviews') || '[]');
+
+      if (reviews.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:16px; color:#94a3b8; font-size:0.8rem;">এখনো কোনো গ্রাহক রিভিউ দেননি।</div>';
+        return;
+      }
+
+      container.innerHTML = "";
+      reviews.forEach((r, idx) => {
+        const photoTag = r.photo ? `<div style="margin-top:6px;"><img src="${r.photo}" style="width:70px; height:70px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1;"></div>` : '';
+        container.innerHTML += `
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.82rem;">
+              <span>${r.name} - ${r.product}</span>
+              <span style="color:#f59e0b;">${r.rating}★ (${r.ratingLabel || ''})</span>
+            </div>
+            <div style="font-size:0.78rem; color:#334155; margin:4px 0;">"${r.comment}"</div>
+            ${photoTag}
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+              <span style="font-size:0.68rem; color:#94a3b8;">${r.date}</span>
+              <button onclick="deleteReview(${idx})" style="background:#fee2e2; color:#ef4444; border:none; padding:3px 8px; border-radius:6px; font-size:0.68rem; font-weight:700; cursor:pointer;">
+                মুছুন
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function deleteReview(idx) {
+      if (confirm("আপনি কি এই রিভিউটি মুছে ফেলতে চান?")) {
+        let reviews = JSON.parse(localStorage.getItem('nc_user_reviews') || '[]');
+        reviews.splice(idx, 1);
+        localStorage.setItem('nc_user_reviews', JSON.stringify(reviews));
+        renderReviews();
+      }
+    }
+
+    // ==========================================
+    // 7. LOGO & CLOUD SYNC
+    // ==========================================
+    function loadLogo() {
+      const savedLogo = localStorage.getItem('nc_boutique_logo');
+      if (savedLogo) {
+        document.getElementById('adminHeaderLogo').src = savedLogo;
+        document.getElementById('adminLogoDisplay').src = savedLogo;
+      }
+    }
+
+    function uploadLogoFromAdmin(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          compressImage(e.target.result, 300, 0.9, function(compressed) {
+            localStorage.setItem('nc_boutique_logo', compressed);
+            loadLogo();
+            alert("🎉 দোকানের লোগো সফলভাবে আপডেট হয়েছে!");
+          });
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function resetLogoToGitHub() {
+      localStorage.removeItem('nc_boutique_logo');
+      document.getElementById('adminHeaderLogo').src = 'logo.png?v=' + Date.now();
+      document.getElementById('adminLogoDisplay').src = 'logo.png?v=' + Date.now();
+      alert("গিটহাবের মূল logo.png-তে রিসেট করা হয়েছে!");
+    }
+
+    function loadCloudUrl() {
+      const url = localStorage.getItem('nc_cloud_db_url');
+      if (url) document.getElementById('adminCloudUrlInput').value = url;
+    }
+
+    function saveAdminCloudUrl() {
+      const url = document.getElementById('adminCloudUrlInput').value.trim();
+      localStorage.setItem('nc_cloud_db_url', url);
+      alert("✅ ক্লাউড ডাটাবেস লিংক সেভ হয়েছে!");
+    }
+
+    function syncProductWithCloud(prod) {
+      const url = localStorage.getItem('nc_cloud_db_url');
+      if (url) {
+        fetch(url.replace(/\/$/, '') + '/products.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(prod)
+        }).catch(e => console.log('Cloud sync note:', e));
+      }
     }
   </script>
 </body>
-  </html>
+              </html>
