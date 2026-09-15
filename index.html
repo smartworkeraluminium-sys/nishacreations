@@ -766,7 +766,8 @@
   <header class="app-header">
     <div class="top-brand-bar">
       <div class="brand-logo-wrap" onclick="showScreen('home')">
-        <div class="brand-logo-icon">NC</div>
+        <img id="mainBrandLogoImg" src="logo.png" alt="Logo" class="brand-logo-img" onerror="handleLogoFallback(this)" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1.5px solid #f59e0b; display:none;">
+        <div class="brand-logo-icon" id="mainBrandLogoIcon">NC</div>
         <div>
           <div class="brand-title">Nisha Creations</div>
           <div class="brand-sub">নিশা ক্রিয়েশনস • এক্সক্লুসিভ বুটিক</div>
@@ -1178,9 +1179,24 @@
           <input type="number" id="new_mrp" placeholder="1499">
         </div>
       </div>
+      <!-- Boutique Custom Logo Upload Directly from Mobile -->
+      <div style="background:#fdf4ff; border:1.5px dashed #d946ef; padding:12px; border-radius:12px; margin-bottom:14px;">
+        <div style="font-size:0.82rem; font-weight:800; color:#86198f; margin-bottom:4px;">
+          <i class="fa-solid fa-camera"></i> দোকানের নিজস্ব লোগো সেট করুন:
+        </div>
+        <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">গ্যালারি থেকে আপনার লোগোর ছবি সিলেক্ট করুন (গিটহাবে তোলার দরকার নেই):</div>
+        <input type="file" id="custom_logo_input" accept="image/*" onchange="uploadCustomLogo(this)" style="font-size:0.75rem; width:100%;">
+      </div>
+
       <div class="form-group">
-        <label>ছবির লিংক (Image URL):</label>
-        <input type="text" id="new_img" placeholder="https://... বা ফটো লিংক">
+        <label>শাড়ি / গহনার ছবি (মোবাইল গ্যালারি থেকে বাছুন):</label>
+        <input type="file" id="new_img_file" accept="image/*" onchange="handleProductPhotoFile(this)" style="padding:6px; background:#f8fafc; border:1.5px dashed var(--primary); border-radius:8px; font-size:0.78rem; width:100%;">
+        <div id="new_img_preview_box" style="display:none; margin-top:8px; text-align:center;">
+          <img id="new_img_preview" src="" style="width:85px; height:85px; object-fit:cover; border-radius:10px; border:1px solid #cbd5e1; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+          <div style="font-size:0.68rem; color:#16a34a; font-weight:700; margin-top:2px;">✓ ছবি সিলেক্ট হয়েছে</div>
+        </div>
+        <div style="font-size:0.7rem; color:#94a3b8; margin-top:6px;">অথবা চাইলে অনলাইন ছবির লিংক দিতে পারেন:</div>
+        <input type="text" id="new_img" placeholder="https://... বা খালি রাখুন">
       </div>
       <div class="form-group">
         <label>বিবরণ:</label>
@@ -1355,7 +1371,8 @@
     const BOUTIQUE_PHONE = "919239413517"; // Official WhatsApp
 
     window.onload = function() {
-      renderProducts(products);
+      initBrandLogo();
+    renderProducts(products);
       updateCartBadge();
       renderOrders();
       updateCustomerAuthDisplay();
@@ -1906,7 +1923,8 @@
       showScreen('home');
       if (wishlist.length === 0) {
         alert("আপনার উইশলিস্টে কোনো প্রোডাক্ট সেভ করা নেই! প্রোডাক্টের ওপর হার্ট আইকন চাপুন।");
-        renderProducts(products);
+        initBrandLogo();
+    renderProducts(products);
       } else {
         renderProducts(products.filter(p => wishlist.includes(p.id)));
       }
@@ -1965,7 +1983,8 @@
     function filterByCategory(cat) {
       document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
       if (cat === 'all') {
-        renderProducts(products);
+        initBrandLogo();
+    renderProducts(products);
         document.querySelectorAll('.cat-item')[0].classList.add('active');
       } else if (cat === 'saree') {
         renderProducts(products.filter(p => p.type === 'saree'));
@@ -1978,7 +1997,8 @@
 
     function handleSearch(query) {
       const q = query.toLowerCase().trim();
-      if (!q) { renderProducts(products); return; }
+      if (!q) { initBrandLogo();
+    renderProducts(products); return; }
       const filtered = products.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
       renderProducts(filtered);
     }
@@ -1990,7 +2010,8 @@
         wishlist.push(id);
       }
       localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
-      renderProducts(products);
+      initBrandLogo();
+    renderProducts(products);
     }
 
     // Open PDP
@@ -2404,12 +2425,69 @@
       }
     }
 
+
+    // ==========================================
+    // LOGO & MOBILE GALLERY PHOTO UPLOAD LOGIC
+    // ==========================================
+    let uploadedProductImgBase64 = '';
+
+    function initBrandLogo() {
+      const customLogo = localStorage.getItem('nc_boutique_logo');
+      const logoImg = document.getElementById('mainBrandLogoImg');
+      const logoIcon = document.getElementById('mainBrandLogoIcon');
+
+      if (customLogo) {
+        logoImg.src = customLogo;
+        logoImg.style.display = 'block';
+        logoIcon.style.display = 'none';
+      } else {
+        // Try logo.png, if exists it loads, else onerror triggers handleLogoFallback
+        logoImg.style.display = 'block';
+        logoIcon.style.display = 'none';
+      }
+    }
+
+    function handleLogoFallback(imgEl) {
+      imgEl.style.display = 'none';
+      const iconEl = document.getElementById('mainBrandLogoIcon');
+      if (iconEl) iconEl.style.display = 'flex';
+    }
+
+    function uploadCustomLogo(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64 = e.target.result;
+          localStorage.setItem('nc_boutique_logo', base64);
+          const logoImg = document.getElementById('mainBrandLogoImg');
+          const logoIcon = document.getElementById('mainBrandLogoIcon');
+          logoImg.src = base64;
+          logoImg.style.display = 'block';
+          if (logoIcon) logoIcon.style.display = 'none';
+          alert("🎉 অভিনন্দন! নিশা ক্রিয়েশনসের নিজস্ব লোগো সফলভাবে সেট হয়েছে।");
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function handleProductPhotoFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedProductImgBase64 = e.target.result;
+          document.getElementById('new_img_preview').src = uploadedProductImgBase64;
+          document.getElementById('new_img_preview_box').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
     function addNewProductFromAdmin() {
       const title = document.getElementById('new_title').value.trim();
       const category = document.getElementById('new_category').value;
       const price = parseFloat(document.getElementById('new_price').value);
       const mrp = parseFloat(document.getElementById('new_mrp').value) || price * 1.5;
-      const img = document.getElementById('new_img').value.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
+      const img = uploadedProductImgBase64 || document.getElementById('new_img').value.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
       const desc = document.getElementById('new_desc').value.trim() || "১০০% প্রিমিয়াম বুটিক কালেকশন।";
 
       if (!title || !price) {
@@ -2438,7 +2516,8 @@
 
       products.unshift(newProd);
       localStorage.setItem('nc_products', JSON.stringify(products));
-      renderProducts(products);
+      initBrandLogo();
+    renderProducts(products);
 
       alert("🎉 নতুন প্রোডাক্ট সফলভাবে লাইভ শপে যুক্ত হয়েছে!");
       showScreen('home');
@@ -2486,4 +2565,4 @@
     }
   </script>
 </body>
- </html>
+      </html>
