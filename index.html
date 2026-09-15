@@ -783,9 +783,9 @@
           <i class="fa-regular fa-circle-user"></i>
         </button>
         <!-- Private Admin Settings Button (PIN Protected) -->
-        <button class="header-icon-btn" onclick="openAdminSecret()" title="Private Admin Settings (PIN)">
-          <i class="fa-solid fa-lock"></i>
-        </button>
+        <a class="header-icon-btn" href="admin.html" title="Owner Admin Portal" style="text-decoration:none; color:inherit;">
+          <i class="fa-solid fa-gear"></i>
+        </a>
         <!-- Cart -->
         <button class="header-icon-btn" onclick="openCartModal()" title="Cart">
           <i class="fa-solid fa-bag-shopping"></i>
@@ -1215,178 +1215,6 @@
     </div>
   </div>
 
-  <!-- ================= 9. SECRET ADMIN PANEL ================= -->
-  
-  <!-- ================= 6. DEDICATED CUSTOMER SETTINGS SCREEN ================= -->
-  <div id="screen-customer-settings" class="screen-view" style="padding:14px; padding-bottom:75px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-      <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;" id="t-custSettingsHeading">কাস্টমার সেটিংস ও অ্যাকাউন্ট</div>
-    </div>
-
-    <!-- Customer Profile Card -->
-    <div style="background:linear-gradient(135deg, #9c27b0, #c026d3); color:#fff; border-radius:16px; padding:16px; margin-bottom:14px; display:flex; align-items:center; gap:14px;">
-      <div style="width:50px; height:50px; border-radius:50%; background:#fff; color:var(--primary); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center;" id="custAvatarChar">👤</div>
-      <div>
-        <div style="font-size:1.05rem; font-weight:800;" id="custDisplayTitle">গ্রাহক অ্যাকাউন্ট</div>
-        <div style="font-size:0.75rem; opacity:0.9;" id="custDisplayPhone">লগইন করুন বা তথ্য সেভ করুন</div>
-        <div style="margin-top:6px; display:inline-block; background:rgba(255,255,255,0.25); padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:700;">
-          🪙 <span id="custDisplayCoins">150</span> নিশা রিওয়ার্ডস কয়েন
-        </div>
-      </div>
-    </div>
-
-    <!-- 1. Language Setting Card -->
-    <div class="settings-card">
-      <div class="settings-card-title">
-        <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
-        <span id="t-langSettingTitle">ভাষা নির্বাচন (Language Selection)</span>
-      </div>
-      <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;" id="t-langSettingSub">পছন্দের ভাষায় সম্পূর্ণ অ্যাপটি ব্যবহার করুন:</div>
-      <div class="lang-pill-wrap">
-        <button class="lang-pill-btn" id="btnLangBn" onclick="setLanguage('bn')">বাংলা (Bengali)</button>
-        <button class="lang-pill-btn" id="btnLangEn" onclick="setLanguage('en')">English</button>
-      </div>
-    </div>
-
-    <!-- 2. Customer Profile & Delivery Address Card -->
-    <div class="settings-card">
-      <div class="settings-card-title">
-        <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-        <span id="t-profileSettingTitle">আপনার বিবরণ ও ডেলিভারি ঠিকানা</span>
-      </div>
-      <div class="form-group">
-        <label id="t-lblCustName">আপনার নাম:</label>
-        <input type="text" id="settings_cust_name" placeholder="যেমন: রীতা দাস">
-      </div>
-      <div class="form-group">
-        <label id="t-lblCustPhone">মোবাইল নম্বর:</label>
-        <input type="text" id="settings_cust_phone" placeholder="যেমন: 9876543210">
-      </div>
-      <div class="form-group">
-        <label id="t-lblCustAddr">ডেলিভারি ঠিকানা (আমতা, হাওড়া):</label>
-        <textarea id="settings_cust_addr" rows="2" placeholder="পাড়া / গ্রাম / ল্যান্ডমার্ক (যেমন: আমতা চাঁদনী মোড়)"></textarea>
-      </div>
-      <button onclick="saveCustomerSettings()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer;" id="t-btnSaveProfile">
-        তথ্য সেভ করুন
-      </button>
-    </div>
-
-    <!-- 3. Quick Navigation Hub -->
-    <div class="settings-card">
-      <div class="settings-card-title">
-        <i class="fa-solid fa-bars" style="color:var(--primary);"></i>
-        <span id="t-quickLinksTitle">প্রয়োজনীয় সেবা</span>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button onclick="showScreen('orders')" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
-          <span><i class="fa-solid fa-truck-fast" style="color:var(--primary); margin-right:8px;"></i> <span id="t-linkOrders">আমার সমস্ত অর্ডার ও ট্র্যাকিং</span></span>
-          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
-        </button>
-        <button onclick="filterWishlistProducts()" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
-          <span><i class="fa-regular fa-heart" style="color:#e11d48; margin-right:8px;"></i> <span id="t-linkWishlist">পছন্দের শাড়ি ও গহনা তালিকা</span></span>
-          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
-        </button>
-        <button onclick="openReferModal()" style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 12px; border-radius:8px; font-size:0.82rem; font-weight:700; color:#334155; cursor:pointer;">
-          <span><i class="fa-solid fa-gift" style="color:#8b5cf6; margin-right:8px;"></i> <span id="t-linkRefer">রেফার করুন ও ৫০ টাকা ছাড় পান</span></span>
-          <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size:0.75rem;"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- 4. Direct Customer Support -->
-    <div class="settings-card">
-      <div class="settings-card-title">
-        <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
-        <span id="t-supportTitle">সরাসরি সহায়তা ও অর্ডার বুকিং</span>
-      </div>
-      <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;" id="t-supportSub">যেকোনো প্রশ্ন বা স্পেশাল ডিজাইনের জন্য নিশা দিদির সাথে যোগাযোগ করুন:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <a href="https://wa.me/919239413517?text=Hello%20Nisha%20Creations" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:6px; background:#25d366; color:#fff; text-decoration:none; padding:10px; border-radius:8px; font-size:0.78rem; font-weight:800;">
-          <i class="fa-brands fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="tel:9239413517" style="display:flex; align-items:center; justify-content:center; gap:6px; background:#f1f5f9; color:#334155; text-decoration:none; padding:10px; border-radius:8px; font-size:0.78rem; font-weight:800; border:1px solid #cbd5e1;">
-          <i class="fa-solid fa-phone"></i> সরাসরি ফোন
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-        <div style="font-size:1.1rem; font-weight:800; color:var(--primary);"><i class="fa-solid fa-lock"></i> প্রাইভেট অ্যাডমিন সেটিংস (Private Admin)</div>
-      </div>
-      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700;">বন্ধ করুন</button>
-    </div>
-
-    <!-- Upload New Product -->
-    <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:14px; margin-bottom:14px;">
-      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">+ নতুন শাড়ি / গহনা আপলোড করুন</div>
-      <div class="form-group">
-        <label>প্রোডাক্টের নাম:</label>
-        <input type="text" id="new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল)">
-      </div>
-      <div class="form-group">
-        <label>ক্যাটাগরি:</label>
-        <select id="new_category">
-          <option value="jamdani">ঢাকাই জামদানি শাড়ি (Jamdani)</option>
-          <option value="silk">সফট সিল্ক / কাতান শাড়ি (Silk)</option>
-          <option value="tant">তাঁত ও হ্যান্ডলুম সুতি শাড়ি (Tant)</option>
-          <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti)</option>
-          <option value="necklace">গহনা সেট (Jewellery Set)</option>
-          <option value="earrings">কানের দুল (Earrings)</option>
-          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
-          <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bag)</option>
-          <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfume)</option>
-        </select>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <div class="form-group">
-          <label>বিক্রয় মূল্য (Price ₹):</label>
-          <input type="number" id="new_price" placeholder="750">
-        </div>
-        <div class="form-group">
-          <label>আসল MRP (₹):</label>
-          <input type="number" id="new_mrp" placeholder="1499">
-        </div>
-      </div>
-      <!-- Boutique Custom Logo Upload Directly from Mobile -->
-      <div style="background:#fdf4ff; border:1.5px dashed #d946ef; padding:12px; border-radius:12px; margin-bottom:14px;">
-        <div style="font-size:0.82rem; font-weight:800; color:#86198f; margin-bottom:4px;">
-          <i class="fa-solid fa-camera"></i> দোকানের নিজস্ব লোগো সেট করুন:
-        </div>
-        <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">গ্যালারি থেকে আপনার লোগোর ছবি সিলেক্ট করুন (গিটহাবে তোলার দরকার নেই):</div>
-        <input type="file" id="custom_logo_input" accept="image/*" onchange="uploadCustomLogo(this)" style="font-size:0.75rem; width:100%;">
-      </div>
-
-      <div class="form-group">
-        <label>শাড়ি / গহনার ছবি (মোবাইল গ্যালারি থেকে বাছুন):</label>
-        <input type="file" id="new_img_file" accept="image/*" onchange="handleProductPhotoFile(this)" style="padding:6px; background:#f8fafc; border:1.5px dashed var(--primary); border-radius:8px; font-size:0.78rem; width:100%;">
-        <div id="new_img_preview_box" style="display:none; margin-top:8px; text-align:center;">
-          <img id="new_img_preview" src="" style="width:85px; height:85px; object-fit:cover; border-radius:10px; border:1px solid #cbd5e1; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-          <div style="font-size:0.68rem; color:#16a34a; font-weight:700; margin-top:2px;">✓ ছবি সিলেক্ট হয়েছে</div>
-        </div>
-        <div style="font-size:0.7rem; color:#94a3b8; margin-top:6px;">অথবা চাইলে অনলাইন ছবির লিংক দিতে পারেন:</div>
-        <input type="text" id="new_img" placeholder="https://... বা খালি রাখুন">
-      </div>
-      <div class="form-group">
-        <label>বিবরণ:</label>
-        <textarea id="new_desc" rows="2" placeholder="ফেব্রিক ও ব্লাউজ পিস বিবরণ..."></textarea>
-      </div>
-      <button onclick="addNewProductFromAdmin()" style="width:100%; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer;">
-        লাইভ শপে যোগ করুন
-      </button>
-    </div>
-
-    <!-- Live Customer Orders Management -->
-    <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:14px;">
-      <div style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:10px;">📋 কাস্টমারদের অর্ডার ও স্ট্যাটাস পরিবর্তন</div>
-      <div id="adminOrdersContainer"></div>
-    </div>
-  </div>
-
   <!-- ================= 10. BOTTOM NAVIGATION BAR (Like Meesho Image 17) ================= -->
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tab-home" onclick="showScreen('home')">
@@ -1784,6 +1612,53 @@
       alert(currentLang === 'bn' ? "✅ প্রোফাইল ও ঠিকানা সফলভাবে সেভ হয়েছে!" : "✅ Profile and address saved successfully!");
     }
 
+
+    // ==========================================
+    // REAL-TIME CLOUD & INVENTORY SYNC
+    // ==========================================
+    const CLOUD_DB_KEY = 'nc_cloud_db_url';
+
+    function loadAllProducts() {
+      // 1. Check if Cloud Database URL is configured
+      const cloudUrl = localStorage.getItem(CLOUD_DB_KEY);
+      if (cloudUrl) {
+        const cleanUrl = cloudUrl.replace(/\/$/, '') + '/products.json';
+        fetch(cleanUrl)
+          .then(r => r.json())
+          .then(data => {
+            if (data && typeof data === 'object') {
+              const cloudItems = Object.keys(data).map(k => ({ id: k, ...data[k] }));
+              products = [...cloudItems, ...INITIAL_PRODUCTS];
+            } else {
+              loadLocalCustomProducts();
+            }
+            renderProducts(products);
+          })
+          .catch(err => {
+            console.log('Cloud fetch notice:', err);
+            loadLocalCustomProducts();
+            renderProducts(products);
+          });
+      } else {
+        loadLocalCustomProducts();
+        renderProducts(products);
+      }
+    }
+
+    function loadLocalCustomProducts() {
+      const localCustom = localStorage.getItem('nc_custom_products');
+      if (localCustom) {
+        try {
+          const parsed = JSON.parse(localCustom);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            products = [...parsed, ...INITIAL_PRODUCTS];
+            return;
+          }
+        } catch(e) {}
+      }
+      products = [...INITIAL_PRODUCTS];
+    }
+
     // INITIAL PRODUCTS & CLOUD DATABASE SETUP
     // ==========================================
     const INITIAL_PRODUCTS = [
@@ -1917,7 +1792,7 @@
     window.onload = function() {
       initBrandLogo();
     applyLanguage();
-    renderProducts(products);
+    loadAllProducts();
       updateCartBadge();
       renderOrders();
       updateCustomerAuthDisplay();
@@ -2281,7 +2156,7 @@
         alert("আপনার উইশলিস্টে কোনো প্রোডাক্ট সেভ করা নেই! প্রোডাক্টের ওপর হার্ট আইকন চাপুন।");
         initBrandLogo();
     applyLanguage();
-    renderProducts(products);
+    loadAllProducts();
       } else {
         renderProducts(products.filter(p => wishlist.includes(p.id)));
       }
@@ -2342,7 +2217,7 @@
       if (cat === 'all') {
         initBrandLogo();
     applyLanguage();
-    renderProducts(products);
+    loadAllProducts();
         document.querySelectorAll('.cat-item')[0].classList.add('active');
       } else if (cat === 'saree') {
         renderProducts(products.filter(p => p.type === 'saree'));
@@ -2357,7 +2232,7 @@
       const q = query.toLowerCase().trim();
       if (!q) { initBrandLogo();
     applyLanguage();
-    renderProducts(products); return; }
+    loadAllProducts(); return; }
       const filtered = products.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
       renderProducts(filtered);
     }
@@ -2371,7 +2246,7 @@
       localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
       initBrandLogo();
     applyLanguage();
-    renderProducts(products);
+    loadAllProducts();
     }
 
     // Open PDP
@@ -2879,7 +2754,7 @@
       localStorage.setItem('nc_products', JSON.stringify(products));
       initBrandLogo();
     applyLanguage();
-    renderProducts(products);
+    loadAllProducts();
 
       alert("🎉 নতুন প্রোডাক্ট সফলভাবে লাইভ শপে যুক্ত হয়েছে!");
       showScreen('home');
@@ -2927,4 +2802,4 @@
     }
   </script>
 </body>
-  </html>
+          </html>
