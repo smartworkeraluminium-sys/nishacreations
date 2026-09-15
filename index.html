@@ -799,6 +799,557 @@
       border-radius: 6px;
       z-index: 2;
     }
+  
+    /* ===================================================
+       MEESHO STYLES: GENDER BUBBLE, COUNTDOWN, SORT, FILTER, 
+       SIZE & RETURN SELECTOR, 2-STEP CHECKOUT
+       =================================================== */
+    
+    /* 1. Gender & Collection Bubbles (ছবি ২) */
+    .gender-bubble-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 10px 14px 6px 14px;
+      background: #ffffff;
+      scrollbar-width: none;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .gender-bubble-strip::-webkit-scrollbar { display: none; }
+    .gender-bubble-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 68px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .gender-bubble-item:active { transform: scale(0.95); }
+    .gender-bubble-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #fdf4ff;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: all 0.2s;
+    }
+    .gender-bubble-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gender-bubble-item.active .gender-bubble-circle {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2.5px rgba(156, 39, 176, 0.35);
+      transform: scale(1.05);
+    }
+    .gender-bubble-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #475569;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+    .gender-bubble-item.active .gender-bubble-label {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* 2. Urgency Countdown Banner (ছবি ১) */
+    .urgency-countdown-banner {
+      margin: 10px 14px;
+      background: linear-gradient(135deg, #7b1fa2, #9c27b0 60%, #c026d3);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(156, 39, 176, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .urgency-countdown-banner::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+    }
+    .countdown-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .countdown-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .countdown-discount-badge {
+      background: #fef08a;
+      color: #854d0e;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .timer-boxes-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 6px 0;
+    }
+    .timer-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      padding: 4px 6px;
+      min-width: 42px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+    .timer-box-num {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-box-lbl {
+      font-size: 0.58rem;
+      color: #f5d0fe;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .timer-colon {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #fef08a;
+    }
+
+    /* 3. Sort Bottom Sheet */
+    .sort-modal-sheet {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 250;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .sort-modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      animation: slideUp 0.25s ease-out;
+    }
+    .sort-option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #1e293b;
+      transition: background 0.15s;
+    }
+    .sort-option-row:active { background: #fdf4ff; }
+    .sort-option-row.active {
+      color: var(--primary);
+      font-weight: 800;
+      background: #faf5ff;
+    }
+    .sort-option-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sort-option-row.active .sort-option-radio {
+      border-color: var(--primary);
+    }
+    .sort-option-row.active .sort-option-radio::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    /* 4. Meesho 2-Column Split Filter Modal (ছবি ৩) */
+    .filter-modal-sheet {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 260;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .filter-modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 500px;
+      height: 80vh;
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.25s ease-out;
+    }
+    .filter-split-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .filter-left-tabs {
+      width: 130px;
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      overflow-y: auto;
+    }
+    .filter-tab-item {
+      padding: 14px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    .filter-tab-item.active {
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: 800;
+      border-right: 3px solid var(--primary);
+    }
+    .filter-tab-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.62rem;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .filter-right-options {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      background: #ffffff;
+    }
+    .filter-option-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      font-size: 0.84rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+    .filter-option-checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* 5. Size & Return Policy Choices in PDP (ছবি ৪) */
+    .pdp-size-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .pdp-section-header {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .size-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .size-pill-btn {
+      padding: 8px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .size-pill-btn.active {
+      border-color: var(--primary);
+      background: #faf5ff;
+      color: var(--primary);
+      font-weight: 800;
+      box-shadow: 0 1px 4px rgba(156, 39, 176, 0.15);
+    }
+
+    /* Meesho Smart Return Choice Cards */
+    .return-choice-container {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .return-card {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+    .return-card.active {
+      border-color: var(--primary);
+      background: #fdf4ff;
+      box-shadow: 0 2px 8px rgba(156, 39, 176, 0.12);
+    }
+    .return-radio-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .return-card.active .return-radio-circle {
+      border-color: var(--primary);
+    }
+    .return-card.active .return-radio-circle::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .return-card-info { flex: 1; }
+    .return-card-price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .return-price-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .return-save-badge {
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .return-card-desc {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    /* 6. Meesho 2-Step Checkout Wizard (ছবি ৫ ও ৬) */
+    .checkout-step-nav {
+      display: flex;
+      background: #faf5ff;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f3e8ff;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .checkout-step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+    }
+    .checkout-step-indicator.active {
+      color: var(--primary);
+      font-weight: 800;
+    }
+    .checkout-step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+    .checkout-step-indicator.active .checkout-step-num {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Meesho Top Wave Offer Ribbon */
+    .top-offer-wave-ribbon {
+      background: linear-gradient(90deg, #15803d, #16a34a);
+      color: #ffffff;
+      padding: 7px 14px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Address Box */
+    .checkout-address-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .address-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .address-user-name {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .btn-change-addr {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .address-details-text {
+      font-size: 0.76rem;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    /* Delivery Estimate Box */
+    .delivery-date-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .delivery-truck-icon {
+      font-size: 1.4rem;
+      color: #16a34a;
+    }
+
+    /* Payment Option Card (Meesho Image 6) */
+    .payment-option-card {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+    .payment-option-card.active {
+      border-color: var(--primary);
+      background: #fdf4ff;
+      box-shadow: 0 2px 8px rgba(156, 39, 176, 0.12);
+    }
+    .payment-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .payment-radio-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .payment-option-card.active .payment-radio-dot {
+      border-color: var(--primary);
+    }
+    .payment-option-card.active .payment-radio-dot::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .upi-instant-save-badge {
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
   </style>
 </head>
 <body>
@@ -814,16 +1365,15 @@
           <div class="brand-sub" id="t-brandSub">এক্সক্লুসিভ বুটিক</div>
         </div>
       </div>
-      <div class="header-icons">
+            <div class="header-icons">
         <!-- Quick Language Switcher Button -->
         <button class="header-icon-btn" onclick="toggleLanguage()" title="Switch Language / ভাষা পরিবর্তন">
           <span id="langQuickBadge" style="font-size:0.75rem; font-weight:800; color:var(--primary); background:#fdf4ff; border:1px solid #f0abfc; padding:3px 7px; border-radius:6px;">EN</span>
         </button>
-        <!-- Customer Settings Button -->
-        <button class="header-icon-btn" onclick="showScreen('customer-settings')" title="Customer Settings" id="userAuthIconBtn">
+        <!-- Customer Account / Profile Button (No Gear) -->
+        <button class="header-icon-btn" onclick="showScreen('customer-settings')" title="My Account" id="userAuthIconBtn">
           <i class="fa-regular fa-circle-user"></i>
         </button>
-        <!-- Private Admin Settings Button (PIN Protected) -->
         <!-- Cart -->
         <button class="header-icon-btn" onclick="openCartModal()" title="Cart">
           <i class="fa-solid fa-bag-shopping"></i>
@@ -869,6 +1419,86 @@
   <main id="screen-home" class="screen-view active">
 
     <!-- Circular Story Category Strip (Like Meesho Image 17) -->
+        <!-- 1. Gender & Collection Bubbles (Meesho Style Image 2) -->
+    <div class="gender-bubble-strip">
+      <div class="gender-bubble-item active" id="gbub-all" onclick="filterByGender('all')">
+        <div class="gender-bubble-circle" style="background:#fdf4ff; border-color:var(--primary);">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); font-size:1.3rem;"></i>
+        </div>
+        <div class="gender-bubble-label">সব কালেকশন</div>
+      </div>
+
+      <div class="gender-bubble-item" id="gbub-women" onclick="filterByGender('women')">
+        <div class="gender-bubble-circle">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70" alt="Women">
+        </div>
+        <div class="gender-bubble-label">👩 Women (শাড়ি ও কুর্তি)</div>
+      </div>
+
+      <div class="gender-bubble-item" id="gbub-girls" onclick="filterByGender('girls')">
+        <div class="gender-bubble-circle">
+          <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70" alt="Girls">
+        </div>
+        <div class="gender-bubble-label">👧 Girls (ফ্রক ও লেহেঙ্গা)</div>
+      </div>
+
+      <div class="gender-bubble-item" id="gbub-saree" onclick="filterByGender('saree')">
+        <div class="gender-bubble-circle">
+          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=160&auto=format&fit=crop&q=70" alt="Sarees">
+        </div>
+        <div class="gender-bubble-label">🥻 শাড়ির ভাণ্ডার</div>
+      </div>
+
+      <div class="gender-bubble-item" id="gbub-jewel" onclick="filterByGender('jewel')">
+        <div class="gender-bubble-circle">
+          <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70" alt="Jewels">
+        </div>
+        <div class="gender-bubble-label">💎 গহনা ও অ্যাক্সেসরিজ</div>
+      </div>
+    </div>
+
+    <!-- 2. Urgency Sale Countdown Banner (Meesho Style Image 1) -->
+    <div class="urgency-countdown-banner">
+      <div class="countdown-top-row">
+        <div class="countdown-title">
+          <i class="fa-solid fa-fire-flame-curved" style="color:#fef08a;"></i>
+          <span>PUJA MEGA SALE LIVE</span>
+        </div>
+        <span class="countdown-discount-badge">UPTO ৭০% পর্যন্ত ছাড়</span>
+      </div>
+      <div style="font-size:0.75rem; color:#fdf4ff; margin-bottom:4px; font-weight:600;">
+        আমতায় ২ ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:
+      </div>
+      
+      <!-- Live Realtime Timer -->
+      <div class="timer-boxes-row">
+        <div class="timer-box">
+          <div class="timer-box-num" id="timerDays">02</div>
+          <div class="timer-box-lbl">দিন</div>
+        </div>
+        <span class="timer-colon">:</span>
+        <div class="timer-box">
+          <div class="timer-box-num" id="timerHours">14</div>
+          <div class="timer-box-lbl">ঘণ্টা</div>
+        </div>
+        <span class="timer-colon">:</span>
+        <div class="timer-box">
+          <div class="timer-box-num" id="timerMinutes">35</div>
+          <div class="timer-box-lbl">মিনিট</div>
+        </div>
+        <span class="timer-colon">:</span>
+        <div class="timer-box">
+          <div class="timer-box-num" id="timerSeconds">42</div>
+          <div class="timer-box-lbl">সেকেন্ড</div>
+        </div>
+        <div style="margin-left:auto;">
+          <button onclick="scrollToProducts()" style="background:#fef08a; color:#78350f; border:none; padding:7px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+            অর্ডার করুন ❯
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="category-scroll">
       <div class="cat-item active" onclick="filterByCategory('all')">
         <div class="cat-bubble"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:1.4rem; color:var(--primary);"></i></div>
@@ -926,10 +1556,14 @@
 
     <!-- Filter & Sort Strip -->
     <div class="filter-bar">
-      <button class="filter-btn" onclick="toggleSort()"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort</button>
-      <button class="filter-btn" onclick="filterByCategory('saree')">শাড়ি কালেকশন</button>
-      <button class="filter-btn" onclick="filterByCategory('jewel')">গহনা</button>
-      <button class="filter-btn"><i class="fa-solid fa-sliders"></i> Filters</button>
+      <button class="filter-btn" id="btnSortModalTrigger" onclick="openSortModal()">
+        <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="sortBtnLabel">Sort</span>
+      </button>
+      <button class="filter-btn" onclick="filterByGender('women')">👩 Women</button>
+      <button class="filter-btn" onclick="filterByGender('girls')">👧 Girls</button>
+      <button class="filter-btn" onclick="openAdvancedFilterModal()">
+        <i class="fa-solid fa-sliders"></i> Filters <span id="activeFilterBadge" style="display:none; background:var(--primary); color:#fff; font-size:0.65rem; padding:1px 6px; border-radius:10px; margin-left:2px;"></span>
+      </button>
     </div>
 
     <!-- 2-Column Product Grid -->
@@ -1075,6 +1709,54 @@
       <div class="upi-badge" style="margin-top:6px; font-size:0.75rem; padding:4px 8px;">
         <i class="fa-solid fa-tags"></i> <span id="pdpUpiOffer">UPI দিয়ে পেমেন্টে অতিরিক্ত ছাড়!</span>
       </div>
+
+      <!-- 4. Size Selection (Meesho Image 4) -->
+      <div class="pdp-size-section">
+        <div class="pdp-section-header">
+          <span>সাইজ নির্বাচন করুন (Select Size):</span>
+          <span style="font-size:0.72rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> পারফেক্ট ফিটিং</span>
+        </div>
+        <div class="size-btn-group" id="pdpSizeBtnGroup">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- 5. Smart Return Choice Cards (Meesho Special - ছবি ৪) -->
+      <div class="return-choice-container">
+        <div class="pdp-section-header">
+          <span>রিটার্ন পলিসি ও বিশেষ ছাড় নির্বাচন:</span>
+          <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">Meesho স্পেশাল</span>
+        </div>
+
+        <!-- Option 1: All Returns -->
+        <div class="return-card active" id="returnCardAll" onclick="selectReturnChoice('all')">
+          <div class="return-radio-circle"></div>
+          <div class="return-card-info">
+            <div class="return-card-price-row">
+              <span class="return-price-val" id="returnPriceAll">₹428</span>
+              <span style="font-size:0.78rem; font-weight:700; color:#475569;">(সব ধরণের রিটার্ন সুবিধা)</span>
+            </div>
+            <div class="return-card-desc">
+              পছন্দ না হলে, সাইজ না মিললে বা অন্য যেকোনো কারণে ৭ দিনের মধ্যে সহজ রিটার্ন ও পরিবর্তন।
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 2: Wrong/Defective Returns Only (₹10 Discount) -->
+        <div class="return-card" id="returnCardDefective" onclick="selectReturnChoice('defective')">
+          <div class="return-radio-circle"></div>
+          <div class="return-card-info">
+            <div class="return-card-price-row">
+              <span class="return-price-val" id="returnPriceDefective" style="color:#16a34a;">₹418</span>
+              <span class="return-save-badge"><i class="fa-solid fa-tag"></i> Save ₹10</span>
+            </div>
+            <div class="return-card-desc">
+              শুধুমাত্র ছেঁড়া বা ভুল শাড়ি এলে রিটার্ন প্রযোজ্য। এতে দোকানদার ও কাস্টমার উভয়ের অতিরিক্ত সাশ্রয় হয়!
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       <!-- Complete Look Matching Jewelry Recommendation (Idea 2-b) -->
       <div class="matching-box" id="pdpMatchingBox">
@@ -1283,6 +1965,142 @@
     </div>
   </div>
 
+  
+  <!-- ================= 11. MEESHO SORT BOTTOM SHEET MODAL (ছবি ১) ================= -->
+  <div id="sortModal" class="sort-modal-sheet" onclick="closeSortModalOnOutside(event)">
+    <div class="sort-modal-content" onclick="event.stopPropagation()">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:0.95rem; font-weight:800; color:#0f172a;">
+          <i class="fa-solid fa-arrow-down-short-wide" style="color:var(--primary); margin-right:6px;"></i> শাড়ি ও পোশাক সাজান (Sort By)
+        </div>
+        <button onclick="closeSortModal()" style="background:transparent; border:none; font-size:1.2rem; color:#64748b; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="sort-option-row active" id="sort-opt-relevance" onclick="applySortOption('relevance', 'জনপ্রিয় শাড়ি (Relevance)')">
+        <div>
+          <div style="font-weight:700;">🌟 জনপ্রিয় শাড়ি (Relevance)</div>
+          <div style="font-size:0.72rem; color:#64748b;">সর্বাধিক বিক্রিত ও জনপ্রিয় ডিজাইন আগে দেখাবে</div>
+        </div>
+        <div class="sort-option-radio"></div>
+      </div>
+
+      <div class="sort-option-row" id="sort-opt-new" onclick="applySortOption('new', 'নতুন কালেকশন (New Arrivals)')">
+        <div>
+          <div style="font-weight:700;">✨ নতুন কালেকশন (New Arrivals)</div>
+          <div style="font-size:0.72rem; color:#64748b;">সদ্য আপলোড হওয়া লেটেস্ট শাড়ি ও ড্রেস</div>
+        </div>
+        <div class="sort-option-radio"></div>
+      </div>
+
+      <div class="sort-option-row" id="sort-opt-price-asc" onclick="applySortOption('price-asc', 'দাম: কম থেকে বেশি')">
+        <div>
+          <div style="font-weight:700;">📉 কম থেকে বেশি দাম (Price: Low to High)</div>
+          <div style="font-size:0.72rem; color:#64748b;">বাজেট অনুযায়ী কেনাকাটার সুবিধা</div>
+        </div>
+        <div class="sort-option-radio"></div>
+      </div>
+
+      <div class="sort-option-row" id="sort-opt-price-desc" onclick="applySortOption('price-desc', 'দাম: বেশি থেকে কম')">
+        <div>
+          <div style="font-weight:700;">📈 বেশি থেকে কম দাম (Price: High to Low)</div>
+          <div style="font-size:0.72rem; color:#64748b;">প্রিমিয়াম ও ব্রাইডাল লাক্সারি শাড়ি</div>
+        </div>
+        <div class="sort-option-radio"></div>
+      </div>
+
+      <div class="sort-option-row" id="sort-opt-rating" onclick="applySortOption('rating', 'রেটিং: ৪.৫+ স্টার')">
+        <div>
+          <div style="font-weight:700;">⭐ কাস্টমার রেটিং (Customer Rating)</div>
+          <div style="font-size:0.72rem; color:#64748b;">সেরা রেটিং প্রাপ্ত ৫-স্টার শাড়ি</div>
+        </div>
+        <div class="sort-option-radio"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 12. MEESHO 2-COLUMN SPLIT FILTER MODAL (ছবি ৩) ================= -->
+  <div id="advancedFilterModal" class="filter-modal-sheet" onclick="closeAdvancedFilterOnOutside(event)">
+    <div class="filter-modal-content" onclick="event.stopPropagation()">
+      <!-- Top Header -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #e2e8f0;">
+        <div style="font-size:0.95rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-sliders" style="color:var(--primary);"></i> ফিল্টার নির্বাচন করুন (Filters)
+        </div>
+        <button onclick="closeAdvancedFilterModal()" style="background:transparent; border:none; font-size:1.2rem; color:#64748b; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- 2-Column Split Body -->
+      <div class="filter-split-body">
+        <!-- Left Column: Tabs -->
+        <div class="filter-left-tabs">
+          <div class="filter-tab-item active" id="ftab-fabric" onclick="switchFilterTab('fabric')">
+            <span>🧵 ফ্যাব্রিক</span>
+            <span class="filter-tab-badge" id="fbadge-fabric" style="display:none;">0</span>
+          </div>
+          <div class="filter-tab-item" id="ftab-color" onclick="switchFilterTab('color')">
+            <span>🎨 রং</span>
+            <span class="filter-tab-badge" id="fbadge-color" style="display:none;">0</span>
+          </div>
+          <div class="filter-tab-item" id="ftab-price" onclick="switchFilterTab('price')">
+            <span>💰 বাজেট</span>
+            <span class="filter-tab-badge" id="fbadge-price" style="display:none;">0</span>
+          </div>
+          <div class="filter-tab-item" id="ftab-occasion" onclick="switchFilterTab('occasion')">
+            <span>🎉 অনুষ্ঠান</span>
+            <span class="filter-tab-badge" id="fbadge-occasion" style="display:none;">0</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Checkbox Options -->
+        <div class="filter-right-options">
+          <!-- Fabric Options Panel -->
+          <div id="fpanel-fabric" class="filter-options-panel">
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="cotton" onchange="updateFilterBadgeCount()"> <span>খাঁটি সুতি (Pure Cotton)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="jamdani" onchange="updateFilterBadgeCount()"> <span>ঢাকাই জামদানি (Jamdani)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="silk" onchange="updateFilterBadgeCount()"> <span>সফট সিল্ক / কাতান (Silk)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="tant" onchange="updateFilterBadgeCount()"> <span>শান্তিপুরী তাঁত (Tant)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="georgette" onchange="updateFilterBadgeCount()"> <span>জর্জেট ও শিফন (Georgette)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="organza" onchange="updateFilterBadgeCount()"> <span>অরগাঞ্জা (Organza)</span></label>
+          </div>
+
+          <!-- Color Options Panel -->
+          <div id="fpanel-color" class="filter-options-panel" style="display:none;">
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="red" onchange="updateFilterBadgeCount()"> <span>🔴 লাল (Traditional Red)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="pink" onchange="updateFilterBadgeCount()"> <span>🌸 রানী গোলাপী (Rani Pink)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="yellow" onchange="updateFilterBadgeCount()"> <span>🟡 হলুদ (Festive Yellow)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="blue" onchange="updateFilterBadgeCount()"> <span>🔵 রয়্যাল ব্লু (Royal Blue)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="green" onchange="updateFilterBadgeCount()"> <span>🟢 সবুজ (Emerald Green)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="pastel" onchange="updateFilterBadgeCount()"> <span>⚪ প্যাস্টেল শেড (Pastel)</span></label>
+          </div>
+
+          <!-- Price Options Panel -->
+          <div id="fpanel-price" class="filter-options-panel" style="display:none;">
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="under500" onchange="updateFilterBadgeCount()"> <span>₹৫০০-এর নিচে (Under ₹500)</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="500to1000" onchange="updateFilterBadgeCount()"> <span>₹৫০০ - ₹১০০০ টাকা</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="above1000" onchange="updateFilterBadgeCount()"> <span>₹১০০০+ টাকা (প্রিমিয়াম)</span></label>
+          </div>
+
+          <!-- Occasion Options Panel -->
+          <div id="fpanel-occasion" class="filter-options-panel" style="display:none;">
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="wedding" onchange="updateFilterBadgeCount()"> <span>👰 বিয়ে বাড়ি ও রিসেপশন</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="puja" onchange="updateFilterBadgeCount()"> <span>🪔 পুজো ও উৎসব স্পেশাল</span></label>
+            <label class="filter-option-checkbox-row"><input type="checkbox" value="daily" onchange="updateFilterBadgeCount()"> <span>☀️ রোজকার আরামদায়ক পরিধান</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid #e2e8f0; background:#f8fafc;">
+        <button onclick="clearAllAdvancedFilters()" style="background:transparent; border:none; color:#64748b; font-size:0.85rem; font-weight:700; cursor:pointer;">
+          সব মুছুন (Clear All)
+        </button>
+        <button onclick="applyAdvancedFilters()" style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:10px 24px; border-radius:10px; font-size:0.88rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(156,39,176,0.3);">
+          ফিল্টার প্রয়োগ করুন <span id="fapplyCountSpan"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= 6. CUSTOMER CLOUD ACCOUNT MODAL ================= -->
   <div id="customerAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:210; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#fff; width:100%; max-width:400px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.2);">
@@ -1332,57 +2150,197 @@
   </div>
 
   <!-- ================= 7. CART & CHECKOUT MODAL ================= -->
-  <div id="cartModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-end; justify-content:center;">
-    <div style="background:#fff; width:100%; max-width:500px; max-height:88vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; overflow:hidden; animation:slideUp 0.2s ease-out;">
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border);">
-        <div style="font-size:1rem; font-weight:800; color:#0f172a;">আপনার শপিং ব্যাগ (<span id="cartModalCount">0</span>)</div>
-        <button onclick="closeCartModal()" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+  <div id="cartModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:200; align-items:flex-end; justify-content:center;">
+    <div style="background:#fff; width:100%; max-width:500px; max-height:92vh; border-radius:22px 22px 0 0; display:flex; flex-direction:column; overflow:hidden; animation:slideUp 0.25s ease-out;">
+      
+      <!-- Top Title & Close -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:0.95rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-bag-shopping" style="color:var(--primary);"></i>
+          <span>আপনার চেকআউট (<span id="cartModalCount">0</span>)</span>
+        </div>
+        <button onclick="closeCartModal()" style="background:transparent; border:none; font-size:1.2rem; color:#64748b; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div style="flex:1; overflow-y:auto; padding:14px;" id="cartItemsList"></div>
+      <!-- 2-Step Nav Indicator (Meesho Image 5) -->
+      <div class="checkout-step-nav">
+        <div class="checkout-step-indicator active" id="stepIndicator1">
+          <div class="checkout-step-num">১</div>
+          <span>অর্ডার ও ঠিকানা</span>
+        </div>
+        <i class="fa-solid fa-arrow-right" style="color:#cbd5e1; font-size:0.7rem;"></i>
+        <div class="checkout-step-indicator" id="stepIndicator2">
+          <div class="checkout-step-num">২</div>
+          <span>পেমেন্ট ও ছাড়</span>
+        </div>
+      </div>
 
-      <!-- Checkout Form -->
-      <div style="background:#f8fafc; border-top:1px solid var(--border); padding:14px;">
-        <!-- Gift Wrap Option (Idea 2-f) -->
-        <label style="display:flex; align-items:center; gap:8px; background:#fff; padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.78rem; font-weight:700; color:#7e22ce; margin-bottom:10px; cursor:pointer;">
-          <input type="checkbox" id="giftWrapCheck">
-          <span>🎁 উপহার হিসেবে পাঠান (ফ্রি গিফট র‍্যাপ ও মিষ্টি বার্তা কার্ড)</span>
-        </label>
+      <!-- Top Wave Offer Ribbon (Meesho Special) -->
+      <div class="top-offer-wave-ribbon">
+        <span><i class="fa-solid fa-bolt"></i> Extra ₹38 OFF on this order</span>
+        <span style="font-size:0.68rem; opacity:0.95;">UPI পেমেন্টে প্রযোজ্য</span>
+      </div>
 
-        <div style="font-size:0.82rem; font-weight:800; color:#0f172a; margin-bottom:6px;">আমতায় ডেলিভারি ঠিকানা:</div>
-        <input type="text" id="cust_name" placeholder="আপনার নাম" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <input type="text" id="cust_phone" placeholder="মোবাইল নম্বর (10 digit)" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <input type="text" id="cust_addr" placeholder="পাড়া / গ্রাম / রাস্তা (যেমন: আমতা চাঁদনী)" style="width:100%; padding:8px 10px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-
+      <!-- SCROLLABLE CONTENT BODY -->
+      <div style="flex:1; overflow-y:auto; padding:14px;">
         
-        <!-- Coupon Code Box (Synced with Admin Coupons) -->
-        <div style="display:flex; gap:6px; margin-bottom:10px;">
-          <input type="text" id="cartCouponInput" placeholder="কুপন কোড (যেমন: NISHA50 বা PUJA100)" style="flex:1; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.8rem; text-transform:uppercase; font-weight:700;">
-          <button type="button" onclick="applyCartCoupon()" style="background:#8b5cf6; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer;">
-            প্রয়োগ
+        <!-- STEP 1: REVIEW ORDER & DELIVERY ADDRESS (ছবি ৫) -->
+        <div id="checkoutStep1View">
+          <!-- Customer Address Card (With Change Button) -->
+          <div class="checkout-address-card">
+            <div class="address-header-row">
+              <div class="address-user-name" id="displayCustName">Saheb Ghanti</div>
+              <button type="button" class="btn-change-addr" onclick="toggleAddressEdit()">
+                <i class="fa-solid fa-pen"></i> <span id="btnChangeAddrLabel">Change</span>
+              </button>
+            </div>
+            <div style="font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:2px;" id="displayCustPhone">📞 9239413517</div>
+            <div class="address-details-text" id="displayCustAddr">
+              📍 vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401
+            </div>
+
+            <!-- Inline Address Edit Form -->
+            <div id="inlineAddressEditForm" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #cbd5e1;">
+              <input type="text" id="cust_name" placeholder="আপনার নাম" value="Saheb Ghanti" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+              <input type="text" id="cust_phone" placeholder="মোবাইল নম্বর" value="9239413517" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+              <textarea id="cust_addr" rows="2" placeholder="আমতার স্থায়ী ঠিকানা ও ল্যান্ডমার্ক" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401</textarea>
+              <button type="button" onclick="saveAddressInline()" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">
+                ঠিকানা সংরক্ষণ করুন
+              </button>
+            </div>
+          </div>
+
+          <!-- Estimated Delivery Date (ছবি ৫) -->
+          <div class="delivery-date-card">
+            <i class="fa-solid fa-truck-fast delivery-truck-icon"></i>
+            <div>
+              <div style="font-size:0.82rem; font-weight:800; color:#15803d;" id="estimatedDeliveryDateText">
+                ডেলিভারি: শুক্রবার, ১৮ই সেপ্টেম্বর
+              </div>
+              <div style="font-size:0.7rem; color:#166534;">আমতা ও সংলগ্ন এলাকায় মাত্র ২ দিনে এক্সপ্রেস হোম ডেলিভারি!</div>
+            </div>
+          </div>
+
+          <!-- Order Items List -->
+          <div style="font-size:0.84rem; font-weight:800; color:#0f172a; margin-bottom:8px;">অর্ডার সামগ্রী (Item Details):</div>
+          <div id="cartItemsList" style="margin-bottom:12px;"></div>
+
+          <!-- Coupon Code Box -->
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" id="couponInput" placeholder="কুপন কোড (যেমন: PUJA50)" style="flex:1; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.8rem; text-transform:uppercase;">
+            <button type="button" onclick="applyCouponCode()" style="background:#7e22ce; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer;">প্রয়োগ</button>
+          </div>
+          <div id="couponAppliedMsg" style="display:none; font-size:0.75rem; color:#16a34a; font-weight:700; margin-bottom:10px;"></div>
+
+          <!-- Gift Wrap Option -->
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.78rem; font-weight:700; color:#7e22ce; margin-bottom:12px; cursor:pointer;">
+            <input type="checkbox" id="giftWrapCheck">
+            <span>🎁 উপহার হিসেবে পাঠান (ফ্রি গিফট র‍্যাপ ও মিষ্টি বার্তা কার্ড)</span>
+          </label>
+
+          <!-- Price Summary Box -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:14px;">
+            <div style="font-size:0.82rem; font-weight:800; color:#0f172a; margin-bottom:8px;">মূল্য বিবরণী (Price Details):</div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:#64748b; margin-bottom:4px;">
+              <span>মোট আসল দাম (Total MRP):</span>
+              <span id="billTotalMrp">₹0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:#16a34a; margin-bottom:4px;">
+              <span>স্টোর বিশেষ ছাড়:</span>
+              <span id="billStoreDiscount">-₹0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:#16a34a; margin-bottom:4px;" id="billReturnDiscountRow">
+              <span>স্মার্ট রিটার্ন ছাড় (Wrong/Defective):</span>
+              <span id="billReturnDiscountVal">-₹10</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:#16a34a; margin-bottom:4px;">
+              <span>ডেলিভারি চার্জ (Delivery):</span>
+              <span style="font-weight:800;">FREE (ফ্রি)</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.95rem; font-weight:800; color:#0f172a; border-top:1px dashed #cbd5e1; padding-top:6px; margin-top:6px;">
+              <span>মোট পেয়িং অ্যামাউন্ট:</span>
+              <span style="color:var(--primary);" id="billStep1Total">₹0</span>
+            </div>
+          </div>
+
+          <!-- Continue to Step 2 Button -->
+          <button type="button" onclick="goToCheckoutStep2()" style="width:100%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:13px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 14px rgba(156,39,176,0.3); display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span>পেমেন্ট ও অতিরিক্ত ছাড়ে যান (Step 2)</span> <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
-        <div id="couponAppliedMsg" style="display:none; font-size:0.75rem; color:#16a34a; font-weight:700; margin-bottom:8px;"></div>
 
-        <!-- Payment Mode -->
-        <div style="display:flex; gap:8px; margin-bottom:10px;">
-          <label style="flex:1; background:#fff; border:1.5px solid var(--primary); padding:8px; border-radius:8px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
-            <input type="radio" name="pay_mode" value="COD" checked> 💵 Cash on Delivery
-          </label>
-          <label style="flex:1; background:#fff; border:1px solid #cbd5e1; padding:8px; border-radius:8px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
-            <input type="radio" name="pay_mode" value="UPI"> 📲 PhonePe / GPay
-          </label>
+        <!-- STEP 2: PAYMENT METHOD & UPI EXTRA DISCOUNT (ছবি ৬) -->
+        <div id="checkoutStep2View" style="display:none;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <button onclick="goToCheckoutStep1()" style="background:transparent; border:none; font-size:1.1rem; color:#475569; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+            <div style="font-size:0.88rem; font-weight:800; color:#0f172a;">পেমেন্ট পদ্ধতি নির্বাচন করুন (Payment Option):</div>
+          </div>
+
+          <!-- Option 1: Online UPI (Recommended with Extra ₹38 OFF) -->
+          <div class="payment-option-card active" id="payOptCardUpi" onclick="selectPaymentMethod('UPI')">
+            <div class="payment-card-left">
+              <div class="payment-radio-dot"></div>
+              <div>
+                <div style="display:flex; align-items:center;">
+                  <span style="font-size:0.88rem; font-weight:800; color:#0f172a;">অনলাইন পেমেন্ট (UPI)</span>
+                  <span class="upi-instant-save-badge">Save ₹38</span>
+                </div>
+                <div style="font-size:0.72rem; color:#16a34a; font-weight:700; margin-top:2px;">
+                  PhonePe / Google Pay / Paytm / QR Code
+                </div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.05rem; font-weight:800; color:#15803d;" id="payUpiFinalAmount">₹428</div>
+              <div style="font-size:0.68rem; color:#94a3b8; text-decoration:line-through;" id="payUpiStrikedAmount">₹466</div>
+            </div>
+          </div>
+
+          <!-- Inline UPI Payment Box -->
+          <div id="upiPaymentActionBox" style="background:#faf5ff; border:1px solid #f0abfc; border-radius:10px; padding:12px; margin-bottom:12px; text-align:center;">
+            <div style="font-size:0.78rem; font-weight:800; color:#7e22ce; margin-bottom:6px;">
+              📲 যেকোনো UPI অ্যাপ দিয়ে সরাসরি পেমেন্ট করুন:
+            </div>
+            <div style="display:flex; justify-content:center; gap:12px; font-size:1.8rem; margin:6px 0;">
+              <i class="fa-brands fa-google-pay" style="color:#4285f4;"></i>
+              <span style="font-weight:900; font-size:1.3rem; color:#5f259f; display:flex; align-items:center;">PhonePe</span>
+              <span style="font-weight:900; font-size:1.3rem; color:#00b9f5; display:flex; align-items:center;">Paytm</span>
+            </div>
+            <div style="font-size:0.72rem; color:#64748b;">নিশা ক্রিয়েশনস অফিসিয়াল UPI ID: <strong>9239413517@ybl</strong></div>
+            <a id="upiDirectPayLink" href="#" style="display:inline-flex; align-items:center; gap:6px; background:#7e22ce; color:#fff; text-decoration:none; padding:7px 16px; border-radius:20px; font-size:0.75rem; font-weight:800; margin-top:8px;">
+              <i class="fa-solid fa-mobile-screen"></i> UPI অ্যাপে খুলুন
+            </a>
+          </div>
+
+          <!-- Option 2: Cash on Delivery (COD) -->
+          <div class="payment-option-card" id="payOptCardCod" onclick="selectPaymentMethod('COD')">
+            <div class="payment-card-left">
+              <div class="payment-radio-dot"></div>
+              <div>
+                <div style="font-size:0.88rem; font-weight:800; color:#0f172a;">ক্যাশ অন ডেলিভারি (COD)</div>
+                <div style="font-size:0.72rem; color:#64748b; margin-top:2px;">পণ্য হাতে পাওয়ার পর নগদে টাকা দিন</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.05rem; font-weight:800; color:#0f172a;" id="payCodFinalAmount">₹466</div>
+              <div style="font-size:0.65rem; color:#ef4444; font-weight:700;">(কোনো অতিরিক্ত ছাড় নেই)</div>
+            </div>
+          </div>
+
+          <!-- Savings Guarantee Banner -->
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px; font-size:0.75rem; color:#15803d; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-shield-halved" style="font-size:1.2rem;"></i>
+            <span id="paymentSavingsBannerText">অনলাইনে পেমেন্ট করে আপনি মোট <strong>₹৩৮ অতিরিক্ত সাশ্রয়</strong> করছেন!</span>
+          </div>
+
+          <!-- Final Order Confirmation Button -->
+          <button type="button" onclick="submitFinalOrder()" style="width:100%; background:linear-gradient(135deg, #16a34a, #15803d); color:#fff; border:none; padding:14px; border-radius:12px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 4px 14px rgba(22,163,74,0.35); display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-circle-check"></i> <span id="finalConfirmBtnLabel">অর্ডার কনফার্ম করুন (Pay ₹428)</span>
+          </button>
         </div>
 
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1rem; margin-bottom:10px;">
-          <span>মোট বিল (Free Delivery):</span>
-          <span style="color:var(--primary);" id="cartTotalAmount">₹0</span>
-        </div>
-
-        <button onclick="submitOrder()" style="width:100%; background:linear-gradient(135deg, #25D366, #128C7E); color:#fff; border:none; padding:13px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 14px rgba(37,211,102,0.35); display:flex; align-items:center; justify-content:center; gap:8px;">
-          <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> WhatsApp-এ অর্ডার কনফার্ম করুন &rarr;
-        </button>
       </div>
+
     </div>
   </div>
 
@@ -1499,8 +2457,8 @@
         subPocketPerfume: "পকেট সেন্ট",
         subBodyMist: "ফ্রেশ বডি মিস্ট",
         subGiftBox: "ব্রাইডাল সেন্ট বক্স",
-        // Customer Settings
-        custHeading: "কাস্টমার সেটিংস ও অ্যাকাউন্ট",
+        // Customer Account
+        custHeading: "কাস্টমার অ্যাকাউন্ট ও অর্ডার (My Account)",
         custTitle: "গ্রাহক অ্যাকাউন্ট",
         custCoins: "নিশা রিওয়ার্ডস কয়েন",
         langTitle: "ভাষা নির্বাচন (Language)",
@@ -1581,8 +2539,8 @@
         subPocketPerfume: "Pocket Perfumes",
         subBodyMist: "Fresh Body Mist",
         subGiftBox: "Bridal Scent Box",
-        // Customer Settings
-        custHeading: "Customer Settings & Account",
+        // Customer Account
+        custHeading: "Customer Account & Orders",
         custTitle: "Customer Account",
         custCoins: "Nisha Rewards Coins",
         langTitle: "Language Selection",
@@ -1668,7 +2626,7 @@
       const sl = document.getElementById('side-t-lingerie');
       if (sl) sl.textContent = t('sideLingerie');
 
-      // Customer Settings Page Strings
+      // Customer Account Page Strings
       const csh = document.getElementById('t-custSettingsHeading');
       if (csh) csh.textContent = t('custHeading');
       const cdt = document.getElementById('custDisplayTitle');
@@ -1825,6 +2783,30 @@
         callback(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = src;
+    }
+
+    
+    function filterAdminCategoryOptions(query, selectId) {
+      const q = query.toLowerCase().trim();
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      const options = select.querySelectorAll('option');
+      let firstMatch = null;
+
+      options.forEach(opt => {
+        const text = opt.textContent.toLowerCase();
+        if (!q || text.includes(q)) {
+          opt.style.display = 'block';
+          if (!firstMatch && q) firstMatch = opt;
+        } else {
+          opt.style.display = 'none';
+        }
+      });
+
+      if (firstMatch) {
+        select.value = firstMatch.value;
+      }
     }
 
     function submitProductFromAdmin() {
@@ -2206,6 +3188,40 @@
         sold: 0,
         inStock: true,
         desc: "আকর্ষণীয় জরি ও সুতোর নিখুঁত কাজ করা পার্টি ওয়্যার আনারকলি কুর্তি ও ওড়না সেট। প্রিমিয়াম নরম রেয়ন ফেব্রিক।"
+      },
+      {
+        id: "NC-110",
+        title: "Little Princess Butterfly Net Party Frock (Baby Pink)",
+        category: "princess_frock",
+        type: "girls",
+        price: 450,
+        mrp: 899,
+        upiOffer: 410,
+        rating: 4.8,
+        reviews: 116,
+        img: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600&auto=format&fit=crop&q=80",
+        stock: 100,
+        initialStock: 100,
+        sold: 28,
+        inStock: true,
+        desc: "ছোট রাজকন্যাদের জন্য আরামদায়ক নরম সুতির আস্তরণ সহ বাটারফ্লাই পার্টি ফ্রক। জন্মদিন ও উৎসবের সেরা পোশাক।"
+      },
+      {
+        id: "NC-111",
+        title: "Kids Ethnic Floral Baby Lehenga Choli Set (Yellow & Maroon)",
+        category: "baby_lehenga",
+        type: "girls",
+        price: 550,
+        mrp: 1099,
+        upiOffer: 499,
+        rating: 4.7,
+        reviews: 92,
+        img: "https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=600&auto=format&fit=crop&q=80",
+        stock: 100,
+        initialStock: 100,
+        sold: 19,
+        inStock: true,
+        desc: "পুজো ও বিয়ের অনুষ্ঠানের জন্য আকর্ষণীয় বেবি লেহেঙ্গা-চোলি ও ওড়না সেট। ত্বকবান্ধব ও নরম কাপড়।"
       }
     ];
 
@@ -2215,6 +3231,562 @@
     let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
     let currentCustomer = JSON.parse(localStorage.getItem('nc_customer_profile') || 'null');
     let currentPdpProduct = null;
+
+    // =========================================================
+    // 1. MEESHO URGENCY SALE COUNTDOWN TIMER (ছবি ১)
+    // =========================================================
+    function initSaleCountdown() {
+      const now = new Date();
+      // 2 days 14 hours 35 minutes target
+      const target = new Date(now.getTime() + (2 * 24 * 60 * 60 * 1000) + (14 * 60 * 60 * 1000) + (35 * 60 * 1000));
+      
+      function updateTimer() {
+        const cur = new Date();
+        let diff = target - cur;
+        if (diff <= 0) diff = 86400000;
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((diff / 1000 / 60) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+
+        const elD = document.getElementById('timerDays');
+        const elH = document.getElementById('timerHours');
+        const elM = document.getElementById('timerMinutes');
+        const elS = document.getElementById('timerSeconds');
+        if (elD) elD.textContent = String(d).padStart(2, '0');
+        if (elH) elH.textContent = String(h).padStart(2, '0');
+        if (elM) elM.textContent = String(m).padStart(2, '0');
+        if (elS) elS.textContent = String(s).padStart(2, '0');
+      }
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    function scrollToProducts() {
+      const el = document.getElementById('productGridContainer');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // =========================================================
+    // 2. MEESHO GENDER & COLLECTION BUBBLE FILTER (ছবি ২)
+    // =========================================================
+    let currentGenderFilter = 'all';
+
+    function filterByGender(gender) {
+      currentGenderFilter = gender;
+      document.querySelectorAll('.gender-bubble-item').forEach(el => el.classList.remove('active'));
+      const activeBubble = document.getElementById(`gbub-${gender}`);
+      if (activeBubble) activeBubble.classList.add('active');
+
+      let filtered = [...products];
+      if (gender === 'women') {
+        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+      } else if (gender === 'girls') {
+        filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock') || p.title.includes('মেয়েদের'));
+      } else if (gender === 'saree') {
+        filtered = products.filter(p => p.type === 'saree');
+      } else if (gender === 'jewel') {
+        filtered = products.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles', 'bag', 'perfume'].includes(p.category));
+      }
+      
+      renderProducts(filtered);
+    }
+
+    // =========================================================
+    // 3. MEESHO SORT BOTTOM SHEET MODAL (ছবি ১)
+    // =========================================================
+    let currentSortOption = 'relevance';
+
+    function openSortModal() {
+      const modal = document.getElementById('sortModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeSortModal() {
+      const modal = document.getElementById('sortModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function closeSortModalOnOutside(e) {
+      if (e.target.id === 'sortModal') closeSortModal();
+    }
+
+    function applySortOption(sortKey, label) {
+      currentSortOption = sortKey;
+      document.querySelectorAll('.sort-option-row').forEach(r => r.classList.remove('active'));
+      const activeRow = document.getElementById(`sort-opt-${sortKey}`);
+      if (activeRow) activeRow.classList.add('active');
+
+      const lbl = document.getElementById('sortBtnLabel');
+      if (lbl) lbl.textContent = label.split('(')[0].trim();
+
+      let list = [...products];
+      if (currentGenderFilter !== 'all') {
+        if (currentGenderFilter === 'women') list = list.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+        else if (currentGenderFilter === 'girls') list = list.filter(p => p.type === 'girls' || p.category.includes('frock') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
+        else if (currentGenderFilter === 'saree') list = list.filter(p => p.type === 'saree');
+        else if (currentGenderFilter === 'jewel') list = list.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles', 'bag', 'perfume'].includes(p.category));
+      }
+
+      if (sortKey === 'relevance') {
+        list.sort((a, b) => (b.sold || 0) - (a.sold || 0) || (b.reviews || 0) - (a.reviews || 0));
+      } else if (sortKey === 'new') {
+        list.reverse();
+      } else if (sortKey === 'price-asc') {
+        list.sort((a, b) => a.price - b.price);
+      } else if (sortKey === 'price-desc') {
+        list.sort((a, b) => b.price - a.price);
+      } else if (sortKey === 'rating') {
+        list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      }
+
+      renderProducts(list);
+      closeSortModal();
+    }
+
+    // =========================================================
+    // 4. MEESHO 2-COLUMN SPLIT ADVANCED FILTERS (ছবি ৩)
+    // =========================================================
+    function openAdvancedFilterModal() {
+      const modal = document.getElementById('advancedFilterModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeAdvancedFilterModal() {
+      const modal = document.getElementById('advancedFilterModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function closeAdvancedFilterOnOutside(e) {
+      if (e.target.id === 'advancedFilterModal') closeAdvancedFilterModal();
+    }
+
+    function switchFilterTab(tabName) {
+      document.querySelectorAll('.filter-tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.filter-options-panel').forEach(p => p.style.display = 'none');
+      const activeTab = document.getElementById(`ftab-${tabName}`);
+      const activePanel = document.getElementById(`fpanel-${tabName}`);
+      if (activeTab) activeTab.classList.add('active');
+      if (activePanel) activePanel.style.display = 'block';
+    }
+
+    function updateFilterBadgeCount() {
+      const tabs = ['fabric', 'color', 'price', 'occasion'];
+      let grandTotal = 0;
+      tabs.forEach(tab => {
+        const checked = document.querySelectorAll(`#fpanel-${tab} input[type="checkbox"]:checked`).length;
+        const badge = document.getElementById(`fbadge-${tab}`);
+        if (badge) {
+          if (checked > 0) {
+            badge.textContent = checked;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+        grandTotal += checked;
+      });
+
+      const countSpan = document.getElementById('fapplyCountSpan');
+      if (countSpan) countSpan.textContent = grandTotal > 0 ? `(${grandTotal})` : '';
+
+      const mainBadge = document.getElementById('activeFilterBadge');
+      if (mainBadge) {
+        if (grandTotal > 0) {
+          mainBadge.textContent = grandTotal;
+          mainBadge.style.display = 'inline-block';
+        } else {
+          mainBadge.style.display = 'none';
+        }
+      }
+    }
+
+    function clearAllAdvancedFilters() {
+      document.querySelectorAll('.filter-options-panel input[type="checkbox"]').forEach(c => c.checked = false);
+      updateFilterBadgeCount();
+      renderProducts(products);
+      closeAdvancedFilterModal();
+    }
+
+    function applyAdvancedFilters() {
+      const checkedFabrics = Array.from(document.querySelectorAll('#fpanel-fabric input:checked')).map(c => c.value);
+      const checkedColors = Array.from(document.querySelectorAll('#fpanel-color input:checked')).map(c => c.value);
+      const checkedPrices = Array.from(document.querySelectorAll('#fpanel-price input:checked')).map(c => c.value);
+      const checkedOccasions = Array.from(document.querySelectorAll('#fpanel-occasion input:checked')).map(c => c.value);
+
+      let filtered = [...products];
+
+      if (checkedFabrics.length > 0) {
+        filtered = filtered.filter(p => {
+          const txt = (p.title + " " + p.desc + " " + p.category).toLowerCase();
+          return checkedFabrics.some(f => {
+            if (f === 'cotton') return txt.includes('cotton') || txt.includes('সুতি') || txt.includes('তাঁত');
+            if (f === 'jamdani') return txt.includes('jamdani') || txt.includes('জামদানি');
+            if (f === 'silk') return txt.includes('silk') || txt.includes('সিল্ক') || txt.includes('কাতান');
+            if (f === 'tant') return txt.includes('tant') || txt.includes('তাঁত');
+            if (f === 'georgette') return txt.includes('georgette') || txt.includes('জর্জেট') || txt.includes('শিফন');
+            if (f === 'organza') return txt.includes('organza') || txt.includes('অরগাঞ্জা');
+            return false;
+          });
+        });
+      }
+
+      if (checkedColors.length > 0) {
+        filtered = filtered.filter(p => {
+          const txt = (p.title + " " + p.desc).toLowerCase();
+          return checkedColors.some(c => {
+            if (c === 'red') return txt.includes('red') || txt.includes('লাল');
+            if (c === 'pink') return txt.includes('pink') || txt.includes('গোলাপী');
+            if (c === 'yellow') return txt.includes('yellow') || txt.includes('হলুদ');
+            if (c === 'blue') return txt.includes('blue') || txt.includes('নীল') || txt.includes('ব্লু');
+            if (c === 'green') return txt.includes('green') || txt.includes('সবুজ');
+            if (c === 'pastel') return txt.includes('pastel') || txt.includes('প্যাস্টেল') || txt.includes('সাদা');
+            return false;
+          });
+        });
+      }
+
+      if (checkedPrices.length > 0) {
+        filtered = filtered.filter(p => {
+          return checkedPrices.some(pr => {
+            if (pr === 'under500') return p.price < 500;
+            if (pr === '500to1000') return p.price >= 500 && p.price <= 1000;
+            if (pr === 'above1000') return p.price > 1000;
+            return false;
+          });
+        });
+      }
+
+      if (checkedOccasions.length > 0) {
+        filtered = filtered.filter(p => {
+          const txt = (p.title + " " + p.desc).toLowerCase();
+          return checkedOccasions.some(o => {
+            if (o === 'wedding') return txt.includes('বিয়ে') || txt.includes('bridal') || txt.includes('রিসেপশন') || p.price >= 800;
+            if (o === 'puja') return txt.includes('পুজো') || txt.includes('উৎসব') || txt.includes('festive');
+            if (o === 'daily') return txt.includes('রোজকার') || txt.includes('সুতি') || p.price < 600;
+            return false;
+          });
+        });
+      }
+
+      renderProducts(filtered);
+      closeAdvancedFilterModal();
+    }
+
+    // =========================================================
+    // 5. SIZE SELECTOR & SMART RETURN CHOICE (ছবি ৪)
+    // =========================================================
+    let selectedPdpSize = "Free Size";
+    let selectedReturnChoice = "all"; // 'all' or 'defective'
+
+    function selectPdpSize(sizeVal) {
+      selectedPdpSize = sizeVal;
+      document.querySelectorAll('.size-pill-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.size === sizeVal) btn.classList.add('active');
+      });
+    }
+
+    function selectReturnChoice(choice) {
+      selectedReturnChoice = choice;
+      const cardAll = document.getElementById('returnCardAll');
+      const cardDef = document.getElementById('returnCardDefective');
+      if (cardAll && cardDef) {
+        if (choice === 'all') {
+          cardAll.classList.add('active');
+          cardDef.classList.remove('active');
+        } else {
+          cardDef.classList.add('active');
+          cardAll.classList.remove('active');
+        }
+      }
+
+      if (currentPdpProduct) {
+        const finalPrice = choice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
+        const priceEl = document.getElementById('pdpPrice');
+        if (priceEl) priceEl.textContent = `₹${finalPrice}`;
+        const buyBtn = document.querySelector('.btn-buy-now');
+        if (buyBtn && currentPdpProduct.inStock !== false) {
+          buyBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> এখনই কিনুন (₹${finalPrice})`;
+        }
+      }
+    }
+
+    // =========================================================
+    // 6. MEESHO 2-STEP CHECKOUT & UPI DISCOUNT WIZARD (ছবি ৫ ও ৬)
+    // =========================================================
+    let selectedPaymentMethodVal = "UPI";
+    let checkoutAddress = {
+      name: "Saheb Ghanti",
+      phone: "9239413517",
+      address: "vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401"
+    };
+
+    function getEstimatedDeliveryDateString() {
+      const daysOfWeekBn = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+      const monthsBn = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+      const now = new Date();
+      const deliveryDate = new Date(now.getTime() + (2 * 24 * 60 * 60 * 1000));
+      const dayName = daysOfWeekBn[deliveryDate.getDay()];
+      const dayNum = deliveryDate.getDate();
+      const monthName = monthsBn[deliveryDate.getMonth()];
+      return `ডেলিভারি: ${dayName}, ${dayNum}ই ${monthName} (২ দিনের মধ্যে)`;
+    }
+
+    function toggleAddressEdit() {
+      const form = document.getElementById('inlineAddressEditForm');
+      const label = document.getElementById('btnChangeAddrLabel');
+      if (form.style.display === 'none' || !form.style.display) {
+        form.style.display = 'block';
+        label.textContent = 'Cancel';
+      } else {
+        form.style.display = 'none';
+        label.textContent = 'Change';
+      }
+    }
+
+    function saveAddressInline() {
+      const name = document.getElementById('cust_name').value.trim();
+      const phone = document.getElementById('cust_phone').value.trim();
+      const addr = document.getElementById('cust_addr').value.trim();
+      if (!name || !phone || !addr) {
+        alert("নাম, ফোন নম্বর ও সম্পূর্ণ ঠিকানা পূরণ করুন!");
+        return;
+      }
+      checkoutAddress.name = name;
+      checkoutAddress.phone = phone;
+      checkoutAddress.address = addr;
+      document.getElementById('displayCustName').textContent = name;
+      document.getElementById('displayCustPhone').textContent = "📞 " + phone;
+      document.getElementById('displayCustAddr').textContent = "📍 " + addr;
+      document.getElementById('inlineAddressEditForm').style.display = 'none';
+      document.getElementById('btnChangeAddrLabel').textContent = 'Change';
+    }
+
+    function renderCheckoutStep1() {
+      const list = document.getElementById('cartItemsList');
+      const countSpan = document.getElementById('cartModalCount');
+      if (countSpan) countSpan.textContent = cart.length;
+      if (!list) return;
+      list.innerHTML = '';
+
+      if (cart.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">আপনার ব্যাগ ফাঁকা আছে!</div>`;
+        document.getElementById('billTotalMrp').textContent = '₹0';
+        document.getElementById('billStoreDiscount').textContent = '-₹0';
+        document.getElementById('billStep1Total').textContent = '₹0';
+        return;
+      }
+
+      let totalMrp = 0;
+      let totalPayable = 0;
+      let totalReturnDiscount = 0;
+
+      cart.forEach((item, idx) => {
+        const qty = item.qty || 1;
+        const mrp = (item.mrp || item.price * 1.5) * qty;
+        const price = item.price * qty;
+        const isDefectiveDiscount = item.returnChoice === 'defective';
+        if (isDefectiveDiscount) totalReturnDiscount += (10 * qty);
+
+        totalMrp += mrp;
+        totalPayable += price;
+
+        list.innerHTML += `
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px; background:#fff;">
+            <img src="${item.img}" style="width:55px; height:55px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
+            <div style="flex:1;">
+              <div style="font-size:0.82rem; font-weight:800; color:#0f172a; line-height:1.2;">${item.title}</div>
+              <div style="display:flex; align-items:center; gap:6px; margin:4px 0;">
+                <span style="background:#f1f5f9; color:#475569; font-size:0.68rem; font-weight:800; padding:1px 6px; border-radius:4px;">
+                  সাইজ: ${item.selectedSize || 'Free Size'}
+                </span>
+                ${isDefectiveDiscount ? '<span style="background:#dcfce7; color:#15803d; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px;">Save ₹10 (Defect Only)</span>' : '<span style="background:#f3e8ff; color:#7e22ce; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px;">সব ধরণের রিটার্ন</span>'}
+              </div>
+              <div style="font-size:0.85rem; font-weight:800; color:var(--primary);">
+                ₹${price} <span style="font-size:0.7rem; text-decoration:line-through; color:#94a3b8;">₹${mrp}</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+              <button onclick="removeCartItem(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:0.95rem; cursor:pointer;" title="মুছুন"><i class="fa-solid fa-trash-can"></i></button>
+              <div style="display:flex; align-items:center; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc;">
+                <button onclick="changeCartQty(${idx}, -1)" style="border:none; background:transparent; padding:2px 8px; font-weight:800; cursor:pointer;">-</button>
+                <span style="font-size:0.78rem; font-weight:800; padding:0 4px;">${qty}</span>
+                <button onclick="changeCartQty(${idx}, 1)" style="border:none; background:transparent; padding:2px 8px; font-weight:800; cursor:pointer;">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      const storeDiscount = Math.max(0, totalMrp - totalPayable);
+      document.getElementById('billTotalMrp').textContent = `₹${totalMrp}`;
+      document.getElementById('billStoreDiscount').textContent = `-₹${storeDiscount}`;
+      if (totalReturnDiscount > 0) {
+        document.getElementById('billReturnDiscountRow').style.display = 'flex';
+        document.getElementById('billReturnDiscountVal').textContent = `-₹${totalReturnDiscount}`;
+      } else {
+        document.getElementById('billReturnDiscountRow').style.display = 'none';
+      }
+
+      let finalSubtotal = totalPayable;
+      if (appliedCouponDiscount > 0) {
+        finalSubtotal = Math.max(0, finalSubtotal - appliedCouponDiscount);
+      }
+      document.getElementById('billStep1Total').textContent = `₹${finalSubtotal}`;
+      document.getElementById('estimatedDeliveryDateText').textContent = getEstimatedDeliveryDateString();
+    }
+
+    function changeCartQty(idx, delta) {
+      if (!cart[idx]) return;
+      cart[idx].qty = Math.max(1, (cart[idx].qty || 1) + delta);
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      renderCheckoutStep1();
+    }
+
+    function goToCheckoutStep2() {
+      if (cart.length === 0) {
+        alert("আপনার ব্যাগ ফাঁকা!");
+        return;
+      }
+      const name = document.getElementById('cust_name').value.trim() || checkoutAddress.name;
+      const phone = document.getElementById('cust_phone').value.trim() || checkoutAddress.phone;
+      const addr = document.getElementById('cust_addr').value.trim() || checkoutAddress.address;
+      if (!name || !phone || !addr) {
+        alert("দয়া করে আপনার নাম, মোবাইল নম্বর ও আমতার ঠিকানা প্রদান করুন!");
+        return;
+      }
+      checkoutAddress.name = name;
+      checkoutAddress.phone = phone;
+      checkoutAddress.address = addr;
+
+      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
+      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
+
+      const codTotal = subtotal;
+      const upiTotal = Math.max(0, subtotal - 38); // Extra ₹38 OFF
+
+      document.getElementById('payCodFinalAmount').textContent = `₹${codTotal}`;
+      document.getElementById('payUpiFinalAmount').textContent = `₹${upiTotal}`;
+      document.getElementById('payUpiStrikedAmount').textContent = `₹${codTotal}`;
+
+      const upiPayUrl = `upi://pay?pa=9239413517@ybl&pn=Nisha%20Creations&am=${upiTotal}&cu=INR&tn=Order%20NishaCreations`;
+      document.getElementById('upiDirectPayLink').href = upiPayUrl;
+
+      selectPaymentMethod('UPI');
+
+      document.getElementById('checkoutStep1View').style.display = 'none';
+      document.getElementById('checkoutStep2View').style.display = 'block';
+      document.getElementById('stepIndicator1').classList.remove('active');
+      document.getElementById('stepIndicator2').classList.add('active');
+    }
+
+    function goToCheckoutStep1() {
+      document.getElementById('checkoutStep2View').style.display = 'none';
+      document.getElementById('checkoutStep1View').style.display = 'block';
+      document.getElementById('stepIndicator2').classList.remove('active');
+      document.getElementById('stepIndicator1').classList.add('active');
+      renderCheckoutStep1();
+    }
+
+    function selectPaymentMethod(mode) {
+      selectedPaymentMethodVal = mode;
+      const upiCard = document.getElementById('payOptCardUpi');
+      const codCard = document.getElementById('payOptCardCod');
+      const upiBox = document.getElementById('upiPaymentActionBox');
+      const savingsBanner = document.getElementById('paymentSavingsBannerText');
+      const confirmBtnLabel = document.getElementById('finalConfirmBtnLabel');
+
+      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
+      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
+
+      if (mode === 'UPI') {
+        upiCard.classList.add('active');
+        codCard.classList.remove('active');
+        upiBox.style.display = 'block';
+        const upiPrice = Math.max(0, subtotal - 38);
+        confirmBtnLabel.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${upiPrice})`;
+        savingsBanner.innerHTML = `অনলাইনে পেমেন্ট করে আপনি মোট <strong>₹৩৮ অতিরিক্ত সাশ্রয়</strong> করছেন!`;
+      } else {
+        codCard.classList.add('active');
+        upiCard.classList.remove('active');
+        upiBox.style.display = 'none';
+        confirmBtnLabel.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${subtotal})`;
+        savingsBanner.innerHTML = `ক্যাশ অন ডেলিভারিতে কোনো অতিরিক্ত ছাড় নেই। অনলাইনে পেমেন্টে ₹৩৮ সাশ্রয় করুন!`;
+      }
+    }
+
+    function submitFinalOrder() {
+      if (cart.length === 0) {
+        alert("আপনার ব্যাগ ফাঁকা!");
+        return;
+      }
+
+      const name = checkoutAddress.name;
+      const phone = checkoutAddress.phone;
+      const addr = checkoutAddress.address;
+      const payMode = selectedPaymentMethodVal;
+      const isGift = document.getElementById('giftWrapCheck').checked;
+
+      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
+      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
+      const finalPrice = payMode === 'UPI' ? Math.max(0, subtotal - 38) : subtotal;
+
+      const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
+      const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+      const estDeliveryStr = getEstimatedDeliveryDateString();
+
+      const newOrder = {
+        id: orderId,
+        date: dateStr,
+        name: name,
+        phone: phone,
+        address: addr,
+        items: [...cart],
+        total: finalPrice,
+        paymentMode: payMode,
+        isGift: isGift,
+        estDelivery: estDeliveryStr,
+        status: "Order Placed"
+      };
+
+      orders.unshift(newOrder);
+      localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+      cart.forEach(cItem => {
+        const p = products.find(prod => prod.id === cItem.id);
+        if (p) {
+          const q = cItem.qty || 1;
+          p.stock = Math.max(0, (p.stock !== undefined ? p.stock : 100) - q);
+          p.sold = (p.sold || 0) + q;
+          if (p.stock <= 0) { p.stock = 0; p.inStock = false; }
+        }
+      });
+      localStorage.setItem('nc_products', JSON.stringify(products));
+
+      const itemsText = cart.map((item, idx) => {
+        const q = item.qty || 1;
+        const sz = item.selectedSize || 'Free Size';
+        const retPolicy = item.returnChoice === 'defective' ? 'Defect Only (-₹10)' : 'All Returns';
+        return `${idx + 1}. ${item.title} (x${q})%0A   - সাইজ: ${sz} | পলিসি: ${retPolicy} | মূল্য: ₹${item.price * q}`;
+      }).join('%0A');
+
+      const payDesc = payMode === 'UPI' ? '📲 অনলাইন UPI (₹৩৮ অতিরিক্ত ছাড় সহ)' : '💵 Cash on Delivery (ক্যাশ অন ডেলিভারি)';
+      const giftText = isGift ? '%0A🎁 *উপহার প্যাকেজিং:* হ্যাঁ (ফ্রি গিফট বক্স ও কার্ড)' : '';
+
+      const waInvoice = `*🛍️ নতুন অর্ডার - নিশা ক্রিয়েশনস (আমতা)*%0A━━━━━━━━━━━━━━━━━%0A🧾 *অর্ডার আইডি:* #${orderId}%0A📅 *তারিখ:* ${encodeURIComponent(dateStr)}%0A🚚 *সম্ভাব্য ডেলিভারি:* ${encodeURIComponent(estDeliveryStr)}%0A%0A👤 *গ্রাহকের নাম:* ${encodeURIComponent(name)}%0A📞 *মোবাইল:* ${phone}%0A📍 *আমতা ঠিকানা:* ${encodeURIComponent(addr)}%0A💳 *পেমেন্ট মোড:* ${encodeURIComponent(payDesc)}${giftText}%0A%0A👗 *অর্ডারকৃত শাড়ি/পোশাক:*%0A${itemsText}%0A%0A💰 *সর্বমোট প্রদেয় বিল:* ₹${finalPrice} (ফ্রি হোম ডেলিভারি)%0A━━━━━━━━━━━━━━━━━%0A🙏 *অর্ডারটি গ্রহণ করে বুকিং সম্পন্ন করুন।*`;
+
+      cart = [];
+      localStorage.setItem('nc_cart', JSON.stringify(cart));
+      updateCartBadge();
+      closeCartModal();
+
+      alert(`🎉 অভিনন্দন! অর্ডার #${orderId} সফলভাবে গ্রহণ করা হয়েছে!
+${estDeliveryStr}
+এখন WhatsApp-এ ইনভয়েস পাঠানো হচ্ছে...`);
+      window.open(`https://wa.me/919239413517?text=${waInvoice}`, '_blank');
+    }
+
     const BOUTIQUE_PHONE = "919239413517"; // Official WhatsApp
 
     
@@ -2223,6 +3795,7 @@
       if (e.key === 'nc_custom_products' || e.key === 'nc_products' || e.key === 'nc_reels' || e.key === 'nc_coupons' || e.key === 'nc_boutique_logo') {
         initBrandLogo();
         loadAllProducts();
+    initSaleCountdown();
         renderReels();
       }
     });
@@ -2798,6 +4371,30 @@
       if (p.type === 'saree') matchBox.style.display = 'block';
       else matchBox.style.display = 'none';
 
+      // Render Size Selection (ছবি ৪)
+      selectedPdpSize = (p.type === 'saree') ? 'Free Size' : 'M';
+      selectedReturnChoice = 'all';
+      const sizeGroup = document.getElementById('pdpSizeBtnGroup');
+      if (sizeGroup) {
+        sizeGroup.innerHTML = '';
+        if (p.type === 'saree') {
+          sizeGroup.innerHTML = `<button type="button" class="size-pill-btn active" data-size="Free Size" onclick="selectPdpSize('Free Size')">Free Size (শাড়ি)</button>`;
+        } else {
+          const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+          sizes.forEach(sz => {
+            const act = sz === 'M' ? 'active' : '';
+            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
+          });
+        }
+      }
+
+      // Configure Return Choice Cards (ছবি ৪)
+      const rPriceAll = document.getElementById('returnPriceAll');
+      const rPriceDef = document.getElementById('returnPriceDefective');
+      if (rPriceAll) rPriceAll.textContent = `₹${p.price}`;
+      if (rPriceDef) rPriceDef.textContent = `₹${Math.max(0, p.price - 10)}`;
+      selectReturnChoice('all');
+
       showScreen('pdp');
       window.scrollTo(0, 0);
     }
@@ -2814,7 +4411,16 @@
 
     function addCurrentToCart() {
       if (!currentPdpProduct) return;
-      cart.push(currentPdpProduct);
+      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
+      const itemToPush = {
+        ...currentPdpProduct,
+        price: effectivePrice,
+        originalPrice: currentPdpProduct.price,
+        selectedSize: selectedPdpSize,
+        returnChoice: selectedReturnChoice,
+        qty: 1
+      };
+      cart.push(itemToPush);
       localStorage.setItem('nc_cart', JSON.stringify(cart));
       updateCartBadge();
       alert("✅ শপিং ব্যাগে যুক্ত হয়েছে!");
@@ -2822,7 +4428,16 @@
 
     function buyCurrentNow() {
       if (!currentPdpProduct) return;
-      cart = [currentPdpProduct];
+      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
+      const itemToPush = {
+        ...currentPdpProduct,
+        price: effectivePrice,
+        originalPrice: currentPdpProduct.price,
+        selectedSize: selectedPdpSize,
+        returnChoice: selectedReturnChoice,
+        qty: 1
+      };
+      cart = [itemToPush];
       localStorage.setItem('nc_cart', JSON.stringify(cart));
       updateCartBadge();
       openCartModal();
@@ -2932,6 +4547,10 @@
 
     function openCartModal() {
       const modal = document.getElementById('cartModal');
+      goToCheckoutStep1();
+      renderCheckoutStep1();
+      modal.style.display = 'flex';
+      return;
       const list = document.getElementById('cartItemsList');
       const countSpan = document.getElementById('cartModalCount');
       const totalSpan = document.getElementById('cartTotalAmount');
@@ -3918,7 +5537,7 @@
     </div>
   </div>
 
-  <!-- ================= 9. INTEGRATED OWNER ADMIN PANEL ================= -->
+  <!-- ================= 9. COMPLETE INTEGRATED OWNER ADMIN PANEL ================= -->
   <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
       <div style="display:flex; align-items:center; gap:8px;">
@@ -3928,11 +5547,11 @@
       <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;">শপ দেখুন</button>
     </div>
 
-    <!-- 1. Add Product with Multi-Photo & Stock Quantity -->
+    <!-- 1. Add Product with Multi-Photo, 120+ Categories & Stock Quantity -->
     <div class="settings-card">
       <div class="settings-card-title">
         <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
-        <span>নতুন শাড়ি / গহনা আপলোড ও স্টক নির্ধারণ</span>
+        <span>নতুন শাড়ি / পোশাক আপলোড ও স্টক নির্ধারণ</span>
       </div>
 
       <div class="form-group">
@@ -3979,21 +5598,166 @@
 
       <div class="form-group">
         <label>প্রোডাক্টের নাম:</label>
-        <input type="text" id="admin_new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (রানী গোলাপী ও জরি)">
+        <input type="text" id="admin_new_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী জরি)">
       </div>
 
+      <!-- 120+ Categories with Optgroup & Search -->
       <div class="form-group">
-        <label>ক্যাটাগরি:</label>
-        <select id="admin_new_cat">
-          <option value="jamdani">ঢাকাই জামদানি শাড়ি (Jamdani)</option>
-          <option value="silk">সফট সিল্ক / কাতান শাড়ি (Silk)</option>
-          <option value="tant">শান্তিপুরী তাঁত ও সুতি শাড়ি (Tant)</option>
-          <option value="kurti">কুর্তি ও কুর্তা সেট (Kurti)</option>
-          <option value="necklace">ব্রাইডাল গহনা সেট (Jewellery Set)</option>
-          <option value="earrings">কানের দুল ও ঝুমকা (Earrings)</option>
-          <option value="bangles">বালা ও চুড়ি (Bangles)</option>
-          <option value="bag">লেডিস ব্যাগ ও পার্স (Ladies Bag)</option>
-          <option value="perfume">লেডিস পারফিউম ও সেন্ট (Perfume)</option>
+        <label style="display:flex; justify-content:space-between; align-items:center;">
+          <span>ক্যাটাগরি বা পোশাকের ধরন নির্বাচন করুন:</span>
+          <span style="font-size:0.68rem; color:var(--primary); font-weight:800; background:#fdf4ff; border:1px solid #f0abfc; padding:2px 6px; border-radius:10px;">১২০+ আইটেম</span>
+        </label>
+        <div style="position:relative; margin-bottom:6px;">
+          <input type="text" id="indexCatSearch" placeholder="🔍 সহজে খুঁজুন (যেমন: জামদানি, সিল্ক, ফ্রক, কুর্তি, লেহেঙ্গা)..." oninput="filterAdminCategoryOptions(this.value, 'admin_new_cat')" style="padding:9px 12px 9px 32px; font-size:0.8rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; width:100%; outline:none;">
+          <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:10px; top:12px; color:#94a3b8; font-size:0.8rem;"></i>
+        </div>
+        <select id="admin_new_cat" style="font-weight:700; color:#0f172a;">
+          <optgroup label="১. শাড়ির প্রকারভেদ (Sarees Collection)">
+            <option value="jamdani" data-type="saree">ঢাকাই জামদানি শাড়ি (Dhakai Jamdani)</option>
+            <option value="tant" data-type="saree">শান্তিপুরী তাঁতের শাড়ি (Shantipuri Tant)</option>
+            <option value="phulia" data-type="saree">ফুলিয়া হ্যান্ডলুম সুতি শাড়ি (Phulia Cotton)</option>
+            <option value="tussar" data-type="saree">তসর সিল্ক শাড়ি (Tussar Silk)</option>
+            <option value="katan" data-type="saree">বিষ্ণুপুরী কাতান সিল্ক (Bishnupuri Katan)</option>
+            <option value="murshidabad_silk" data-type="saree">মুর্শিদাবাদ সিল্ক শাড়ি (Murshidabad Silk)</option>
+            <option value="banarasi" data-type="saree">বেনারসি শাড়ি (Banarasi Saree)</option>
+            <option value="kanjeevaram" data-type="saree">কাঞ্জিভরম সিল্ক শাড়ি (Kanjeevaram Silk)</option>
+            <option value="chanderi" data-type="saree">চান্দেরি শাড়ি (Chanderi Saree)</option>
+            <option value="bhagalpuri" data-type="saree">ভাগলপুরী সিল্ক (Bhagalpuri Silk)</option>
+            <option value="georgette" data-type="saree">জর্জেট শাড়ি (Georgette Saree)</option>
+            <option value="chiffon" data-type="saree">শিফন শাড়ি (Chiffon Saree)</option>
+            <option value="organza" data-type="saree">অর্গাঞ্জা শাড়ি (Organza Saree)</option>
+            <option value="net_saree" data-type="saree">নেট ও জরি কাজের শাড়ি (Net Saree)</option>
+            <option value="linen" data-type="saree">লিনেন শাড়ি (Linen Saree)</option>
+            <option value="khadi" data-type="saree">খাদি কটন শাড়ি (Khadi Cotton)</option>
+            <option value="baluchari" data-type="saree">বালুচরী শাড়ি (Baluchari Saree)</option>
+            <option value="swarnachari" data-type="saree">স্বর্ণচরী শাড়ি (Swarnachari Saree)</option>
+            <option value="bandhani" data-type="saree">বাঁধনি শাড়ি (Bandhani Saree)</option>
+            <option value="paithani" data-type="saree">পৈঠানি শাড়ি (Paithani Saree)</option>
+            <option value="leheriya" data-type="saree">লেহেরিয়া শাড়ি (Leheriya Saree)</option>
+            <option value="batik" data-type="saree">বাটিক প্রিন্ট শাড়ি (Batik Print Saree)</option>
+            <option value="block_print" data-type="saree">হ্যান্ড ব্লক প্রিন্ট শাড়ি (Block Print Saree)</option>
+            <option value="pre_stitched" data-type="saree">পার্টি ওয়্যার প্রি-স্টিচড শাড়ি (Ready-to-wear Saree)</option>
+            <option value="kota_doria" data-type="saree">রেশম কোটা শাড়ি (Kota Doria)</option>
+          </optgroup>
+          <optgroup label="২. কুর্তি ও কুর্তা কালেকশন (Kurtis & Sets)">
+            <option value="straight_kurti" data-type="kurti">স্ট্রেট কাট কুর্তি (Straight Cut Kurti)</option>
+            <option value="anarkali_kurti" data-type="kurti">আনারকলি কুর্তি (Anarkali Kurti)</option>
+            <option value="nayra_cut" data-type="kurti">নাইরা কাট কুর্তি (Nayra Cut Kurti)</option>
+            <option value="alia_cut" data-type="kurti">আলিয়া কাট কুর্তি (Alia Cut Kurti)</option>
+            <option value="a_line_kurti" data-type="kurti">এ-লাইন কুর্তি (A-Line Kurti)</option>
+            <option value="short_kurti" data-type="kurti">শর্ট কুর্তি (Short Kurti / Top)</option>
+            <option value="long_kurti" data-type="kurti">লং কুর্তি (Floor Length Kurti)</option>
+            <option value="flared_kurti" data-type="kurti">ফ্লেয়ার্ড কুর্তি (Flared Kurti)</option>
+            <option value="kurta_pant_set" data-type="kurti">কুর্তা-প্যান্ট সেট (Kurta Pant Set)</option>
+            <option value="kurta_palazzo_set" data-type="kurti">কুর্তা-প্যালাজো সেট (Kurta Palazzo Set)</option>
+            <option value="kurta_dhoti_set" data-type="kurti">কুর্তা ও ধুতি সেট (Kurta Dhoti Set)</option>
+            <option value="sharara_set" data-type="kurti">সারারা সেট (Sharara Set)</option>
+            <option value="gharara_set" data-type="kurti">গরারা সেট (Gharara Set)</option>
+            <option value="frock_kurti" data-type="kurti">ফ্রক স্টাইল কুর্তি (Frock Style Kurti)</option>
+            <option value="kaftan_kurti" data-type="kurti">কাফতান কুর্তি (Kaftan Kurti)</option>
+            <option value="front_slit_kurti" data-type="kurti">ফ্রন্ট-স্লিট কুর্তি (Front Slit Kurti)</option>
+            <option value="side_slit_kurti" data-type="kurti">সাইড-স্লিট কুর্তি (Side Slit Kurti)</option>
+            <option value="jacket_kurti" data-type="kurti">জ্যাকেট স্টাইল কুর্তি (Jacket Kurti)</option>
+            <option value="denim_kurti" data-type="kurti">ডেনিম কুর্তি (Denim Kurti)</option>
+            <option value="angrakha_kurti" data-type="kurti">অঙ্গরাখা কুর্তি (Angrakha Kurti)</option>
+          </optgroup>
+          <optgroup label="৩. ব্লাউজ ও চোলি (Blouses & Tops)">
+            <option value="princess_blouse" data-type="blouse">প্রিন্সেস কাট ব্লাউজ (Princess Cut Blouse)</option>
+            <option value="backless_blouse" data-type="blouse">ব্যাকলেস ব্লাউজ (Backless Blouse)</option>
+            <option value="boat_neck_blouse" data-type="blouse">বোট নেক ব্লাউজ (Boat Neck Blouse)</option>
+            <option value="sleeveless_blouse" data-type="blouse">স্লিভলেস ডিজাইনার ব্লাউজ (Sleeveless Blouse)</option>
+            <option value="full_sleeve_blouse" data-type="blouse">ফুল স্লিভ জরি ব্লাউজ (Full Sleeve Blouse)</option>
+            <option value="bell_sleeve_blouse" data-type="blouse">বেল স্লিভ ব্লাউজ (Bell Sleeve Blouse)</option>
+            <option value="collar_neck_blouse" data-type="blouse">কলার নেক ব্লাউজ (Collar Neck Blouse)</option>
+            <option value="padded_blouse" data-type="blouse">প্যাডেড রেডিমেড ব্লাউজ (Padded Blouse)</option>
+            <option value="brocade_blouse" data-type="blouse">ব্রোকেড ব্লাউজ (Brocade Blouse)</option>
+            <option value="stretchable_blouse" data-type="blouse">স্ট্রেচেবল সুতি ব্লাউজ (Stretchable Blouse)</option>
+          </optgroup>
+          <optgroup label="৪. ঐতিহ্যবাহী উৎসবের পোশাক (Ethnic & Festive Wear)">
+            <option value="bridal_lehenga" data-type="lehenga">ব্রাইডাল লেহেঙ্গা (Bridal Lehenga)</option>
+            <option value="party_lehenga" data-type="lehenga">পার্টি ওয়্যার সেমি-স্টিচড লেহেঙ্গা (Party Lehenga)</option>
+            <option value="floral_lehenga" data-type="lehenga">ফ্লোরাল প্রিন্ট লেহেঙ্গা (Floral Lehenga)</option>
+            <option value="anarkali_suit" data-type="ethnic">আনারকলি স্যুট (Anarkali Suit)</option>
+            <option value="patiala_suit" data-type="ethnic">পাটিয়ালা সালোয়ার স্যুট (Patiala Suit)</option>
+            <option value="churidar_suit" data-type="ethnic">চুড়িদার স্যুট (Churidar Suit)</option>
+            <option value="ethnic_gown" data-type="ethnic">লং গাউন (Ethnic Long Gown)</option>
+            <option value="crop_top_skirt" data-type="ethnic">ক্রপ টপ ও স্কার্ট সেট (Crop Top & Skirt)</option>
+            <option value="crop_top_dhoti" data-type="ethnic">ক্রপ টপ ও ধুতি প্যান্ট কম্বো (Crop Top & Dhoti)</option>
+            <option value="indo_western" data-type="ethnic">ইন্দো-ওয়েস্টার্ন ফিউশন ড্রেস (Indo-Western Dress)</option>
+          </optgroup>
+          <optgroup label="৫. বটমওয়্যার ও প্যান্ট (Bottomwear)">
+            <option value="cotton_leggings" data-type="bottom">সুতি লেগিংস (Cotton Leggings)</option>
+            <option value="ankle_leggings" data-type="bottom">অ্যাঙ্কেল লেন্থ লেগিংস (Ankle Length Leggings)</option>
+            <option value="churidar_leggings" data-type="bottom">চুড়িদার লেগিংস (Churidar Leggings)</option>
+            <option value="flared_palazzo" data-type="bottom">ফ্লেয়ার্ড প্যালাজো (Flared Palazzo)</option>
+            <option value="straight_pants" data-type="bottom">সুতি স্ট্রেট প্যান্ট (Cotton Straight Pants)</option>
+            <option value="cigarette_pants" data-type="bottom">সিগারেট প্যান্ট (Cigarette Pants)</option>
+            <option value="dhoti_salwar" data-type="bottom">ধুতি সালোয়ার (Dhoti Salwar)</option>
+            <option value="patiala_salwar" data-type="bottom">পাটিয়ালা সালোয়ার (Patiala Salwar)</option>
+            <option value="ladies_trousers" data-type="bottom">ট্রাউজার্স (Ladies Trousers)</option>
+            <option value="petticoat" data-type="bottom">পেটিকোট বা সায়া (Cotton Saree Petticoat)</option>
+            <option value="saree_shapewear" data-type="bottom">শাড়ি শেপওয়্যার (Saree Shapewear)</option>
+            <option value="kalidar_skirt" data-type="bottom">কলিদার লং স্কার্ট (Kalidar Long Skirt)</option>
+            <option value="ladies_jeans" data-type="bottom">জিন্স (Ladies Skinny Jeans)</option>
+            <option value="boyfriend_jeans" data-type="bottom">বয়ফ্রেন্ড জিন্স (Boyfriend Jeans)</option>
+            <option value="jeggings" data-type="bottom">জেগিংস (Jeggings)</option>
+          </optgroup>
+          <optgroup label="৬. ওয়েস্টার্ন ও ক্যাজুয়াল পোশাক (Western Wear)">
+            <option value="casual_top" data-type="western">সুতি ক্যাজুয়াল টপ (Casual Cotton Top)</option>
+            <option value="tunic_top" data-type="western">লং টিউনিক টপ (Long Tunic Top)</option>
+            <option value="crop_top" data-type="western">ক্রপ টপ (Crop Top)</option>
+            <option value="peplum_top" data-type="western">পেপলাম টপ (Peplum Top)</option>
+            <option value="off_shoulder_top" data-type="western">অফ-শোল্ডার টপ (Off-Shoulder Top)</option>
+            <option value="ladies_tshirt" data-type="western">লেডিস টি-শার্ট (Ladies T-shirt)</option>
+            <option value="ladies_shirt" data-type="western">লেডিস ক্যাজুয়াল শার্ট (Ladies Casual Shirt)</option>
+            <option value="one_piece_dress" data-type="western">ওয়ান-পিস শর্ট ড্রেস (One-Piece Short Dress)</option>
+            <option value="maxi_dress" data-type="western">ম্যাক্সি ড্রেস (Maxi Dress)</option>
+            <option value="bodycon_dress" data-type="western">বডি-কন ড্রেস (Bodycon Dress)</option>
+            <option value="jumpsuit" data-type="western">জাম্পস্যুট (Jumpsuit)</option>
+            <option value="dungaree" data-type="western">ডাংরি (Dungaree)</option>
+          </optgroup>
+          <optgroup label="৭. ছোট মেয়েদের পোশাক (Little Girls / Kids Wear)">
+            <option value="princess_frock" data-type="girls">প্রিন্সেস ফ্রক (Princess Party Frock)</option>
+            <option value="butterfly_frock" data-type="girls">বাটারফ্লাই ফ্রক (Butterfly Net Frock)</option>
+            <option value="cotton_frock" data-type="girls">সুতি ডেইলি ওয়্যার ফ্রক (Cotton Casual Frock)</option>
+            <option value="baby_lehenga" data-type="girls">বেবি লেহেঙ্গা-চোলি সেট (Baby Lehenga Choli)</option>
+            <option value="kids_anarkali" data-type="girls">কিডস আনারকলি গাউন (Kids Anarkali Gown)</option>
+            <option value="kids_skirt_top" data-type="girls">স্কার্ট ও টপ সেট (Kids Skirt & Top Set)</option>
+            <option value="kids_two_piece" data-type="girls">টু-পিস জামাকাপড় সেট (Two-Piece Kids Set)</option>
+            <option value="kids_shorts_tee" data-type="girls">শর্টস ও টি-শার্ট সেট (Kids Shorts & Tee Set)</option>
+            <option value="baby_jumpsuit" data-type="girls">বেবি জাম্পস্যুট (Baby Jumpsuit)</option>
+            <option value="tutu_dress" data-type="girls">টুটু ড্রেস (Tutu Net Dress)</option>
+          </optgroup>
+          <optgroup label="৮. নাইটওয়্যার ও হোমওয়্যার (Nightwear & Loungewear)">
+            <option value="cotton_nighty" data-type="nightwear">সুতি নাইটি (Pure Cotton Nighty)</option>
+            <option value="batik_nighty" data-type="nightwear">বাটিক নাইটি (Batik Nighty)</option>
+            <option value="jaipuri_nighty" data-type="nightwear">অজন্তা ও জয়পুরী প্রিন্ট নাইটি (Jaipuri Nighty)</option>
+            <option value="two_piece_nightsuit" data-type="nightwear">টু-পিস নাইটস্যুট (Two-Piece Nightsuit)</option>
+            <option value="satin_night_gown" data-type="nightwear">সাটিন নাইট গাউন (Satin Night Gown)</option>
+            <option value="satin_robe" data-type="nightwear">সাটিন রোব (Satin Robe)</option>
+            <option value="slip_dress" data-type="nightwear">স্লিপ ড্রেস (Slip Dress)</option>
+            <option value="lounge_pants" data-type="nightwear">কটন লাউঞ্জ প্যান্ট ও টি-শার্ট (Lounge Pants)</option>
+          </optgroup>
+          <optgroup label="৯. ওড়না, চাদর ও শীতকালীন পোশাক (Dupatta & Winterwear)">
+            <option value="banarasi_dupatta" data-type="dupatta">বেনারসি ওড়না (Banarasi Dupatta)</option>
+            <option value="bandhani_dupatta" data-type="dupatta">বাঁধনি ওড়না (Bandhani Dupatta)</option>
+            <option value="chiffon_dupatta" data-type="dupatta">পিওর শিফন ওড়না (Pure Chiffon Dupatta)</option>
+            <option value="phulkari_dupatta" data-type="dupatta">ফুলকারী ওড়না (Phulkari Dupatta)</option>
+            <option value="net_dupatta" data-type="dupatta">নেট এমব্রয়ডারি ওড়না (Net Dupatta)</option>
+            <option value="kashmiri_shawl" data-type="winter">কাশ্মীরি শাল ও চাদর (Kashmiri Shawl)</option>
+            <option value="ladies_cardigan" data-type="winter">লেডিস কার্ডিগান (Ladies Cardigan)</option>
+            <option value="pullover_sweater" data-type="winter">পুলওভার সোয়েটার (Pullover Sweater)</option>
+            <option value="ladies_hoodie" data-type="winter">লেডিস হুডি (Ladies Hoodie)</option>
+            <option value="ladies_poncho" data-type="winter">লেডিস শালীন পঞ্চো (Poncho / Cape)</option>
+          </optgroup>
+          <optgroup label="১০. জুয়েলারি, ব্যাগ ও পারফিউম (Accessories)">
+            <option value="necklace" data-type="jewel">ব্রাইডাল নেকলেস ও চোকার সেট (Bridal Choker)</option>
+            <option value="earrings" data-type="jewel">কানের দুল ও ঝুমকা (Earrings & Jhumka)</option>
+            <option value="bangles" data-type="jewel">ডিজাইনার বালা ও চুড়ি (Bangles & Churi)</option>
+            <option value="bag" data-type="bag">লেডিস হ্যান্ডব্যাগ ও পার্স (Ladies Handbag)</option>
+            <option value="sling_bag" data-type="bag">লেডিস স্লিং ব্যাগ ও বটুয়া (Sling & Potli)</option>
+            <option value="perfume" data-type="perfume">লেডিস পারফিউম, খাঁটি আতর ও বডি মিস্ট (Perfume & Attar)</option>
+          </optgroup>
         </select>
       </div>
 
@@ -4049,4 +5813,4 @@
   </div>
 
 </body>
-      </html>
+            </html>
