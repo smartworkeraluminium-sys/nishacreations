@@ -2498,6 +2498,148 @@
     // ==========================================
     let currentStarRating = 5;
 
+
+    // ==========================================
+    // 5-STAR DELIVERED RATING & PHOTO REVIEW
+    // ==========================================
+    let currentDelivStar = 5;
+    let currentDelivReviewPhoto = "";
+    let currentDelivOrderId = "";
+    let currentDelivProdTitle = "";
+
+    const RATING_DESCRIPTIONS = {
+      bn: {
+        1: "⭐ এক - খুব খারাপ",
+        2: "⭐⭐ দুই - খারাপ",
+        3: "⭐⭐⭐ তিন - মোটামুটি ভালো",
+        4: "⭐⭐⭐⭐ চার - ভালো",
+        5: "⭐⭐⭐⭐⭐ পাঁচ - খুব ভালো"
+      },
+      en: {
+        1: "⭐ One - Very Bad",
+        2: "⭐⭐ Two - Poor",
+        3: "⭐⭐⭐ Three - Average",
+        4: "⭐⭐⭐⭐ Four - Good",
+        5: "⭐⭐⭐⭐⭐ Five - Very Good"
+      }
+    };
+
+    function setDelivStar(rating) {
+      currentDelivStar = rating;
+      const stars = document.querySelectorAll('#delivStarGroup i');
+      stars.forEach((s, idx) => {
+        if (idx < rating) {
+          s.style.color = '#f59e0b';
+        } else {
+          s.style.color = '#cbd5e1';
+        }
+      });
+      const dict = RATING_DESCRIPTIONS[currentLang] || RATING_DESCRIPTIONS['bn'];
+      document.getElementById('delivRatingLabel').textContent = dict[rating] || "";
+    }
+
+    function handleDelivReviewPhoto(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX = 600;
+            let w = img.width;
+            let h = img.height;
+            if (w > h) {
+              if (w > MAX) { h *= MAX / w; w = MAX; }
+            } else {
+              if (h > MAX) { w *= MAX / h; h = MAX; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            currentDelivReviewPhoto = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('delivPhotoPreviewImg').src = currentDelivReviewPhoto;
+            document.getElementById('delivPhotoPrompt').style.display = 'none';
+            document.getElementById('delivPhotoPreviewBox').style.display = 'block';
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearDelivReviewPhoto() {
+      currentDelivReviewPhoto = "";
+      const inp = document.getElementById('delivPhotoInput');
+      if (inp) inp.value = "";
+      document.getElementById('delivPhotoPreviewBox').style.display = 'none';
+      document.getElementById('delivPhotoPrompt').style.display = 'block';
+    }
+
+    function openDeliveryReviewModal(orderId, prodTitle) {
+      currentDelivOrderId = orderId;
+      currentDelivProdTitle = prodTitle || (currentLang === 'bn' ? "নিশা ক্রিয়েশনস শাড়ি" : "Nisha Creations Saree");
+      document.getElementById('delivReviewProdTitle').textContent = currentDelivProdTitle;
+      setDelivStar(5);
+      clearDelivReviewPhoto();
+      document.getElementById('delivReviewText').value = '';
+      document.getElementById('deliveryReviewModal').style.display = 'flex';
+    }
+
+    function closeDeliveryReviewModal() {
+      document.getElementById('deliveryReviewModal').style.display = 'none';
+    }
+
+    function submitDelivReviewModal() {
+      const comment = document.getElementById('delivReviewText').value.trim();
+      if (!comment) {
+        alert(currentLang === 'bn' ? "দয়া করে আপনার মন্তব্য বা রিভিউটি লিখুন!" : "Please write your review feedback!");
+        return;
+      }
+
+      const custName = (currentCustomer && currentCustomer.name) ? currentCustomer.name : (currentLang === 'bn' ? "আমতার গ্রাহক" : "Amta Customer");
+      const dict = RATING_DESCRIPTIONS[currentLang] || RATING_DESCRIPTIONS['bn'];
+      const ratingLabel = dict[currentDelivStar] || "";
+
+      const newReview = {
+        id: Date.now(),
+        orderId: currentDelivOrderId,
+        product: currentDelivProdTitle,
+        name: custName,
+        rating: currentDelivStar,
+        ratingLabel: ratingLabel,
+        comment: comment,
+        photo: currentDelivReviewPhoto || "",
+        date: new Date().toLocaleDateString(currentLang === 'bn' ? 'bn-IN' : 'en-US')
+      };
+
+      // 1. Save in Reviews
+      const allReviews = JSON.parse(localStorage.getItem('nc_user_reviews') || '[]');
+      allReviews.unshift(newReview);
+      localStorage.setItem('nc_user_reviews', JSON.stringify(allReviews));
+
+      // 2. Mark order as reviewed in nc_orders
+      let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      orders = orders.map(o => o.id === currentDelivOrderId ? { ...o, reviewed: true, reviewData: newReview } : o);
+      localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+      // 3. Add 20 Nisha Coins as Reward
+      if (currentCustomer) {
+        currentCustomer.coins = (currentCustomer.coins || 150) + 20;
+        localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+        loadCustomerAccountHub();
+      }
+
+      alert(currentLang === 'bn' 
+        ? `🎉 অনেক ধন্যবাদ! আপনার ${currentDelivStar}-স্টার রিভিউ এবং ছবি সফলভাবে জমা হয়েছে। নিশা ক্রিয়েশনসের পক্ষ থেকে আপনার অ্যাকাউন্টে ২০টি কয়েন যোগ হয়েছে!` 
+        : `🎉 Thank you! Your review and photo have been submitted. 20 Coins added!`);
+
+      closeDeliveryReviewModal();
+      renderCustomerAccountOrders();
+      renderCustomerReviewsList();
+    }
+
     function setStarRating(rating) {
       currentStarRating = rating;
       const stars = document.querySelectorAll('#starRatingGroup i');
@@ -2540,16 +2682,49 @@
           ? (currentLang === 'bn' ? "✓ ডেলিভারি সম্পূর্ণ হয়েছে" : "✓ Delivered") 
           : (currentLang === 'bn' ? `চলমান: ${ord.status}` : `Active: ${ord.status}`);
 
+        const firstProdTitle = (ord.items && ord.items[0] ? ord.items[0].title : 'শাড়ি কালেকশন').replace(/'/g, "\\'");
         const itemsSummary = (ord.items || []).map(it => it.title).join(', ');
 
+        let reviewBlock = '';
+        if (isDelivered) {
+          if (ord.reviewed && ord.reviewData) {
+            const rd = ord.reviewData;
+            const photoThumb = rd.photo ? `<img src="${rd.photo}" style="width:45px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px;">` : '';
+            reviewBlock = `
+              <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.75rem; color:#166534;">
+                  <span>✓ আপনার দেওয়া রিভিউ:</span>
+                  <span style="color:#d97706;">${rd.ratingLabel || `${rd.rating}★`}</span>
+                </div>
+                <div style="font-size:0.75rem; color:#334155; margin:4px 0;">"${rd.comment}"</div>
+                ${photoThumb}
+              </div>
+            `;
+          } else {
+            reviewBlock = `
+              <div style="margin-top:10px; background:#fef3c7; border:1.5px dashed #f59e0b; border-radius:12px; padding:12px; text-align:center;">
+                <div style="font-size:0.82rem; font-weight:800; color:#92400e; margin-bottom:4px;">
+                  🎉 ডেলিভারি সম্পূর্ণ হয়েছে! কেমন লাগলো?
+                </div>
+                <div style="font-size:0.72rem; color:#78350f; margin-bottom:8px;">
+                  ৫-স্টার রেটিং, মতামত ও শাড়ির ছবি শেয়ার করুন
+                </div>
+                <button onclick="openDeliveryReviewModal('${ord.id}', '${firstProdTitle}')" style="width:100%; background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; border:none; padding:9px 14px; border-radius:8px; font-weight:800; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(245,158,11,0.3);">
+                  <i class="fa-solid fa-star"></i> ⭐ রিভিউ দিন ও ছবি আপলোড করুন
+                </button>
+              </div>
+            `;
+          }
+        }
+
         container.innerHTML += `
-          <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #f8fafc;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:6px; margin-bottom:8px;">
+          <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #ffffff; box-shadow:0 1px 4px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:6px; margin-bottom:8px;">
               <div>
                 <span style="font-size:0.78rem; font-weight:800; color:var(--primary);">ORDER #${ord.id}</span>
                 <div style="font-size:0.68rem; color:#64748b;">${ord.date}</div>
               </div>
-              <span style="font-size:0.75rem; ${statusClass}; background:#fff; border:1px solid #cbd5e1; padding:2px 8px; border-radius:12px;">
+              <span style="font-size:0.75rem; ${statusClass}; background:#f8fafc; border:1px solid #cbd5e1; padding:2px 8px; border-radius:12px;">
                 ${statusLabel}
               </span>
             </div>
@@ -2560,15 +2735,12 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
               <span style="font-size:0.85rem; font-weight:800; color:#0f172a;">${currentLang === 'bn' ? 'মোট বিল:' : 'Total:'} ₹${ord.total}</span>
-              <div style="display:flex; gap:6px;">
-                <button onclick="prefillReview('${ord.items && ord.items[0] ? ord.items[0].title.replace(/'/g, "\\'") : ''}')" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:800; cursor:pointer;">
-                  ⭐ ${currentLang === 'bn' ? 'রিভিউ দিন' : 'Review'}
-                </button>
-                <button onclick="window.open('https://wa.me/919239413517?text=Hello, Order ${ord.id} status enquiry', '_blank')" style="background:#25d366; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">
-                  <i class="fa-brands fa-whatsapp"></i> ${currentLang === 'bn' ? 'ট্র্যাক' : 'Track'}
-                </button>
-              </div>
+              <button onclick="window.open('https://wa.me/919239413517?text=Hello, Order ${ord.id} status enquiry', '_blank')" style="background:#25d366; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">
+                <i class="fa-brands fa-whatsapp"></i> ${currentLang === 'bn' ? 'ট্র্যাক' : 'Track'}
+              </button>
             </div>
+
+            ${reviewBlock}
           </div>
         `;
       });
@@ -2625,19 +2797,23 @@
       }
 
       container.innerHTML = '';
-      reviews.slice(0, 5).forEach(r => {
+      reviews.slice(0, 8).forEach(r => {
         let starsStr = '';
         for (let i = 0; i < 5; i++) {
           starsStr += i < r.rating ? '★' : '☆';
         }
+        const photoHtml = r.photo ? `<div style="margin-top:6px;"><img src="${r.photo}" style="width:65px; height:65px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1; box-shadow:0 2px 6px rgba(0,0,0,0.06);"></div>` : '';
+
         container.innerHTML += `
-          <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:8px 10px; margin-bottom:8px; font-size:0.75rem;">
-            <div style="display:flex; justify-content:space-between; font-weight:700;">
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.75rem;">
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
               <span style="color:#0f172a;">${r.product}</span>
-              <span style="color:#f59e0b; font-weight:800;">${starsStr}</span>
+              <span style="color:#f59e0b;">${starsStr}</span>
             </div>
-            <div style="color:#475569; margin:3px 0;">"${r.comment}"</div>
-            <div style="font-size:0.65rem; color:#94a3b8;">— ${r.name} • ${r.date}</div>
+            <div style="font-size:0.68rem; color:#d97706; font-weight:700; margin:2px 0;">${r.ratingLabel || ''}</div>
+            <div style="color:#334155; margin:3px 0; line-height:1.3;">"${r.comment}"</div>
+            ${photoHtml}
+            <div style="font-size:0.65rem; color:#94a3b8; margin-top:4px;">— ${r.name} • ${r.date}</div>
           </div>
         `;
       });
@@ -3137,4 +3313,4 @@
     }
   </script>
 </body>
-                                          </html>
+  </html>
