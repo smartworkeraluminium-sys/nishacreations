@@ -2505,42 +2505,7 @@
     </div>
   </div>
 
-  <div id="screen-videos" class="screen-view" style="padding:12px; padding-bottom:75px;">
-    <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
-      <i class="fa-solid fa-clapperboard" style="color:var(--primary);"></i>
-      <span>শাড়ির ডেমো ও ভিডিও রিলস (Video Finds)</span>
-    </div>
-
-    <!-- Reel Card 1 -->
-    <div class="video-reel-card">
-      <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600" class="video-reel-media">
-      <div class="reel-overlay">
-        <div>
-          <span style="background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:700;">★ পুজো স্পেশাল ভিডিও</span>
-          <div style="font-size:1rem; font-weight:800; margin:4px 0;">ঢাকাই জামদানি শাড়ির আঁচল ও কুঁচির কাজ</div>
-          <div style="font-size:1.1rem; font-weight:800; color:#fef08a;">মাত্র ₹৭৯৯ <span style="font-size:0.75rem; text-decoration:line-through; opacity:0.8;">₹১৫৯৯</span></div>
-        </div>
-        <button onclick="openPdp('NC-101')" style="background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-          ⚡ অর্ডার করুন
-        </button>
-      </div>
-    </div>
-
-    <!-- Reel Card 2 -->
-    <div class="video-reel-card">
-      <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600" class="video-reel-media">
-      <div class="reel-overlay">
-        <div>
-          <span style="background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:700;">★ বিয়ে ও পার্টি রিলস</span>
-          <div style="font-size:1rem; font-weight:800; margin:4px 0;">রয়্যাল ব্লু সফট সিল্ক কাতান শাড়ি ডেমো</div>
-          <div style="font-size:1.1rem; font-weight:800; color:#fef08a;">মাত্র ₹৯৫০ <span style="font-size:0.75rem; text-decoration:line-through; opacity:0.8;">₹১৮৯৯</span></div>
-        </div>
-        <button onclick="openPdp('NC-102')" style="background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;">
-          ⚡ অর্ডার করুন
-        </button>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- ================= 4. PRODUCT DETAIL PAGE (PDP) ================= -->
   <div id="screen-pdp" class="screen-view pdp-screen">
@@ -3291,9 +3256,9 @@
       <i class="fa-solid fa-table-cells-large"></i>
       <span id="nav-t-categories">ক্যাটাগরি</span>
     </button>
-    <button class="nav-tab" id="tab-videos" onclick="showScreen('videos')">
-      <i class="fa-solid fa-circle-play"></i>
-      <span id="nav-t-videos">রিলস</span>
+    <button class="nav-tab" id="tab-wishlist" onclick="showScreen('wishlist')">
+      <i class="fa-solid fa-heart"></i>
+      <span id="nav-t-wishlist">উইশলিস্ট</span>
     </button>
     <button class="nav-tab" id="tab-orders" onclick="showScreen('orders')">
       <i class="fa-solid fa-truck-fast"></i>
@@ -3917,6 +3882,15 @@
                       <strong>কারণ:</strong> ${o.returnReason}<br>
                       ${o.returnType === 'Exchange' ? `<strong>নতুন সাইজ চাওয়া হয়েছে:</strong> <span style="background:#ffedd5; padding:1px 4px; border-radius:3px; font-weight:800;">${o.returnExchangeSize}</span><br>` : ''}
                       <strong>কাস্টমার বার্তা:</strong> ${o.returnDetails || 'কোনো মন্তব্য নেই'}
+                      ${(o.bankDetails && o.returnType === 'Refund') ? `
+                        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:6px; padding:6px 8px; margin-top:6px; font-size:0.72rem; color:#166534;">
+                          <div style="font-weight:800;"><i class="fa-solid fa-building-columns"></i> কাস্টমারের রিফান্ড ব্যাংক বিবরণ (ক্যাশ অর্ডারের টাকা পাঠান):</div>
+                          <div>• একাউন্ট নং: <strong>${o.bankDetails.acc || 'নেই'}</strong></div>
+                          <div>• IFSC কোড: <strong>${o.bankDetails.ifsc || 'নেই'}</strong></div>
+                          <div>• হোল্ডার: <strong>${o.bankDetails.holder || 'নেই'}</strong></div>
+                          ${o.bankDetails.upi ? `<div>• UPI ID: <strong>${o.bankDetails.upi}</strong></div>` : ''}
+                        </div>
+                      ` : ''}
                     </div>
                     <div style="display:flex; gap:6px; margin-top:6px;">
                       <button onclick="adminApproveReturn('${o.id}')" style="background:#ea580c; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:800; cursor:pointer;">
@@ -5898,7 +5872,7 @@ ${itemsListText}
     let appliedCouponDiscount = 0;
     let appliedCouponCode = "";
 
-    function renderReels() {
+    function renderReels() { return; // Reels permanently removed as requested
       const container = document.getElementById('reelsFeedContainer');
       if (!container) return;
 
@@ -6728,21 +6702,45 @@ ${itemsListText}
                     <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
                     <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="openReturnModal('${ord.id}')">পলিসি জানুন &rarr;</span>
                   </div>
-                  ${ord.returnStatus === 'Requested' ? `
-                    <div style="background:#fff7ed; border:1px solid #fed7aa; padding:8px 12px; border-radius:8px; font-size:0.75rem; color:#c2410c;">
-                      <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
-                        <i class="fa-solid fa-rotate-left"></i> রিটার্ন / এক্সচেঞ্জ আবেদন গৃহীত হয়েছে
-                      </div>
-                      <div style="margin-top:2px; font-size:0.7rem;">
-                        কারণ: ${ord.returnReason} ${ord.returnType === 'Exchange' ? `(নতুন সাইজ: <strong>${ord.returnExchangeSize}</strong>)` : '(টাকা ফেরত)'}
-                      </div>
-                      <div style="font-size:0.68rem; color:#9a3412; margin-top:3px;">⏳ আমতায় আমাদের ডেলিভারি টিম পার্সেলটি পিকআপ করতে শীঘ্রই যোগাযোগ করবে।</div>
-                    </div>
-                  ` : `
-                    <button type="button" onclick="openReturnModal('${ord.id}')" style="width:100%; background:#fdf4ff; border:1.5px solid #f0abfc; color:var(--primary); padding:8px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-                      <i class="fa-solid fa-arrow-rotate-left"></i> 🔄 সাইজ ছোট/বড় হলে এক্সচেঞ্জ বা রিটার্ন করুন
-                    </button>
-                  `}
+                  ${(() => {
+                    const daysPassed = getDaysSinceDelivered(ord);
+                    const isExpired = daysPassed > 7;
+                    const daysLeft = Math.max(0, 7 - daysPassed);
+
+                    if (ord.returnStatus === 'Requested') {
+                      return `
+                        <div style="background:#fff7ed; border:1.5px solid #fed7aa; padding:8px 12px; border-radius:8px; font-size:0.75rem; color:#c2410c;">
+                          <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-rotate-left"></i> রিটার্ন / এক্সচেঞ্জ আবেদন গৃহীত হয়েছে
+                          </div>
+                          <div style="margin-top:2px; font-size:0.7rem;">
+                            কারণ: ${ord.returnReason} ${ord.returnType === 'Exchange' ? `(নতুন সাইজ: <strong>${ord.returnExchangeSize}</strong>)` : `(ব্যাংক রিফান্ড)`}
+                          </div>
+                          <div style="font-size:0.68rem; color:#9a3412; margin-top:3px;">⏳ আমতায় আমাদের ডেলিভারি টিম পার্সেল পিকআপ করতে শীঘ্রই যোগাযোগ করবে।</div>
+                        </div>
+                      `;
+                    } else if (isExpired) {
+                      return `
+                        <div style="background:#fef2f2; border:1px solid #fecaca; padding:8px 12px; border-radius:8px; font-size:0.75rem; color:#991b1b; display:flex; align-items:center; gap:8px;">
+                          <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
+                          <div>
+                            <div style="font-weight:800;">৭ দিনের রিটার্ন মেয়াদ উত্তীর্ণ হয়েছে</div>
+                            <div style="font-size:0.68rem; opacity:0.9;">ডেলিভারির ৭ দিন পর আর রিটার্ন বা এক্সচেঞ্জ গ্রহণযোগ্য নয়।</div>
+                          </div>
+                        </div>
+                      `;
+                    } else {
+                      return `
+                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:4px 8px; font-size:0.7rem; color:#166534; display:flex; justify-content:space-between; align-items:center;">
+                          <span><i class="fa-solid fa-clock-rotate-left"></i> ৭ দিনের রিটার্ন সময় সক্রিয়</span>
+                          <span style="background:#dcfce7; color:#15803d; font-weight:800; padding:1px 6px; border-radius:10px;">আর ${daysLeft} দিন বাকি</span>
+                        </div>
+                        <button type="button" onclick="openReturnModal('${ord.id}')" style="width:100%; background:#fdf4ff; border:1.5px solid #f0abfc; color:var(--primary); padding:8px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                          <i class="fa-solid fa-arrow-rotate-left"></i> 🔄 সাইজ ছোট/বড় হলে এক্সচেঞ্জ বা রিটার্ন করুন (৭ দিনের মধ্যে)
+                        </button>
+                      `;
+                    }
+                  })()}
                 </div>
               </div>
 
@@ -7273,9 +7271,30 @@ ${itemsListText}
 
 
     // ================= RETURN & CANCELLATION CONTROLLERS =================
+    function getDaysSinceDelivered(ord) {
+      if (ord.deliveredTimestamp) {
+        return Math.floor((Date.now() - ord.deliveredTimestamp) / (1000 * 60 * 60 * 24));
+      }
+      if (ord.date) {
+        try {
+          const parts = ord.date.split(',')[0].trim().split('/');
+          if (parts.length === 3) {
+            const d = parseInt(parts[0]);
+            const m = parseInt(parts[1]) - 1;
+            const y = parseInt(parts[2]);
+            const t = new Date(y, m, d).getTime();
+            if (!isNaN(t)) return Math.floor((Date.now() - t) / (1000 * 60 * 60 * 24));
+          }
+        } catch(e) {}
+      }
+      return 0;
+    }
+
     function toggleExchangeSizeOption(isExchange) {
-      const box = document.getElementById("retExchangeSizeBox");
-      if (box) box.style.display = isExchange ? "block" : "none";
+      const sizeBox = document.getElementById("retExchangeSizeBox");
+      const bankBox = document.getElementById("retBankDetailsBox");
+      if (sizeBox) sizeBox.style.display = isExchange ? "block" : "none";
+      if (bankBox) bankBox.style.display = isExchange ? "none" : "block";
     }
 
     function openReturnModal(orderId) {
@@ -7283,8 +7302,18 @@ ${itemsListText}
       const ord = orderList.find(o => o.id === orderId);
       if (!ord) return;
 
+      // 7-DAY RETURN POLICY CHECK
+      const daysPassed = getDaysSinceDelivered(ord);
+      if (daysPassed > 7) {
+        alert("🔒 দুঃখিত! এই অর্ডারটি ডেলিভারির ৭ দিন অতিক্রান্ত হয়ে গেছে (" + daysPassed + " দিন পূর্বে ডেলিভারি হয়েছে)।\nনিশা ক্রিয়েশনসের নিয়ম অনুযায়ী ৭ দিন পার হয়ে গেলে রিটার্ন গ্রহণ করা সম্ভব নয়।");
+        return;
+      }
+
       document.getElementById("retOrderId").value = orderId;
-      document.getElementById("retModalOrderInfo").textContent = `অর্ডার #${ord.id} • ${ord.date || ""}`;
+      document.getElementById("retModalOrderInfo").textContent = `অর্ডার #${ord.id} • ${ord.date || ""} (৭ দিনের মধ্যে)`;
+      toggleExchangeSizeOption(true);
+      const exRadio = document.querySelector('input[name="retActionType"][value="Exchange"]');
+      if (exRadio) exRadio.checked = true;
 
       const previewBox = document.getElementById("retProdPreview");
       const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
@@ -7318,11 +7347,27 @@ ${itemsListText}
       const idx = orderList.findIndex(o => o.id === orderId);
       if (idx === -1) return;
 
+      // Bank Details validation if Refund
+      let bankInfo = null;
+      if (actType === "Refund") {
+        const acc = document.getElementById("ret_bank_acc") ? document.getElementById("ret_bank_acc").value.trim() : "";
+        const ifsc = document.getElementById("ret_bank_ifsc") ? document.getElementById("ret_bank_ifsc").value.trim().toUpperCase() : "";
+        const holder = document.getElementById("ret_bank_holder") ? document.getElementById("ret_bank_holder").value.trim() : "";
+        const upi = document.getElementById("ret_bank_upi") ? document.getElementById("ret_bank_upi").value.trim() : "";
+
+        if ((!acc || !ifsc) && !upi) {
+          alert("📢 ক্যাশ অর্ডারে নগদ টাকা ফেরত হয় না। আপনার রিফান্ডের টাকা সরাসরি ব্যাংক একাউন্টে পাঠাতে দয়া করে আপনার ব্যাংক একাউন্ট নম্বর ও IFSC কোড অথবা UPI ID দিন!");
+          return;
+        }
+        bankInfo = { acc: acc, ifsc: ifsc, holder: holder, upi: upi };
+      }
+
       orderList[idx].returnStatus = "Requested";
       orderList[idx].returnType = actType;
       orderList[idx].returnReason = reason;
       orderList[idx].returnDetails = customNote;
       orderList[idx].returnExchangeSize = newSize;
+      orderList[idx].bankDetails = bankInfo;
       orderList[idx].returnDate = new Date().toLocaleDateString("bn-IN");
 
       localStorage.setItem("nc_orders", JSON.stringify(orderList));
@@ -7333,7 +7378,8 @@ ${itemsListText}
       renderOrders();
 
       // Open WhatsApp to notify boutique
-      const msg = `*🔄 নতুন রিটার্ন/এক্সচেঞ্জ আবেদন - নিশা ক্রিয়েশনস*%0A━━━━━━━━━━━━━━━━━%0A🧾 *অর্ডার নং:* #${orderId}%0A👤 *গ্রাহক:* ${orderList[idx].name}%0A📞 *ফোন:* ${orderList[idx].phone}%0A📦 *সুবিধা:* ${actType === "Exchange" ? "সাইজ পরিবর্তন (এক্সচেঞ্জ)" : "টাকা রিফান্ড / রিটার্ন"}%0A${actType === "Exchange" ? "📏 *নতুন সাইজ লাগবে:* " + newSize + "%0A" : ""}⚠️ *কারণ:* ${reason}%0A📝 *মন্তব্য:* ${customNote || "নাই"}%0A━━━━━━━━━━━━━━━━━%0Aঅনুগ্রহ করে পিকআপ নিশ্চিত করুন।`;
+      const bankText = bankInfo ? `%0A🏦 *রিফান্ড ব্যাংক ডিটেলস:*%0A• একাউন্ট: ${bankInfo.acc || "নাই"}%0A• IFSC: ${bankInfo.ifsc || "নাই"}%0A• হোল্ডার: ${bankInfo.holder || "নাই"}%0A• UPI ID: ${bankInfo.upi || "নাই"}` : "";
+      const msg = `*🔄 নতুন রিটার্ন/এক্সচেঞ্জ আবেদন - নিশা ক্রিয়েশনস*%0A━━━━━━━━━━━━━━━━━%0A🧾 *অর্ডার নং:* #${orderId}%0A👤 *গ্রাহক:* ${orderList[idx].name}%0A📞 *ফোন:* ${orderList[idx].phone}%0A📦 *সুবিধা:* ${actType === "Exchange" ? "সাইজ পরিবর্তন (এক্সচেঞ্জ)" : "টাকা রিফান্ড / ফেরত"}%0A${actType === "Exchange" ? "📏 *নতুন সাইজ লাগবে:* " + newSize + "%0A" : ""}⚠️ *কারণ:* ${reason}%0A📝 *মন্তব্য:* ${customNote || "নাই"}${bankText}%0A━━━━━━━━━━━━━━━━━%0A(ক্যাশ অর্ডারের রিফান্ড সরাসরি ব্যাংক একাউন্টে পাঠানো হবে)।`;
       window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${msg}`, '_blank');
     }
 
@@ -8163,6 +8209,36 @@ ${itemsListText}
         </select>
       </div>
 
+      <!-- Bank Details Box for Refund (Cash/COD Order Refund via Bank Transfer) -->
+      <div id="retBankDetailsBox" style="display:none; margin-bottom:14px; background:#f0fdf4; border:1.5px solid #86efac; padding:12px; border-radius:10px;">
+        <div style="font-size:0.78rem; font-weight:800; color:#166534; display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <i class="fa-solid fa-building-columns"></i> রিফান্ডের ব্যাংক ও UPI বিবরণ (ক্যাশ অর্ডারের জন্য আবশ্যক):
+        </div>
+        <div style="font-size:0.7rem; color:#15803d; line-height:1.4; margin-bottom:10px; background:#dcfce7; padding:6px 8px; border-radius:6px;">
+          📢 <strong>জরুরি নিয়ম:</strong> ক্যাশ অন ডেলিভারি (COD) অর্ডারে হাতে নগদ ক্যাশ টাকা ফেরত দেওয়া হয় না। আপনার রিফান্ডের টাকা সরাসরি ব্যাংক একাউন্টে ট্রান্সফার করা হবে।
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div>
+            <label style="font-size:0.7rem; font-weight:700; color:#334155;">ব্যাংক একাউন্ট নম্বর (Account Number): *</label>
+            <input type="text" id="ret_bank_acc" placeholder="যেমন: 30123456789" style="width:100%; padding:7px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; margin-top:2px;">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:0.7rem; font-weight:700; color:#334155;">IFSC কোড: *</label>
+              <input type="text" id="ret_bank_ifsc" placeholder="SBIN0001234" style="width:100%; padding:7px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; text-transform:uppercase; margin-top:2px;">
+            </div>
+            <div>
+              <label style="font-size:0.7rem; font-weight:700; color:#334155;">একাউন্ট হোল্ডারের নাম: *</label>
+              <input type="text" id="ret_bank_holder" placeholder="যেমন: Saheb Ghanti" style="width:100%; padding:7px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; margin-top:2px;">
+            </div>
+          </div>
+          <div>
+            <label style="font-size:0.7rem; font-weight:700; color:#334155;">অথবা দ্রুত রিফান্ডের জন্য UPI ID (GPay / PhonePe):</label>
+            <input type="text" id="ret_bank_upi" placeholder="যেমন: 9239413517@ybl বা phonepe" style="width:100%; padding:7px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; margin-top:2px;">
+          </div>
+        </div>
+      </div>
+
       <!-- Predefined Reasons -->
       <div style="margin-bottom:14px;">
         <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;">রিটার্ন বা পরিবর্তনের প্রধান কারণ নির্বাচন করুন:</label>
@@ -8274,4 +8350,4 @@ ${itemsListText}
   </div>
 
 </body>
-          </html>
+  </html>
