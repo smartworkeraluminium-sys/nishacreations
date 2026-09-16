@@ -1888,13 +1888,7 @@
   <div id="screen-orders" class="screen-view" style="padding:14px; padding-bottom:75px;">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
       <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">অর্ডার ট্র্যাকিং ও ইতিহাস (My Orders)</div>
-    </div>
-
-    <!-- Search Order Form -->
-    <div style="background:#fff; border-radius:12px; border:1px solid var(--border); padding:10px; margin-bottom:14px; display:flex; gap:8px;">
-      <input type="text" id="trackInput" placeholder="অর্ডার নম্বর বা ফোন নম্বর দিন..." style="flex:1; border:1px solid #cbd5e1; padding:8px 12px; border-radius:8px; font-size:0.85rem; outline:none;">
-      <button onclick="trackOrderManual()" style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.82rem; cursor:pointer;">ট্র্যাক</button>
+      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">আমার অর্ডার সমূহ (My Orders)</div>
     </div>
 
     <div id="ordersListContainer"></div>
@@ -4889,6 +4883,8 @@ ${estDeliveryStr}
         : `🎉 Thank you! Your review and photo have been submitted. 20 Coins added!`);
 
       closeDeliveryReviewModal();
+      orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      renderOrders();
       renderCustomerAccountOrders();
       renderCustomerReviewsList();
     }
@@ -5258,16 +5254,51 @@ ${estDeliveryStr}
       const list = filterList || orders;
 
       if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; background:#fff; border-radius:12px;">কোনো চলমান অর্ডার নেই!</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.03);">কোনো চলমান অর্ডার নেই!</div>`;
         return;
       }
 
       container.innerHTML = '';
       list.forEach(ord => {
-        const firstItem = ord.items[0] || {};
+        const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
         const isDelivered = ord.status === "Delivered";
         const isOut = ord.status === "Out for Delivery";
         const isPacked = ord.status === "Packed";
+        const isReviewed = ord.reviewed === true;
+
+        const safeProdTitle = (firstItem.title || 'শাড়ি').replace(/'/g, "\\'");
+
+        // Review Option Section: Appears when order tracking is completed (Delivered)
+        let reviewSectionHtml = '';
+        if (isDelivered) {
+          if (isReviewed) {
+            reviewSectionHtml = `
+              <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:10px; padding:10px 14px; margin-top:12px; display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px; color:#15803d; font-size:0.8rem; font-weight:800;">
+                  <i class="fa-solid fa-circle-check" style="font-size:1.1rem;"></i>
+                  <span>আপনার ৫-স্টার রিভিউ জমা পড়েছে! ধন্যবাদ।</span>
+                </div>
+                <button onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')" style="background:#fff; border:1px solid #86efac; color:#15803d; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:700; cursor:pointer;">
+                  রিভিউ দেখুন
+                </button>
+              </div>
+            `;
+          } else {
+            reviewSectionHtml = `
+              <div style="background:linear-gradient(135deg, #fef3c7, #fde68a); border:1.5px solid #f59e0b; border-radius:12px; padding:12px 14px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(245,158,11,0.2);">
+                <div>
+                  <div style="font-size:0.85rem; font-weight:800; color:#78350f; display:flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-star" style="color:#d97706;"></i> <span>পার্সেলটি কেমন লাগলো?</span>
+                  </div>
+                  <div style="font-size:0.72rem; color:#92400e; margin-top:2px;">ডেলিভারি সম্পন্ন হয়েছে, আপনার ৫-স্টার রেটিং ও ছবি শেয়ার করুন</div>
+                </div>
+                <button onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:0.8rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.35); display:flex; align-items:center; gap:6px; white-space:nowrap;">
+                  <i class="fa-solid fa-pen-to-square"></i> রিভিউ দিন
+                </button>
+              </div>
+            `;
+          }
+        }
 
         container.innerHTML += `
           <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
@@ -5285,7 +5316,7 @@ ${estDeliveryStr}
               <img src="${firstItem.img || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
               <div style="flex:1;">
                 <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">${firstItem.title || 'Product'}</div>
-                <div style="font-size:0.75rem; color:#64748b;">মোট আইটেম: ${ord.items.length} টি • ${ord.paymentMode}</div>
+                <div style="font-size:0.75rem; color:#64748b;">মোট আইটেম: ${ord.items ? ord.items.length : 1} টি • ${ord.paymentMode || 'COD'}</div>
                 <div style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-top:2px;">মোট: ₹${ord.total}</div>
               </div>
             </div>
@@ -5314,8 +5345,11 @@ ${estDeliveryStr}
               </div>
             </div>
 
+            <!-- Order Completed Review Option (ডেলিভারি সম্পন্ন হলেই ভেসে উঠবে) -->
+            ${reviewSectionHtml}
+
             <!-- Address Card -->
-            <div style="background:#f8fafc; border-radius:8px; padding:8px 10px; font-size:0.72rem; color:#475569; margin-top:6px;">
+            <div style="background:#f8fafc; border-radius:8px; padding:8px 10px; font-size:0.72rem; color:#475569; margin-top:10px;">
               <span style="font-weight:700; color:#0f172a;">📍 ডেলিভারি ঠিকানা:</span> ${ord.address} | ফোন: ${ord.phone}
             </div>
 
@@ -5954,4 +5988,4 @@ ${estDeliveryStr}
   </div>
 
 </body>
-  </html>
+                                          </html>
