@@ -2580,6 +2580,20 @@
         </button>
       </div>
 
+      <!-- Color Variants Selection (কালার ভেরিয়েন্ট) -->
+      <div class="pdp-color-section" id="pdpColorSection" style="margin:10px 0;">
+        <div class="pdp-section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-weight:700; font-size:0.82rem; color:#0f172a;">
+            🎨 কালার ভেরিয়েন্ট (Select Color):
+          </span>
+          <span id="pdpSelectedColorNameBadge" style="font-size:0.72rem; font-weight:800; color:var(--primary); background:#fdf4ff; border:1px solid #f0abfc; padding:2px 8px; border-radius:12px;">
+            মূল কালার
+          </span>
+        </div>
+        <div class="color-variants-strip" id="pdpColorVariantsStrip" style="display:flex; gap:8px; overflow-x:auto; padding:4px 0;">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
       <!-- 4. Size Selection (Meesho Image 4) -->
       <div class="pdp-size-section">
         <div class="pdp-section-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -3727,6 +3741,30 @@
       const sizeNote = document.getElementById('admin_new_size_note') ? document.getElementById('admin_new_size_note').value.trim() : '';
       const videoUrl = document.getElementById('admin_new_video_url') ? document.getElementById('admin_new_video_url').value.trim() : '';
 
+      // Collect Available Sizes
+      const checkedSizes = [];
+      document.querySelectorAll('input[name="admin_size_chk"]:checked').forEach(cb => checkedSizes.push(cb.value));
+      const customSizesVal = document.getElementById('admin_custom_sizes_input') ? document.getElementById('admin_custom_sizes_input').value.trim() : '';
+      if (customSizesVal) {
+        customSizesVal.split(',').forEach(s => {
+          const st = s.trim();
+          if (st && !checkedSizes.includes(st)) checkedSizes.push(st);
+        });
+      }
+
+      // Collect Color Variants with Photos
+      const colorVariants = [];
+      for (let i = 0; i < 4; i++) {
+        if (uploadedSlotImages[i]) {
+          const cInput = document.getElementById(`slot-color-${i}`);
+          const cName = cInput && cInput.value.trim() ? cInput.value.trim() : (i === 0 ? 'মূল কালার' : `রং ${i+1}`);
+          colorVariants.push({
+            img: uploadedSlotImages[i],
+            colorName: cName
+          });
+        }
+      }
+
       let finalSizeChart = rawChart;
       if (finalSizeChart === 'auto') {
         const catLower = (cat + ' ' + title).toLowerCase();
@@ -3771,6 +3809,8 @@
         sizeChartType: finalSizeChart,
         sizeNote: sizeNote,
         videoUrl: videoUrl,
+        availableSizes: checkedSizes.length > 0 ? checkedSizes : ['Free Size'],
+        colorVariants: colorVariants.length > 0 ? colorVariants : [{ img: uploadedSlotImages[0], colorName: 'মূল কালার' }],
         date: new Date().toLocaleDateString('bn-IN')
       };
 
@@ -3828,6 +3868,9 @@
                     <option value="saree_blouse" ${(!p.sizeChartType || p.sizeChartType === 'saree_blouse' || p.sizeChartType === 'auto') ? 'selected' : ''}>🥻 শাড়ি ও ব্লাউজ</option>
                     <option value="none" ${p.sizeChartType === 'none' ? 'selected' : ''}>🚫 চার্ট নেই</option>
                   </select>
+                  <button onclick="adminQuickEditSizes(${idx})" style="background:#ede9fe; border:1px solid #c4b5fd; color:#6d28d9; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">
+                    📏 সাইজ: ${(p.availableSizes || []).join(', ') || 'স্ট্যান্ডার্ড'} ✎
+                  </button>
                 </div>
                 <button onclick="adminEditVideoUrl(${idx})" style="background:${p.videoUrl ? '#fee2e2' : '#f1f5f9'}; border:1px solid ${p.videoUrl ? '#fca5a5' : '#cbd5e1'}; color:${p.videoUrl ? '#dc2626' : '#475569'}; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:700; cursor:pointer;">
                   ${p.videoUrl ? '🎥 ভিডিও যুক্ত আছে ✎' : '+ ভিডিও লিংক'}
@@ -3848,20 +3891,66 @@
           ordContainer.innerHTML = '';
           orderList.forEach(o => {
             ordContainer.innerHTML += `
-              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; margin-bottom:8px; font-size:0.75rem;">
-                <div style="display:flex; justify-content:space-between; font-weight:800;">
-                  <span>#${o.id} - ${o.name}</span>
-                  <span style="color:var(--primary);">₹${o.total}</span>
+              <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:8px; margin-bottom:8px;">
+                  <div>
+                    <span style="font-weight:800; color:#0f172a; font-size:0.85rem;">#${o.id} • ${o.name}</span>
+                    <div style="font-size:0.68rem; color:#64748b;">📅 ${o.date || 'আজকের অর্ডার'}</div>
+                  </div>
+                  <span style="color:var(--primary); font-weight:800; font-size:0.95rem;">₹${o.total}</span>
                 </div>
-                <div style="color:#64748b; margin:2px 0;">📞 ${o.phone} | 📍 ${o.address}</div>
-                <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
-                  <span style="font-weight:700;">স্ট্যাটাস:</span>
-                  <select onchange="updateLiveOrderStatus('${o.id}', this.value)" style="padding:3px 6px; font-size:0.72rem; font-weight:700; border-radius:4px;">
-                    <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
-                    <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
-                    <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
-                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                  </select>
+
+                <!-- Customer Info -->
+                <div style="font-size:0.75rem; color:#475569; margin-bottom:10px; line-height:1.4;">
+                  <div>📞 <strong>${o.phone}</strong></div>
+                  <div>📍 ${o.address}</div>
+                </div>
+
+                <!-- ORDERED ITEMS WITH PHOTO & SIZES (Customer Requested) -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px; margin-bottom:10px;">
+                  <div style="font-size:0.7rem; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">
+                    📦 অর্ডার করা পণ্য (${(o.items && o.items.length) || 1}টি):
+                  </div>
+                  ${(o.items && o.items.length > 0) ? o.items.map(item => `
+                    <div style="display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px dashed #e2e8f0;">
+                      <img src="${item.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120'}" style="width:52px; height:52px; object-fit:cover; border-radius:8px; border:1.5px solid #cbd5e1; flex-shrink:0;">
+                      <div style="flex:1; min-width:0;">
+                        <div style="font-weight:800; color:#0f172a; font-size:0.8rem; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
+                        <div style="font-size:0.7rem; margin-top:3px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                          <span style="background:#fdf4ff; border:1px solid #f0abfc; color:#7e22ce; padding:1px 6px; border-radius:4px; font-weight:800;">
+                            📏 সাইজ: ${item.selectedSize || 'Free Size'}
+                          </span>
+                          ${item.selectedColor ? `<span style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:1px 6px; border-radius:4px; font-weight:800;">🎨 ${item.selectedColor}</span>` : ''}
+                          <span style="color:#b45309; font-weight:700;">• পরিমাণ: ${item.qty || 1}</span>
+                        </div>
+                        <div style="font-weight:800; color:var(--primary); font-size:0.75rem; margin-top:2px;">₹${item.price}</div>
+                      </div>
+                    </div>
+                  `).join('') : `
+                    <div style="display:flex; align-items:center; gap:10px; padding:4px 0;">
+                      <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120" style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
+                      <div>
+                        <div style="font-weight:700; font-size:0.78rem;">বুটিক পোশাক / শাড়ি অর্ডার</div>
+                        <div style="font-size:0.7rem; color:#64748b;">স্ট্যান্ডার্ড সাইজ • ক্যাশ অন ডেলিভারি</div>
+                      </div>
+                    </div>
+                  `}
+                </div>
+
+                <!-- Actions: Status Update & Customer WhatsApp -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-weight:800; font-size:0.72rem; color:#334155;">ডেলিভারি স্ট্যাটাস:</span>
+                    <select onchange="updateLiveOrderStatus('${o.id}', this.value)" style="padding:4px 8px; font-size:0.72rem; font-weight:800; border-radius:6px; border:1.5px solid #cbd5e1; background:#fff;">
+                      <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
+                      <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
+                      <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                      <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                    </select>
+                  </div>
+                  <a href="https://wa.me/91${(o.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`নমস্কার ${o.name}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার #${o.id} নম্বর অর্ডার সংক্রান্ত তথ্য জানাতে যোগাযোগ করা হলো।`)}" target="_blank" style="background:#22c55e; color:#fff; text-decoration:none; padding:5px 10px; border-radius:6px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">
+                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ
+                  </a>
                 </div>
               </div>
             `;
@@ -5658,39 +5747,61 @@ ${itemsListText}
         }
       }
 
-      // Render Size Selection buttons dynamically based on product chart
+      // 1. Color Variants Display & Selector
+      selectedPdpColor = 'মূল কালার';
+      selectedPdpColorImg = p.img;
+      const cvStrip = document.getElementById('pdpColorVariantsStrip');
+      const cvSection = document.getElementById('pdpColorSection');
+      const cvBadge = document.getElementById('pdpSelectedColorNameBadge');
+
+      const variants = p.colorVariants && p.colorVariants.length > 0 ? p.colorVariants : [
+        { img: p.img, colorName: 'মূল কালার' },
+        ...(p.subImages || []).map((img, idx) => ({ img, colorName: `কালার ${idx + 2}` }))
+      ];
+
+      if (cvStrip && variants.length > 1) {
+        cvStrip.innerHTML = '';
+        variants.forEach((v, idx) => {
+          const isActive = idx === 0 ? 'border:2px solid var(--primary); box-shadow:0 0 6px rgba(156,39,176,0.4);' : 'border:1.5px solid #cbd5e1;';
+          cvStrip.innerHTML += `
+            <div onclick="selectPdpColorVariant('${v.img}', '${v.colorName}', this)" style="display:flex; flex-direction:column; align-items:center; cursor:pointer; flex-shrink:0;">
+              <img src="${v.img}" style="width:54px; height:54px; border-radius:8px; object-fit:cover; ${isActive}">
+              <span style="font-size:0.65rem; font-weight:700; color:#334155; margin-top:3px; max-width:58px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${v.colorName}</span>
+            </div>
+          `;
+        });
+        if (cvBadge) cvBadge.textContent = variants[0].colorName;
+        selectedPdpColor = variants[0].colorName;
+        if (cvSection) cvSection.style.display = 'block';
+      } else if (cvSection) {
+        cvSection.style.display = 'none';
+      }
+
+      // 2. Render Size Selection: Use Admin Defined Available Sizes if present!
       selectedReturnChoice = 'all';
       const sizeGroup = document.getElementById('pdpSizeBtnGroup');
       if (sizeGroup) {
         sizeGroup.innerHTML = '';
-        if (effectiveChart === 'kids_frock') {
-          const frockSizes = ['1-2 Yrs', '3-4 Yrs', '5-6 Yrs', '7-8 Yrs', '9-10 Yrs'];
-          selectedPdpSize = '3-4 Yrs';
-          frockSizes.forEach(sz => {
-            const act = sz === '3-4 Yrs' ? 'active' : '';
-            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
-          });
+        let sizesToRender = [];
+        if (p.availableSizes && Array.isArray(p.availableSizes) && p.availableSizes.length > 0) {
+          sizesToRender = p.availableSizes;
+        } else if (effectiveChart === 'kids_frock') {
+          sizesToRender = ['1-2 Yrs', '3-4 Yrs', '5-6 Yrs', '7-8 Yrs', '9-10 Yrs'];
         } else if (effectiveChart === 'kurti') {
-          const kurtiSizes = ['S (36)', 'M (38)', 'L (40)', 'XL (42)', 'XXL (44)'];
-          selectedPdpSize = 'M (38)';
-          kurtiSizes.forEach(sz => {
-            const act = sz.startsWith('M') ? 'active' : '';
-            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
-          });
+          sizesToRender = ['S (36)', 'M (38)', 'L (40)', 'XL (42)', 'XXL (44)'];
         } else if (effectiveChart === 'palazzo') {
-          const palSizes = ['Free Size (28-38)', 'Plus Size (38-46)'];
-          selectedPdpSize = 'Free Size (28-38)';
-          palSizes.forEach(sz => {
-            const act = sz.startsWith('Free') ? 'active' : '';
-            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
-          });
+          sizesToRender = ['Free Size (28-38)', 'Plus Size (38-46)'];
         } else if (effectiveChart === 'none') {
-          selectedPdpSize = 'Standard';
-          sizeGroup.innerHTML = `<button type="button" class="size-pill-btn active" data-size="Standard" onclick="selectPdpSize('Standard')">স্ট্যান্ডার্ড সাইজ</button>`;
+          sizesToRender = ['Standard Size'];
         } else {
-          selectedPdpSize = 'Free Size (শাড়ি)';
-          sizeGroup.innerHTML = `<button type="button" class="size-pill-btn active" data-size="Free Size (শাড়ি)" onclick="selectPdpSize('Free Size (শাড়ি)')">Free Size (শাড়ি + ব্লাউজ পিস)</button>`;
+          sizesToRender = ['Free Size (শাড়ি)'];
         }
+
+        selectedPdpSize = sizesToRender[0];
+        sizesToRender.forEach((sz, idx) => {
+          const act = idx === 0 ? 'active' : '';
+          sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
+        });
       }
 
       // Configure Return Choice Cards (ছবি ৪)
@@ -5722,6 +5833,8 @@ ${itemsListText}
         price: effectivePrice,
         originalPrice: currentPdpProduct.price,
         selectedSize: selectedPdpSize,
+        selectedColor: selectedPdpColor || 'মূল কালার',
+        img: selectedPdpColorImg || currentPdpProduct.img,
         returnChoice: selectedReturnChoice,
         qty: 1
       };
@@ -5739,6 +5852,8 @@ ${itemsListText}
         price: effectivePrice,
         originalPrice: currentPdpProduct.price,
         selectedSize: selectedPdpSize,
+        selectedColor: selectedPdpColor || 'মূল কালার',
+        img: selectedPdpColorImg || currentPdpProduct.img,
         returnChoice: selectedReturnChoice,
         qty: 1
       };
@@ -7069,6 +7184,44 @@ ${itemsListText}
       }
     }
 
+
+    function selectPdpColorVariant(imgSrc, colorName, el) {
+      selectedPdpColor = colorName;
+      selectedPdpColorImg = imgSrc;
+      document.getElementById('pdpMainImg').src = imgSrc;
+      const cvBadge = document.getElementById('pdpSelectedColorNameBadge');
+      if (cvBadge) cvBadge.textContent = colorName;
+      
+      const strip = document.getElementById('pdpColorVariantsStrip');
+      if (strip) {
+        strip.querySelectorAll('img').forEach(im => {
+          im.style.border = '1.5px solid #cbd5e1';
+          im.style.boxShadow = 'none';
+        });
+      }
+      if (el) {
+        const im = el.querySelector('img');
+        if (im) {
+          im.style.border = '2px solid var(--primary)';
+          im.style.boxShadow = '0 0 8px rgba(156,39,176,0.4)';
+        }
+      }
+    }
+
+    function adminQuickEditSizes(idx) {
+      if (!products[idx]) return;
+      const cur = (products[idx].availableSizes || []).join(', ') || 'S, M, L, XL';
+      const updated = prompt("স্টকে কোন কোন সাইজ আছে লিখুন (কমা দিয়ে আলাদা করুন, যেমন: S, M, XL, XXL বা 2-3Y, 4-5Y):", cur);
+      if (updated !== null) {
+        const arr = updated.split(',').map(s => s.trim()).filter(Boolean);
+        products[idx].availableSizes = arr.length > 0 ? arr : ['Free Size'];
+        localStorage.setItem('nc_products', JSON.stringify(products));
+        const customOnly = products.filter(p => !p.id.startsWith('NC-10'));
+        localStorage.setItem('nc_custom_products', JSON.stringify(customOnly));
+        renderAdminDashboardLive();
+      }
+    }
+
 </script>
 
     <!-- ================= ORDER SUCCESS & WHATSAPP DISPATCH MODAL ================= -->
@@ -7224,42 +7377,54 @@ ${itemsListText}
       <div class="form-group">
         <label>শাড়ির ছবি নির্বাচন করুন (১ নম্বর মূল ছবি আবশ্যক):</label>
         <div class="multi-photo-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
-          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed var(--primary); background:#fdf4ff; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
-            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 0)" style="display:none;">
-            <div id="slot-placeholder-0">
-              <i class="fa-solid fa-camera" style="color:var(--primary); font-size:1.3rem;"></i>
-              <div style="font-size:0.6rem; font-weight:800; color:#7e22ce; margin-top:3px;">১. মূল ছবি *</div>
-            </div>
-            <img id="slot-img-0" style="width:100%; height:100%; object-fit:cover; display:none;">
-            <button type="button" id="slot-del-0" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(0)">✕</button>
-          </label>
-          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
-            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 1)" style="display:none;">
-            <div id="slot-placeholder-1">
-              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
-              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">২. আঁচল</div>
-            </div>
-            <img id="slot-img-1" style="width:100%; height:100%; object-fit:cover; display:none;">
-            <button type="button" id="slot-del-1" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(1)">✕</button>
-          </label>
-          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
-            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 2)" style="display:none;">
-            <div id="slot-placeholder-2">
-              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
-              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৩. পাড়</div>
-            </div>
-            <img id="slot-img-2" style="width:100%; height:100%; object-fit:cover; display:none;">
-            <button type="button" id="slot-del-2" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(2)">✕</button>
-          </label>
-          <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
-            <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 3)" style="display:none;">
-            <div id="slot-placeholder-3">
-              <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
-              <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৪. ব্লাউজ</div>
-            </div>
-            <img id="slot-img-3" style="width:100%; height:100%; object-fit:cover; display:none;">
-            <button type="button" id="slot-del-3" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(3)">✕</button>
-          </label>
+          <div>
+            <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed var(--primary); background:#fdf4ff; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+              <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 0)" style="display:none;">
+              <div id="slot-placeholder-0">
+                <i class="fa-solid fa-camera" style="color:var(--primary); font-size:1.3rem;"></i>
+                <div style="font-size:0.6rem; font-weight:800; color:#7e22ce; margin-top:3px;">১. মূল ছবি *</div>
+              </div>
+              <img id="slot-img-0" style="width:100%; height:100%; object-fit:cover; display:none;">
+              <button type="button" id="slot-del-0" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(0)">✕</button>
+            </label>
+            <input type="text" id="slot-color-0" placeholder="মূল কালার (যেমন লাল)" value="মূল কালার" style="width:100%; margin-top:4px; font-size:0.65rem; padding:3px; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">
+          </div>
+          <div>
+            <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+              <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 1)" style="display:none;">
+              <div id="slot-placeholder-1">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+                <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">২. কালার ২ / আঁচল</div>
+              </div>
+              <img id="slot-img-1" style="width:100%; height:100%; object-fit:cover; display:none;">
+              <button type="button" id="slot-del-1" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(1)">✕</button>
+            </label>
+            <input type="text" id="slot-color-1" placeholder="রং ২ (যেমন নীল)" style="width:100%; margin-top:4px; font-size:0.65rem; padding:3px; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">
+          </div>
+          <div>
+            <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+              <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 2)" style="display:none;">
+              <div id="slot-placeholder-2">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+                <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৩. কালার ৩ / পাড়</div>
+              </div>
+              <img id="slot-img-2" style="width:100%; height:100%; object-fit:cover; display:none;">
+              <button type="button" id="slot-del-2" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(2)">✕</button>
+            </label>
+            <input type="text" id="slot-color-2" placeholder="রং ৩ (যেমন হলুদ)" style="width:100%; margin-top:4px; font-size:0.65rem; padding:3px; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">
+          </div>
+          <div>
+            <label class="photo-slot" style="aspect-ratio:1; border:1.5px dashed #cbd5e1; background:#f8fafc; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; text-align:center;">
+              <input type="file" accept="image/*" onchange="handleDirectSlotFile(this, 3)" style="display:none;">
+              <div id="slot-placeholder-3">
+                <i class="fa-solid fa-plus" style="color:#94a3b8; font-size:1.3rem;"></i>
+                <div style="font-size:0.6rem; font-weight:700; color:#64748b; margin-top:3px;">৪. কালার ৪ / ব্লাউজ</div>
+              </div>
+              <img id="slot-img-3" style="width:100%; height:100%; object-fit:cover; display:none;">
+              <button type="button" id="slot-del-3" style="display:none; position:absolute; top:2px; right:2px; background:rgba(239,68,68,0.9); color:#fff; border:none; width:18px; height:18px; border-radius:50%; font-size:0.6rem; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); removeSlotPhoto(3)">✕</button>
+            </label>
+            <input type="text" id="slot-color-3" placeholder="রং ৪ (যেমন গোলাপি)" style="width:100%; margin-top:4px; font-size:0.65rem; padding:3px; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">
+          </div>
         </div>
       </div>
 
@@ -7450,6 +7615,48 @@ ${itemsListText}
         </div>
       </div>
 
+      <!-- Available Sizes Selection (Admin controls stock per size) -->
+      <div class="form-group" style="background:#f8fafc; border:1.5px solid #cbd5e1; padding:12px; border-radius:10px;">
+        <label style="color:#0f172a; font-weight:800; display:flex; justify-content:space-between; align-items:center;">
+          <span><i class="fa-solid fa-shirt" style="color:var(--primary);"></i> কোন কোন সাইজ স্টকে আছে (Available Sizes):</span>
+          <span style="font-size:0.68rem; color:#64748b;">যেগুলো স্টকে আছে টিক দিন</span>
+        </label>
+        
+        <div style="margin-top:8px;">
+          <div style="font-size:0.72rem; font-weight:700; color:#475569; margin-bottom:4px;">মহিলাদের কুর্তি ও ব্লাউজ সাইজ:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; font-size:0.75rem;">
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="S (36)" checked> S (36)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="M (38)" checked> M (38)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="L (40)" checked> L (40)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="XL (42)" checked> XL (42)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="XXL (44)"> XXL (44)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="3XL (46)"> 3XL (46)</label>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div style="font-size:0.72rem; font-weight:700; color:#475569; margin-bottom:4px;">বাচ্চা ও মেয়েদের ফ্রক সাইজ:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; font-size:0.75rem;">
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="1-2 Yrs" checked> 1-2 বছর</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="3-4 Yrs" checked> 3-4 বছর</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="5-6 Yrs" checked> 5-6 বছর</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="7-8 Yrs"> 7-8 বছর</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="9-10 Yrs"> 9-10 বছর</label>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div style="font-size:0.72rem; font-weight:700; color:#475569; margin-bottom:4px;">শাড়ি / প্লাজো / ফ্রি সাইজ:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; font-size:0.75rem;">
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="Free Size (শাড়ি)" checked> Free Size (শাড়ি)</label>
+            <label style="background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer;"><input type="checkbox" name="admin_size_chk" value="Free Size (প্লাজো)"> Free Size (প্লাজো)</label>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <input type="text" id="admin_custom_sizes_input" placeholder="অথবা অন্যান্য মাপ লিখুন (যেমন: 32, 34, 36 বা 2-3 বছর)..." style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem;">
+        </div>
+      </div>
       <!-- Size Chart Control (Admin requested) -->
       <div class="form-group" style="background:#fdf4ff; border:1px solid #f0abfc; padding:10px; border-radius:10px;">
         <label style="color:#86198f; font-weight:800; display:flex; align-items:center; gap:6px;">
@@ -7725,4 +7932,4 @@ ${itemsListText}
   </div>
 
 </body>
-  </html>
+        </html>
