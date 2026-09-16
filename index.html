@@ -3799,155 +3799,178 @@
       renderProducts(products);
     }
 
-    function renderAdminDashboardLive() {
-      // 0. Update Stats & Dynamic Subtractions
-      const allOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
-      const cancelCount = allOrders.filter(o => o.status === 'Cancelled').length;
-      const returnCount = allOrders.filter(o => o.returnStatus === 'Requested' || o.status === 'Returned & Refunded').length;
-      const pendingCount = allOrders.filter(o => (o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery') && o.status !== 'Cancelled').length;
-      // Active orders: when someone cancels, it subtracts from total active orders and increments cancelCount!
-      const activeTotalCount = allOrders.filter(o => o.status !== 'Cancelled').length;
+        // ADMIN TOP NAVIGATION TABS CONTROLLER
+    let currentAdminMainTab = 'orders';
+    let currentAdminOrderFilter = 'processing'; // Default to active processing orders
 
-      if (document.getElementById('admStatTotal')) document.getElementById('admStatTotal').textContent = activeTotalCount;
+    function switchAdminMainTab(tabId) {
+      currentAdminMainTab = tabId;
+      const tabs = ['orders', 'upload', 'inventory', 'promo'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('admNavBtn-' + t);
+        const pane = document.getElementById('admTabContent-' + t);
+        if (btn && pane) {
+          if (t === tabId) {
+            btn.style.background = 'var(--primary)';
+            btn.style.color = '#fff';
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.boxShadow = '0 2px 6px rgba(156,39,176,0.25)';
+            pane.style.display = 'block';
+          } else {
+            btn.style.background = '#fff';
+            btn.style.color = '#475569';
+            btn.style.borderColor = '#cbd5e1';
+            btn.style.boxShadow = 'none';
+            pane.style.display = 'none';
+          }
+        }
+      });
+      renderAdminDashboardLive();
+    }
+
+    function filterAdminOrders(filterType) {
+      currentAdminOrderFilter = filterType;
+
+      // Update Card Visuals for the 4 core option cards
+      const cards = ['processing', 'return', 'cancelled', 'delivered'];
+      cards.forEach(c => {
+        const el = document.getElementById('admCard-' + c);
+        if (el) {
+          if (c === filterType) {
+            const activeColor = (c === 'processing' ? '#ca8a04' : (c === 'return' ? '#ea580c' : (c === 'cancelled' ? '#dc2626' : '#16a34a')));
+            el.style.border = '2px solid ' + activeColor;
+            el.style.boxShadow = '0 2px 8px ' + activeColor + '33';
+            el.style.transform = 'translateY(-2px)';
+          } else {
+            el.style.border = '1.5px solid #e2e8f0';
+            el.style.boxShadow = 'none';
+            el.style.transform = 'none';
+          }
+        }
+      });
+
+      renderAdminDashboardLive();
+    }
+
+    function renderAdminDashboardLive() {
+      const allOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+
+      // 1. Dynamic Calculations:
+      // Active / Processing: Order Placed, Packed, Out for Delivery
+      const pendingOrders = allOrders.filter(o => (o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery') && o.status !== 'Cancelled');
+      // Return: orders with return requested
+      const returnOrders = allOrders.filter(o => o.returnStatus === 'Requested' || o.status === 'Returned & Refunded');
+      // Cancelled: cancelled orders (subtracted from active!)
+      const cancelledOrders = allOrders.filter(o => o.status === 'Cancelled');
+      // Delivered: completed orders
+      const deliveredOrders = allOrders.filter(o => o.status === 'Delivered');
+
+      const pendingCount = pendingOrders.length;
+      const returnCount = returnOrders.length;
+      const cancelCount = cancelledOrders.length;
+      const deliveredCount = deliveredOrders.length;
+
+      // Update Top Stat Numbers
       if (document.getElementById('admStatPending')) document.getElementById('admStatPending').textContent = pendingCount;
       if (document.getElementById('admStatReturn')) document.getElementById('admStatReturn').textContent = returnCount;
       if (document.getElementById('admStatCancel')) document.getElementById('admStatCancel').textContent = cancelCount;
+      if (document.getElementById('admStatDelivered')) document.getElementById('admStatDelivered').textContent = deliveredCount;
 
-      if (document.getElementById('pillCountPending')) document.getElementById('pillCountPending').textContent = pendingCount;
-      if (document.getElementById('pillCountReturn')) document.getElementById('pillCountReturn').textContent = returnCount;
-      if (document.getElementById('pillCountCancel')) document.getElementById('pillCountCancel').textContent = cancelCount;
-
+      // Notification Banner
       const notifBanner = document.getElementById('adminNotificationBanner');
       const notifText = document.getElementById('adminNotificationText');
       if (notifBanner) {
         if (returnCount > 0) {
           notifBanner.style.display = 'flex';
-          notifText.textContent = '🔔 জরুরি অ্যালার্ট: ' + returnCount + 'টি নতুন রিটার্ন/এক্সচেঞ্জ আবেদন জমা পড়েছে! নিচে ব্যাংক ডিটেলস চেক করুন।';
+          notifBanner.style.background = '#fff7ed';
+          notifBanner.style.borderColor = '#fb923c';
+          notifText.innerHTML = `<strong>🔔 জরুরি অ্যালার্ট:</strong> ${returnCount}টি নতুন রিটার্ন/এক্সচেঞ্জ আবেদন এসেছে! <strong>[🔄 রিটার্ন]</strong> কার্ডে চাপ দিয়ে ব্যাংক ডিটেলস দেখুন।`;
         } else if (pendingCount > 0) {
           notifBanner.style.display = 'flex';
-          notifText.textContent = '📦 নতুন নোটিফিকেশন: ' + pendingCount + 'টি নতুন কাস্টমার অর্ডার প্রসেসিংয়ের অপেক্ষায় রয়েছে!';
+          notifBanner.style.background = '#ecfdf5';
+          notifBanner.style.borderColor = '#10b981';
+          notifText.innerHTML = `<strong>📦 নতুন অর্ডার:</strong> ${pendingCount}টি নতুন অর্ডার প্রসেসিংয়ের অপেক্ষায় রয়েছে!`;
         } else {
           notifBanner.style.display = 'none';
         }
       }
 
-      // Render Promo Codes
-      const promoListEl = document.getElementById('adminPromoCodesList');
-      if (promoListEl) {
-        const coupons = JSON.parse(localStorage.getItem('nc_coupons') || '[{"code":"NISHA50","discount":50,"active":true},{"code":"PUJA100","discount":100,"active":true}]');
-        promoListEl.innerHTML = '';
-        coupons.forEach(c => {
-          promoListEl.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; font-size:0.78rem;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#f3e8ff; border:1px solid #d8b4fe; color:var(--primary); font-weight:800; padding:2px 8px; border-radius:4px; font-family:monospace;">${c.code}</span>
-                <span style="font-weight:700; color:#15803d;">₹${c.discount} ফ্ল্যাট ছাড়</span>
-              </div>
-              <button onclick="adminDeletePromoCode('${c.code}')" style="background:#fee2e2; border:1px solid #fca5a5; color:#dc2626; padding:3px 8px; border-radius:4px; font-size:0.68rem; font-weight:800; cursor:pointer;">
-                মুছুন
-              </button>
-            </div>
-          `;
-        });
+      // Update Section Heading and Count Badge based on active filter
+      const headingEl = document.getElementById('admOrdersHeading');
+      const badgeEl = document.getElementById('admOrdersCountBadge');
+      let currentFilteredList = [];
+
+      if (currentAdminOrderFilter === 'processing') {
+        currentFilteredList = pendingOrders;
+        if (headingEl) headingEl.textContent = '📦 গ্রাহকদের চলতি অর্ডার তালিকা (Processing)';
+        if (badgeEl) badgeEl.textContent = `${pendingCount}টি অর্ডার`;
+      } else if (currentAdminOrderFilter === 'return') {
+        currentFilteredList = returnOrders;
+        if (headingEl) headingEl.textContent = '🔄 কাস্টমারের রিটার্ন ও এক্সচেঞ্জ আবেদন (Bank Details)';
+        if (badgeEl) badgeEl.textContent = `${returnCount}টি রিটার্ন`;
+      } else if (currentAdminOrderFilter === 'cancelled') {
+        currentFilteredList = cancelledOrders;
+        if (headingEl) headingEl.textContent = '✕ কাস্টমারের বাতিলকৃত অর্ডার (Cancelled)';
+        if (badgeEl) badgeEl.textContent = `${cancelCount}টি বাতিল`;
+      } else if (currentAdminOrderFilter === 'delivered') {
+        currentFilteredList = deliveredOrders;
+        if (headingEl) headingEl.textContent = '✓ সফলভাবে সম্পন্ন হওয়া অর্ডার (Delivered)';
+        if (badgeEl) badgeEl.textContent = `${deliveredCount}টি সম্পন্ন`;
+      } else {
+        currentFilteredList = allOrders;
+        if (headingEl) headingEl.textContent = '📦 সমস্ত অর্ডার তালিকা';
+        if (badgeEl) badgeEl.textContent = `${allOrders.length}টি অর্ডার`;
       }
 
-      // Inventory
-      const invContainer = document.getElementById('adminLiveInventory');
-      if (invContainer) {
-        invContainer.innerHTML = '';
-        products.forEach((p, idx) => {
-          const curStock = (p.stock !== undefined) ? p.stock : (p.inStock !== false ? 100 : 0);
-          const isOut = curStock <= 0 || p.inStock === false;
-          invContainer.innerHTML += `
-            <div style="display:flex; flex-direction:column; gap:6px; padding:10px; border-bottom:1px solid #f1f5f9; background:#fff; border-radius:8px; margin-bottom:6px;">
-              <div style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:8px; flex:1;">
-                  <img src="${p.img}" style="width:45px; height:45px; border-radius:6px; object-fit:cover;">
-                  <div>
-                    <div style="font-size:0.82rem; font-weight:800; color:#0f172a;">${p.title}</div>
-                    <div style="font-size:0.7rem; color:var(--primary); font-weight:700;">
-                      ₹${p.price} • স্টক: <strong>${curStock}</strong> পিস ${isOut ? '<span style="color:#ef4444;">(স্টক শেষ)</span>' : ''}
-                    </div>
-                  </div>
-                </div>
-                <button onclick="adminQuickRestock(${idx})" style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:4px 8px; border-radius:6px; font-size:0.68rem; font-weight:800; cursor:pointer; flex-shrink:0;">
-                  +রিস্টক
-                </button>
-              </div>
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#f8fafc; padding:6px 8px; border-radius:6px; font-size:0.7rem;">
-                <div style="display:flex; align-items:center; gap:4px;">
-                  <span style="font-weight:700; color:#475569;">📏 সাইজ চার্ট:</span>
-                  <select onchange="adminChangeSizeChart(${idx}, this.value)" style="padding:2px 4px; font-size:0.68rem; font-weight:700; border-radius:4px; border:1px solid #cbd5e1;">
-                    <option value="kids_frock" ${p.sizeChartType === 'kids_frock' ? 'selected' : ''}>👧 বাচ্চাদের ফ্রক</option>
-                    <option value="kurti" ${p.sizeChartType === 'kurti' ? 'selected' : ''}>👗 কুর্তি ও স্যুট</option>
-                    <option value="palazzo" ${p.sizeChartType === 'palazzo' ? 'selected' : ''}>👖 প্লাজো</option>
-                    <option value="saree_blouse" ${(!p.sizeChartType || p.sizeChartType === 'saree_blouse' || p.sizeChartType === 'auto') ? 'selected' : ''}>🥻 শাড়ি ও ব্লাউজ</option>
-                    <option value="none" ${p.sizeChartType === 'none' ? 'selected' : ''}>🚫 চার্ট নেই</option>
-                  </select>
-                  <button onclick="adminQuickEditSizes(${idx})" style="background:#ede9fe; border:1px solid #c4b5fd; color:#6d28d9; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">
-                    📏 সাইজ: ${(p.availableSizes || []).join(', ') || 'স্ট্যান্ডার্ড'} ✎
-                  </button>
-                </div>
-                <button onclick="adminEditVideoUrl(${idx})" style="background:${p.videoUrl ? '#fee2e2' : '#f1f5f9'}; border:1px solid ${p.videoUrl ? '#fca5a5' : '#cbd5e1'}; color:${p.videoUrl ? '#dc2626' : '#475569'}; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:700; cursor:pointer;">
-                  ${p.videoUrl ? '🎥 ভিডিও যুক্ত আছে ✎' : '+ ভিডিও লিংক'}
-                </button>
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      // Orders (Filtered according to clicked Stat Card or Pill)
+      // Render Orders List
       const ordContainer = document.getElementById('adminLiveOrders');
       if (ordContainer) {
-        const orderList = JSON.parse(localStorage.getItem('nc_orders') || '[]');
-        
-        let filteredOrders = orderList;
-        if (currentAdminOrderFilter === 'processing') {
-          filteredOrders = orderList.filter(o => (o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery') && o.status !== 'Cancelled');
-        } else if (currentAdminOrderFilter === 'return') {
-          filteredOrders = orderList.filter(o => o.returnStatus === 'Requested' || o.status === 'Returned & Refunded');
-        } else if (currentAdminOrderFilter === 'cancelled') {
-          filteredOrders = orderList.filter(o => o.status === 'Cancelled');
-        }
-
-        if (filteredOrders.length === 0) {
-          let emptyMsg = 'কোনো অর্ডার নেই।';
-          if (currentAdminOrderFilter === 'processing') emptyMsg = 'বর্তমানে কোনো প্রসেসিং অর্ডার নেই।';
-          else if (currentAdminOrderFilter === 'return') emptyMsg = 'বর্তমানে কোনো রিটার্ন বা এক্সচেঞ্জ আবেদন নেই।';
-          else if (currentAdminOrderFilter === 'cancelled') emptyMsg = 'বর্তমানে কোনো বাতিলকৃত অর্ডার নেই।';
+        if (currentFilteredList.length === 0) {
+          let emptyText = 'বর্তমানে কোনো অর্ডার নেই।';
+          if (currentAdminOrderFilter === 'processing') emptyText = 'বর্তমানে কোনো চলতি প্রসেসিং অর্ডার নেই।';
+          else if (currentAdminOrderFilter === 'return') emptyText = 'বর্তমানে কোনো রিটার্ন আবেদন জমা পড়েনি।';
+          else if (currentAdminOrderFilter === 'cancelled') emptyText = 'বর্তমানে কোনো বাতিলকৃত অর্ডার নেই।';
+          else if (currentAdminOrderFilter === 'delivered') emptyText = 'বর্তমানে কোনো সম্পন্ন ডেলিভারি অর্ডার নেই।';
 
           ordContainer.innerHTML = `
-            <div style="text-align:center; padding:30px 14px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:10px; color:#64748b; font-size:0.8rem;">
-              <i class="fa-solid fa-folder-open" style="font-size:1.8rem; color:#94a3b8; margin-bottom:8px; display:block;"></i>
-              <div>${emptyMsg}</div>
-              <button onclick="filterAdminOrders('all')" style="margin-top:10px; background:#fff; border:1px solid #cbd5e1; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">সব অর্ডার দেখুন</button>
+            <div style="text-align:center; padding:36px 14px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; color:#64748b; font-size:0.82rem;">
+              <i class="fa-solid fa-folder-open" style="font-size:2rem; color:#cbd5e1; margin-bottom:8px; display:block;"></i>
+              <div style="font-weight:700;">${emptyText}</div>
             </div>
           `;
         } else {
           ordContainer.innerHTML = '';
-          filteredOrders.forEach(o => {
+          currentFilteredList.forEach(o => {
+            const isCanc = o.status === 'Cancelled';
+            const isRet = o.returnStatus === 'Requested';
+            const isDeliv = o.status === 'Delivered';
+            const cleanPhone = (o.phone || '').replace(/[^0-9]/g, '');
+
             ordContainer.innerHTML += `
-              <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+              <div style="background:#ffffff; border:1.5px solid ${isCanc ? '#fca5a5' : (isRet ? '#fdba74' : (isDeliv ? '#bbf7d0' : '#e2e8f0'))}; border-radius:12px; padding:12px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <!-- Header Row -->
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:8px; margin-bottom:8px;">
                   <div>
                     <span style="font-weight:800; color:#0f172a; font-size:0.85rem;">#${o.id} • ${o.name}</span>
                     <div style="font-size:0.68rem; color:#64748b;">📅 ${o.date || 'আজকের অর্ডার'}</div>
-                    ${o.status === 'Cancelled' ? `<span style="background:#fee2e2; color:#991b1b; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px;">✕ বাতিল (Cancelled)</span>` : ''}
+                    ${isCanc ? `<span style="background:#fee2e2; color:#991b1b; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px;">✕ বাতিল (Cancelled)</span>` : ''}
+                    ${isRet ? `<span style="background:#fff7ed; color:#c2410c; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px;">🔄 রিটার্ন আবেদন</span>` : ''}
+                    ${isDeliv ? `<span style="background:#dcfce7; color:#15803d; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px;">✓ সম্পন্ন (Delivered)</span>` : ''}
                   </div>
                   <span style="color:var(--primary); font-weight:800; font-size:0.95rem;">₹${o.total}</span>
                 </div>
 
-                <!-- Customer Info -->
+                <!-- Customer Details -->
                 <div style="font-size:0.75rem; color:#475569; margin-bottom:10px; line-height:1.4;">
                   <div>📞 <strong>${o.phone}</strong></div>
                   <div>📍 ${o.address}</div>
                 </div>
 
-                ${o.status === 'Cancelled' ? `
+                <!-- Cancelled Details Banner (If Cancelled) -->
+                ${isCanc ? `
                   <div style="background:#fef2f2; border:1.5px solid #fca5a5; border-radius:8px; padding:10px; margin-bottom:10px; font-size:0.75rem; color:#991b1b;">
                     <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
-                      <i class="fa-solid fa-ban"></i> কাস্টমার এই অর্ডারটি বাতিল (Cancel) করেছেন
+                      <i class="fa-solid fa-ban"></i> কাস্টমার অর্ডারটি বাতিল করেছেন
                     </div>
                     <div style="margin-top:4px; font-size:0.72rem; line-height:1.4;">
                       • <strong>বাতিলের কারণ:</strong> ${o.cancelReason || 'ভুলবশত অর্ডার'}<br>
@@ -3958,40 +3981,43 @@
                   </div>
                 ` : ''}
 
-                ${o.returnStatus === 'Requested' ? `
+                <!-- Return & Bank Details Banner (If Return Requested) -->
+                ${isRet ? `
                   <div style="background:#fff7ed; border:1.5px solid #fb923c; border-radius:8px; padding:10px; margin-bottom:10px; font-size:0.75rem;">
                     <div style="font-weight:800; color:#ea580c; display:flex; justify-content:space-between; align-items:center;">
                       <span><i class="fa-solid fa-rotate-left"></i> কাস্টমার রিটার্ন / এক্সচেঞ্জ চেয়েছেন!</span>
-                      <span style="background:#fed7aa; color:#9a3412; padding:1px 6px; border-radius:4px;">${o.returnType === 'Exchange' ? 'সাইজ বদল' : 'টাকা ফেরত'}</span>
+                      <span style="background:#fed7aa; color:#9a3412; padding:1px 6px; border-radius:4px; font-weight:800;">${o.returnType === 'Exchange' ? 'সাইজ বদল' : 'টাকা রিফান্ড'}</span>
                     </div>
-                    <div style="margin:4px 0; color:#7c2d12;">
-                      <strong>কারণ:</strong> ${o.returnReason}<br>
-                      ${o.returnType === 'Exchange' ? `<strong>নতুন সাইজ চাওয়া হয়েছে:</strong> <span style="background:#ffedd5; padding:1px 4px; border-radius:3px; font-weight:800;">${o.returnExchangeSize}</span><br>` : ''}
-                      <strong>কাস্টমার বার্তা:</strong> ${o.returnDetails || 'কোনো মন্তব্য নেই'}
-                      ${(o.bankDetails && o.returnType === 'Refund') ? `
-                        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:8px 10px; margin-top:6px; font-size:0.72rem; color:#166534;">
-                          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <span style="font-weight:800;"><i class="fa-solid fa-building-columns"></i> কাস্টমারের রিফান্ড ব্যাংক বিবরণ:</span>
-                            <button type="button" onclick="copyBankDetails('${o.bankDetails.acc || ''}', '${o.bankDetails.ifsc || ''}', '${o.bankDetails.holder || ''}', '${o.bankDetails.upi || ''}')" style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">
-                              📋 কপি করুন
-                            </button>
-                          </div>
-                          <div>• একাউন্ট নং: <strong>${o.bankDetails.acc || 'নেই'}</strong></div>
-                          <div>• IFSC কোড: <strong>${o.bankDetails.ifsc || 'নেই'}</strong></div>
-                          <div>• হোল্ডার: <strong>${o.bankDetails.holder || 'নেই'}</strong></div>
-                          ${o.bankDetails.upi ? `<div>• UPI ID: <strong style="color:#059669;">${o.bankDetails.upi}</strong></div>` : ''}
+                    <div style="margin:6px 0; color:#7c2d12; line-height:1.4;">
+                      • <strong>রিটার্নের কারণ:</strong> ${o.returnReason}<br>
+                      ${o.returnType === 'Exchange' ? `• <strong>নতুন সাইজ চাওয়া হয়েছে:</strong> <span style="background:#ffedd5; padding:1px 5px; border-radius:3px; font-weight:800;">${o.returnExchangeSize}</span><br>` : ''}
+                      • <strong>গ্রাহকের মন্তব্য:</strong> ${o.returnDetails || 'কোনো মন্তব্য নেই'}
+                    </div>
+
+                    ${(o.bankDetails && o.returnType === 'Refund') ? `
+                      <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:8px 10px; margin-top:6px; font-size:0.72rem; color:#166534;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                          <span style="font-weight:800;"><i class="fa-solid fa-building-columns"></i> কাস্টমারের রিফান্ড ব্যাংক বিবরণ:</span>
+                          <button type="button" onclick="copyBankDetails('${o.bankDetails.acc || ''}', '${o.bankDetails.ifsc || ''}', '${o.bankDetails.holder || ''}', '${o.bankDetails.upi || ''}')" style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:3px 8px; border-radius:4px; font-size:0.68rem; font-weight:800; cursor:pointer;">
+                            📋 ব্যাংক ডিটেলস কপি
+                          </button>
                         </div>
-                      ` : ''}
-                    </div>
-                    <div style="display:flex; gap:6px; margin-top:6px;">
-                      <button onclick="adminApproveReturn('${o.id}')" style="background:#ea580c; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:800; cursor:pointer;">
+                        <div>• একাউন্ট নং: <strong>${o.bankDetails.acc || 'নেই'}</strong></div>
+                        <div>• IFSC কোড: <strong>${o.bankDetails.ifsc || 'নেই'}</strong></div>
+                        <div>• একাউন্ট হোল্ডার: <strong>${o.bankDetails.holder || 'নেই'}</strong></div>
+                        ${o.bankDetails.upi ? `<div>• UPI ID: <strong style="color:#059669;">${o.bankDetails.upi}</strong></div>` : ''}
+                      </div>
+                    ` : ''}
+
+                    <div style="display:flex; gap:6px; margin-top:8px;">
+                      <button onclick="adminApproveReturn('${o.id}')" style="background:#ea580c; color:#fff; border:none; padding:5px 12px; border-radius:6px; font-size:0.72rem; font-weight:800; cursor:pointer;">
                         ✓ রিটার্ন অনুমোদন করুন
                       </button>
                     </div>
                   </div>
                 ` : ''}
 
-                <!-- ORDERED ITEMS WITH PHOTO & SIZES (Customer Requested) -->
+                <!-- ORDERED ITEMS WITH PHOTO & SIZES -->
                 <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px; margin-bottom:10px;">
                   <div style="font-size:0.7rem; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">
                     📦 অর্ডার করা পণ্য (${(o.items && o.items.length) || 1}টি):
@@ -4027,15 +4053,15 @@
                   <div style="display:flex; align-items:center; gap:6px;">
                     <span style="font-weight:800; font-size:0.72rem; color:#334155;">ডেলিভারি স্ট্যাটাস:</span>
                     <select onchange="updateLiveOrderStatus('${o.id}', this.value)" style="padding:4px 8px; font-size:0.72rem; font-weight:800; border-radius:6px; border:1.5px solid #cbd5e1; background:#fff;">
-                      <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
-                      <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
-                      <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
-                      <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                      <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Order Placed (অর্ডার গৃহীত)</option>
+                      <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed (প্যাকিং সম্পন্ন)</option>
+                      <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery (ডেলিভারিতে বেরিয়েছে)</option>
+                      <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered (ডেলিভারি সম্পূর্ণ)</option>
                       <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>✕ Cancelled (বাতিল)</option>
                       <option value="Returned & Refunded" ${o.status === 'Returned & Refunded' ? 'selected' : ''}>🔄 Returned (রিটার্ন সম্পন্ন)</option>
                     </select>
                   </div>
-                  <a href="https://wa.me/91${(o.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`নমস্কার ${o.name}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার #${o.id} নম্বর অর্ডার সংক্রান্ত তথ্য জানাতে যোগাযোগ করা হলো।`)}" target="_blank" style="background:#22c55e; color:#fff; text-decoration:none; padding:5px 10px; border-radius:6px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">
+                  <a href="https://wa.me/91${cleanPhone}?text=${encodeURIComponent(`নমস্কার ${o.name}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার #${o.id} নম্বর অর্ডার সংক্রান্ত তথ্য জানাতে যোগাযোগ করা হলো।`)}" target="_blank" style="background:#22c55e; color:#fff; text-decoration:none; padding:5px 10px; border-radius:6px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">
                     <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপ
                   </a>
                 </div>
@@ -4044,9 +4070,75 @@
           });
         }
       }
+
+      // 2. Inventory Render
+      const invContainer = document.getElementById('adminLiveInventory');
+      if (invContainer) {
+        invContainer.innerHTML = '';
+        products.forEach((p, idx) => {
+          const curStock = (p.stock !== undefined) ? p.stock : (p.inStock !== false ? 100 : 0);
+          const isOut = curStock <= 0 || p.inStock === false;
+          invContainer.innerHTML += `
+            <div style="display:flex; flex-direction:column; gap:6px; padding:10px; border-bottom:1px solid #f1f5f9; background:#fff; border-radius:8px; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px; flex:1;">
+                  <img src="${p.img}" style="width:45px; height:45px; border-radius:6px; object-fit:cover;">
+                  <div>
+                    <div style="font-size:0.82rem; font-weight:800; color:#0f172a;">${p.title}</div>
+                    <div style="font-size:0.7rem; color:var(--primary); font-weight:700;">
+                      ₹${p.price} • স্টক: <strong>${curStock}</strong> পিস ${isOut ? '<span style="color:#ef4444;">(স্টক শেষ)</span>' : ''}
+                    </div>
+                  </div>
+                </div>
+                <button onclick="adminQuickRestock(${idx})" style="background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:4px 8px; border-radius:6px; font-size:0.68rem; font-weight:800; cursor:pointer; flex-shrink:0;">
+                  +রিস্টক
+                </button>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#f8fafc; padding:6px 8px; border-radius:6px; font-size:0.7rem;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <span style="font-weight:700; color:#475569;">📏 চার্ট:</span>
+                  <select onchange="adminChangeSizeChart(${idx}, this.value)" style="padding:2px 4px; font-size:0.68rem; font-weight:700; border-radius:4px; border:1px solid #cbd5e1;">
+                    <option value="kids_frock" ${p.sizeChartType === 'kids_frock' ? 'selected' : ''}>👧 ফ্রক</option>
+                    <option value="kurti" ${p.sizeChartType === 'kurti' ? 'selected' : ''}>👗 কুর্তি</option>
+                    <option value="palazzo" ${p.sizeChartType === 'palazzo' ? 'selected' : ''}>👖 প্লাজো</option>
+                    <option value="saree_blouse" ${(!p.sizeChartType || p.sizeChartType === 'saree_blouse' || p.sizeChartType === 'auto') ? 'selected' : ''}>🥻 শাড়ি</option>
+                    <option value="none" ${p.sizeChartType === 'none' ? 'selected' : ''}>🚫 নেই</option>
+                  </select>
+                  <button onclick="adminQuickEditSizes(${idx})" style="background:#ede9fe; border:1px solid #c4b5fd; color:#6d28d9; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">
+                    📏 ${(p.availableSizes || []).join(', ') || 'সাইজ'} ✎
+                  </button>
+                </div>
+                <button onclick="adminEditVideoUrl(${idx})" style="background:${p.videoUrl ? '#fee2e2' : '#f1f5f9'}; border:1px solid ${p.videoUrl ? '#fca5a5' : '#cbd5e1'}; color:${p.videoUrl ? '#dc2626' : '#475569'}; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:700; cursor:pointer;">
+                  ${p.videoUrl ? '🎥 ভিডিও ✎' : '+ ভিডিও'}
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      // 3. Render Promo Codes
+      const promoListEl = document.getElementById('adminPromoCodesList');
+      if (promoListEl) {
+        const coupons = JSON.parse(localStorage.getItem('nc_coupons') || '[{"code":"NISHA50","discount":50,"active":true},{"code":"PUJA100","discount":100,"active":true}]');
+        promoListEl.innerHTML = '';
+        coupons.forEach(c => {
+          promoListEl.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; font-size:0.78rem;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="background:#f3e8ff; border:1px solid #d8b4fe; color:var(--primary); font-weight:800; padding:2px 8px; border-radius:4px; font-family:monospace;">${c.code}</span>
+                <span style="font-weight:700; color:#15803d;">₹${c.discount} ফ্ল্যাট ছাড়</span>
+              </div>
+              <button onclick="adminDeletePromoCode('${c.code}')" style="background:#fee2e2; border:1px solid #fca5a5; color:#dc2626; padding:3px 8px; border-radius:4px; font-size:0.68rem; font-weight:800; cursor:pointer;">
+                মুছুন
+              </button>
+            </div>
+          `;
+        });
+      }
     }
 
-    function adminQuickRestock(idx) {
+function adminQuickRestock(idx) {
       const added = prompt("কত পিস নতুন শাড়ি স্টকে যোগ করতে চান? (যেমন: 50):", "50");
       if (added !== null) {
         const num = parseInt(added);
@@ -7585,57 +7677,7 @@ ${itemsListText}
 
 
     // ADMIN ORDERS FILTER CONTROLLER
-    let currentAdminOrderFilter = 'all';
-
-    function filterAdminOrders(filterType) {
-      currentAdminOrderFilter = filterType;
-
-      // Update Card Visuals
-      const cards = ['all', 'processing', 'return', 'cancelled'];
-      cards.forEach(c => {
-        const el = document.getElementById('admCard-' + c);
-        if (el) {
-          if (c === filterType) {
-            el.style.boxShadow = '0 0 0 2.5px ' + (c === 'all' ? 'var(--primary)' : (c === 'processing' ? '#ca8a04' : (c === 'return' ? '#ea580c' : '#dc2626')));
-            el.style.transform = 'translateY(-2px)';
-          } else {
-            el.style.boxShadow = 'none';
-            el.style.transform = 'none';
-          }
-        }
-      });
-
-      // Update Pill Visuals
-      cards.forEach(c => {
-        const pill = document.getElementById('admPill-' + c);
-        if (pill) {
-          if (c === filterType) {
-            pill.style.background = 'var(--primary)';
-            pill.style.color = '#fff';
-            pill.style.borderColor = 'var(--primary)';
-          } else {
-            pill.style.background = '#f8fafc';
-            pill.style.color = '#334155';
-            pill.style.borderColor = '#cbd5e1';
-          }
-        }
-      });
-
-      const badge = document.getElementById('adminCurrentFilterBadge');
-      if (badge) {
-        badge.textContent = filterType === 'all' ? 'সব অর্ডার' : (filterType === 'processing' ? 'প্রসেসিং অর্ডার' : (filterType === 'return' ? '🔄 রিটার্ন আবেদন' : '✕ বাতিলকৃত অর্ডার'));
-      }
-
-      renderAdminDashboardLive();
-
-      // Smooth scroll to orders section
-      const sec = document.getElementById('adminOrdersSection');
-      if (sec) {
-        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-
-</script>
+    </script>
 
     <!-- ================= ORDER SUCCESS & WHATSAPP DISPATCH MODAL ================= -->
   <div id="orderSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:260; align-items:center; justify-content:center; padding:16px;">
@@ -7776,13 +7818,19 @@ ${itemsListText}
   </div>
 
   <!-- ================= 9. COMPLETE INTEGRATED OWNER ADMIN PANEL ================= -->
-  <div id="screen-admin" class="screen-view" style="padding:14px; padding-bottom:75px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+    <div id="screen-admin" class="screen-view" style="padding:12px; padding-bottom:75px;">
+    <!-- Top Header Bar -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; background:#fff; padding:10px 14px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 4px rgba(0,0,0,0.03);">
       <div style="display:flex; align-items:center; gap:8px;">
-        <button onclick="showScreen('customer-settings')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-        <div style="font-size:1.05rem; font-weight:800; color:var(--primary);">মালিকের কন্ট্রোল প্যানেল (Boutique Manager)</div>
+        <button onclick="showScreen('customer-settings')" style="background:transparent; border:none; font-size:1.15rem; cursor:pointer; color:#334155;"><i class="fa-solid fa-arrow-left"></i></button>
+        <div>
+          <div style="font-size:1rem; font-weight:800; color:var(--primary);">মালিকের কন্ট্রোল প্যানেল (Seller Hub)</div>
+          <div style="font-size:0.68rem; color:#64748b;">নিশা ক্রিয়েশনস বুটিক • আমতা, হাওড়া</div>
+        </div>
       </div>
-      <button onclick="showScreen('home')" style="background:#f1f5f9; border:none; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;">শপ দেখুন</button>
+      <button onclick="showScreen('home')" style="background:#f1f5f9; border:1px solid #cbd5e1; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+        <i class="fa-solid fa-eye"></i> শপ দেখুন
+      </button>
     </div>
 
     <!-- Live In-App Notification Alert Banner -->
@@ -7791,31 +7839,68 @@ ${itemsListText}
       <span id="adminNotificationText">নতুন আপডেট: সম্প্রতি কাস্টমার থেকে নতুন অর্ডার বা রিটার্ন এসেছে!</span>
     </div>
 
-    <!-- Live Order & Return Summary Cards (Clickable Filter Buttons) -->
-    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:14px;">
-      <div id="admCard-all" onclick="filterAdminOrders('all')" style="background:#ffffff; border:2px solid var(--primary); border-radius:10px; padding:8px 4px; text-align:center; box-shadow:0 2px 6px rgba(156,39,176,0.15); cursor:pointer; transition:all 0.2s;">
-        <div style="font-size:1.2rem; font-weight:800; color:var(--primary);" id="admStatTotal">0</div>
-        <div style="font-size:0.65rem; font-weight:800; color:#475569;">মোট অর্ডার</div>
-        <div style="font-size:0.55rem; color:#94a3b8; margin-top:2px;">(সব দেখুন)</div>
+    <!-- 4 Main Category Navigation Tabs (পরিষ্কার ৪টি মূল মেনু) -->
+    <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:12px;">
+      <button class="adm-tab-btn active" id="admNavBtn-orders" onclick="switchAdminMainTab('orders')" style="flex:1; padding:9px 8px; border-radius:10px; border:none; font-size:0.75rem; font-weight:800; cursor:pointer; white-space:nowrap; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(156,39,176,0.25);">
+        <i class="fa-solid fa-clipboard-list"></i> ১. অর্ডার কন্ট্রোল
+      </button>
+      <button class="adm-tab-btn" id="admNavBtn-upload" onclick="switchAdminMainTab('upload')" style="flex:1; padding:9px 8px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; background:#fff; color:#475569; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="fa-solid fa-plus"></i> ২. নতুন পোশাক
+      </button>
+      <button class="adm-tab-btn" id="admNavBtn-inventory" onclick="switchAdminMainTab('inventory')" style="flex:1; padding:9px 8px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; background:#fff; color:#475569; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="fa-solid fa-boxes-stacked"></i> ৩. স্টক ও শাড়ি
+      </button>
+      <button class="adm-tab-btn" id="admNavBtn-promo" onclick="switchAdminMainTab('promo')" style="flex:1; padding:9px 8px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; background:#fff; color:#475569; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="fa-solid fa-tags"></i> ৪. প্রমো কোড
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: ORDER MANAGEMENT (MAIN VIEW WITH 4 OPTION CARDS) ================= -->
+    <div id="admTabContent-orders" class="adm-tab-pane">
+      <!-- The 4 Clean Option Cards Requested by User -->
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:12px;">
+        <!-- Option 1: চলতি অর্ডার -->
+        <div id="admCard-processing" onclick="filterAdminOrders('processing')" style="background:#fefce8; border:2px solid #ca8a04; border-radius:12px; padding:10px 4px; text-align:center; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 6px rgba(202,138,4,0.15);">
+          <div style="font-size:1.25rem; font-weight:800; color:#ca8a04;" id="admStatPending">0</div>
+          <div style="font-size:0.7rem; font-weight:800; color:#854d0e; margin-top:2px;">চলতি অর্ডার</div>
+          <div style="font-size:0.55rem; color:#a16207;">(গ্রাহকের অর্ডার)</div>
+        </div>
+
+        <!-- Option 2: রিটার্ন আবেদন -->
+        <div id="admCard-return" onclick="filterAdminOrders('return')" style="background:#fff7ed; border:1.5px solid #fdba74; border-radius:12px; padding:10px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
+          <div style="font-size:1.25rem; font-weight:800; color:#ea580c;" id="admStatReturn">0</div>
+          <div style="font-size:0.7rem; font-weight:800; color:#c2410c; margin-top:2px;">🔄 রিটার্ন</div>
+          <div style="font-size:0.55rem; color:#c2410c;">(ব্যাংক ডিটেলস)</div>
+        </div>
+
+        <!-- Option 3: বাতিল অর্ডার -->
+        <div id="admCard-cancelled" onclick="filterAdminOrders('cancelled')" style="background:#fef2f2; border:1.5px solid #fecaca; border-radius:12px; padding:10px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
+          <div style="font-size:1.25rem; font-weight:800; color:#dc2626;" id="admStatCancel">0</div>
+          <div style="font-size:0.7rem; font-weight:800; color:#991b1b; margin-top:2px;">✕ বাতিল</div>
+          <div style="font-size:0.55rem; color:#b91c1c;">(বাতিলের কারণ)</div>
+        </div>
+
+        <!-- Option 4: সম্পূর্ণ অর্ডার -->
+        <div id="admCard-delivered" onclick="filterAdminOrders('delivered')" style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:10px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
+          <div style="font-size:1.25rem; font-weight:800; color:#16a34a;" id="admStatDelivered">0</div>
+          <div style="font-size:0.7rem; font-weight:800; color:#166534; margin-top:2px;">✓ সম্পূর্ণ</div>
+          <div style="font-size:0.55rem; color:#15803d;">(ডেলিভার্ড)</div>
+        </div>
       </div>
-      <div id="admCard-processing" onclick="filterAdminOrders('processing')" style="background:#fefce8; border:1.5px solid #fef08a; border-radius:10px; padding:8px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
-        <div style="font-size:1.2rem; font-weight:800; color:#ca8a04;" id="admStatPending">0</div>
-        <div style="font-size:0.65rem; font-weight:800; color:#854d0e;">প্রসেসিং</div>
-        <div style="font-size:0.55rem; color:#a16207; margin-top:2px;">(চলতি)</div>
-      </div>
-      <div id="admCard-return" onclick="filterAdminOrders('return')" style="background:#fff7ed; border:1.5px solid #fdba74; border-radius:10px; padding:8px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
-        <div style="font-size:1.2rem; font-weight:800; color:#ea580c;" id="admStatReturn">0</div>
-        <div style="font-size:0.65rem; font-weight:800; color:#c2410c;">🔄 রিটার্ন</div>
-        <div style="font-size:0.55rem; color:#c2410c; margin-top:2px;">(ব্যাংক চেক)</div>
-      </div>
-      <div id="admCard-cancelled" onclick="filterAdminOrders('cancelled')" style="background:#fef2f2; border:1.5px solid #fecaca; border-radius:10px; padding:8px 4px; text-align:center; cursor:pointer; transition:all 0.2s;">
-        <div style="font-size:1.2rem; font-weight:800; color:#dc2626;" id="admStatCancel">0</div>
-        <div style="font-size:0.65rem; font-weight:800; color:#991b1b;">বাতিল</div>
-        <div style="font-size:0.55rem; color:#b91c1c; margin-top:2px;">(কারণ দেখুন)</div>
+
+      <!-- Orders List Container Card -->
+      <div class="settings-card" style="margin-top:0;">
+        <div class="settings-card-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span id="admOrdersHeading" style="font-size:0.85rem; font-weight:800; color:#0f172a;">📦 গ্রাহকদের চলতি অর্ডার তালিকা</span>
+          <span id="admOrdersCountBadge" style="font-size:0.68rem; font-weight:800; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:12px;">০টি অর্ডার</span>
+        </div>
+        <div id="adminLiveOrders"></div>
       </div>
     </div>
 
-    <!-- 1. Add Product with Multi-Photo, 120+ Categories & Stock Quantity -->
+    <!-- ================= TAB 2: ADD NEW PRODUCT ================= -->
+    <div id="admTabContent-upload" class="adm-tab-pane" style="display:none;">
+      <!-- 1. Add Product with Multi-Photo, 120+ Categories & Stock Quantity -->
     <div class="settings-card">
       <div class="settings-card-title">
         <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
@@ -8142,8 +8227,11 @@ ${itemsListText}
         <i class="fa-solid fa-rocket"></i> লাইভ শপে আপলোড করুন &rarr;
       </button>
     </div>
+    </div>
 
-    <!-- 2. Inventory & Stock Control -->
+    <!-- ================= TAB 3: INVENTORY & STOCK ================= -->
+    <div id="admTabContent-inventory" class="adm-tab-pane" style="display:none;">
+      <!-- 2. Inventory & Stock Control -->
     <div class="settings-card">
       <div class="settings-card-title">
         <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i>
@@ -8151,50 +8239,31 @@ ${itemsListText}
       </div>
       <div id="adminLiveInventory"></div>
     </div>
-
-    <!-- 3. Customer Orders & Delivery Slip (Filterable) -->
-    <div class="settings-card" id="adminOrdersSection">
-      <div class="settings-card-title" style="display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-truck-fast" style="color:var(--green);"></i>
-          <span>কাস্টমার অর্ডার ও ডেলিভারি চালান</span>
-        </div>
-        <span id="adminCurrentFilterBadge" style="font-size:0.68rem; font-weight:800; background:#f3e8ff; color:var(--primary); padding:2px 8px; border-radius:12px;">সব অর্ডার</span>
-      </div>
-
-      <!-- Quick Filter Pills -->
-      <div style="display:flex; gap:6px; overflow-x:auto; padding:4px 0 10px 0; border-bottom:1px solid #f1f5f9; margin-bottom:10px;">
-        <button type="button" class="adm-fpill" id="admPill-all" onclick="filterAdminOrders('all')" style="padding:5px 10px; border-radius:16px; border:1px solid var(--primary); background:var(--primary); color:#fff; font-size:0.7rem; font-weight:800; cursor:pointer; white-space:nowrap;">সব অর্ডার</button>
-        <button type="button" class="adm-fpill" id="admPill-processing" onclick="filterAdminOrders('processing')" style="padding:5px 10px; border-radius:16px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-size:0.7rem; font-weight:700; cursor:pointer; white-space:nowrap;">প্রসেসিং (<span id="pillCountPending">0</span>)</button>
-        <button type="button" class="adm-fpill" id="admPill-return" onclick="filterAdminOrders('return')" style="padding:5px 10px; border-radius:16px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-size:0.7rem; font-weight:700; cursor:pointer; white-space:nowrap;">🔄 রিটার্ন (<span id="pillCountReturn">0</span>)</button>
-        <button type="button" class="adm-fpill" id="admPill-cancelled" onclick="filterAdminOrders('cancelled')" style="padding:5px 10px; border-radius:16px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-size:0.7rem; font-weight:700; cursor:pointer; white-space:nowrap;">✕ বাতিল (<span id="pillCountCancel">0</span>)</button>
-      </div>
-
-      <div id="adminLiveOrders"></div>
     </div>
 
-    <!-- 4. Promo Code & Discount Voucher Manager -->
-    <div class="settings-card">
-      <div class="settings-card-title">
-        <i class="fa-solid fa-tags" style="color:var(--primary);"></i>
-        <span>প্রমো কোড ও ডিসকাউন্ট ভাউচার কন্ট্রোল (Promo Codes)</span>
+    <!-- ================= TAB 4: PROMO CODES ================= -->
+    <div id="admTabContent-promo" class="adm-tab-pane" style="display:none;">
+      <div class="settings-card">
+        <div class="settings-card-title">
+          <i class="fa-solid fa-tags" style="color:var(--primary);"></i>
+          <span>প্রমো কোড ও ডিসকাউন্ট ভাউচার কন্ট্রোল (Promo Codes)</span>
+        </div>
+        <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;">
+          গ্রাহকদের কেনাকাটায় ছাড় দেওয়ার জন্য নতুন প্রমো কোড তৈরি বা পরিচালনা করুন:
+        </div>
+        <div style="display:flex; gap:6px; margin-bottom:12px;">
+          <input type="text" id="newPromoCodeInp" placeholder="কোড (যেমন: PUJA100)" style="flex:2; padding:8px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; font-weight:700; text-transform:uppercase;">
+          <input type="number" id="newPromoDiscountInp" placeholder="ছাড় (₹)" style="flex:1; padding:8px 8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; font-weight:700;">
+          <button type="button" onclick="adminAddPromoCode()" style="background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
+            + যোগ করুন
+          </button>
+        </div>
+        <div id="adminPromoCodesList" style="display:flex; flex-direction:column; gap:6px;"></div>
       </div>
-      <div style="font-size:0.75rem; color:#64748b; margin-bottom:10px;">
-        গ্রাহকদের কেনাকাটায় ছাড় দেওয়ার জন্য নতুন প্রমো কোড তৈরি বা পরিচালনা করুন:
-      </div>
-      <div style="display:flex; gap:6px; margin-bottom:12px;">
-        <input type="text" id="newPromoCodeInp" placeholder="কোড (যেমন: PUJA100)" style="flex:2; padding:8px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; font-weight:700; text-transform:uppercase;">
-        <input type="number" id="newPromoDiscountInp" placeholder="ছাড় (₹)" style="flex:1; padding:8px 8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; font-weight:700;">
-        <button type="button" onclick="adminAddPromoCode()" style="background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
-          + যোগ করুন
-        </button>
-      </div>
-      <div id="adminPromoCodesList" style="display:flex; flex-direction:column; gap:6px;"></div>
     </div>
   </div>
 
-
-  <!-- ================= SIZE GUIDE MODAL (সাইজ চার্ট ও মাপের নির্দেশিকা) ================= -->
+<!-- ================= SIZE GUIDE MODAL (সাইজ চার্ট ও মাপের নির্দেশিকা) ================= -->
   <div id="sizeGuideModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); z-index:9999; align-items:center; justify-content:center; padding:12px;">
     <div style="background:#ffffff; border-radius:16px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 25px -5px rgba(0,0,0,0.25); display:flex; flex-direction:column;">
       <!-- Modal Header -->
