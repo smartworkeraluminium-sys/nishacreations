@@ -3896,6 +3896,7 @@
                   <div>
                     <span style="font-weight:800; color:#0f172a; font-size:0.85rem;">#${o.id} • ${o.name}</span>
                     <div style="font-size:0.68rem; color:#64748b;">📅 ${o.date || 'আজকের অর্ডার'}</div>
+                    ${o.status === 'Cancelled' ? `<span style="background:#fee2e2; color:#991b1b; font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px;">✕ বাতিল (Cancelled)</span>` : ''}
                   </div>
                   <span style="color:var(--primary); font-weight:800; font-size:0.95rem;">₹${o.total}</span>
                 </div>
@@ -3905,6 +3906,25 @@
                   <div>📞 <strong>${o.phone}</strong></div>
                   <div>📍 ${o.address}</div>
                 </div>
+
+                ${o.returnStatus === 'Requested' ? `
+                  <div style="background:#fff7ed; border:1.5px solid #fb923c; border-radius:8px; padding:10px; margin-bottom:10px; font-size:0.75rem;">
+                    <div style="font-weight:800; color:#ea580c; display:flex; justify-content:space-between; align-items:center;">
+                      <span><i class="fa-solid fa-rotate-left"></i> কাস্টমার রিটার্ন / এক্সচেঞ্জ চেয়েছেন!</span>
+                      <span style="background:#fed7aa; color:#9a3412; padding:1px 6px; border-radius:4px;">${o.returnType === 'Exchange' ? 'সাইজ বদল' : 'টাকা ফেরত'}</span>
+                    </div>
+                    <div style="margin:4px 0; color:#7c2d12;">
+                      <strong>কারণ:</strong> ${o.returnReason}<br>
+                      ${o.returnType === 'Exchange' ? `<strong>নতুন সাইজ চাওয়া হয়েছে:</strong> <span style="background:#ffedd5; padding:1px 4px; border-radius:3px; font-weight:800;">${o.returnExchangeSize}</span><br>` : ''}
+                      <strong>কাস্টমার বার্তা:</strong> ${o.returnDetails || 'কোনো মন্তব্য নেই'}
+                    </div>
+                    <div style="display:flex; gap:6px; margin-top:6px;">
+                      <button onclick="adminApproveReturn('${o.id}')" style="background:#ea580c; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:800; cursor:pointer;">
+                        ✓ রিটার্ন অনুমোদন করুন
+                      </button>
+                    </div>
+                  </div>
+                ` : ''}
 
                 <!-- ORDERED ITEMS WITH PHOTO & SIZES (Customer Requested) -->
                 <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px; margin-bottom:10px;">
@@ -3946,6 +3966,8 @@
                       <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
                       <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
                       <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                      <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>✕ Cancelled (বাতিল)</option>
+                      <option value="Returned & Refunded" ${o.status === 'Returned & Refunded' ? 'selected' : ''}>🔄 Returned (রিটার্ন সম্পন্ন)</option>
                     </select>
                   </div>
                   <a href="https://wa.me/91${(o.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`নমস্কার ${o.name}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার #${o.id} নম্বর অর্ডার সংক্রান্ত তথ্য জানাতে যোগাযোগ করা হলো।`)}" target="_blank" style="background:#22c55e; color:#fff; text-decoration:none; padding:5px 10px; border-radius:6px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">
@@ -6701,9 +6723,26 @@ ${itemsListText}
                   <i class="fa-solid fa-bolt" style="color:#059669;"></i>
                   <span>⚡ Yay! Your order was delivered successfully. (পার্সেলটি আপনার ঠিকানায় পৌঁছে গেছে)</span>
                 </div>
-                <div class="meesho-return-policy-footer">
-                  <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
-                  <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="alert('নিশা ক্রিয়েশনসের ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ পলিসি উপলব্ধ।')">KNOW MORE</span>
+                <div class="meesho-return-policy-footer" style="flex-direction:column; align-items:stretch; gap:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
+                    <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="openReturnModal('${ord.id}')">পলিসি জানুন &rarr;</span>
+                  </div>
+                  ${ord.returnStatus === 'Requested' ? `
+                    <div style="background:#fff7ed; border:1px solid #fed7aa; padding:8px 12px; border-radius:8px; font-size:0.75rem; color:#c2410c;">
+                      <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-rotate-left"></i> রিটার্ন / এক্সচেঞ্জ আবেদন গৃহীত হয়েছে
+                      </div>
+                      <div style="margin-top:2px; font-size:0.7rem;">
+                        কারণ: ${ord.returnReason} ${ord.returnType === 'Exchange' ? `(নতুন সাইজ: <strong>${ord.returnExchangeSize}</strong>)` : '(টাকা ফেরত)'}
+                      </div>
+                      <div style="font-size:0.68rem; color:#9a3412; margin-top:3px;">⏳ আমতায় আমাদের ডেলিভারি টিম পার্সেলটি পিকআপ করতে শীঘ্রই যোগাযোগ করবে।</div>
+                    </div>
+                  ` : `
+                    <button type="button" onclick="openReturnModal('${ord.id}')" style="width:100%; background:#fdf4ff; border:1.5px solid #f0abfc; color:var(--primary); padding:8px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                      <i class="fa-solid fa-arrow-rotate-left"></i> 🔄 সাইজ ছোট/বড় হলে এক্সচেঞ্জ বা রিটার্ন করুন
+                    </button>
+                  `}
                 </div>
               </div>
 
@@ -6806,14 +6845,24 @@ ${itemsListText}
               <div class="meesho-addr-phone-line">📞 ${ord.phone || '9239413517'}</div>
             </div>
 
-            <!-- Action Buttons Footer -->
-            <div class="meesho-actions-footer-bar">
-              <a href="tel:9239413517" class="meesho-action-link-btn">
+            <!-- Action Buttons Footer with Cancel Order -->
+            <div class="meesho-actions-footer-bar" style="flex-wrap:wrap; gap:8px;">
+              <a href="tel:9239413517" class="meesho-action-link-btn" style="flex:1;">
                 <i class="fa-solid fa-phone"></i> কল করুন
               </a>
-              <a href="https://wa.me/919239413517?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' এর বর্তমান স্ট্যাটাস জানতে চাই।')}" target="_blank" class="meesho-action-link-btn wa">
-                <i class="fa-brands fa-whatsapp"></i> ট্র্যাকিং হেল্প
+              <a href="https://wa.me/919239413517?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' এর বর্তমান স্ট্যাটাস জানতে চাই।')}" target="_blank" class="meesho-action-link-btn wa" style="flex:1;">
+                <i class="fa-brands fa-whatsapp"></i> ট্র্যাকিং
               </a>
+              ${(ord.status === 'Order Placed' || ord.status === 'Packed') ? `
+                <button type="button" onclick="openCancelModal('${ord.id}')" style="width:100%; background:#fff; border:1px solid #fca5a5; color:#dc2626; padding:7px; border-radius:8px; font-size:0.75rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:4px;">
+                  <i class="fa-solid fa-ban"></i> ✕ অর্ডার বাতিল / ক্যানসেল করুন
+                </button>
+              ` : ''}
+              ${ord.status === 'Cancelled' ? `
+                <div style="width:100%; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-align:center;">
+                  ✕ অর্ডার বাতিল করা হয়েছে (কারণ: ${ord.cancelReason || 'ব্যক্তিগত কারণ'})
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
@@ -7218,6 +7267,134 @@ ${itemsListText}
         localStorage.setItem('nc_products', JSON.stringify(products));
         const customOnly = products.filter(p => !p.id.startsWith('NC-10'));
         localStorage.setItem('nc_custom_products', JSON.stringify(customOnly));
+        renderAdminDashboardLive();
+      }
+    }
+
+
+    // ================= RETURN & CANCELLATION CONTROLLERS =================
+    function toggleExchangeSizeOption(isExchange) {
+      const box = document.getElementById("retExchangeSizeBox");
+      if (box) box.style.display = isExchange ? "block" : "none";
+    }
+
+    function openReturnModal(orderId) {
+      const orderList = JSON.parse(localStorage.getItem("nc_orders") || "[]");
+      const ord = orderList.find(o => o.id === orderId);
+      if (!ord) return;
+
+      document.getElementById("retOrderId").value = orderId;
+      document.getElementById("retModalOrderInfo").textContent = `অর্ডার #${ord.id} • ${ord.date || ""}`;
+
+      const previewBox = document.getElementById("retProdPreview");
+      const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
+      if (previewBox) {
+        previewBox.innerHTML = `
+          <img src="${firstItem.img || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120"}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1;">
+          <div style="flex:1;">
+            <div style="font-weight:800; font-size:0.8rem; color:#0f172a;">${firstItem.title || "বুটিক পোশাক"}</div>
+            <div style="font-size:0.7rem; color:#64748b; margin-top:2px;">
+              বর্তমান সাইজ: <strong>${firstItem.selectedSize || "Free Size"}</strong> ${firstItem.selectedColor ? `• কালার: ${firstItem.selectedColor}` : ""} • ₹${ord.total}
+            </div>
+          </div>
+        `;
+      }
+      document.getElementById("retCustomNote").value = "";
+      document.getElementById("returnRequestModal").style.display = "flex";
+    }
+
+    function closeReturnModal() {
+      document.getElementById("returnRequestModal").style.display = "none";
+    }
+
+    function submitReturnRequest() {
+      const orderId = document.getElementById("retOrderId").value;
+      const actType = document.querySelector('input[name="retActionType"]:checked').value;
+      const reason = document.querySelector('input[name="retReasonOpt"]:checked').value;
+      const customNote = document.getElementById("retCustomNote").value.trim();
+      const newSize = actType === "Exchange" ? document.getElementById("retNewSizeSelect").value : "";
+
+      let orderList = JSON.parse(localStorage.getItem("nc_orders") || "[]");
+      const idx = orderList.findIndex(o => o.id === orderId);
+      if (idx === -1) return;
+
+      orderList[idx].returnStatus = "Requested";
+      orderList[idx].returnType = actType;
+      orderList[idx].returnReason = reason;
+      orderList[idx].returnDetails = customNote;
+      orderList[idx].returnExchangeSize = newSize;
+      orderList[idx].returnDate = new Date().toLocaleDateString("bn-IN");
+
+      localStorage.setItem("nc_orders", JSON.stringify(orderList));
+      orders = orderList;
+
+      alert(`✅ আপনার ${actType === "Exchange" ? "সাইজ পরিবর্তন (Exchange)" : "রিটার্ন"} আবেদনটি সফলভাবে জমা পড়েছে! নিশা ক্রিয়েশনস থেকে শীঘ্রই যোগাযোগ করে আমতায় পিকআপ করা হবে।`);
+      closeReturnModal();
+      renderOrders();
+
+      // Open WhatsApp to notify boutique
+      const msg = `*🔄 নতুন রিটার্ন/এক্সচেঞ্জ আবেদন - নিশা ক্রিয়েশনস*%0A━━━━━━━━━━━━━━━━━%0A🧾 *অর্ডার নং:* #${orderId}%0A👤 *গ্রাহক:* ${orderList[idx].name}%0A📞 *ফোন:* ${orderList[idx].phone}%0A📦 *সুবিধা:* ${actType === "Exchange" ? "সাইজ পরিবর্তন (এক্সচেঞ্জ)" : "টাকা রিফান্ড / রিটার্ন"}%0A${actType === "Exchange" ? "📏 *নতুন সাইজ লাগবে:* " + newSize + "%0A" : ""}⚠️ *কারণ:* ${reason}%0A📝 *মন্তব্য:* ${customNote || "নাই"}%0A━━━━━━━━━━━━━━━━━%0Aঅনুগ্রহ করে পিকআপ নিশ্চিত করুন।`;
+      window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${msg}`, '_blank');
+    }
+
+    function openCancelModal(orderId) {
+      document.getElementById("cancelOrderId").value = orderId;
+      document.getElementById("cancelModalOrderInfo").textContent = `অর্ডার #${orderId}`;
+      document.getElementById("cancelCustomNote").value = "";
+      document.getElementById("cancelOrderModal").style.display = "flex";
+    }
+
+    function closeCancelModal() {
+      document.getElementById("cancelOrderModal").style.display = "none";
+    }
+
+    function confirmCancelOrder() {
+      const orderId = document.getElementById("cancelOrderId").value;
+      const reason = document.querySelector('input[name="cancelReasonOpt"]:checked').value;
+      const note = document.getElementById("cancelCustomNote").value.trim();
+
+      let orderList = JSON.parse(localStorage.getItem("nc_orders") || "[]");
+      const idx = orderList.findIndex(o => o.id === orderId);
+      if (idx === -1) return;
+
+      const targetOrder = orderList[idx];
+      targetOrder.status = "Cancelled";
+      targetOrder.cancelReason = reason;
+      targetOrder.cancelDetails = note;
+      targetOrder.cancelledDate = new Date().toLocaleDateString("bn-IN");
+
+      // RESTORE STOCK: Add back item quantities to products
+      if (targetOrder.items && targetOrder.items.length > 0) {
+        targetOrder.items.forEach(it => {
+          const p = products.find(prod => prod.id === it.id);
+          if (p) {
+            p.stock = (p.stock || 0) + (it.qty || 1);
+            p.inStock = true;
+          }
+        });
+        localStorage.setItem("nc_products", JSON.stringify(products));
+      }
+
+      localStorage.setItem("nc_orders", JSON.stringify(orderList));
+      orders = orderList;
+
+      alert(`❌ অর্ডার #${orderId} সফলভাবে বাতিল করা হয়েছে এবং স্টক রিস্টোর হয়েছে।`);
+      closeCancelModal();
+      renderOrders();
+
+      // Open WhatsApp notification
+      const msg = `*❌ অর্ডার বাতিল (Cancelled) - নিশা ক্রিয়েশনস*%0A🧾 *অর্ডার নং:* #${orderId}%0A👤 *গ্রাহক:* ${targetOrder.name}%0A⚠️ *বাতিলের কারণ:* ${reason}%0A📝 *মন্তব্য:* ${note || "নাই"}`;
+      window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=${msg}`, '_blank');
+    }
+
+    function adminApproveReturn(orderId) {
+      let orderList = JSON.parse(localStorage.getItem("nc_orders") || "[]");
+      const idx = orderList.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        orderList[idx].returnStatus = "Approved";
+        orderList[idx].status = "Returned & Refunded";
+        localStorage.setItem("nc_orders", JSON.stringify(orderList));
+        alert(`✅ অর্ডার #${orderId} এর রিটার্ন অনুমোদিত হয়েছে!`);
         renderAdminDashboardLive();
       }
     }
@@ -7931,5 +8108,170 @@ ${itemsListText}
     </div>
   </div>
 
+
+  <!-- ================= RETURN / EXCHANGE MODAL ================= -->
+  <div id="returnRequestModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.8); z-index:9999; align-items:center; justify-content:center; padding:12px;">
+    <div style="background:#ffffff; border-radius:16px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; padding:18px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.25);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:10px; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">🔄</span>
+          <div>
+            <div style="font-size:0.95rem; font-weight:800; color:#0f172a;">প্রোডাক্ট রিটার্ন ও সাইজ এক্সচেঞ্জ</div>
+            <div style="font-size:0.7rem; color:#64748b;" id="retModalOrderInfo">অর্ডার তথ্য</div>
+          </div>
+        </div>
+        <button onclick="closeReturnModal()" style="background:#f1f5f9; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold; cursor:pointer;">✕</button>
+      </div>
+
+      <input type="hidden" id="retOrderId">
+
+      <!-- Product Preview in Modal -->
+      <div id="retProdPreview" style="display:flex; align-items:center; gap:10px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:14px;">
+        <!-- Filled dynamically -->
+      </div>
+
+      <!-- Type: Exchange or Refund -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;">আপনি কি সুবিধা চান?</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <label style="display:flex; align-items:center; gap:6px; background:#fdf4ff; border:1.5px solid #f0abfc; padding:8px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+            <input type="radio" name="retActionType" value="Exchange" checked onchange="toggleExchangeSizeOption(true)">
+            <span>🔄 সাইজ এক্সচেঞ্জ (বদল)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; background:#f8fafc; border:1.5px solid #cbd5e1; padding:8px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+            <input type="radio" name="retActionType" value="Refund" onchange="toggleExchangeSizeOption(false)">
+            <span>💵 টাকা রিফান্ড / ফেরত</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Exchange Size Selector (shown when Exchange is selected) -->
+      <div id="retExchangeSizeBox" style="margin-bottom:14px; background:#faf5ff; border:1px solid #e9d5ff; padding:10px; border-radius:8px;">
+        <label style="font-size:0.75rem; font-weight:800; color:#7e22ce; display:block; margin-bottom:4px;">কোন নতুন সাইজটি আপনার লাগবে?</label>
+        <select id="retNewSizeSelect" style="width:100%; padding:7px; border:1px solid #c084fc; border-radius:6px; font-size:0.78rem; font-weight:700;">
+          <option value="S (36)">S (36 ইঞ্চি)</option>
+          <option value="M (38)">M (38 ইঞ্চি)</option>
+          <option value="L (40)">L (40 ইঞ্চি)</option>
+          <option value="XL (42)">XL (42 ইঞ্চি)</option>
+          <option value="XXL (44)">XXL (44 ইঞ্চি)</option>
+          <option value="3XL (46)">3XL (46 ইঞ্চি)</option>
+          <option value="1-2 Yrs">বাচ্চাদের 1-2 বছর</option>
+          <option value="3-4 Yrs">বাচ্চাদের 3-4 বছর</option>
+          <option value="5-6 Yrs">বাচ্চাদের 5-6 বছর</option>
+          <option value="7-8 Yrs">বাচ্চাদের 7-8 বছর</option>
+          <option value="9-10 Yrs">বাচ্চাদের 9-10 বছর</option>
+        </select>
+      </div>
+
+      <!-- Predefined Reasons -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;">রিটার্ন বা পরিবর্তনের প্রধান কারণ নির্বাচন করুন:</label>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:0.75rem;">
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="সাইজে ছোট হচ্ছে (এক সাইজ বড় চাই)" checked>
+            <span>📏 সাইজে ছোট হচ্ছে (এক সাইজ বড় চাই)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="সাইজে বড় বা ঢিলে হচ্ছে (এক সাইজ ছোট চাই)">
+            <span>📐 সাইজে বড় বা ঢিলে হচ্ছে (এক সাইজ ছোট চাই)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="ফিটিং ঠিকঠাক নয় বা পরতে অসুবিধা">
+            <span>👗 ফিটিং ঠিকঠাক নয় বা পরতে অসুবিধা</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="কাপড় বা কোয়ালিটি মনের মতো নয়">
+            <span>🧵 কাপড় বা কোয়ালিটি মনের মতো নয়</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="ভুল প্রোডাক্ট বা ভুল কালার এসেছে">
+            <span>🎨 ভুল প্রোডাক্ট বা ভুল কালার এসেছে</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="পোশাকে ত্রুটি / ছেঁড়া বা দাগ রয়েছে">
+            <span>⚠️ পোশাকে ত্রুটি / ছেঁড়া বা দাগ রয়েছে</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="retReasonOpt" value="অন্যান্য কারণ">
+            <span>✍️ অন্যান্য কারণ (নিচে লিখুন)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Custom Note textarea -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.75rem; font-weight:800; color:#475569; display:block; margin-bottom:4px;">আপনার সমস্যার কথা বিস্তারিত লিখুন:</label>
+        <textarea id="retCustomNote" rows="2" placeholder="যেমন: ঝুলে ঠিক আছে কিন্তু বক্ষ একটু চাপা লাগছে, তাই L সাইজ দিলে ভালো হয়..." style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.75rem;"></textarea>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button onclick="closeReturnModal()" style="flex:1; background:#f1f5f9; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer; color:#475569;">ফিরে যান</button>
+        <button onclick="submitReturnRequest()" style="flex:2; background:var(--primary); color:#fff; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer; box-shadow:0 3px 10px rgba(156,39,176,0.3);">
+          অনুরোধ জমা দিন &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CANCEL ORDER MODAL ================= -->
+  <div id="cancelOrderModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.8); z-index:9999; align-items:center; justify-content:center; padding:12px;">
+    <div style="background:#ffffff; border-radius:16px; width:100%; max-width:420px; padding:18px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.25);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:10px; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem; color:#dc2626;">❌</span>
+          <div>
+            <div style="font-size:0.95rem; font-weight:800; color:#dc2626;">অর্ডার বাতিল / ক্যানসেল করুন</div>
+            <div style="font-size:0.7rem; color:#64748b;" id="cancelModalOrderInfo">অর্ডার নং</div>
+          </div>
+        </div>
+        <button onclick="closeCancelModal()" style="background:#f1f5f9; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold; cursor:pointer;">✕</button>
+      </div>
+
+      <input type="hidden" id="cancelOrderId">
+
+      <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px; margin-bottom:12px; font-size:0.75rem; color:#991b1b; line-height:1.4;">
+        ⚠️ <strong>সতর্কতা:</strong> অর্ডার বাতিল করলে এটি ডেলিভারি করা হবে না এবং বুকিং সাথে সাথে বাতিল হয়ে যাবে।
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;">অর্ডার বাতিলের কারণ নির্বাচন করুন:</label>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:0.75rem;">
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="cancelReasonOpt" value="ভুলবশত অর্ডার করা হয়েছে" checked>
+            <span>ভুলবশত অর্ডার করা হয়েছে</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="cancelReasonOpt" value="সাইজ বা ডেলিভারি ঠিকানা পরিবর্তন করতে চাই">
+            <span>সাইজ বা ডেলিভারি ঠিকানা পরিবর্তন করতে চাই</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="cancelReasonOpt" value="ডেলিভারিতে দেরি হবে মনে হচ্ছে">
+            <span>ডেলিভারিতে দেরি হবে মনে হচ্ছে</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="cancelReasonOpt" value="অন্যত্র পছন্দসই পোশাক পেয়ে গেছি">
+            <span>অন্যত্র পছন্দসই পোশাক পেয়ে গেছি</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #cbd5e1; padding:7px 10px; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="cancelReasonOpt" value="অন্যান্য ব্যক্তিগত কারণ">
+            <span>অন্যান্য ব্যক্তিগত কারণ</span>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.75rem; font-weight:800; color:#475569; display:block; margin-bottom:4px;">অন্য কোনো মন্তব্য (ঐচ্ছিক):</label>
+        <textarea id="cancelCustomNote" rows="2" placeholder="অর্ডার বাতিল সম্পর্কিত কোনো কথা থাকলে লিখুন..." style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.75rem;"></textarea>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button onclick="closeCancelModal()" style="flex:1; background:#f1f5f9; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer; color:#475569;">না, বাতিল নয়</button>
+        <button onclick="confirmCancelOrder()" style="flex:2; background:#dc2626; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          ✕ নিশ্চিত অর্ডার বাতিল করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
-        </html>
+          </html>
