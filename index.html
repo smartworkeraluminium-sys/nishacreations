@@ -1431,6 +1431,252 @@
       font-weight: 800;
     }
 
+  
+    /* ===================================================
+       MEESHO ORDER DETAILS & MY ORDERS (ছবি ১ ও ২ হুবহু ডিজাইন)
+       =================================================== */
+    .meesho-order-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .meesho-order-top-row {
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      position: relative;
+    }
+    .meesho-order-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .meesho-order-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .meesho-order-id-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+    .meesho-order-prod-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meesho-order-specs {
+      font-size: 0.74rem;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .meesho-order-return-tag {
+      font-size: 0.68rem;
+      color: #7e22ce;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    /* Meesho 'How was the product?' 5-Star Card (ছবি ১) */
+    .meesho-how-product-box {
+      background: #faf5ff;
+      padding: 12px 14px;
+      border-bottom: 1px solid #f3e8ff;
+    }
+    .meesho-how-product-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .meesho-star-rating-row {
+      display: flex;
+      justify-content: space-around;
+      max-width: 320px;
+      margin: 0 auto;
+      user-select: none;
+    }
+    .meesho-star-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .meesho-star-item:active { transform: scale(0.9); }
+    .meesho-star-item i {
+      font-size: 1.7rem;
+      color: #cbd5e1;
+      transition: color 0.15s;
+    }
+    .meesho-star-item.active i {
+      color: #f59e0b;
+    }
+    .meesho-star-caption {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .meesho-star-item.active .meesho-star-caption {
+      color: #d97706;
+      font-weight: 700;
+    }
+
+    /* Meesho Delivered Status Banner (ছবি ১) */
+    .meesho-deliv-status-card {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #ffffff;
+    }
+    .meesho-deliv-header-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .meesho-deliv-green-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #16a34a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .meesho-deliv-main-label {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #15803d;
+    }
+    .meesho-deliv-date-sub {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .meesho-yay-badge {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: #065f46;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .meesho-return-guarantee-line {
+      font-size: 0.7rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Meesho In-Progress Status Banner */
+    .meesho-progress-status-card {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #f8fafc;
+    }
+    .meesho-progress-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    /* Meesho Delivery Address Section (ছবি ১) */
+    .meesho-address-card-box {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #fafafa;
+    }
+    .meesho-addr-heading {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .meesho-addr-user-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .meesho-addr-address-text {
+      font-size: 0.74rem;
+      color: #64748b;
+      line-height: 1.35;
+      margin: 2px 0 4px 0;
+    }
+    .meesho-addr-phone-text {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    /* Action Buttons Row */
+    .meesho-order-action-btns {
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      background: #ffffff;
+    }
+    .meesho-order-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      text-decoration: none;
+    }
+    .meesho-order-btn.wa {
+      background: #25d366;
+      color: #ffffff;
+      border-color: #25d366;
+    }
+
   </style>
 </head>
 <body>
@@ -1886,9 +2132,15 @@
 
   <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Meesho Image 23 & 24) ================= -->
   <div id="screen-orders" class="screen-view" style="padding:14px; padding-bottom:75px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-      <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">আমার অর্ডার সমূহ (My Orders)</div>
+    <!-- Meesho Style Header (ছবি ১ ও ২) -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; padding-bottom:6px; border-bottom:1px solid #f1f5f9;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.2rem; color:#475569; cursor:pointer;"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="font-size:1.05rem; font-weight:800; color:#0f172a;">MY ORDERS</div>
+      </div>
+      <a href="tel:9239413517" style="color:var(--primary); text-decoration:none; font-size:0.8rem; font-weight:800; display:flex; align-items:center; gap:4px;">
+        <i class="fa-solid fa-headset"></i> HELP
+      </a>
     </div>
 
     <div id="ordersListContainer"></div>
@@ -5254,116 +5506,200 @@ ${estDeliveryStr}
       const list = filterList || orders;
 
       if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.03);">কোনো চলমান অর্ডার নেই!</div>`;
+        container.innerHTML = `
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8; background:#fff; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+            <i class="fa-solid fa-bag-shopping" style="font-size:2.5rem; color:#cbd5e1; margin-bottom:12px;"></i>
+            <div style="font-size:0.95rem; font-weight:800; color:#475569;">কোনো অর্ডার পাওয়া যায়নি!</div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">আপনার পছন্দের শাড়ি ও ড্রেস কিনতে শপে যান।</div>
+            <button onclick="showScreen('home')" style="background:var(--primary); color:#fff; border:none; padding:8px 18px; border-radius:20px; font-size:0.8rem; font-weight:800; margin-top:14px; cursor:pointer;">
+              শপ দেখুন
+            </button>
+          </div>
+        `;
         return;
       }
 
       container.innerHTML = '';
-      list.forEach(ord => {
+      list.forEach((ord, ordIdx) => {
         const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
         const isDelivered = ord.status === "Delivered";
-        const isOut = ord.status === "Out for Delivery";
-        const isPacked = ord.status === "Packed";
         const isReviewed = ord.reviewed === true;
+        const currentRating = (ord.reviewData && ord.reviewData.rating) ? ord.reviewData.rating : (ord.quickRating || 0);
 
-        const safeProdTitle = (firstItem.title || 'শাড়ি').replace(/'/g, "\\'");
+        const safeProdTitle = (firstItem.title || 'Pure Dhakai Jamdani Saree').replace(/'/g, "\\'");
+        const sizeText = firstItem.selectedSize || 'Free Size';
+        const qtyText = firstItem.qty || 1;
+        const payModeText = ord.paymentMode || 'COD';
 
-        // Review Option Section: Appears when order tracking is completed (Delivered)
-        let reviewSectionHtml = '';
+        // 1. Meesho 'How was the product?' Card (ছবি ১)
+        let ratingBoxHtml = '';
         if (isDelivered) {
-          if (isReviewed) {
-            reviewSectionHtml = `
-              <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:10px; padding:10px 14px; margin-top:12px; display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:8px; color:#15803d; font-size:0.8rem; font-weight:800;">
-                  <i class="fa-solid fa-circle-check" style="font-size:1.1rem;"></i>
-                  <span>আপনার ৫-স্টার রিভিউ জমা পড়েছে! ধন্যবাদ।</span>
+          if (isReviewed || currentRating > 0) {
+            // Already rated
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+              starsHtml += `<i class="fa-solid fa-star" style="color:${i <= currentRating ? '#f59e0b' : '#cbd5e1'}; font-size:1.4rem;"></i> `;
+            }
+            ratingBoxHtml = `
+              <div class="meesho-how-product-box" style="background:#f0fdf4; border-bottom:1px solid #bbf7d0;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <div>
+                    <div style="font-size:0.82rem; font-weight:800; color:#15803d;">
+                      <i class="fa-solid fa-circle-check"></i> আপনার রিভিউ জমা পড়েছে!
+                    </div>
+                    <div style="margin-top:4px;">${starsHtml} <span style="font-size:0.75rem; font-weight:800; color:#15803d;">(${currentRating}.0 ★)</span></div>
+                  </div>
+                  <button onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')" style="background:#fff; border:1px solid #86efac; color:#15803d; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;">
+                    রিভিউ দেখুন
+                  </button>
                 </div>
-                <button onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')" style="background:#fff; border:1px solid #86efac; color:#15803d; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:700; cursor:pointer;">
-                  রিভিউ দেখুন
-                </button>
               </div>
             `;
           } else {
-            reviewSectionHtml = `
-              <div style="background:linear-gradient(135deg, #fef3c7, #fde68a); border:1.5px solid #f59e0b; border-radius:12px; padding:12px 14px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(245,158,11,0.2);">
-                <div>
-                  <div style="font-size:0.85rem; font-weight:800; color:#78350f; display:flex; align-items:center; gap:6px;">
-                    <i class="fa-solid fa-star" style="color:#d97706;"></i> <span>পার্সেলটি কেমন লাগলো?</span>
-                  </div>
-                  <div style="font-size:0.72rem; color:#92400e; margin-top:2px;">ডেলিভারি সম্পন্ন হয়েছে, আপনার ৫-স্টার রেটিং ও ছবি শেয়ার করুন</div>
+            // Interactive 5 stars matching Meesho Image 1
+            ratingBoxHtml = `
+              <div class="meesho-how-product-box">
+                <div class="meesho-how-product-title">
+                  <span>How was the product? (পণ্যটি কেমন লাগলো?)</span>
+                  <span style="font-size:0.72rem; color:var(--primary); font-weight:800; cursor:pointer;" onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')">ADD FEEDBACK ❯</span>
                 </div>
-                <button onclick="openDeliveryReviewModal('${ord.id}', '${safeProdTitle}')" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:0.8rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.35); display:flex; align-items:center; gap:6px; white-space:nowrap;">
-                  <i class="fa-solid fa-pen-to-square"></i> রিভিউ দিন
-                </button>
+                <div class="meesho-star-rating-row">
+                  <div class="meesho-star-item" onclick="quickRateOrderDirect('${ord.id}', 1, '${safeProdTitle}')">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="meesho-star-caption">Very Bad</span>
+                  </div>
+                  <div class="meesho-star-item" onclick="quickRateOrderDirect('${ord.id}', 2, '${safeProdTitle}')">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="meesho-star-caption">Bad</span>
+                  </div>
+                  <div class="meesho-star-item" onclick="quickRateOrderDirect('${ord.id}', 3, '${safeProdTitle}')">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="meesho-star-caption">Ok-Ok</span>
+                  </div>
+                  <div class="meesho-star-item" onclick="quickRateOrderDirect('${ord.id}', 4, '${safeProdTitle}')">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="meesho-star-caption">Good</span>
+                  </div>
+                  <div class="meesho-star-item" onclick="quickRateOrderDirect('${ord.id}', 5, '${safeProdTitle}')">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="meesho-star-caption">Very Good</span>
+                  </div>
+                </div>
               </div>
             `;
           }
         }
 
+        // 2. Delivery Status Section:
+        // When COMPLETED (Delivered) -> Only show clean Completed / Delivered banner! No bulky 4-step vertical timeline!
+        let statusSectionHtml = '';
+        if (isDelivered) {
+          statusSectionHtml = `
+            <div class="meesho-deliv-status-card">
+              <div class="meesho-deliv-header-line">
+                <div class="meesho-deliv-green-circle">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                  <div class="meesho-deliv-main-label">Delivered (ডেলিভারি সম্পন্ন)</div>
+                  <div class="meesho-deliv-text-date">${ord.date}</div>
+                </div>
+              </div>
+              <div class="meesho-yay-badge">
+                <i class="fa-solid fa-bolt" style="color:#059669;"></i>
+                <span>⚡ Yay! Your order was delivered successfully. (পার্সেলটি পৌঁছে গেছে)</span>
+              </div>
+              <div class="meesho-return-guarantee-line">
+                <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
+                <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="alert('নিশা ক্রিয়েশনসের ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ পলিসি উপলব্ধ। যেকোনো সহায়তার জন্য কল বা হোয়াটসঅ্যাপ করুন।')">KNOW MORE</span>
+              </div>
+            </div>
+          `;
+        } else {
+          // If in-progress, show clean single status line (no bulky 4-step vertical lines)
+          let inProgressIcon = 'fa-clock';
+          let inProgressText = 'অর্ডার গৃহীত হয়েছে ও প্রসেসিং চলছে';
+          if (ord.status === 'Packed') {
+            inProgressIcon = 'fa-box';
+            inProgressText = 'প্যাকিং ও কোয়ালিটি চেক সম্পন্ন হয়েছে';
+          } else if (ord.status === 'Out for Delivery') {
+            inProgressIcon = 'fa-motorcycle';
+            inProgressText = 'ডেলিভারির জন্য বেরিয়েছে (আমতা ডেলিভারি পার্টনারের কাছে রয়েছে)';
+          }
+          statusSectionHtml = `
+            <div class="meesho-progress-status-card">
+              <div class="meesho-progress-pill">
+                <i class="fa-solid ${inProgressIcon}" style="font-size:1.1rem;"></i>
+                <div>
+                  <div>${ord.status}</div>
+                  <div style="font-size:0.7rem; font-weight:600; opacity:0.9;">${inProgressText}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // 3. Complete Card Assembly (ছবি ১ ও ২ হুবহু)
         container.innerHTML += `
-          <div style="background:#fff; border-radius:14px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:8px; margin-bottom:10px;">
-              <div>
-                <span style="font-size:0.75rem; font-weight:800; color:var(--primary);">ORDER #${ord.id}</span>
-                <div style="font-size:0.68rem; color:#64748b;">${ord.date}</div>
+          <div class="meesho-order-card">
+            <!-- Top Product Meta Row (ছবি ১ ও ২) -->
+            <div class="meesho-order-top-row">
+              <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="meesho-order-img" alt="Product">
+              <div class="meesho-order-info">
+                <div class="meesho-order-id-num">Order #${ord.id}</div>
+                <div class="meesho-order-prod-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
+                <div class="meesho-order-specs">
+                  <span>Size: ${sizeText}</span>
+                  <span>•</span>
+                  <span>Qty: ${qtyText}</span>
+                  <span>•</span>
+                  <span>${payModeText}</span>
+                  <span>•</span>
+                  <span style="font-weight:800; color:#0f172a;">₹${ord.total}</span>
+                </div>
+                <div class="meesho-order-return-tag">
+                  <i class="fa-solid fa-arrow-rotate-left"></i> All issue easy returns
+                </div>
               </div>
-              <span style="background:${isDelivered ? '#dcfce7' : '#fef08a'}; color:${isDelivered ? '#15803d' : '#854d0e'}; font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:6px;">
-                ${ord.status}
-              </span>
-            </div>
-
-            <div style="display:flex; gap:12px; align-items:center;">
-              <img src="${firstItem.img || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
-              <div style="flex:1;">
-                <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">${firstItem.title || 'Product'}</div>
-                <div style="font-size:0.75rem; color:#64748b;">মোট আইটেম: ${ord.items ? ord.items.length : 1} টি • ${ord.paymentMode || 'COD'}</div>
-                <div style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-top:2px;">মোট: ₹${ord.total}</div>
-              </div>
-            </div>
-
-            <!-- Live 4-Step Animated Timeline (Like Meesho Image 24) -->
-            <div class="timeline">
-              <div class="timeline-step completed">
-                <div class="timeline-dot"><i class="fa-solid fa-check"></i></div>
-                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">অর্ডার গৃহীত হয়েছে</div>
-                <div style="font-size:0.68rem; color:#64748b;">সিস্টেমে অর্ডার ভেরিফাই হয়েছে</div>
-              </div>
-              <div class="timeline-step ${isPacked || isOut || isDelivered ? 'completed' : ''}">
-                <div class="timeline-dot"><i class="fa-solid fa-box"></i></div>
-                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">প্যাকিং ও কোয়ালিটি চেক</div>
-                <div style="font-size:0.68rem; color:#64748b;">নিশা ক্রিয়েশনস বুটিক দ্বারা চেক করা হয়েছে</div>
-              </div>
-              <div class="timeline-step ${isOut || isDelivered ? 'completed' : ''}">
-                <div class="timeline-dot"><i class="fa-solid fa-motorcycle"></i></div>
-                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)</div>
-                <div style="font-size:0.68rem; color:#64748b;">আমতার ডেলিভারি পার্টনারের কাছে রয়েছে</div>
-              </div>
-              <div class="timeline-step ${isDelivered ? 'completed' : ''}">
-                <div class="timeline-dot"><i class="fa-solid fa-house-chimney"></i></div>
-                <div style="font-size:0.75rem; font-weight:700; color:#0f172a;">ডেলিভারি সম্পন্ন</div>
-                <div style="font-size:0.68rem; color:#64748b;">কাস্টমারের হাতে পার্সেল পৌঁছে গেছে</div>
+              <div style="color:#94a3b8; font-size:1rem;">
+                <i class="fa-solid fa-chevron-right"></i>
               </div>
             </div>
 
-            <!-- Order Completed Review Option (ডেলিভারি সম্পন্ন হলেই ভেসে উঠবে) -->
-            ${reviewSectionHtml}
+            <!-- How was the product? Review Box (ছবি ১) -->
+            ${ratingBoxHtml}
 
-            <!-- Address Card -->
-            <div style="background:#f8fafc; border-radius:8px; padding:8px 10px; font-size:0.72rem; color:#475569; margin-top:10px;">
-              <span style="font-weight:700; color:#0f172a;">📍 ডেলিভারি ঠিকানা:</span> ${ord.address} | ফোন: ${ord.phone}
+            <!-- Delivery Status Banner (কমপ্লিট হলে শুধু কমপ্লিট দেখাবে) -->
+            ${statusSectionHtml}
+
+            <!-- Delivery Address Card (ছবি ১) -->
+            <div class="meesho-address-card-box">
+              <div class="meesho-addr-heading">
+                <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
+                <span>Delivery Address (ডেলিভারি ঠিকানা)</span>
+              </div>
+              <div class="meesho-addr-user-name">${ord.name || 'Saheb Ghanti'}</div>
+              <div class="meesho-addr-address-text">${ord.address || 'vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401'}</div>
+              <div class="meesho-addr-phone-text">📞 ${ord.phone || '9239413517'}</div>
             </div>
 
-            <div style="display:flex; gap:8px; margin-top:10px;">
-              <button onclick="window.open('tel:9239413517')" style="flex:1; background:#f1f5f9; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer;">
+            <!-- Action Buttons Row -->
+            <div class="meesho-order-action-btns">
+              <a href="tel:9239413517" class="meesho-order-btn">
                 <i class="fa-solid fa-phone"></i> কল করুন
-              </button>
-              <button onclick="window.open('https://wa.me/${BOUTIQUE_PHONE}?text=Hello, Order ${ord.id} status enquiry', '_blank')" style="flex:1; background:#25d366; color:#fff; border:none; padding:8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+              </a>
+              <a href="https://wa.me/${BOUTIQUE_PHONE}?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' সম্পর্কে জানতে চাই।')}" target="_blank" class="meesho-order-btn wa">
                 <i class="fa-brands fa-whatsapp"></i> WhatsApp
-              </button>
+              </a>
             </div>
           </div>
         `;
       });
+    }
+
+    function quickRateOrderDirect(orderId, starVal, prodTitle) {
+      setDelivStar(starVal);
+      openDeliveryReviewModal(orderId, prodTitle);
     }
 
     function trackOrderManual() {
@@ -5988,4 +6324,4 @@ ${estDeliveryStr}
   </div>
 
 </body>
-  </html>
+          </html>
