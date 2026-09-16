@@ -1350,6 +1350,87 @@
       margin-left: 6px;
     }
 
+  
+    /* Clock Ticking Pulse Animation */
+    @keyframes clockTickPulse {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.15) rotate(-6deg); }
+      50% { transform: scale(1) rotate(0deg); }
+      75% { transform: scale(1.15) rotate(6deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .clock-tick-pulse {
+      display: inline-block;
+      color: #fef08a;
+      animation: clockTickPulse 1s infinite ease-in-out;
+      font-size: 0.95rem;
+    }
+
+    /* Single Unified Horizontal Scrollable Category Strip */
+    .category-scroll-unified {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px 10px 14px;
+      background: #ffffff;
+      scrollbar-width: none;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .category-scroll-unified::-webkit-scrollbar { display: none; }
+    .unified-cat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 0 0 72px;
+      width: 72px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .unified-cat-item:active { transform: scale(0.95); }
+    .unified-cat-bubble {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #fdf4ff;
+      border: 2px solid #e2e8f0;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(156, 39, 176, 0.1);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    .unified-cat-bubble img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .unified-cat-item.active .unified-cat-bubble {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.28);
+      transform: scale(1.05);
+    }
+    .unified-cat-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 5px;
+      line-height: 1.25;
+      word-break: break-word;
+      white-space: normal;
+      text-align: center;
+      width: 100%;
+    }
+    .unified-cat-item.active .unified-cat-name {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
   </style>
 </head>
 <body>
@@ -1418,131 +1499,123 @@
   <!-- ================= 2. MAIN HOME SCREEN ================= -->
   <main id="screen-home" class="screen-view active">
 
-    <!-- Circular Story Category Strip (Like Meesho Image 17) -->
-        <!-- 1. Gender & Collection Bubbles (Meesho Style Image 2) -->
-    <div class="gender-bubble-strip">
-      <div class="gender-bubble-item active" id="gbub-all" onclick="filterByGender('all')">
-        <div class="gender-bubble-circle" style="background:#fdf4ff; border-color:var(--primary);">
-          <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); font-size:1.3rem;"></i>
+    <!-- 1. Single Unified Horizontal Scrollable Categories Strip (নো ডবল, পরিষ্কার স্ক্রলিং) -->
+    <div class="category-scroll-unified">
+      <div class="unified-cat-item active" id="ucat-all" onclick="filterByUnifiedCat('all', this)">
+        <div class="unified-cat-bubble">
+          <i class="fa-solid fa-wand-magic-sparkles" style="font-size:1.4rem; color:var(--primary);"></i>
         </div>
-        <div class="gender-bubble-label">সব কালেকশন</div>
+        <div class="unified-cat-name">সব কালেকশন</div>
       </div>
 
-      <div class="gender-bubble-item" id="gbub-women" onclick="filterByGender('women')">
-        <div class="gender-bubble-circle">
+      <div class="unified-cat-item" id="ucat-women" onclick="filterByUnifiedCat('women', this)">
+        <div class="unified-cat-bubble">
           <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70" alt="Women">
         </div>
-        <div class="gender-bubble-label">👩 Women (শাড়ি ও কুর্তি)</div>
+        <div class="unified-cat-name">👩 Women</div>
       </div>
 
-      <div class="gender-bubble-item" id="gbub-girls" onclick="filterByGender('girls')">
-        <div class="gender-bubble-circle">
+      <div class="unified-cat-item" id="ucat-girls" onclick="filterByUnifiedCat('girls', this)">
+        <div class="unified-cat-bubble">
           <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70" alt="Girls">
         </div>
-        <div class="gender-bubble-label">👧 Girls (ফ্রক ও লেহেঙ্গা)</div>
+        <div class="unified-cat-name">👧 Girls ফ্রক</div>
       </div>
 
-      <div class="gender-bubble-item" id="gbub-saree" onclick="filterByGender('saree')">
-        <div class="gender-bubble-circle">
-          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=160&auto=format&fit=crop&q=70" alt="Sarees">
+      <div class="unified-cat-item" id="ucat-jamdani" onclick="filterByUnifiedCat('jamdani', this)">
+        <div class="unified-cat-bubble">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70" alt="Jamdani">
         </div>
-        <div class="gender-bubble-label">🥻 শাড়ির ভাণ্ডার</div>
+        <div class="unified-cat-name">ঢাকাই জামদানি</div>
       </div>
 
-      <div class="gender-bubble-item" id="gbub-jewel" onclick="filterByGender('jewel')">
-        <div class="gender-bubble-circle">
+      <div class="unified-cat-item" id="ucat-silk" onclick="filterByUnifiedCat('silk', this)">
+        <div class="unified-cat-bubble">
+          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=160&auto=format&fit=crop&q=70" alt="Silk">
+        </div>
+        <div class="unified-cat-name">সফট সিল্ক</div>
+      </div>
+
+      <div class="unified-cat-item" id="ucat-tant" onclick="filterByUnifiedCat('tant', this)">
+        <div class="unified-cat-bubble">
+          <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=160&auto=format&fit=crop&q=70" alt="Tant">
+        </div>
+        <div class="unified-cat-name">সুতি তাঁত</div>
+      </div>
+
+      <div class="unified-cat-item" id="ucat-kurti" onclick="filterByUnifiedCat('kurti', this)">
+        <div class="unified-cat-bubble">
+          <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=160&auto=format&fit=crop&q=70" alt="Kurti">
+        </div>
+        <div class="unified-cat-name">কুর্তি ও সেট</div>
+      </div>
+
+      <div class="unified-cat-item" id="ucat-jewel" onclick="filterByUnifiedCat('jewel', this)">
+        <div class="unified-cat-bubble">
           <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70" alt="Jewels">
         </div>
-        <div class="gender-bubble-label">💎 গহনা ও অ্যাক্সেসরিজ</div>
+        <div class="unified-cat-name">গহনা ও চোকার</div>
+      </div>
+
+      <div class="unified-cat-item" id="ucat-bangles" onclick="filterByUnifiedCat('bangles', this)">
+        <div class="unified-cat-bubble">
+          <img src="https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=160&auto=format&fit=crop&q=70" alt="Bangles">
+        </div>
+        <div class="unified-cat-name">বালা ও চুড়ি</div>
       </div>
     </div>
 
-    <!-- 2. Urgency Sale Countdown Banner (Meesho Style Image 1) -->
-    <div class="urgency-countdown-banner">
+    <!-- 2. Urgency 2-Hour Flash Sale Countdown Banner (ঘড়ির টিকটিক ও অফার শেষ স্ট্যাটাস সহ) -->
+    <div class="urgency-countdown-banner" id="flashSaleBannerContainer">
       <div class="countdown-top-row">
         <div class="countdown-title">
           <i class="fa-solid fa-fire-flame-curved" style="color:#fef08a;"></i>
-          <span>PUJA MEGA SALE LIVE</span>
+          <span>FLASH SALE • স্পেশাল ২ ঘণ্টার মেগা অফার</span>
         </div>
-        <span class="countdown-discount-badge">UPTO ৭০% পর্যন্ত ছাড়</span>
+        <span class="countdown-discount-badge">UPTO ৭০% ছাড়</span>
       </div>
-      <div style="font-size:0.75rem; color:#fdf4ff; margin-bottom:4px; font-weight:600;">
-        আমতায় ২ ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:
+
+      <div style="font-size:0.76rem; color:#fdf4ff; margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px;" id="saleStatusSubtitle">
+        <i class="fa-regular fa-clock clock-tick-pulse"></i>
+        <span>আমতায় ২ ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>
       </div>
       
-      <!-- Live Realtime Timer -->
-      <div class="timer-boxes-row">
+      <!-- Live Realtime 2-Hour Timer Boxes Row -->
+      <div class="timer-boxes-row" id="saleTimerBoxesRow">
         <div class="timer-box">
-          <div class="timer-box-num" id="timerDays">02</div>
-          <div class="timer-box-lbl">দিন</div>
-        </div>
-        <span class="timer-colon">:</span>
-        <div class="timer-box">
-          <div class="timer-box-num" id="timerHours">14</div>
+          <div class="timer-box-num" id="timerHours">01</div>
           <div class="timer-box-lbl">ঘণ্টা</div>
         </div>
         <span class="timer-colon">:</span>
         <div class="timer-box">
-          <div class="timer-box-num" id="timerMinutes">35</div>
+          <div class="timer-box-num" id="timerMinutes">59</div>
           <div class="timer-box-lbl">মিনিট</div>
         </div>
         <span class="timer-colon">:</span>
         <div class="timer-box">
-          <div class="timer-box-num" id="timerSeconds">42</div>
+          <div class="timer-box-num" id="timerSeconds">45</div>
           <div class="timer-box-lbl">সেকেন্ড</div>
         </div>
         <div style="margin-left:auto;">
-          <button onclick="scrollToProducts()" style="background:#fef08a; color:#78350f; border:none; padding:7px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-            অর্ডার করুন ❯
+          <button type="button" onclick="scrollToProducts()" style="background:#fef08a; color:#78350f; border:none; padding:7px 14px; border-radius:20px; font-size:0.75rem; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:flex; align-items:center; gap:4px;">
+            <span>অর্ডার করুন</span> <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
           </button>
         </div>
       </div>
-    </div>
 
-    <div class="category-scroll">
-      <div class="cat-item active" onclick="filterByCategory('all')">
-        <div class="cat-bubble"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:1.4rem; color:var(--primary);"></i></div>
-        <div class="cat-name">সব কালেকশন</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('jamdani')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150&auto=format&fit=crop&q=60" alt="Jamdani"></div>
-        <div class="cat-name">জামদানি</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('silk')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=150&auto=format&fit=crop&q=60" alt="Silk"></div>
-        <div class="cat-name">সফট সিল্ক</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('tant')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=150&auto=format&fit=crop&q=60" alt="Tant"></div>
-        <div class="cat-name">সুতি তাঁত</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('necklace')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=150&auto=format&fit=crop&q=60" alt="Jewelry"></div>
-        <div class="cat-name">গহনা সেট</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('earrings')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=150&auto=format&fit=crop&q=60" alt="Earrings"></div>
-        <div class="cat-name">কানের দুল</div>
-      </div>
-      <div class="cat-item" onclick="filterByCategory('bangles')">
-        <div class="cat-bubble"><img src="https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=150&auto=format&fit=crop&q=60" alt="Bangles"></div>
-        <div class="cat-name">বালা ও চুড়ি</div>
+      <!-- Offer Expired Notice (সময় শেষ হলে দেখাবে) -->
+      <div id="saleExpiredNoticeBox" style="display:none; background:rgba(0,0,0,0.45); border:1px solid #fca5a5; border-radius:10px; padding:10px 12px; margin-top:6px; align-items:center; justify-content:space-between;">
+        <div style="font-size:0.78rem; font-weight:800; color:#fee2e2; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-hourglass-end" style="color:#f87171; font-size:1.1rem;"></i>
+          <span>এই অফারের সময় শেষ হয়ে গেছে!</span>
+        </div>
+        <button type="button" onclick="restartSaleOffer()" style="background:#fef08a; color:#78350f; border:none; padding:5px 12px; border-radius:14px; font-size:0.72rem; font-weight:800; cursor:pointer;">
+          <i class="fa-solid fa-rotate-right"></i> রিস্টার্ট করুন
+        </button>
       </div>
     </div>
 
-    <!-- Festive Sale Banner -->
-    <div class="sale-banner">
-      <div>
-        <span class="sale-tag">🎉 স্পেশাল উৎসব সেল</span>
-        <div class="sale-title">পুজো ও বিয়ের স্পেশাল শাড়ি</div>
-        <div style="font-size:0.75rem; margin-top:2px; opacity:0.9;">আমতায় মাত্র ২ ঘণ্টায় ফ্রি হোম ডেলিভারি!</div>
-      </div>
-      <div style="background:#fff; color:#9333ea; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:20px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-        UPTO ৬০% ছাড়
-      </div>
-    </div>
-
-    <!-- Refer & Earn Strip (Idea 2-c) -->
+    <!-- Refer & Earn Strip -->
     <div class="refer-strip" onclick="openReferModal()">
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:1.4rem;">🎁</span>
@@ -3235,31 +3308,97 @@
     // =========================================================
     // 1. MEESHO URGENCY SALE COUNTDOWN TIMER (ছবি ১)
     // =========================================================
+    let saleTimerInterval = null;
+
     function initSaleCountdown() {
-      const now = new Date();
-      // 2 days 14 hours 35 minutes target
-      const target = new Date(now.getTime() + (2 * 24 * 60 * 60 * 1000) + (14 * 60 * 60 * 1000) + (35 * 60 * 1000));
+      let saleEndTime = localStorage.getItem('nc_flash_sale_end');
+      const now = Date.now();
       
+      if (!saleEndTime) {
+        saleEndTime = now + (2 * 60 * 60 * 1000); // 2 Hours
+        localStorage.setItem('nc_flash_sale_end', saleEndTime);
+      } else {
+        saleEndTime = parseInt(saleEndTime, 10);
+      }
+
       function updateTimer() {
-        const cur = new Date();
-        let diff = target - cur;
-        if (diff <= 0) diff = 86400000;
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const m = Math.floor((diff / 1000 / 60) % 60);
+        const current = Date.now();
+        const diff = saleEndTime - current;
+
+        const timerRow = document.getElementById('saleTimerBoxesRow');
+        const expiredBox = document.getElementById('saleExpiredNoticeBox');
+        const statusLbl = document.getElementById('saleStatusSubtitle');
+
+        if (diff <= 0) {
+          // Offer expired!
+          if (timerRow) timerRow.style.display = 'none';
+          if (expiredBox) expiredBox.style.display = 'flex';
+          if (statusLbl) {
+            statusLbl.innerHTML = '<span style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-circle-exclamation"></i> অফারের সময় শেষ হয়ে গেছে! (Offer Expired)</span>';
+          }
+          return;
+        }
+
+        // Timer active
+        if (timerRow) timerRow.style.display = 'flex';
+        if (expiredBox) expiredBox.style.display = 'none';
+        if (statusLbl && !statusLbl.innerHTML.includes('clock-tick-pulse')) {
+          statusLbl.innerHTML = '<i class="fa-regular fa-clock clock-tick-pulse"></i> <span>আমতায় ২ ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>';
+        }
+
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff / (1000 * 60)) % 60);
         const s = Math.floor((diff / 1000) % 60);
 
-        const elD = document.getElementById('timerDays');
         const elH = document.getElementById('timerHours');
         const elM = document.getElementById('timerMinutes');
         const elS = document.getElementById('timerSeconds');
-        if (elD) elD.textContent = String(d).padStart(2, '0');
         if (elH) elH.textContent = String(h).padStart(2, '0');
         if (elM) elM.textContent = String(m).padStart(2, '0');
         if (elS) elS.textContent = String(s).padStart(2, '0');
       }
+
       updateTimer();
-      setInterval(updateTimer, 1000);
+      if (saleTimerInterval) clearInterval(saleTimerInterval);
+      saleTimerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function restartSaleOffer() {
+      const newEndTime = Date.now() + (2 * 60 * 60 * 1000); // Fresh 2 Hours
+      localStorage.setItem('nc_flash_sale_end', newEndTime);
+      const statusLbl = document.getElementById('saleStatusSubtitle');
+      if (statusLbl) {
+        statusLbl.innerHTML = '<i class="fa-regular fa-clock clock-tick-pulse"></i> <span>আমতায় ২ ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>';
+      }
+      initSaleCountdown();
+    }
+
+    function filterByUnifiedCat(catKey, element) {
+      document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
+      if (element) element.classList.add('active');
+
+      let filtered = [...products];
+      if (catKey === 'all') {
+        filtered = [...products];
+      } else if (catKey === 'women') {
+        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+      } else if (catKey === 'girls') {
+        filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
+      } else if (catKey === 'jamdani') {
+        filtered = products.filter(p => p.category === 'jamdani');
+      } else if (catKey === 'silk') {
+        filtered = products.filter(p => p.category === 'silk' || p.category === 'katan');
+      } else if (catKey === 'tant') {
+        filtered = products.filter(p => p.category === 'tant' || p.category === 'phulia');
+      } else if (catKey === 'kurti') {
+        filtered = products.filter(p => p.type === 'kurti' || p.category === 'kurti');
+      } else if (catKey === 'jewel') {
+        filtered = products.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles'].includes(p.category));
+      } else if (catKey === 'bangles') {
+        filtered = products.filter(p => p.category === 'bangles' || p.category === 'jewel');
+      }
+
+      renderProducts(filtered);
     }
 
     function scrollToProducts() {
@@ -3274,8 +3413,8 @@
 
     function filterByGender(gender) {
       currentGenderFilter = gender;
-      document.querySelectorAll('.gender-bubble-item').forEach(el => el.classList.remove('active'));
-      const activeBubble = document.getElementById(`gbub-${gender}`);
+      document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
+      const activeBubble = document.getElementById(`ucat-${gender}`);
       if (activeBubble) activeBubble.classList.add('active');
 
       let filtered = [...products];
@@ -4228,7 +4367,9 @@ ${estDeliveryStr}
     }
 
     function filterByCategory(cat) {
-      document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
+      const targetBubble = document.getElementById(`ucat-${cat}`);
+      if (targetBubble) targetBubble.classList.add('active');
       if (cat === 'all') {
         initBrandLogo();
     applyLanguage();
@@ -5813,4 +5954,4 @@ ${estDeliveryStr}
   </div>
 
 </body>
-            </html>
+  </html>
