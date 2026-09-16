@@ -4392,21 +4392,37 @@
     }
 
     function submitFinalOrder() {
-      if (cart.length === 0) {
-        alert("আপনার ব্যাগ ফাঁকা!");
+      if (!cart || cart.length === 0) {
+        cart = JSON.parse(localStorage.getItem('nc_cart') || '[]');
+      }
+      if (!cart || cart.length === 0) {
+        alert("আপনার ব্যাগ ফাঁকা! অনুগ্রহ করে শপিং ব্যাগে পণ্য যুক্ত করুন।");
         return;
       }
 
-      const name = checkoutAddress.name;
-      const phone = checkoutAddress.phone;
-      const addr = checkoutAddress.address;
-      const payMode = selectedPaymentMethodVal;
-      const isGift = document.getElementById('giftWrapCheck').checked;
+      // 1. Collect Customer Details reliably
+      const nameInput = document.getElementById('cust_name');
+      const phoneInput = document.getElementById('cust_phone');
+      const addrInput = document.getElementById('cust_addr');
 
+      const name = (nameInput && nameInput.value.trim()) || checkoutAddress.name || "গ্রাহক";
+      const phone = (phoneInput && phoneInput.value.trim()) || checkoutAddress.phone || "9239413517";
+      const addr = (addrInput && addrInput.value.trim()) || checkoutAddress.address || "আমতা, হাওড়া - ৭১১৪০১";
+      const payMode = selectedPaymentMethodVal || "UPI";
+      const isGift = document.getElementById('giftWrapCheck') ? document.getElementById('giftWrapCheck').checked : false;
+
+      // Update stored address
+      checkoutAddress.name = name;
+      checkoutAddress.phone = phone;
+      checkoutAddress.address = addr;
+
+      // 2. Calculate Final Amounts
       let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
       if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
-      const finalPrice = payMode === 'UPI' ? Math.max(0, subtotal - 38) : subtotal;
+      const isUpiDiscount = (payMode === 'UPI');
+      const finalPrice = isUpiDiscount ? Math.max(0, subtotal - 38) : subtotal;
 
+      // 3. Generate Order Record
       const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
       const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
       const estDeliveryStr = getEstimatedDeliveryDateString();
@@ -4422,12 +4438,17 @@
         paymentMode: payMode,
         isGift: isGift,
         estDelivery: estDeliveryStr,
-        status: "Order Placed"
+        status: "Order Placed",
+        reviewed: false
       };
 
-      orders.unshift(newOrder);
-      localStorage.setItem('nc_orders', JSON.stringify(orders));
+      // 4. Save to orders list in localStorage
+      let currentOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+      currentOrders.unshift(newOrder);
+      localStorage.setItem('nc_orders', JSON.stringify(currentOrders));
+      orders = currentOrders;
 
+      // 5. Automatic Stock Deduction
       cart.forEach(cItem => {
         const p = products.find(prod => prod.id === cItem.id);
         if (p) {
@@ -4439,27 +4460,67 @@
       });
       localStorage.setItem('nc_products', JSON.stringify(products));
 
-      const itemsText = cart.map((item, idx) => {
+      // 6. Build Comprehensive WhatsApp Invoice Text (100% complete details)
+      const itemsListText = cart.map((item, idx) => {
         const q = item.qty || 1;
         const sz = item.selectedSize || 'Free Size';
-        const retPolicy = item.returnChoice === 'defective' ? 'Defect Only (-₹10)' : 'All Returns';
-        return `${idx + 1}. ${item.title} (x${q})%0A   - সাইজ: ${sz} | পলিসি: ${retPolicy} | মূল্য: ₹${item.price * q}`;
-      }).join('%0A');
+        const retPolicy = (item.returnChoice === 'defective') ? 'Defect Only (₹১০ ছাড়)' : 'সব ধরণের রিটার্ন সুবিধা';
+        return `${idx + 1}. ${item.title}\n   • সাইজ: ${sz} | পরিমাণ: ${q} টি\n   • রিটার্ন পলিসি: ${retPolicy}\n   • মূল্য: ₹${item.price * q}`;
+      }).join('\n\n');
 
-      const payDesc = payMode === 'UPI' ? '📲 অনলাইন UPI (₹৩৮ অতিরিক্ত ছাড় সহ)' : '💵 Cash on Delivery (ক্যাশ অন ডেলিভারি)';
-      const giftText = isGift ? '%0A🎁 *উপহার প্যাকেজিং:* হ্যাঁ (ফ্রি গিফট বক্স ও কার্ড)' : '';
+      const payDesc = (payMode === 'UPI') ? '📲 অনলাইন পেমেন্ট (UPI / PhonePe / GPay) [₹৩৮ অতিরিক্ত ছাড় প্রাপ্ত]' : '💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)';
+      const giftNote = isGift ? '\n🎁 *উপহার প্যাকেজিং:* হ্যাঁ (স্পেশাল গিফট বক্স ও কার্ড)' : '';
 
-      const waInvoice = `*🛍️ নতুন অর্ডার - নিশা ক্রিয়েশনস (আমতা)*%0A━━━━━━━━━━━━━━━━━%0A🧾 *অর্ডার আইডি:* #${orderId}%0A📅 *তারিখ:* ${encodeURIComponent(dateStr)}%0A🚚 *সম্ভাব্য ডেলিভারি:* ${encodeURIComponent(estDeliveryStr)}%0A%0A👤 *গ্রাহকের নাম:* ${encodeURIComponent(name)}%0A📞 *মোবাইল:* ${phone}%0A📍 *আমতা ঠিকানা:* ${encodeURIComponent(addr)}%0A💳 *পেমেন্ট মোড:* ${encodeURIComponent(payDesc)}${giftText}%0A%0A👗 *অর্ডারকৃত শাড়ি/পোশাক:*%0A${itemsText}%0A%0A💰 *সর্বমোট প্রদেয় বিল:* ₹${finalPrice} (ফ্রি হোম ডেলিভারি)%0A━━━━━━━━━━━━━━━━━%0A🙏 *অর্ডারটি গ্রহণ করে বুকিং সম্পন্ন করুন।*`;
+      const fullWaInvoice = 
+`🛍️ *নতুন অর্ডার - নিশা ক্রিয়েশনস (আমতা)*
+━━━━━━━━━━━━━━━━━
+🧾 *অর্ডার আইডি:* #${orderId}
+📅 *তারিখ:* ${dateStr}
+🚚 *ডেলিভারি:* ${estDeliveryStr}
 
+👤 *কাস্টমার ডিটেইলস:*
+• নাম: ${name}
+• মোবাইল নম্বর: ${phone}
+• ডেলিভারি ঠিকানা: ${addr}
+
+👗 *অর্ডারকৃত শাড়ি / পোশাক:*
+${itemsListText}
+
+💳 *পেমেন্ট ও বিলিং:*
+• পেমেন্ট মোড: ${payDesc}${giftNote}
+💰 *সর্বমোট প্রদেয় বিল:* ₹${finalPrice} (ফ্রি হোম ডেলিভারি)
+━━━━━━━━━━━━━━━━━
+🙏 *অনুগ্রহ করে অর্ডারটি গ্রহণ করে বুকিং সম্পন্ন করুন।*`;
+
+      const targetBoutiquePhone = "919239413517";
+      const waUrl = "https://api.whatsapp.com/send?phone=" + targetBoutiquePhone + "&text=" + encodeURIComponent(fullWaInvoice);
+
+      // 7. Clear Cart & Close Cart Modal
       cart = [];
       localStorage.setItem('nc_cart', JSON.stringify(cart));
       updateCartBadge();
       closeCartModal();
 
-      alert(`🎉 অভিনন্দন! অর্ডার #${orderId} সফলভাবে গ্রহণ করা হয়েছে!
-${estDeliveryStr}
-এখন WhatsApp-এ ইনভয়েস পাঠানো হচ্ছে...`);
-      window.open(`https://wa.me/919239413517?text=${waInvoice}`, '_blank');
+      // 8. Update & Show Order Success Modal
+      const idEl = document.getElementById('successOrderId');
+      const totEl = document.getElementById('successOrderTotal');
+      const custEl = document.getElementById('successCustomerDetails');
+      const waLinkEl = document.getElementById('successWhatsAppLink');
+      const succModal = document.getElementById('orderSuccessModal');
+
+      if (idEl) idEl.textContent = `#${orderId}`;
+      if (totEl) totEl.textContent = `₹${finalPrice}`;
+      if (custEl) custEl.textContent = `👤 ${name} • 📞 ${phone} • 📍 ${addr}`;
+      if (waLinkEl) waLinkEl.href = waUrl;
+      if (succModal) succModal.style.display = 'flex';
+
+      // 9. Directly trigger WhatsApp without popup blockers
+      setTimeout(function() {
+        window.location.href = waUrl;
+      }, 500);
+
+      // Re-render orders screen
+      renderOrders();
     }
 
     const BOUTIQUE_PHONE = "919239413517"; // Official WhatsApp
@@ -5857,6 +5918,8 @@ ${estDeliveryStr}
       currentList.forEach((ord, ordIdx) => {
         const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
         const isDelivered = (ord.status === "Delivered");
+        const isOut = (ord.status === "Out for Delivery");
+        const isPacked = (ord.status === "Packed");
         const isReviewed = (ord.reviewed === true);
         const currentRating = (ord.reviewData && ord.reviewData.rating) ? ord.reviewData.rating : (ord.quickRating || 0);
 
@@ -5865,9 +5928,12 @@ ${estDeliveryStr}
         const qtyText = firstItem.qty || 1;
         const payModeText = ord.paymentMode || 'COD';
 
-        // 1. Meesho 'How was the product?' 5-Star Card (ছবি ১)
-        let reviewWidgetHtml = '';
+        // =========================================================================
+        // CASE A: ORDER COMPLETED (Delivered) -> ছোট হয়ে যাবে, কমপ্লিট ও রিভিউ দেখাবে
+        // =========================================================================
         if (isDelivered) {
+          // Review Rating Widget
+          let reviewWidgetHtml = '';
           if (isReviewed || currentRating > 0) {
             let starsHtml = '';
             for (let i = 1; i <= 5; i++) {
@@ -5922,52 +5988,93 @@ ${estDeliveryStr}
               </div>
             `;
           }
-        }
 
-        // 2. Delivery Status: ONLY show Delivered when complete (No 4-step vertical timeline!)
-        let statusBannerHtml = '';
-        if (isDelivered) {
-          statusBannerHtml = `
-            <div class="meesho-status-detail-card">
-              <div class="meesho-status-title-row">
-                <div class="meesho-status-circle-icon">
-                  <i class="fa-solid fa-bolt"></i>
+          container.innerHTML += `
+            <div class="meesho-order-card">
+              <!-- Compact Product Meta Row -->
+              <div class="meesho-prod-meta-row">
+                <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="meesho-prod-thumb" alt="Product">
+                <div class="meesho-prod-meta-info">
+                  <div class="meesho-order-num-id">Order #${ord.id}</div>
+                  <div class="meesho-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
+                  <div class="meesho-prod-specs-line">
+                    <span>Size: ${sizeText}</span>
+                    <span>•</span>
+                    <span>Qty: ${qtyText}</span>
+                    <span>•</span>
+                    <span>${payModeText}</span>
+                    <span>•</span>
+                    <span style="font-weight:800; color:#0f172a;">₹${ord.total}</span>
+                  </div>
+                  <div class="meesho-easy-returns-tag">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> All issue easy returns
+                  </div>
                 </div>
-                <div>
-                  <div class="meesho-status-delivered-text">Delivered (ডেলিভারি সম্পন্ন)</div>
-                  <div class="meesho-status-date-sub">${ord.date}</div>
+                <div style="color:#16a34a; font-weight:800; font-size:0.75rem; background:#dcfce7; padding:4px 8px; border-radius:6px; white-space:nowrap;">
+                  <i class="fa-solid fa-circle-check"></i> কমপ্লিট
                 </div>
               </div>
-              <div class="meesho-yay-strip-box">
-                <i class="fa-solid fa-bolt" style="color:#059669;"></i>
-                <span>⚡ Yay! Your order was delivered successfully. (পার্সেলটি পৌঁছে গেছে)</span>
+
+              <!-- How was the product? 5-Star Rating Widget (ছবি ১) -->
+              ${reviewWidgetHtml}
+
+              <!-- Delivered Compact Banner (কোনো লম্বা দাগ বা টাইমলাইন নেই) -->
+              <div class="meesho-status-detail-card">
+                <div class="meesho-status-title-row">
+                  <div class="meesho-status-circle-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                  </div>
+                  <div>
+                    <div class="meesho-status-delivered-text">Delivered (অর্ডার কমপ্লিট)</div>
+                    <div class="meesho-status-date-sub">${ord.date}</div>
+                  </div>
+                </div>
+                <div class="meesho-yay-strip-box">
+                  <i class="fa-solid fa-bolt" style="color:#059669;"></i>
+                  <span>⚡ Yay! Your order was delivered successfully. (পার্সেলটি আপনার ঠিকানায় পৌঁছে গেছে)</span>
+                </div>
+                <div class="meesho-return-policy-footer">
+                  <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
+                  <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="alert('নিশা ক্রিয়েশনসের ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ পলিসি উপলব্ধ।')">KNOW MORE</span>
+                </div>
               </div>
-              <div class="meesho-return-policy-footer">
-                <span>৭ দিনে সহজ এক্সচেঞ্জ ও রিটার্ন পলিসি</span>
-                <span style="color:var(--primary); font-weight:800; cursor:pointer;" onclick="alert('নিশা ক্রিয়েশনসের ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ পলিসি উপলব্ধ।')">KNOW MORE</span>
+
+              <!-- Compact Delivery Address -->
+              <div class="meesho-address-display-card">
+                <div class="meesho-addr-title-line">
+                  <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
+                  <span>Delivery Address (ডেলিভারি ঠিকানা)</span>
+                </div>
+                <div class="meesho-addr-name-bold">${ord.name || 'Saheb Ghanti'}</div>
+                <div class="meesho-addr-full-text">${ord.address || 'Amta Chandni, আমতা, হাওড়া - ৭১১৪০১'}</div>
+                <div class="meesho-addr-phone-line">📞 ${ord.phone || '9239413517'}</div>
+              </div>
+
+              <!-- Action Buttons Footer -->
+              <div class="meesho-actions-footer-bar">
+                <a href="tel:9239413517" class="meesho-action-link-btn">
+                  <i class="fa-solid fa-phone"></i> কল করুন
+                </a>
+                <a href="https://wa.me/919239413517?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' সম্পর্কে জানতে চাই।')}" target="_blank" class="meesho-action-link-btn wa">
+                  <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
               </div>
             </div>
           `;
-        } else {
-          let stepText = ord.status || 'Order Placed';
-          statusBannerHtml = `
-            <div style="padding:12px 14px; background:#f8fafc; border-bottom:1px solid #f1f5f9;">
-              <div style="display:flex; align-items:center; gap:8px; background:#fef3c7; border:1px solid #fde68a; padding:8px 12px; border-radius:8px; color:#92400e; font-size:0.78rem; font-weight:800;">
-                <i class="fa-solid fa-truck-ramp-box"></i>
-                <span>স্ট্যাটাস: ${stepText} (প্রসেসিং চলছে)</span>
-              </div>
-            </div>
-          `;
+          return;
         }
 
-        // 3. Complete Card
+        // =========================================================================
+        // CASE B: IN-PROGRESS ORDER (Order Placed / Packed / Out for Delivery)
+        // -> গ্রাহক অর্ডার ট্র্যাক করতে পারবে (৪-ধাপের লাইভ টাইমলাইন দৃশ্যমান)
+        // =========================================================================
         container.innerHTML += `
           <div class="meesho-order-card">
-            <!-- Product Meta Row -->
+            <!-- Product Header -->
             <div class="meesho-prod-meta-row">
               <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="meesho-prod-thumb" alt="Product">
               <div class="meesho-prod-meta-info">
-                <div class="meesho-order-num-id">Order #${ord.id}</div>
+                <div class="meesho-order-num-id">Order #${ord.id} • ${ord.date}</div>
                 <div class="meesho-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
                 <div class="meesho-prod-specs-line">
                   <span>Size: ${sizeText}</span>
@@ -5978,26 +6085,53 @@ ${estDeliveryStr}
                   <span>•</span>
                   <span style="font-weight:800; color:#0f172a;">₹${ord.total}</span>
                 </div>
-                <div class="meesho-easy-returns-tag">
-                  <i class="fa-solid fa-arrow-rotate-left"></i> All issue easy returns
+              </div>
+              <span style="background:#fef08a; color:#854d0e; font-size:0.72rem; font-weight:800; padding:4px 8px; border-radius:6px; white-space:nowrap;">
+                ${ord.status}
+              </span>
+            </div>
+
+            <!-- Live 4-Step Tracking Timeline (গ্রাহকের ট্র্যাকিং সুবিধা) -->
+            <div style="padding:14px; background:#ffffff; border-bottom:1px solid #f1f5f9;">
+              <div style="font-size:0.82rem; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-route" style="color:var(--primary);"></i>
+                <span>লাইভ অর্ডার ট্র্যাকিং (Order Tracking):</span>
+              </div>
+              
+              <div class="timeline" style="margin-left:8px;">
+                <div class="timeline-step completed">
+                  <div class="timeline-dot"><i class="fa-solid fa-check"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">১. অর্ডার গৃহীত হয়েছে</div>
+                  <div style="font-size:0.68rem; color:#64748b;">সিস্টেমে অর্ডার বুকিং ভেরিফাই হয়েছে</div>
+                </div>
+                <div class="timeline-step ${isPacked || isOut ? 'completed' : ''}">
+                  <div class="timeline-dot"><i class="fa-solid fa-box"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">২. প্যাকিং ও কোয়ালিটি চেক</div>
+                  <div style="font-size:0.68rem; color:#64748b;">নিশা ক্রিয়েশনস বুটিক দ্বারা নিখুঁতভাবে চেক করা হয়েছে</div>
+                </div>
+                <div class="timeline-step ${isOut ? 'completed' : ''}">
+                  <div class="timeline-dot"><i class="fa-solid fa-motorcycle"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">৩. ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)</div>
+                  <div style="font-size:0.68rem; color:#64748b;">আমতার ডেলিভারি পার্টনারের কাছে রয়েছে</div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot"><i class="fa-solid fa-house-chimney"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:#94a3b8;">৪. ডেলিভারি সম্পন্ন (Delivered)</div>
+                  <div style="font-size:0.68rem; color:#94a3b8;">পার্সেল আপনার ঠিকানায় পৌঁছাবে</div>
                 </div>
               </div>
-              <div style="color:#94a3b8; font-size:1rem;">
-                <i class="fa-solid fa-chevron-right"></i>
+
+              <!-- Estimated Delivery Strip -->
+              <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 12px; font-size:0.75rem; color:#15803d; font-weight:700; margin-top:8px;">
+                <i class="fa-solid fa-truck-fast"></i> ${ord.estDelivery || 'আমতায় ২ দিনের মধ্যে এক্সপ্রেস ডেলিভারি'}
               </div>
             </div>
 
-            <!-- How was the product? Review Box (ছবি ১) -->
-            ${reviewWidgetHtml}
-
-            <!-- Delivery Status Banner (অর্ডার কমপ্লিট হলে শুধু কমপ্লিট দেখাবে) -->
-            ${statusBannerHtml}
-
-            <!-- Delivery Address Card (ছবি ১) -->
+            <!-- Delivery Address Card -->
             <div class="meesho-address-display-card">
               <div class="meesho-addr-title-line">
                 <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-                <span>Delivery Address (ডেলিভারি ঠিকানা)</span>
+                <span>ডেলিভারি ঠিকানা</span>
               </div>
               <div class="meesho-addr-name-bold">${ord.name || 'Saheb Ghanti'}</div>
               <div class="meesho-addr-full-text">${ord.address || 'Amta Chandni, আমতা, হাওড়া - ৭১১৪০১'}</div>
@@ -6009,8 +6143,8 @@ ${estDeliveryStr}
               <a href="tel:9239413517" class="meesho-action-link-btn">
                 <i class="fa-solid fa-phone"></i> কল করুন
               </a>
-              <a href="https://wa.me/${BOUTIQUE_PHONE}?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' সম্পর্কে জানতে চাই।')}" target="_blank" class="meesho-action-link-btn wa">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              <a href="https://wa.me/919239413517?text=${encodeURIComponent('নমস্কার নিশা দিদি, আমার অর্ডার #' + ord.id + ' এর বর্তমান স্ট্যাটাস জানতে চাই।')}" target="_blank" class="meesho-action-link-btn wa">
+                <i class="fa-brands fa-whatsapp"></i> ট্র্যাকিং হেল্প
               </a>
             </div>
           </div>
@@ -6281,6 +6415,49 @@ ${estDeliveryStr}
       }
     }
   </script>
+
+    <!-- ================= ORDER SUCCESS & WHATSAPP DISPATCH MODAL ================= -->
+  <div id="orderSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:260; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; width:100%; max-width:420px; border-radius:20px; overflow:hidden; box-shadow:0 12px 35px rgba(0,0,0,0.3); text-align:center; animation:slideUp 0.25s ease-out;">
+      <div style="background:linear-gradient(135deg, #16a34a, #15803d); padding:24px 20px; color:#fff;">
+        <div style="width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto; font-size:2rem;">
+          🎉
+        </div>
+        <div style="font-size:1.25rem; font-weight:800;">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</div>
+        <div style="font-size:0.8rem; opacity:0.95; margin-top:2px;">নিশা ক্রিয়েশনস বুটিক • আমতা</div>
+      </div>
+
+      <div style="padding:20px;">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; margin-bottom:16px; text-align:left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.75rem; color:#64748b; font-weight:700;">অর্ডার আইডি:</span>
+            <span style="font-size:0.95rem; font-weight:800; color:var(--primary);" id="successOrderId">#NC-5019</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.75rem; color:#64748b; font-weight:700;">সর্বমোট প্রদেয় বিল:</span>
+            <span style="font-size:0.95rem; font-weight:800; color:#15803d;" id="successOrderTotal">₹0</span>
+          </div>
+          <div style="font-size:0.75rem; color:#64748b; margin-top:4px;" id="successCustomerDetails">
+            কাস্টমার: নাম ও ফোন নম্বর
+          </div>
+        </div>
+
+        <div style="font-size:0.78rem; color:#475569; margin-bottom:12px; font-weight:600;">
+          নিচে সবুজ বাটনে চাপ দিয়ে হোয়াটসঅ্যাপে অর্ডারের যাবতীয় বিবরণ পাঠিয়ে দিন:
+        </div>
+
+        <!-- Primary WhatsApp Button -->
+        <a id="successWhatsAppLink" href="#" style="width:100%; background:#25d366; color:#fff; text-decoration:none; padding:14px; border-radius:12px; font-weight:800; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(37,211,102,0.4); margin-bottom:10px;">
+          <i class="fa-brands fa-whatsapp" style="font-size:1.35rem;"></i> WhatsApp-এ অর্ডার বিবরণ পাঠান
+        </a>
+
+        <!-- Track Order Button -->
+        <button type="button" onclick="closeOrderSuccessModal(); showScreen('orders');" style="width:100%; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; padding:11px; border-radius:12px; font-weight:800; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <i class="fa-solid fa-truck-fast"></i> অর্ডার ট্র্যাক করুন (Track Order)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= DELIVERY COMPLETED 5-STAR REVIEW & PHOTO MODAL ================= -->
   <div id="deliveryReviewModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:250; align-items:center; justify-content:center; padding:16px;">
@@ -6648,4 +6825,4 @@ ${estDeliveryStr}
   </div>
 
 </body>
-  </html>
+      </html>
