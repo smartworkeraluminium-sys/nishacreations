@@ -4,7 +4,7 @@
    ========================================================================= */
 
 :root {
-      --primary: #9c27b0;        /* Meesho Signature Magenta */
+      --primary: #9c27b0;        /* Nisha Creations Signature Magenta */
       --primary-dark: #7b1fa2;
       --primary-light: #f3e5f5;
       --accent: #f59e0b;         /* Warm Gold for Sarees & Jewels */
@@ -17,7 +17,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #fdf4ff; color: #1e293b; padding-bottom: 75px; }
 
-    /* Top App Header (Meesho Style Image 17) */
+    /* Top App Header (Nisha Creations Style Image 17) */
     .app-header {
       background: #ffffff;
       position: sticky;
@@ -108,7 +108,7 @@
       font-weight: 600;
     }
 
-    /* Search Bar (Like Meesho Image 17) */
+    /* Search Bar (Like Nisha Creations Image 17) */
     .search-box-wrap {
       padding: 6px 14px 10px 14px;
     }
@@ -130,7 +130,7 @@
       color: #0f172a;
     }
 
-    /* Circular Story Category Strip (Like Meesho Image 17 & 21) */
+    /* Circular Story Category Strip (Like Nisha Creations Image 17 & 21) */
     .category-scroll {
       display: flex;
       overflow-x: auto;
@@ -183,7 +183,7 @@
       font-weight: 800;
     }
 
-    /* Sale Banner (Meesho Style Image 17) */
+    /* Sale Banner (Nisha Creations Style Image 17) */
     .sale-banner {
       background: linear-gradient(135deg, #c026d3, #9333ea);
       margin: 10px 14px;
@@ -250,7 +250,7 @@
       cursor: pointer;
     }
 
-    /* 2-Column Product Grid (Same as Meesho Image 17 & 20) */
+    /* 2-Column Product Grid (Same as Nisha Creations Image 17 & 20) */
     .product-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -271,7 +271,7 @@
     .product-img-wrap {
       position: relative;
       width: 100%;
-      padding-top: 125%; /* 4:5 Aspect Ratio like Meesho */
+      padding-top: 125%; /* 4:5 Aspect Ratio like Nisha Creations */
       background: #f8fafc;
       overflow: hidden;
     }
@@ -493,7 +493,7 @@
       margin-top: 16px;
     }
 
-    /* Customer Reviews Gallery (Like Meesho Image 19) */
+    /* Customer Reviews Gallery (Like Nisha Creations Image 19) */
     .review-photo-strip {
       display: flex;
       gap: 8px;
@@ -553,7 +553,7 @@
     .form-group label { display: block; font-size: 0.76rem; font-weight: 700; color: #334155; margin-bottom: 4px; }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; }
 
-    /* Categories Split Layout (Meesho Style - Images 1000028412 - 1000028415) */
+    /* Categories Split Layout (Nisha Creations Style - Images 1000028412 - 1000028415) */
     .cat-header {
       background: #ffffff;
       padding: 12px 16px;
@@ -772,7 +772,7 @@
     }
   
     /* ===================================================
-       MEESHO STYLES: GENDER BUBBLE, COUNTDOWN, SORT, FILTER, 
+       NISHA STYLES: GENDER BUBBLE, COUNTDOWN, SORT, FILTER, 
        SIZE & RETURN SELECTOR, 2-STEP CHECKOUT
        =================================================== */
     
@@ -969,7 +969,7 @@
       background: var(--primary);
     }
 
-    /* 4. Meesho 2-Column Split Filter Modal (ছবি 3) */
+    /* 4. Nisha Creations 2-Column Split Filter Modal (ছবি 3) */
     .filter-modal-sheet {
       position: fixed;
       inset: 0;
@@ -1093,7 +1093,7 @@
       box-shadow: 0 1px 4px rgba(156, 39, 176, 0.15);
     }
 
-    /* Meesho Smart Return Choice Cards */
+    /* Nisha Creations Smart Return Choice Cards */
     .return-choice-container {
       margin-top: 14px;
       padding-top: 12px;
@@ -1166,7 +1166,7 @@
       line-height: 1.35;
     }
 
-    /* 6. Meesho 2-Step Checkout Wizard (ছবি 5 ও 6) */
+    /* 6. Nisha Creations 2-Step Checkout Wizard (ছবি 5 ও 6) */
     .checkout-step-nav {
       display: flex;
       background: #faf5ff;
@@ -1205,7 +1205,7 @@
       color: #fff;
     }
 
-    /* Meesho Top Wave Offer Ribbon */
+    /* Nisha Creations Top Wave Offer Ribbon */
     .top-offer-wave-ribbon {
       background: linear-gradient(90deg, #15803d, #16a34a);
       color: #ffffff;
@@ -1269,7 +1269,7 @@
       color: #16a34a;
     }
 
-    /* Payment Option Card (Meesho Image 6) */
+    /* Payment Option Card (Nisha Creations Image 6) */
     .payment-option-card {
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
@@ -1404,9 +1404,9 @@
 
   
     /* ===================================================
-       MEESHO ORDER DETAILS & MY ORDERS (ছবি 1 ও 2 হুবহু ডিজাইন)
+       NISHA ORDER DETAILS & MY ORDERS (ছবি 1 ও 2 হুবহু ডিজাইন)
        =================================================== */
-    .meesho-order-card {
+    .nisha-order-card {
       background: #ffffff;
       border-radius: 14px;
       border: 1px solid #e2e8f0;
@@ -1414,7 +1414,7 @@
       overflow: hidden;
       box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     }
-    .meesho-order-top-row {
+    .nisha-order-top-row {
       padding: 14px;
       display: flex;
       gap: 12px;
@@ -1422,7 +1422,7 @@
       border-bottom: 1px solid #f1f5f9;
       position: relative;
     }
-    .meesho-order-img {
+    .nisha-order-img {
       width: 64px;
       height: 64px;
       border-radius: 8px;
@@ -1430,17 +1430,17 @@
       border: 1px solid #e2e8f0;
       flex-shrink: 0;
     }
-    .meesho-order-info {
+    .nisha-order-info {
       flex: 1;
       min-width: 0;
     }
-    .meesho-order-id-num {
+    .nisha-order-id-num {
       font-size: 0.72rem;
       font-weight: 700;
       color: #64748b;
       margin-bottom: 2px;
     }
-    .meesho-order-prod-title {
+    .nisha-order-prod-title {
       font-size: 0.86rem;
       font-weight: 800;
       color: #0f172a;
@@ -1450,7 +1450,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .meesho-order-specs {
+    .nisha-order-specs {
       font-size: 0.74rem;
       color: #475569;
       display: flex;
@@ -1458,20 +1458,20 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .meesho-order-return-tag {
+    .nisha-order-return-tag {
       font-size: 0.68rem;
       color: #7e22ce;
       font-weight: 700;
       margin-top: 3px;
     }
 
-    /* Meesho 'How was the product?' 5-Star Card (ছবি 1) */
-    .meesho-how-product-box {
+    /* Nisha Creations 'How was the product?' 5-Star Card (ছবি 1) */
+    .nisha-how-product-box {
       background: #faf5ff;
       padding: 12px 14px;
       border-bottom: 1px solid #f3e8ff;
     }
-    .meesho-how-product-title {
+    .nisha-how-product-title {
       font-size: 0.82rem;
       font-weight: 800;
       color: #0f172a;
@@ -1480,14 +1480,14 @@
       align-items: center;
       justify-content: space-between;
     }
-    .meesho-star-rating-row {
+    .nisha-star-rating-row {
       display: flex;
       justify-content: space-around;
       max-width: 320px;
       margin: 0 auto;
       user-select: none;
     }
-    .meesho-star-item {
+    .nisha-star-item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1495,38 +1495,38 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .meesho-star-item:active { transform: scale(0.9); }
-    .meesho-star-item i {
+    .nisha-star-item:active { transform: scale(0.9); }
+    .nisha-star-item i {
       font-size: 1.7rem;
       color: #cbd5e1;
       transition: color 0.15s;
     }
-    .meesho-star-item.active i {
+    .nisha-star-item.active i {
       color: #f59e0b;
     }
-    .meesho-star-caption {
+    .nisha-star-caption {
       font-size: 0.6rem;
       font-weight: 600;
       color: #64748b;
     }
-    .meesho-star-item.active .meesho-star-caption {
+    .nisha-star-item.active .nisha-star-caption {
       color: #d97706;
       font-weight: 700;
     }
 
-    /* Meesho Delivered Status Banner (ছবি 1) */
-    .meesho-deliv-status-card {
+    /* Nisha Creations Delivered Status Banner (ছবি 1) */
+    .nisha-deliv-status-card {
       padding: 12px 14px;
       border-bottom: 1px solid #f1f5f9;
       background: #ffffff;
     }
-    .meesho-deliv-header-line {
+    .nisha-deliv-header-line {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
     }
-    .meesho-deliv-green-circle {
+    .nisha-deliv-green-circle {
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -1538,17 +1538,17 @@
       font-size: 0.95rem;
       flex-shrink: 0;
     }
-    .meesho-deliv-main-label {
+    .nisha-deliv-main-label {
       font-size: 0.88rem;
       font-weight: 800;
       color: #15803d;
     }
-    .meesho-deliv-date-sub {
+    .nisha-deliv-date-sub {
       font-size: 0.72rem;
       color: #64748b;
       font-weight: 600;
     }
-    .meesho-yay-badge {
+    .nisha-yay-badge {
       background: #ecfdf5;
       border-radius: 8px;
       padding: 8px 12px;
@@ -1560,7 +1560,7 @@
       gap: 6px;
       margin-bottom: 6px;
     }
-    .meesho-return-guarantee-line {
+    .nisha-return-guarantee-line {
       font-size: 0.7rem;
       color: #64748b;
       display: flex;
@@ -1568,13 +1568,13 @@
       justify-content: space-between;
     }
 
-    /* Meesho In-Progress Status Banner */
-    .meesho-progress-status-card {
+    /* Nisha Creations In-Progress Status Banner */
+    .nisha-progress-status-card {
       padding: 12px 14px;
       border-bottom: 1px solid #f1f5f9;
       background: #f8fafc;
     }
-    .meesho-progress-pill {
+    .nisha-progress-pill {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1587,13 +1587,13 @@
       font-weight: 800;
     }
 
-    /* Meesho Delivery Address Section (ছবি 1) */
-    .meesho-address-card-box {
+    /* Nisha Creations Delivery Address Section (ছবি 1) */
+    .nisha-address-card-box {
       padding: 12px 14px;
       border-bottom: 1px solid #f1f5f9;
       background: #fafafa;
     }
-    .meesho-addr-heading {
+    .nisha-addr-heading {
       font-size: 0.78rem;
       font-weight: 800;
       color: #1e293b;
@@ -1602,31 +1602,31 @@
       gap: 6px;
       margin-bottom: 4px;
     }
-    .meesho-addr-user-name {
+    .nisha-addr-user-name {
       font-size: 0.82rem;
       font-weight: 800;
       color: #0f172a;
     }
-    .meesho-addr-address-text {
+    .nisha-addr-address-text {
       font-size: 0.74rem;
       color: #64748b;
       line-height: 1.35;
       margin: 2px 0 4px 0;
     }
-    .meesho-addr-phone-text {
+    .nisha-addr-phone-text {
       font-size: 0.76rem;
       font-weight: 700;
       color: #334155;
     }
 
     /* Action Buttons Row */
-    .meesho-order-action-btns {
+    .nisha-order-action-btns {
       padding: 10px 14px;
       display: flex;
       gap: 8px;
       background: #ffffff;
     }
-    .meesho-order-btn {
+    .nisha-order-btn {
       flex: 1;
       padding: 8px;
       border-radius: 8px;
@@ -1642,7 +1642,7 @@
       color: #334155;
       text-decoration: none;
     }
-    .meesho-order-btn.wa {
+    .nisha-order-btn.wa {
       background: #25d366;
       color: #ffffff;
       border-color: #25d366;
@@ -1650,16 +1650,16 @@
 
   
     /* ===================================================
-       100% MEESHO ORDER DETAILS & MY ORDERS STYLES (ছবি 1 ও 2)
+       100% NISHA ORDER DETAILS & MY ORDERS STYLES (ছবি 1 ও 2)
        =================================================== */
-    .meesho-orders-container {
+    .nisha-orders-container {
       padding: 12px 14px 75px 14px;
       max-width: 540px;
       margin: 0 auto;
     }
     
     /* Top Header Bar */
-    .meesho-orders-header-bar {
+    .nisha-orders-header-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1667,7 +1667,7 @@
       border-bottom: 1px solid #f1f5f9;
       margin-bottom: 14px;
     }
-    .meesho-orders-title-left {
+    .nisha-orders-title-left {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -1676,7 +1676,7 @@
       color: #0f172a;
       letter-spacing: -0.2px;
     }
-    .meesho-help-btn {
+    .nisha-help-btn {
       color: var(--primary);
       text-decoration: none;
       font-size: 0.8rem;
@@ -1690,7 +1690,7 @@
     }
 
     /* Main Order Card */
-    .meesho-order-card {
+    .nisha-order-card {
       background: #ffffff;
       border-radius: 14px;
       border: 1px solid #e2e8f0;
@@ -1699,19 +1699,19 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.04);
       transition: box-shadow 0.2s ease;
     }
-    .meesho-order-card:hover {
+    .nisha-order-card:hover {
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
 
     /* Product Meta Row */
-    .meesho-prod-meta-row {
+    .nisha-prod-meta-row {
       padding: 14px;
       display: flex;
       gap: 12px;
       align-items: center;
       border-bottom: 1px solid #f1f5f9;
     }
-    .meesho-prod-thumb {
+    .nisha-prod-thumb {
       width: 68px;
       height: 68px;
       border-radius: 10px;
@@ -1720,17 +1720,17 @@
       flex-shrink: 0;
       background: #f8fafc;
     }
-    .meesho-prod-meta-info {
+    .nisha-prod-meta-info {
       flex: 1;
       min-width: 0;
     }
-    .meesho-order-num-id {
+    .nisha-order-num-id {
       font-size: 0.72rem;
       font-weight: 700;
       color: #64748b;
       margin-bottom: 2px;
     }
-    .meesho-prod-name-title {
+    .nisha-prod-name-title {
       font-size: 0.88rem;
       font-weight: 800;
       color: #0f172a;
@@ -1740,7 +1740,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .meesho-prod-specs-line {
+    .nisha-prod-specs-line {
       font-size: 0.74rem;
       color: #475569;
       display: flex;
@@ -1748,7 +1748,7 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .meesho-easy-returns-tag {
+    .nisha-easy-returns-tag {
       font-size: 0.68rem;
       color: #7e22ce;
       font-weight: 700;
@@ -1758,24 +1758,24 @@
       gap: 4px;
     }
 
-    /* Meesho 'How was the product?' Card (ছবি 1 হুবহু) */
-    .meesho-review-card-box {
+    /* Nisha Creations 'How was the product?' Card (ছবি 1 হুবহু) */
+    .nisha-review-card-box {
       background: #ffffff;
       padding: 14px 16px;
       border-bottom: 1px solid #f1f5f9;
     }
-    .meesho-review-card-top {
+    .nisha-review-card-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
     }
-    .meesho-review-heading {
+    .nisha-review-heading {
       font-size: 0.84rem;
       font-weight: 800;
       color: #0f172a;
     }
-    .meesho-add-feedback-link {
+    .nisha-add-feedback-link {
       font-size: 0.75rem;
       font-weight: 800;
       color: var(--primary);
@@ -1785,14 +1785,14 @@
       align-items: center;
       gap: 3px;
     }
-    .meesho-stars-container {
+    .nisha-stars-container {
       display: flex;
       justify-content: space-between;
       max-width: 320px;
       margin: 4px auto 0 auto;
       user-select: none;
     }
-    .meesho-star-column {
+    .nisha-star-column {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1800,38 +1800,38 @@
       cursor: pointer;
       transition: transform 0.15s ease;
     }
-    .meesho-star-column:active { transform: scale(0.9); }
-    .meesho-star-column i {
+    .nisha-star-column:active { transform: scale(0.9); }
+    .nisha-star-column i {
       font-size: 1.85rem;
       color: #cbd5e1;
       transition: color 0.15s;
     }
-    .meesho-star-column.active i {
+    .nisha-star-column.active i {
       color: #f59e0b;
     }
-    .meesho-star-label-text {
+    .nisha-star-label-text {
       font-size: 0.62rem;
       font-weight: 600;
       color: #64748b;
     }
-    .meesho-star-column.active .meesho-star-label-text {
+    .nisha-star-column.active .nisha-star-label-text {
       color: #d97706;
       font-weight: 800;
     }
 
-    /* Meesho Delivered Status Banner (ছবি 1) */
-    .meesho-status-detail-card {
+    /* Nisha Creations Delivered Status Banner (ছবি 1) */
+    .nisha-status-detail-card {
       padding: 14px;
       border-bottom: 1px solid #f1f5f9;
       background: #ffffff;
     }
-    .meesho-status-title-row {
+    .nisha-status-title-row {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
     }
-    .meesho-status-circle-icon {
+    .nisha-status-circle-icon {
       width: 34px;
       height: 34px;
       border-radius: 50%;
@@ -1843,17 +1843,17 @@
       font-size: 1rem;
       flex-shrink: 0;
     }
-    .meesho-status-delivered-text {
+    .nisha-status-delivered-text {
       font-size: 0.9rem;
       font-weight: 800;
       color: #15803d;
     }
-    .meesho-status-date-sub {
+    .nisha-status-date-sub {
       font-size: 0.72rem;
       color: #64748b;
       font-weight: 600;
     }
-    .meesho-yay-strip-box {
+    .nisha-yay-strip-box {
       background: #ecfdf5;
       border-radius: 8px;
       padding: 9px 12px;
@@ -1865,7 +1865,7 @@
       gap: 6px;
       margin-bottom: 8px;
     }
-    .meesho-return-policy-footer {
+    .nisha-return-policy-footer {
       font-size: 0.72rem;
       color: #64748b;
       display: flex;
@@ -1873,13 +1873,13 @@
       justify-content: space-between;
     }
 
-    /* Meesho Delivery Address Box (ছবি 1) */
-    .meesho-address-display-card {
+    /* Nisha Creations Delivery Address Box (ছবি 1) */
+    .nisha-address-display-card {
       padding: 14px;
       border-bottom: 1px solid #f1f5f9;
       background: #fbfbfb;
     }
-    .meesho-addr-title-line {
+    .nisha-addr-title-line {
       font-size: 0.8rem;
       font-weight: 800;
       color: #1e293b;
@@ -1888,31 +1888,31 @@
       gap: 6px;
       margin-bottom: 4px;
     }
-    .meesho-addr-name-bold {
+    .nisha-addr-name-bold {
       font-size: 0.85rem;
       font-weight: 800;
       color: #0f172a;
     }
-    .meesho-addr-full-text {
+    .nisha-addr-full-text {
       font-size: 0.74rem;
       color: #475569;
       line-height: 1.4;
       margin: 3px 0;
     }
-    .meesho-addr-phone-line {
+    .nisha-addr-phone-line {
       font-size: 0.76rem;
       font-weight: 700;
       color: #334155;
     }
 
     /* Action Buttons */
-    .meesho-actions-footer-bar {
+    .nisha-actions-footer-bar {
       padding: 10px 14px;
       display: flex;
       gap: 10px;
       background: #ffffff;
     }
-    .meesho-action-link-btn {
+    .nisha-action-link-btn {
       flex: 1;
       padding: 9px;
       border-radius: 8px;
@@ -1928,7 +1928,7 @@
       color: #334155;
       text-decoration: none;
     }
-    .meesho-action-link-btn.wa {
+    .nisha-action-link-btn.wa {
       background: #25d366;
       color: #ffffff;
       border-color: #25d366;
@@ -1936,28 +1936,28 @@
 
   
     /* ===================================================
-       FLIPKART / MEESHO ACCOUNT SCREEN (ছবি 1 হুবহু ডিজাইন)
+       NISHA BOUTIQUE / NISHA ACCOUNT SCREEN (ছবি 1 হুবহু ডিজাইন)
        =================================================== */
-    .fk-account-container {
+    .nc-account-container {
       padding: 14px 16px 80px 16px;
       max-width: 540px;
       margin: 0 auto;
     }
     
     /* 1. Top Greeting Header */
-    .fk-account-top-header {
+    .nc-account-top-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 14px;
     }
-    .fk-greeting-title {
+    .nc-greeting-title {
       font-size: 1.25rem;
       font-weight: 800;
       color: #0f172a;
       letter-spacing: -0.3px;
     }
-    .fk-help-pill-btn {
+    .nc-help-pill-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -1973,7 +1973,7 @@
     }
 
     /* 2. SuperCoin / Nisha Coin Balance Card */
-    .fk-coin-balance-card {
+    .nc-coin-balance-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 14px;
@@ -1981,18 +1981,18 @@
       margin-bottom: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .fk-coin-top-row {
+    .nc-coin-top-row {
       padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .fk-coin-label {
+    .nc-coin-label {
       font-size: 0.88rem;
       font-weight: 800;
       color: #0f172a;
     }
-    .fk-coin-pill {
+    .nc-coin-pill {
       display: flex;
       align-items: center;
       gap: 5px;
@@ -2004,7 +2004,7 @@
       font-weight: 800;
       color: var(--primary);
     }
-    .fk-coin-sub-strip {
+    .nc-coin-sub-strip {
       background: #faf5ff;
       padding: 9px 16px;
       font-size: 0.74rem;
@@ -2018,13 +2018,13 @@
     }
 
     /* 3. The Two Iconic Big Action Buttons (Orders & Wishlist) */
-    .fk-action-buttons-grid {
+    .nc-action-buttons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 18px;
     }
-    .fk-action-card-btn {
+    .nc-action-card-btn {
       background: #ffffff;
       border: 1.5px solid #e2e8f0;
       border-radius: 14px;
@@ -2038,32 +2038,32 @@
       transition: all 0.2s ease;
       user-select: none;
     }
-    .fk-action-card-btn:active {
+    .nc-action-card-btn:active {
       transform: scale(0.97);
       background: #fdf4ff;
       border-color: var(--primary);
     }
-    .fk-action-card-btn i {
+    .nc-action-card-btn i {
       font-size: 1.35rem;
       color: #0284c7;
     }
-    .fk-action-card-btn.wishlist-btn i {
+    .nc-action-card-btn.wishlist-btn i {
       color: #e11d48;
     }
-    .fk-action-btn-text {
+    .nc-action-btn-text {
       font-size: 0.95rem;
       font-weight: 800;
       color: #1e293b;
     }
 
     /* 4. Finance & Boutique Specials */
-    .fk-section-title {
+    .nc-section-title {
       font-size: 0.95rem;
       font-weight: 800;
       color: #0f172a;
       margin-bottom: 10px;
     }
-    .fk-options-list-card {
+    .nc-options-list-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 14px;
@@ -2071,7 +2071,7 @@
       margin-bottom: 18px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .fk-option-row-item {
+    .nc-option-row-item {
       padding: 14px 16px;
       display: flex;
       align-items: center;
@@ -2080,13 +2080,13 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .fk-option-row-item:last-child {
+    .nc-option-row-item:last-child {
       border-bottom: none;
     }
-    .fk-option-row-item:active {
+    .nc-option-row-item:active {
       background: #f8fafc;
     }
-    .fk-option-icon-box {
+    .nc-option-icon-box {
       width: 38px;
       height: 38px;
       border-radius: 10px;
@@ -2096,30 +2096,30 @@
       font-size: 1.2rem;
       flex-shrink: 0;
     }
-    .fk-option-info {
+    .nc-option-info {
       flex: 1;
       min-width: 0;
     }
-    .fk-option-title {
+    .nc-option-title {
       font-size: 0.86rem;
       font-weight: 800;
       color: #0f172a;
       margin-bottom: 2px;
     }
-    .fk-option-desc {
+    .nc-option-desc {
       font-size: 0.72rem;
       color: #64748b;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .fk-option-chevron {
+    .nc-option-chevron {
       color: #94a3b8;
       font-size: 0.8rem;
     }
 
     /* 5. Recently Viewed Stores / Collections Strip */
-    .fk-recent-stores-strip {
+    .nc-recent-stores-strip {
       display: flex;
       gap: 12px;
       overflow-x: auto;
@@ -2127,15 +2127,15 @@
       padding-bottom: 4px;
       margin-bottom: 18px;
     }
-    .fk-recent-stores-strip::-webkit-scrollbar { display: none; }
-    .fk-recent-store-item {
+    .nc-recent-stores-strip::-webkit-scrollbar { display: none; }
+    .nc-recent-store-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       min-width: 76px;
       cursor: pointer;
     }
-    .fk-recent-store-thumb {
+    .nc-recent-store-thumb {
       width: 70px;
       height: 70px;
       border-radius: 12px;
@@ -2144,7 +2144,7 @@
       background: #f8fafc;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
-    .fk-recent-store-label {
+    .nc-recent-store-label {
       font-size: 0.7rem;
       font-weight: 700;
       color: #334155;
@@ -2154,7 +2154,7 @@
     }
 
     /* 6. Coupons & Offers Card */
-    .fk-coupons-card {
+    .nc-coupons-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 14px;
@@ -2166,7 +2166,7 @@
       margin-bottom: 18px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .fk-coupon-icon-circle {
+    .nc-coupon-icon-circle {
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -2178,12 +2178,12 @@
       font-size: 1.1rem;
       flex-shrink: 0;
     }
-    .fk-coupon-title {
+    .nc-coupon-title {
       font-size: 0.86rem;
       font-weight: 800;
       color: #0f172a;
     }
-    .fk-coupon-sub {
+    .nc-coupon-sub {
       font-size: 0.72rem;
       color: #64748b;
     }

@@ -80,9 +80,9 @@
 
     <!-- Search Box -->
     <div class="search-box-wrap">
-      <div class="search-input-box" onclick="openFlipkartSearch()" style="cursor:pointer;">
+      <div class="search-input-box" onclick="openBoutiqueSearch()" style="cursor:pointer;">
         <i class="fa-solid fa-magnifying-glass" style="color:var(--primary);"></i>
-        <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." readonly onclick="openFlipkartSearch()" style="cursor:pointer;">
+        <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." readonly onclick="openBoutiqueSearch()" style="cursor:pointer;">
         <i class="fa-solid fa-camera" style="color:#94a3b8;"></i>
       </div>
     </div>
@@ -235,25 +235,25 @@
     <div class="product-grid" id="productGridContainer"></div>
   </main>
 
-  <!-- ================= FLIPKART STYLE SEARCH RESULTS SCREEN (ছবি 2 হুবহু) ================= -->
+  <!-- ================= NISHA BOUTIQUE STYLE SEARCH RESULTS SCREEN (ছবি 2 হুবহু) ================= -->
   <div id="screen-search-results" class="screen-view" style="background:#f8fafc; min-height:100vh; padding-top:105px; padding-bottom:75px;">
     <!-- Fixed Top Header: ← Query | 🔍 🛒 (ছবি 1 অনুযায়ী তীর ও সার্চ হেডার সবসময় উপরে ফিক্সড থাকবে) -->
-    <div id="fkResultsFixedHeader" style="background:#ffffff; position:fixed; top:0; left:0; right:0; z-index:150; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div id="ncResultsFixedHeader" style="background:#ffffff; position:fixed; top:0; left:0; right:0; z-index:150; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
       <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px;">
-        <div style="display:flex; align-items:center; gap:12px; flex:1; cursor:pointer;" onclick="openFlipkartSearch(currentSearchQuery)">
+        <div style="display:flex; align-items:center; gap:12px; flex:1; cursor:pointer;" onclick="openBoutiqueSearch(currentSearchQuery)">
           <button type="button" onclick="event.stopPropagation(); showScreen('home');" style="background:transparent; border:none; font-size:1.25rem; color:#334155; cursor:pointer; padding:2px; display:flex; align-items:center;">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
           <div style="display:flex; flex-direction:column;">
-            <span id="fkResultsQueryTitle" style="font-size:1rem; font-weight:800; color:#0f172a; line-height:1.2;">Saree</span>
-            <span style="font-size:0.68rem; color:#64748b; font-weight:600;" id="t-fkTapToEdit">ট্যাপ করে পরিবর্তন করুন</span>
+            <span id="ncResultsQueryTitle" style="font-size:1rem; font-weight:800; color:#0f172a; line-height:1.2;">Saree</span>
+            <span style="font-size:0.68rem; color:#64748b; font-weight:600;" id="t-ncTapToEdit">ট্যাপ করে পরিবর্তন করুন</span>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:14px; font-size:1.15rem; color:#475569;">
-          <i class="fa-solid fa-magnifying-glass" onclick="openFlipkartSearch(currentSearchQuery)" style="cursor:pointer;" title="Search"></i>
+          <i class="fa-solid fa-magnifying-glass" onclick="openBoutiqueSearch(currentSearchQuery)" style="cursor:pointer;" title="Search"></i>
           <div style="position:relative; cursor:pointer;" onclick="openCartModal()" title="Cart">
             <i class="fa-solid fa-bag-shopping" style="color:var(--primary);"></i>
-            <span class="badge-count" id="fkResultsCartBadge">0</span>
+            <span class="badge-count" id="ncResultsCartBadge">0</span>
           </div>
         </div>
       </div>
@@ -269,29 +269,29 @@
           <i class="fa-solid fa-sliders" style="font-size:0.75rem; color:var(--primary);"></i> <span id="t-chipFilter">ফিল্টার</span>
         </button>
         <!-- Quick Chip: Budget under 500 -->
-        <button type="button" id="fkChipBudget" onclick="toggleFkQuickChip('budget')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
+        <button type="button" id="ncChipBudget" onclick="toggleBoutiqueQuickChip('budget')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
           ₹500 এর নিচে
         </button>
         <!-- Quick Chip: Silk / Katan -->
-        <button type="button" id="fkChipSilk" onclick="toggleFkQuickChip('silk')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
+        <button type="button" id="ncChipSilk" onclick="toggleBoutiqueQuickChip('silk')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
           সিল্ক ও কাতান
         </button>
         <!-- Quick Chip: Free Home Delivery -->
-        <button type="button" id="fkChipDelivery" onclick="toggleFkQuickChip('delivery')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
+        <button type="button" id="ncChipDelivery" onclick="toggleBoutiqueQuickChip('delivery')" style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid #cbd5e1; border-radius:18px; padding:6px 12px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer; white-space:nowrap;">
           আমতায় ফ্রি ডেলিভারি
         </button>
       </div>
     </div>
 
     <!-- Results Count Notice Strip (ছবি 2: saree-এর জন্য ফলাফল দেখানো হচ্ছে) -->
-    <div id="fkResultsNoticeStrip" style="background:#eff6ff; border-bottom:1px solid #dbeafe; padding:8px 14px; font-size:0.75rem; color:#1d4ed8; font-weight:700; display:flex; align-items:center; justify-content:space-between; margin-top:2px;">
-      <span id="fkResultsCountMsg">ফলাফল লোড হচ্ছে...</span>
-      <span style="font-size:0.7rem; color:#3b82f6; text-decoration:underline; cursor:pointer;" onclick="openFlipkartSearch('')" id="t-fkAllProductsLink">সব প্রোডাক্ট ➔</span>
+    <div id="ncResultsNoticeStrip" style="background:#eff6ff; border-bottom:1px solid #dbeafe; padding:8px 14px; font-size:0.75rem; color:#1d4ed8; font-weight:700; display:flex; align-items:center; justify-content:space-between; margin-top:2px;">
+      <span id="ncResultsCountMsg">ফলাফল লোড হচ্ছে...</span>
+      <span style="font-size:0.7rem; color:#3b82f6; text-decoration:underline; cursor:pointer;" onclick="openBoutiqueSearch('')" id="t-ncAllProductsLink">সব প্রোডাক্ট ➔</span>
     </div>
 
     <!-- 2-Column Product Grid Container (ছবি 2 হুবহু) -->
-    <div class="product-grid" id="fkSearchResultsGrid" style="padding:10px 12px;">
-      <!-- Populated dynamically by renderFkSearchResults() -->
+    <div class="product-grid" id="ncSearchResultsGrid" style="padding:10px 12px;">
+      <!-- Populated dynamically by renderBoutiqueSearchResults() -->
     </div>
   </div>
 
@@ -365,16 +365,16 @@
     </div>
   </div>
 
-  <!-- ================= 4. PRODUCT DETAIL PAGE (PDP) - FLIPKART STYLE (ছবি 1000028539 হুবহু) ================= -->
+  <!-- ================= 4. PRODUCT DETAIL PAGE (PDP) - NISHA BOUTIQUE STYLE (ছবি 1000028539 হুবহু) ================= -->
   <div id="screen-pdp" class="screen-view pdp-screen">
-    <!-- Flipkart Style PDP Header: ← | 🔍 Search for products | 🛒 (শুধু সার্চ বার উপরে থাকবে আর কিছু থাকবে না) -->
+    <!-- Nisha Boutique Style PDP Header: ← | 🔍 Search for products | 🛒 (শুধু সার্চ বার উপরে থাকবে আর কিছু থাকবে না) -->
     <div class="pdp-top-bar" style="background:#ffffff; display:flex; align-items:center; gap:10px; padding:10px 14px; position:sticky; top:0; z-index:120; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
       <button type="button" onclick="closePdpScreen()" style="background:transparent; border:none; font-size:1.25rem; color:#334155; cursor:pointer; padding:2px; display:flex; align-items:center; justify-content:center;">
         <i class="fa-solid fa-arrow-left"></i>
       </button>
 
       <!-- Search Bar in PDP Header -->
-      <div onclick="openFlipkartSearch()" style="flex:1; display:flex; align-items:center; background:#ffffff; border:1.5px solid #0284c7; border-radius:6px; padding:7px 12px; gap:8px; cursor:pointer; box-shadow:inset 0 1px 2px rgba(0,0,0,0.03);">
+      <div onclick="openBoutiqueSearch()" style="flex:1; display:flex; align-items:center; background:#ffffff; border:1.5px solid #0284c7; border-radius:6px; padding:7px 12px; gap:8px; cursor:pointer; box-shadow:inset 0 1px 2px rgba(0,0,0,0.03);">
         <i class="fa-solid fa-magnifying-glass" style="color:#0284c7; font-size:0.95rem;"></i>
         <span style="font-size:0.86rem; color:#64748b; font-weight:500;" id="t-pdpSearchPlaceholder">Search for products</span>
       </div>
@@ -442,7 +442,7 @@
           <!-- Populated by JavaScript -->
         </div>
       </div>
-      <!-- 4. Size Selection (Meesho Image 4) -->
+      <!-- 4. Size Selection (Nisha Creations Image 4) -->
       <div class="pdp-size-section">
         <div class="pdp-section-header" style="display:flex; justify-content:space-between; align-items:center;">
           <span id="t-pdpSelectSizeLbl">সাইজ নির্বাচন করুন (Select Size):</span>
@@ -456,11 +456,11 @@
         <div id="pdpCustomSizeNote" style="display:none; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:6px 10px; margin-top:8px; font-size:0.72rem; color:#475569;"></div>
       </div>
 
-      <!-- 5. Smart Return Choice Cards (Meesho Special - ছবি 4) -->
+      <!-- 5. Smart Return Choice Cards (Nisha Special - ছবি 4) -->
       <div class="return-choice-container">
         <div class="pdp-section-header">
           <span id="t-pdpReturnSecHeader">রিটার্ন পলিসি ও বিশেষ ছাড় নির্বাচন:</span>
-          <span style="font-size:0.7rem; color:var(--primary); font-weight:800;" id="t-pdpReturnSecBadge">Meesho স্পেশাল</span>
+          <span style="font-size:0.7rem; color:var(--primary); font-weight:800;" id="t-pdpReturnSecBadge">নিশা স্পেশাল</span>
         </div>
 
         <!-- Option 1: All Returns -->
@@ -551,15 +551,15 @@
     </div>
   </div>
 
-  <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Meesho Image 23 & 24) ================= -->
-  <div id="screen-orders" class="screen-view meesho-orders-container">
-    <!-- Meesho Style Top Header (ছবি 1 ও 2) -->
-    <div class="meesho-orders-header-bar">
-      <div class="meesho-orders-title-left">
+  <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Nisha Creations Image 23 & 24) ================= -->
+  <div id="screen-orders" class="screen-view nisha-orders-container">
+    <!-- Nisha Creations Style Top Header (ছবি 1 ও 2) -->
+    <div class="nisha-orders-header-bar">
+      <div class="nisha-orders-title-left">
         <button onclick="showScreen('home')" style="background:transparent; border:none; font-size:1.15rem; color:#475569; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
         <span id="t-ordersHeaderTitleTxt">MY ORDERS</span>
       </div>
-      <a href="tel:9239413517" class="meesho-help-btn">
+      <a href="tel:9239413517" class="nisha-help-btn">
         <i class="fa-solid fa-headset"></i> <span id="t-ordersHelpTxt">HELP</span>
       </a>
     </div>
@@ -569,35 +569,35 @@
   </div>
 
   <!-- ================= 5. COMPREHENSIVE CUSTOMER ACCOUNT & ORDERS HUB ================= -->
-  <!-- ================= 5. FLIPKART / MEESHO STYLE ACCOUNT SCREEN (ছবি 1 হুবহু) ================= -->
-  <div id="screen-customer-settings" class="screen-view fk-account-container">
+  <!-- ================= 5. NISHA BOUTIQUE / NISHA STYLE ACCOUNT SCREEN (ছবি 1 হুবহু) ================= -->
+  <div id="screen-customer-settings" class="screen-view nc-account-container">
     
     <!-- 1. Top Greeting Header (Hey, Saheb | Help) -->
-    <div class="fk-account-top-header">
-      <div class="fk-greeting-title" id="fkGreetingName">Hey, Saheb</div>
-      <a href="tel:9239413517" class="fk-help-pill-btn">
+    <div class="nc-account-top-header">
+      <div class="nc-greeting-title" id="ncGreetingName">Hey, Saheb</div>
+      <a href="tel:9239413517" class="nc-help-pill-btn">
         <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
         <span>Help</span>
       </a>
     </div>
 
     <!-- 2. SuperCoin / Nisha Coin Balance Card -->
-    <div class="fk-coin-balance-card">
-      <div class="fk-coin-top-row">
-        <span class="fk-coin-label" id="t-fkCoinLabel">Your SuperCoin balance</span>
-        <div class="fk-coin-pill">
+    <div class="nc-coin-balance-card">
+      <div class="nc-coin-top-row">
+        <span class="nc-coin-label" id="t-ncCoinLabel">Your SuperCoin balance</span>
+        <div class="nc-coin-pill">
           <span>🪙</span>
-          <span id="fkCoinBalanceNum">150</span>
+          <span id="ncCoinBalanceNum">150</span>
         </div>
       </div>
-      <div class="fk-coin-sub-strip" onclick="alert(currentLang === 'bn' ? 'নিশা ক্রিয়েশনসের প্রতিটি অর্ডারে আপনি অতিরিক্ত সুপারকয়েন পাবেন। 1টি কয়েন = ₹1 ছাড়!' : 'You get extra SuperCoins on every order. 1 Coin = ₹1 discount!')">
-        <span id="t-fkCoinSub">Extra SuperCoins on every order with Boutique Member</span>
+      <div class="nc-coin-sub-strip" onclick="alert(currentLang === 'bn' ? 'নিশা ক্রিয়েশনসের প্রতিটি অর্ডারে আপনি অতিরিক্ত সুপারকয়েন পাবেন। 1টি কয়েন = ₹1 ছাড়!' : 'You get extra SuperCoins on every order. 1 Coin = ₹1 discount!')">
+        <span id="t-ncCoinSub">Extra SuperCoins on every order with Boutique Member</span>
         <i class="fa-solid fa-chevron-right" style="font-size:0.75rem;"></i>
       </div>
     </div>
 
     <!-- 2B. Customer Profile Dedicated Language Settings Card -->
-    <div class="fk-options-list-card" style="padding:14px 16px; margin-bottom:12px;">
+    <div class="nc-options-list-card" style="padding:14px 16px; margin-bottom:12px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
         <div style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
           <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
@@ -616,122 +616,122 @@
     </div>
 
     <!-- 3. The Two Iconic Big Action Buttons (Orders & Wishlist) -->
-    <div class="fk-action-buttons-grid">
+    <div class="nc-action-buttons-grid">
       <!-- Orders Button -->
-      <div class="fk-action-card-btn" onclick="showScreen('orders')">
+      <div class="nc-action-card-btn" onclick="showScreen('orders')">
         <i class="fa-solid fa-box" style="color:#0284c7;"></i>
-        <span class="fk-action-btn-text">Orders</span>
+        <span class="nc-action-btn-text">Orders</span>
       </div>
 
       <!-- Wishlist Button (লাভ চিহ্ন) -->
-      <div class="fk-action-card-btn wishlist-btn" onclick="openWishlistScreen()">
+      <div class="nc-action-card-btn wishlist-btn" onclick="openWishlistScreen()">
         <i class="fa-solid fa-heart" style="color:#e11d48;"></i>
-        <span class="fk-action-btn-text">Wishlist (<span id="fkWishlistCountBadge">0</span>)</span>
+        <span class="nc-action-btn-text">Wishlist (<span id="ncWishlistCountBadge">0</span>)</span>
       </div>
     </div>
 
     <!-- 4. Finance & Boutique Specials (ছবি 1-এর Finance Options আদলে) -->
-    <div class="fk-section-title" id="t-fkFinanceTitle">Finance & Boutique Specials</div>
-    <div class="fk-options-list-card">
+    <div class="nc-section-title" id="t-ncFinanceTitle">Finance & Boutique Specials</div>
+    <div class="nc-options-list-card">
       <!-- Option 1: Refer & Earn -->
-      <div class="fk-option-row-item" onclick="openReferModal()">
-        <div class="fk-option-icon-box" style="background:#eff6ff; color:#2563eb;">
+      <div class="nc-option-row-item" onclick="openReferModal()">
+        <div class="nc-option-icon-box" style="background:#eff6ff; color:#2563eb;">
           <i class="fa-solid fa-sack-dollar"></i>
         </div>
-        <div class="fk-option-info">
-          <div class="fk-option-title" id="t-fkOpt1Title">রেফার ও আর্ন (Refer & Earn)</div>
-          <div class="fk-option-desc" id="t-fkOpt1Desc">পান ₹50 ক্যাশব্যাক | বান্ধবীদের সাথে শেয়ার করে ছাড় পান</div>
+        <div class="nc-option-info">
+          <div class="nc-option-title" id="t-ncOpt1Title">রেফার ও আর্ন (Refer & Earn)</div>
+          <div class="nc-option-desc" id="t-ncOpt1Desc">পান ₹50 ক্যাশব্যাক | বান্ধবীদের সাথে শেয়ার করে ছাড় পান</div>
         </div>
-        <i class="fa-solid fa-chevron-right fk-option-chevron"></i>
+        <i class="fa-solid fa-chevron-right nc-option-chevron"></i>
       </div>
 
       <!-- Option 2: Pre-Approved COD & Fast Delivery -->
-      <div class="fk-option-row-item" onclick="alert(currentLang === 'en' ? '100% Cash on Delivery & Fast 2-Hour Home Delivery in Amta!' : 'আমতা ও সংলগ্ন এলাকায় 100% ক্যাশ অন ডেলিভারি (COD) ও মাত্র 2 ঘণ্টায় হোম ডেলিভারি সুবিধা!')">
-        <div class="fk-option-icon-box" style="background:#faf5ff; color:#9333ea;">
+      <div class="nc-option-row-item" onclick="alert(currentLang === 'en' ? '100% Cash on Delivery & Fast 2-Hour Home Delivery in Amta!' : 'আমতা ও সংলগ্ন এলাকায় 100% ক্যাশ অন ডেলিভারি (COD) ও মাত্র 2 ঘণ্টায় হোম ডেলিভারি সুবিধা!')">
+        <div class="nc-option-icon-box" style="background:#faf5ff; color:#9333ea;">
           <i class="fa-solid fa-truck-fast"></i>
         </div>
-        <div class="fk-option-info">
-          <div class="fk-option-title" id="t-fkOpt2Title">আমতায় 2 ঘণ্টায় ফ্রি হোম ডেলিভারি</div>
-          <div class="fk-option-desc" id="t-fkOpt2Desc">100% ক্যাশ অন ডেলিভারি (COD) ও দ্রুত ডেলিভারি গ্যারান্টি</div>
+        <div class="nc-option-info">
+          <div class="nc-option-title" id="t-ncOpt2Title">আমতায় 2 ঘণ্টায় ফ্রি হোম ডেলিভারি</div>
+          <div class="nc-option-desc" id="t-ncOpt2Desc">100% ক্যাশ অন ডেলিভারি (COD) ও দ্রুত ডেলিভারি গ্যারান্টি</div>
         </div>
-        <i class="fa-solid fa-chevron-right fk-option-chevron"></i>
+        <i class="fa-solid fa-chevron-right nc-option-chevron"></i>
       </div>
 
       <!-- Option 3: Return & Quality Guarantee -->
-      <div class="fk-option-row-item" onclick="alert(currentLang === 'en' ? '7 Days easy return and exchange on every saree and dress at Nisha Creations!' : 'নিশা ক্রিয়েশনসে প্রতিটি শাড়ি ও কাপড়ে রয়েছে 7 দিনের সহজ রিটার্ন ও এক্সচেঞ্জ সুবিধা!')">
-        <div class="fk-option-icon-box" style="background:#f0fdf4; color:#16a34a;">
+      <div class="nc-option-row-item" onclick="alert(currentLang === 'en' ? '7 Days easy return and exchange on every saree and dress at Nisha Creations!' : 'নিশা ক্রিয়েশনসে প্রতিটি শাড়ি ও কাপড়ে রয়েছে 7 দিনের সহজ রিটার্ন ও এক্সচেঞ্জ সুবিধা!')">
+        <div class="nc-option-icon-box" style="background:#f0fdf4; color:#16a34a;">
           <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <div class="fk-option-info">
-          <div class="fk-option-title" id="t-fkOpt3Title">7 দিনের ইজি রিটার্ন ও এক্সচেঞ্জ</div>
-          <div class="fk-option-desc" id="t-fkOpt3Desc">খাঁটি ও জেনুইন ফেব্রিক গ্যারান্টি | কোনো ঝামেলা নেই</div>
+        <div class="nc-option-info">
+          <div class="nc-option-title" id="t-ncOpt3Title">7 দিনের ইজি রিটার্ন ও এক্সচেঞ্জ</div>
+          <div class="nc-option-desc" id="t-ncOpt3Desc">খাঁটি ও জেনুইন ফেব্রিক গ্যারান্টি | কোনো ঝামেলা নেই</div>
         </div>
-        <i class="fa-solid fa-chevron-right fk-option-chevron"></i>
+        <i class="fa-solid fa-chevron-right nc-option-chevron"></i>
       </div>
     </div>
 
     <!-- 5. সম্প্রতি দেখা কালেকশন (Recently Viewed Collections - ছবি 1 হুবহু) -->
-    <div class="fk-section-title" id="t-fkRecentTitle">সম্প্রতি দেখা কালেকশন</div>
-    <div class="fk-recent-stores-strip">
-      <div class="fk-recent-store-item" onclick="filterByUnifiedCat('women')">
-        <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70" class="fk-recent-store-thumb" alt="মহিলাদের শাড়ি">
-        <div class="fk-recent-store-label" id="t-fkRecent1">মহিলাদের শাড়ি</div>
+    <div class="nc-section-title" id="t-ncRecentTitle">সম্প্রতি দেখা কালেকশন</div>
+    <div class="nc-recent-stores-strip">
+      <div class="nc-recent-store-item" onclick="filterByUnifiedCat('women')">
+        <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70" class="nc-recent-store-thumb" alt="মহিলাদের শাড়ি">
+        <div class="nc-recent-store-label" id="t-ncRecent1">মহিলাদের শাড়ি</div>
       </div>
-      <div class="fk-recent-store-item" onclick="filterByUnifiedCat('kurti')">
-        <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=160&auto=format&fit=crop&q=70" class="fk-recent-store-thumb" alt="কুর্তি ও সেট">
-        <div class="fk-recent-store-label" id="t-fkRecent2">কুর্তি ও সেট</div>
+      <div class="nc-recent-store-item" onclick="filterByUnifiedCat('kurti')">
+        <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=160&auto=format&fit=crop&q=70" class="nc-recent-store-thumb" alt="কুর্তি ও সেট">
+        <div class="nc-recent-store-label" id="t-ncRecent2">কুর্তি ও সেট</div>
       </div>
-      <div class="fk-recent-store-item" onclick="filterByUnifiedCat('girls')">
-        <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70" class="fk-recent-store-thumb" alt="বাচ্চাদের ফ্রক">
-        <div class="fk-recent-store-label" id="t-fkRecent3">মেয়েদের ফ্রক</div>
+      <div class="nc-recent-store-item" onclick="filterByUnifiedCat('girls')">
+        <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70" class="nc-recent-store-thumb" alt="বাচ্চাদের ফ্রক">
+        <div class="nc-recent-store-label" id="t-ncRecent3">মেয়েদের ফ্রক</div>
       </div>
-      <div class="fk-recent-store-item" onclick="filterByUnifiedCat('jewel')">
-        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70" class="fk-recent-store-thumb" alt="গহনা ও চোকার">
-        <div class="fk-recent-store-label" id="t-fkRecent4">গহনা ও চোকার</div>
+      <div class="nc-recent-store-item" onclick="filterByUnifiedCat('jewel')">
+        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70" class="nc-recent-store-thumb" alt="গহনা ও চোকার">
+        <div class="nc-recent-store-label" id="t-ncRecent4">গহনা ও চোকার</div>
       </div>
-      <div class="fk-recent-store-item" onclick="filterByUnifiedCat('tant')">
-        <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=160&auto=format&fit=crop&q=70" class="fk-recent-store-thumb" alt="সুতি তাঁত">
-        <div class="fk-recent-store-label" id="t-fkRecent5">সুতি তাঁত</div>
+      <div class="nc-recent-store-item" onclick="filterByUnifiedCat('tant')">
+        <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=160&auto=format&fit=crop&q=70" class="nc-recent-store-thumb" alt="সুতি তাঁত">
+        <div class="nc-recent-store-label" id="t-ncRecent5">সুতি তাঁত</div>
       </div>
     </div>
 
     <!-- 6. Coupons & Offers Card (ছবি 1 হুবহু) -->
-    <div class="fk-section-title" id="t-fkCouponsTitle">Coupons & Offers</div>
-    <div class="fk-coupons-card" onclick="alert(currentLang === 'en' ? 'Special Discount Coupons:\n1. PUJA50 (Flat ₹50 OFF)\n2. SAVE38 (Extra ₹38 OFF on UPI)\n3. BOUTIQUE100 (₹100 Mega Savings)' : 'স্পেশাল অফার কুপন:\n1. PUJA50 (ফ্ল্যাট ₹50 ছাড়)\n2. SAVE38 (অনলাইন ইউপিআই পেমেন্টে ₹38 ছাড়)\n3. BOUTIQUE100 (₹100 মেগা ছাড়)')">
-      <div class="fk-coupon-icon-circle">
+    <div class="nc-section-title" id="t-ncCouponsTitle">Coupons & Offers</div>
+    <div class="nc-coupons-card" onclick="alert(currentLang === 'en' ? 'Special Discount Coupons:\n1. PUJA50 (Flat ₹50 OFF)\n2. SAVE38 (Extra ₹38 OFF on UPI)\n3. BOUTIQUE100 (₹100 Mega Savings)' : 'স্পেশাল অফার কুপন:\n1. PUJA50 (ফ্ল্যাট ₹50 ছাড়)\n2. SAVE38 (অনলাইন ইউপিআই পেমেন্টে ₹38 ছাড়)\n3. BOUTIQUE100 (₹100 মেগা ছাড়)')">
+      <div class="nc-coupon-icon-circle">
         <i class="fa-solid fa-percent"></i>
       </div>
       <div style="flex:1;">
-        <div class="fk-coupon-title" id="t-fkCouponCardTitle">Explore and grab the best deals</div>
-        <div class="fk-coupon-sub" id="t-fkCouponCardSub">কুপন কোড ও আকর্ষণীয় অফার এক্সপ্লোর করুন</div>
+        <div class="nc-coupon-title" id="t-ncCouponCardTitle">Explore and grab the best deals</div>
+        <div class="nc-coupon-sub" id="t-ncCouponCardSub">কুপন কোড ও আকর্ষণীয় অফার এক্সপ্লোর করুন</div>
       </div>
-      <i class="fa-solid fa-chevron-right fk-option-chevron"></i>
+      <i class="fa-solid fa-chevron-right nc-option-chevron"></i>
     </div>
 
     <!-- 7. Delivery Address & Profile Card -->
-    <div class="fk-options-list-card" style="padding:14px 16px;">
+    <div class="nc-options-list-card" style="padding:14px 16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
         <div style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
           <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-          <span id="t-fkSavedAddrHeading">আমার স্থায়ী ডেলিভারি ঠিকানা</span>
+          <span id="t-ncSavedAddrHeading">আমার স্থায়ী ডেলিভারি ঠিকানা</span>
         </div>
-        <button type="button" onclick="toggleEditAccountAddress()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:3px 10px; border-radius:12px; font-size:0.72rem; font-weight:700; cursor:pointer;" id="t-fkBtnEditAddr">
-          <i class="fa-solid fa-pen"></i> <span id="t-fkBtnEditAddrTxt">এডিট</span>
+        <button type="button" onclick="toggleEditAccountAddress()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:3px 10px; border-radius:12px; font-size:0.72rem; font-weight:700; cursor:pointer;" id="t-ncBtnEditAddr">
+          <i class="fa-solid fa-pen"></i> <span id="t-ncBtnEditAddrTxt">এডিট</span>
         </button>
       </div>
-      <div id="fkDisplayAddressBox">
-        <div style="font-size:0.84rem; font-weight:800; color:#1e293b;" id="fkAccountCustName">Saheb Ghanti</div>
-        <div style="font-size:0.74rem; color:#64748b; line-height:1.35; margin:3px 0;" id="fkAccountCustAddr">Amta Chandni, আমতা, হাওড়া - 711401</div>
-        <div style="font-size:0.76rem; font-weight:700; color:#334155;" id="fkAccountCustPhone">📞 9239413517</div>
+      <div id="ncDisplayAddressBox">
+        <div style="font-size:0.84rem; font-weight:800; color:#1e293b;" id="ncAccountCustName">Saheb Ghanti</div>
+        <div style="font-size:0.74rem; color:#64748b; line-height:1.35; margin:3px 0;" id="ncAccountCustAddr">Amta Chandni, আমতা, হাওড়া - 711401</div>
+        <div style="font-size:0.76rem; font-weight:700; color:#334155;" id="ncAccountCustPhone">📞 9239413517</div>
       </div>
 
       <!-- Inline Address Edit -->
-      <div id="fkEditAddressForm" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #cbd5e1;">
-        <input type="text" id="fk_edit_name" placeholder="আপনার নাম" value="Saheb Ghanti" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <input type="text" id="fk_edit_phone" placeholder="মোবাইল নম্বর" value="9239413517" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <textarea id="fk_edit_addr" rows="2" placeholder="আমতার স্থায়ী ঠিকানা" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">Amta Chandni, আমতা, হাওড়া - 711401</textarea>
-        <button type="button" onclick="saveAccountAddressQuick()" style="background:var(--primary); color:#fff; border:none; padding:7px 16px; border-radius:6px; font-size:0.78rem; font-weight:800; cursor:pointer;" id="t-fkBtnSaveAddr">
-          <span id="t-fkBtnSaveAddrTxt">সেভ করুন</span>
+      <div id="ncEditAddressForm" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #cbd5e1;">
+        <input type="text" id="nc_edit_name" placeholder="আপনার নাম" value="Saheb Ghanti" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+        <input type="text" id="nc_edit_phone" placeholder="মোবাইল নম্বর" value="9239413517" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+        <textarea id="nc_edit_addr" rows="2" placeholder="আমতার স্থায়ী ঠিকানা" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">Amta Chandni, আমতা, হাওড়া - 711401</textarea>
+        <button type="button" onclick="saveAccountAddressQuick()" style="background:var(--primary); color:#fff; border:none; padding:7px 16px; border-radius:6px; font-size:0.78rem; font-weight:800; cursor:pointer;" id="t-ncBtnSaveAddr">
+          <span id="t-ncBtnSaveAddrTxt">সেভ করুন</span>
         </button>
       </div>
     </div>
@@ -754,7 +754,7 @@
     <div id="wishlistGridContainer"></div>
   </div>
 
-  <!-- ================= 11. MEESHO SORT BOTTOM SHEET MODAL (ছবি 1) ================= -->
+  <!-- ================= 11. NISHA SORT BOTTOM SHEET MODAL (ছবি 1) ================= -->
   <div id="sortModal" class="sort-modal-sheet" onclick="closeSortModalOnOutside(event)">
     <div class="sort-modal-content" onclick="event.stopPropagation()">
       <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid #f1f5f9;">
@@ -806,7 +806,7 @@
     </div>
   </div>
 
-  <!-- ================= 12. MEESHO 2-COLUMN SPLIT FILTER MODAL (ছবি 3) ================= -->
+  <!-- ================= 12. NISHA 2-COLUMN SPLIT FILTER MODAL (ছবি 3) ================= -->
   <div id="advancedFilterModal" class="filter-modal-sheet" onclick="closeAdvancedFilterOnOutside(event)">
     <div class="filter-modal-content" onclick="event.stopPropagation()">
       <!-- Top Header -->
@@ -902,7 +902,7 @@
         <button onclick="closeCartModal()" style="background:transparent; border:none; font-size:1.2rem; color:#64748b; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- 2-Step Nav Indicator (Meesho Image 5) -->
+      <!-- 2-Step Nav Indicator (Nisha Creations Image 5) -->
       <div class="checkout-step-nav">
         <div class="checkout-step-indicator active" id="stepIndicator1">
           <div class="checkout-step-num">1</div>
@@ -915,7 +915,7 @@
         </div>
       </div>
 
-      <!-- Top Wave Offer Ribbon (Meesho Special) -->
+      <!-- Top Wave Offer Ribbon (Nisha Special) -->
       <div class="top-offer-wave-ribbon">
         <span><i class="fa-solid fa-bolt"></i> Extra ₹38 OFF on this order</span>
         <span style="font-size:0.68rem; opacity:0.95;" id="t-cartOfferRibbonSub">UPI পেমেন্টে প্রযোজ্য</span>
@@ -1126,7 +1126,7 @@
     </div>
   </div>
 
-  <!-- ================= 10. BOTTOM NAVIGATION BAR (Like Meesho Image 17) ================= -->
+  <!-- ================= 10. BOTTOM NAVIGATION BAR (Like Nisha Creations Image 17) ================= -->
   
   <!-- ================= 0. SLEEK THREE-DOT MENU DRAWER (ছিমছাম ও প্রফেশনাল ড্রয়ার) ================= -->
   <div id="menuDrawerModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:9999; justify-content:flex-end; animation:fadeIn 0.2s ease;" onclick="closeMenuDrawerOnOutside(event)">
@@ -1916,40 +1916,40 @@
   </div>
 
 
-  <!-- ================= FLIPKART STYLE SEARCH OVERLAY (ছবি 1 হুবহু) ================= -->
-  <div id="fkSearchOverlay" style="display:none; position:fixed; inset:0; background:#ffffff; z-index:350; flex-direction:column; overflow:hidden;">
+  <!-- ================= NISHA BOUTIQUE STYLE SEARCH OVERLAY (ছবি 1 হুবহু) ================= -->
+  <div id="ncSearchOverlay" style="display:none; position:fixed; inset:0; background:#ffffff; z-index:350; flex-direction:column; overflow:hidden;">
     <!-- Top Search Bar (← Sari | ✕) -->
     <div style="display:flex; align-items:center; padding:10px 14px; background:#ffffff; border-bottom:1px solid #e2e8f0; gap:10px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-      <button type="button" onclick="closeFlipkartSearch()" style="background:transparent; border:none; font-size:1.25rem; color:#334155; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;">
+      <button type="button" onclick="closeBoutiqueSearch()" style="background:transparent; border:none; font-size:1.25rem; color:#334155; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;">
         <i class="fa-solid fa-arrow-left"></i>
       </button>
       <div style="flex:1; display:flex; align-items:center; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:24px; padding:6px 14px; gap:8px;">
         <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8; font-size:0.9rem;"></i>
-        <input type="text" id="fkSearchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." style="flex:1; border:none; background:transparent; outline:none; font-size:0.92rem; color:#0f172a;" oninput="onFlipkartSearchInput(this.value)" onkeydown="if(event.key==='Enter') executeFlipkartSearch(this.value)">
-        <button type="button" id="fkSearchClearBtn" onclick="clearFlipkartSearchInput()" style="display:none; background:transparent; border:none; color:#64748b; font-size:0.95rem; cursor:pointer; padding:2px;">
+        <input type="text" id="ncSearchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." style="flex:1; border:none; background:transparent; outline:none; font-size:0.92rem; color:#0f172a;" oninput="onBoutiqueSearchInput(this.value)" onkeydown="if(event.key==='Enter') executeBoutiqueSearch(this.value)">
+        <button type="button" id="ncSearchClearBtn" onclick="clearBoutiqueSearchInput()" style="display:none; background:transparent; border:none; color:#64748b; font-size:0.95rem; cursor:pointer; padding:2px;">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
     </div>
 
     <!-- Middle: Live Auto-Suggestions with Product Images (ছবি 1) -->
-    <div id="fkSearchSuggestionsContainer" style="flex:1; overflow-y:auto; padding:8px 0;">
-      <div id="fkSearchSuggestionsList" style="display:flex; flex-direction:column;">
+    <div id="ncSearchSuggestionsContainer" style="flex:1; overflow-y:auto; padding:8px 0;">
+      <div id="ncSearchSuggestionsList" style="display:flex; flex-direction:column;">
         <!-- Populated dynamically by JavaScript -->
       </div>
     </div>
 
     <!-- Bottom: Promoted / Popular Suggestions Horizontal Slider (ছবি 1) -->
-    <div id="fkPromotedSuggestionsBox" style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:10px 14px 16px 14px;">
+    <div id="ncPromotedSuggestionsBox" style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:10px 14px 16px 14px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
         <span style="font-size:0.75rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
-          <span id="t-fkTrendingTitle">🔥 জনপ্রিয় সার্চ (Trending Searches)</span>
+          <span id="t-ncTrendingTitle">🔥 জনপ্রিয় সার্চ (Trending Searches)</span>
         </span>
         <i class="fa-solid fa-chevron-up" style="color:#94a3b8; font-size:0.75rem;"></i>
       </div>
       <div style="display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px;">
         <!-- Trending Card 1: Saree -->
-        <div onclick="executeFlipkartSearch('শাড়ি')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
+        <div onclick="executeBoutiqueSearch('শাড়ি')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
           <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Saree" style="width:100%; height:75px; object-fit:cover;">
           <div style="padding:6px 4px;">
             <div style="font-size:0.72rem; font-weight:800; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">শাড়ি কালেকশন</div>
@@ -1957,7 +1957,7 @@
           </div>
         </div>
         <!-- Trending Card 2: Silk Saree -->
-        <div onclick="executeFlipkartSearch('সিল্ক')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
+        <div onclick="executeBoutiqueSearch('সিল্ক')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
           <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Silk Saree" style="width:100%; height:75px; object-fit:cover;">
           <div style="padding:6px 4px;">
             <div style="font-size:0.72rem; font-weight:800; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">সফট সিল্ক</div>
@@ -1965,7 +1965,7 @@
           </div>
         </div>
         <!-- Trending Card 3: Jamdani -->
-        <div onclick="executeFlipkartSearch('জামদানি')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
+        <div onclick="executeBoutiqueSearch('জামদানি')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
           <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Jamdani" style="width:100%; height:75px; object-fit:cover;">
           <div style="padding:6px 4px;">
             <div style="font-size:0.72rem; font-weight:800; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">ঢাকাই জামদানি</div>
@@ -1973,7 +1973,7 @@
           </div>
         </div>
         <!-- Trending Card 4: Jewellery -->
-        <div onclick="executeFlipkartSearch('গহনা')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
+        <div onclick="executeBoutiqueSearch('গহনা')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
           <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Jewellery" style="width:100%; height:75px; object-fit:cover;">
           <div style="padding:6px 4px;">
             <div style="font-size:0.72rem; font-weight:800; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">ব্রাইডাল গহনা</div>
@@ -1981,7 +1981,7 @@
           </div>
         </div>
         <!-- Trending Card 5: Tant Saree -->
-        <div onclick="executeFlipkartSearch('তাঁত')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
+        <div onclick="executeBoutiqueSearch('তাঁত')" style="flex-shrink:0; width:100px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.04); text-align:center;">
           <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Tant" style="width:100%; height:75px; object-fit:cover;">
           <div style="padding:6px 4px;">
             <div style="font-size:0.72rem; font-weight:800; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">শান্তিপুরী তাঁত</div>
