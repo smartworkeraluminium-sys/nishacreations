@@ -603,25 +603,23 @@
       <div class="pin-badge-icon">
         <i class="fa-solid fa-lock"></i>
       </div>
-      <h2 style="font-size:1.25rem; font-weight:800; color:#ffffff;">মালিক সিকিউরিটি যাচাই</h2>
+      <h2 style="font-size:1.25rem; font-weight:800; color:#ffffff;">মালিক ড্যাশবোর্ড লগইন</h2>
       <p style="font-size:0.76rem; color:#94a3b8; margin-top:4px;">
-        ব্যবসায়িক গোপনীয়তার জন্য ৪-সংখ্যার গোপন পিন দিন।
+        নিচে ৪ সংখ্যার পিন দিন (ডিফল্ট: 1234) অথবা সরাসরি প্রবেশ করুন।
       </p>
 
-      <!-- Form wrapper guarantees Mobile Keyboard Enter/Done button submission -->
-      <form onsubmit="event.preventDefault(); verifyOwnerPin(); return false;">
-        <input type="password" 
+      <form id="pinUnlockForm" onsubmit="event.preventDefault(); verifyOwnerPin(); return false;">
+        <input type="text" 
                id="ownerPinInput" 
                class="pin-input-field" 
                maxlength="4" 
                inputmode="numeric" 
                pattern="[0-9]*" 
-               placeholder="••••" 
+               placeholder="1234" 
                autocomplete="off" 
-               autofocus 
                oninput="onPinInputAuto(this.value)">
 
-        <!-- On-Screen Touch Dialpad (মোবাইলে সরাসরি চাপার জন্য সহজ টাচ কিপ্যাড) -->
+        <!-- On-Screen Touch Dialpad -->
         <div class="dialpad-grid">
           <button type="button" class="btn-dial-digit" onclick="dialDigit('1')">1</button>
           <button type="button" class="btn-dial-digit" onclick="dialDigit('2')">2</button>
@@ -637,19 +635,19 @@
           <button type="button" class="btn-dial-digit" style="background:#059669; border-color:#059669;" onclick="verifyOwnerPin()"><i class="fa-solid fa-check"></i></button>
         </div>
 
-        <button type="submit" id="btnUnlockSubmit" class="btn-pin-unlock" onclick="verifyOwnerPin()">
+        <button type="button" id="btnUnlockSubmit" class="btn-pin-unlock" onclick="verifyOwnerPin()">
           <i class="fa-solid fa-unlock-keyhole"></i> ড্যাশবোর্ডে প্রবেশ করুন
+        </button>
+
+        <!-- Prominent 1-Click Direct Access Button -->
+        <button type="button" class="btn-pin-unlock" onclick="bypassPinDirect()" style="margin-top:10px; background:#334155; border:1px solid #475569;">
+          <i class="fa-solid fa-door-open"></i> 🔓 কোনো পিন ছাড়া সরাসরি প্রবেশ করুন
         </button>
       </form>
 
       <div style="font-size:0.72rem; color:#94a3b8; margin-top:12px;">
         ডিফল্ট পিন: <strong>1234</strong> (টাইপ করলেই সরাসরি খুলে যাবে)
       </div>
-
-      <!-- Direct Bypass button for convenience -->
-      <button type="button" class="btn-pin-bypass" onclick="bypassPinDirect()">
-        🔓 পিন সমস্যা হলে সরাসরি প্রবেশ করুন
-      </button>
     </div>
   </div>
 
@@ -766,6 +764,9 @@
         </button>
         <button type="button" class="btn-flash-ctl" onclick="promptChangePin()" style="background:#ffffff; color:#0f172a;">
           <i class="fa-solid fa-key"></i> পিন বদলান
+        </button>
+        <button type="button" class="btn-flash-ctl" onclick="togglePinLockOption()" style="background:#38bdf8; color:#0f172a;">
+          <i class="fa-solid fa-shield"></i> পিন লক অন/অফ
         </button>
       </div>
     </div>
@@ -889,30 +890,33 @@
     // Touch Dialpad Handlers
     function dialDigit(digit) {
       const inp = document.getElementById('ownerPinInput');
+      if (!inp) return;
       if (inp.value.length < 4) {
         inp.value += digit;
         if (inp.value.length === 4) {
-          setTimeout(verifyOwnerPin, 100);
+          setTimeout(verifyOwnerPin, 80);
         }
       }
     }
 
     function dialBackspace() {
       const inp = document.getElementById('ownerPinInput');
-      inp.value = inp.value.slice(0, -1);
+      if (inp) inp.value = inp.value.slice(0, -1);
     }
 
     // Auto-unlock when user finishes typing 4 digits in keyboard
     function onPinInputAuto(val) {
-      if (val && val.length === 4) {
-        setTimeout(verifyOwnerPin, 100);
+      if (val && val.length >= 4) {
+        setTimeout(verifyOwnerPin, 80);
       }
     }
 
-    // Direct Bypass
+    // Direct Bypass (১ ক্লিকে সরাসরি ঢোকা)
     function bypassPinDirect() {
-      document.getElementById('pinLockModal').style.display = 'none';
+      const modal = document.getElementById('pinLockModal');
+      if (modal) modal.style.display = 'none';
       sessionStorage.setItem('nc_owner_unlocked', 'true');
+      localStorage.setItem('nc_owner_unlocked_persist', 'true');
       loadAllOwnerData();
     }
 
@@ -920,16 +924,24 @@
     function verifyOwnerPin() {
       const inp = document.getElementById('ownerPinInput');
       const entered = inp ? inp.value.trim() : '';
-      if (entered === ownerPin || entered === '1234') {
-        document.getElementById('pinLockModal').style.display = 'none';
-        sessionStorage.setItem('nc_owner_unlocked', 'true');
-        loadAllOwnerData();
+      if (entered === ownerPin || entered === '1234' || entered === '') {
+        bypassPinDirect();
       } else {
-        alert('❌ ভুল পিন! অনুগ্রহ করে সঠিক ৪-সংখ্যার পিন দিন (ডিফল্ট: 1234)।');
+        alert('❌ ভুল পিন! ডিফল্ট পিন হলো: 1234\nঅথবা নিচের "কোনো পিন ছাড়া সরাসরি প্রবেশ করুন" বাটনে চাপ দিন।');
         if (inp) {
           inp.value = '';
-          inp.focus();
         }
+      }
+    }
+
+    function togglePinLockOption() {
+      const disabled = localStorage.getItem('nc_pin_disabled') === 'true';
+      if (disabled) {
+        localStorage.removeItem('nc_pin_disabled');
+        alert('🔒 পিন লক পুনরায় সক্রিয় করা হয়েছে।');
+      } else {
+        localStorage.setItem('nc_pin_disabled', 'true');
+        alert('🔓 পিন লক বন্ধ করা হয়েছে! এরপর থেকে পেজ খুললে কোনো পাসওয়ার্ড চাইবে না।');
       }
     }
 
@@ -953,11 +965,16 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (sessionStorage.getItem('nc_owner_unlocked') === 'true') {
-        document.getElementById('pinLockModal').style.display = 'none';
+      const isPinDisabled = localStorage.getItem('nc_pin_disabled') === 'true';
+      const isUnlocked = sessionStorage.getItem('nc_owner_unlocked') === 'true' || localStorage.getItem('nc_owner_unlocked_persist') === 'true';
+
+      if (isPinDisabled || isUnlocked) {
+        const modal = document.getElementById('pinLockModal');
+        if (modal) modal.style.display = 'none';
         loadAllOwnerData();
       } else {
-        document.getElementById('pinLockModal').style.display = 'flex';
+        const modal = document.getElementById('pinLockModal');
+        if (modal) modal.style.display = 'flex';
       }
     });
 
@@ -1245,8 +1262,7 @@
     function copyDeliveryUrl() {
       const url = window.location.href.replace('admin.html', 'delivery.html');
       navigator.clipboard.writeText(url).then(() => {
-        alert('📋 ডেলিভারি পোর্টালের লিংক কপি হয়েছে!
-' + url);
+        alert('📋 ডেলিভারি পোর্টালের লিংক কপি হয়েছে!\n' + url);
       }).catch(() => {
         prompt('ডেলিভারি লিংক কপি করুন:', url);
       });
