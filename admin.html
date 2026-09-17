@@ -666,6 +666,9 @@
       </div>
 
       <div class="header-quick-links">
+        <a href="packaging.html" target="_blank" class="btn-hdr-pill" style="background:linear-gradient(135deg, #b45309, #d97706); border:none; color:#fff; font-weight:800;" title="প্যাকেজিং ও কিউআর হাব">
+          <i class="fa-solid fa-box-open"></i> প্যাকেজিং হাব
+        </a>
         <a href="delivery.html" target="_blank" class="btn-hdr-pill btn-delivery-link" title="ডেলিভারি বয়ের জন্য আলাদা পেজ">
           <i class="fa-solid fa-motorcycle"></i> ডেলিভারি পোর্টাল
         </a>
@@ -1095,7 +1098,21 @@
           ${itemsHtml}
 
           <!-- Status Update Stepper -->
-          <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+          <!-- QR Code & Packaging Strip -->
+          <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=65x65&data=${encodeURIComponent(window.location.href.replace('admin.html', 'packaging.html') + '?scan=' + ord.id)}" style="width:42px; height:42px; border-radius:6px; background:#fff; padding:2px;">
+              <div style="font-size:0.72rem; color:#cbd5e1;">
+                <span style="color:#f59e0b; font-weight:800;">📷 কিউআর কোড প্রস্তুত</span><br>
+                <span>প্যাকেজিং টিম স্ক্যান করলেই 'Packed' হবে</span>
+              </div>
+            </div>
+            <a href="packaging.html?scan=${ord.id}" target="_blank" class="btn-hdr-pill" style="background:#090d16; color:#f59e0b; border:1px solid #d97706; font-size:0.72rem;">
+              <i class="fa-solid fa-print"></i> প্যাকিং স্টিকার প্রিন্ট
+            </a>
+          </div>
+
+          <div style="margin-top:10px; border-top:1px dashed var(--border); padding-top:8px;">
             <div style="font-size:0.74rem; color:#94a3b8; font-weight:700; margin-bottom:6px;">
               মালিক কন্ট্রোল: স্ট্যাটাস পরিবর্তন করুন
             </div>

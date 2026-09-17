@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Nisha Creations • প্যাকেজিং ও কিউআর হাব (Packaging & QR Hub)</title>
+  
+  <!-- Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --surface-light: #1e293b;
+      --border: #283548;
+      --text-main: #f8fafc;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
+      
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --primary: #9333ea;
+      --sky: #0284c7;
+      --rose: #f43f5e;
+      
+      --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    .pack-header {
+      background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #d97706 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 18px rgba(180, 83, 9, 0.35);
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pack-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pack-icon-box {
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
+      color: #b45309;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pack-pill {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.2s;
+    }
+
+    .btn-pack-pill:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 18px auto 0;
+      padding: 0 16px;
+    }
+
+    /* Stats Overview Banner */
+    .pack-stats-banner {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pack-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+
+    .p-stat-box {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 8px;
+    }
+
+    .p-stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .p-stat-lbl {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* QR Camera Scanner Box */
+    .scanner-hero-card {
+      background: linear-gradient(135deg, #1e1b4b, #311042);
+      border: 2px solid #8b5cf6;
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-toggle-camera {
+      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      color: #ffffff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-toggle-camera:active {
+      transform: scale(0.97);
+    }
+
+    #qrCameraWrapper {
+      display: none;
+      margin-top: 16px;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid #a855f7;
+      background: #000;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #qr-reader {
+      width: 100%;
+    }
+
+    /* Manual QR Code verification input */
+    .manual-verify-box {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .manual-input {
+      flex: 1;
+      background: #090d16;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .manual-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-manual-verify {
+      background: #10b981;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Scan Alert Banner */
+    #scanSuccessToast {
+      display: none;
+      background: linear-gradient(135deg, #065f46, #059669);
+      border: 1.5px solid #34d399;
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Tabs Filter */
+    .pack-filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .pack-pill-tab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .pack-pill-tab.active {
+      background: var(--amber);
+      color: #0f172a;
+      border-color: var(--amber);
+    }
+
+    /* Order Packaging Card */
+    .order-pack-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .order-pack-card.packed {
+      border-color: #059669;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .pack-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .pack-order-id {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #f59e0b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .pack-status-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .pack-status-badge.done {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    /* Packaging Details Split (Items on left, QR on right) */
+    .pack-content-split {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pack-items-col {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .pack-qr-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #090d16;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1.5px solid var(--border);
+      text-align: center;
+    }
+
+    .qr-image-display {
+      width: 140px;
+      height: 140px;
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+
+    .qr-caption {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--amber);
+      margin-top: 6px;
+    }
+
+    /* Saree Item Tile */
+    .pack-saree-tile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pack-saree-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .pack-saree-info {
+      flex: 1;
+    }
+
+    .pack-saree-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .pack-saree-spec {
+      font-size: 0.74rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Customer details inside card */
+    .pack-cust-strip {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-top: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Action Buttons inside Card */
+    .pack-action-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .btn-pack-action {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-mark-packed {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-mark-packed:active { background: #047857; }
+
+    .btn-print-sticker {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+    }
+    .btn-print-sticker:hover { background: #334155; }
+
+    /* Empty state */
+    .empty-pack-box {
+      background: var(--surface);
+      border: 1.5px dashed var(--border);
+      border-radius: 20px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="pack-header">
+    <div class="header-inner">
+      <div class="pack-brand">
+        <div class="pack-icon-box">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+        <div>
+          <div style="font-size:1.05rem; font-weight:800; line-height:1.2;">Nisha Creations Hub</div>
+          <div style="font-size:0.72rem; opacity:0.9;">📦 প্যাকেজিং ও কিউআর ডিসপ্যাচ পোর্টাল • আমতা</div>
+        </div>
+      </div>
+
+      <div class="header-links">
+        <a href="admin.html" class="btn-pack-pill" title="মালিক ড্যাশবোর্ড">
+          <i class="fa-solid fa-crown"></i> <span>অ্যাডমিন</span>
+        </a>
+        <a href="delivery.html" class="btn-pack-pill" title="ডেলিভারি হাব">
+          <i class="fa-solid fa-motorcycle"></i> <span>ডেলিভারি</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 1. Stats Overview -->
+    <section class="pack-stats-banner">
+      <div class="pack-stats-grid">
+        <div class="p-stat-box">
+          <div class="p-stat-num" id="cntNeedPack" style="color:var(--amber);">0</div>
+          <div class="p-stat-lbl">⏳ প্যাকিং বাকি</div>
+        </div>
+        <div class="p-stat-box">
+          <div class="p-stat-num" id="cntDonePack" style="color:var(--emerald);">0</div>
+          <div class="p-stat-lbl">✅ প্যাকিং সম্পন্ন</div>
+        </div>
+        <div class="p-stat-box">
+          <div class="p-stat-num" id="cntTotalOrders" style="color:var(--sky);">0</div>
+          <div class="p-stat-lbl">📋 মোট পার্সেল</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. QR Camera Scanner Card (ক্যামেরা দিয়ে সরাসরি স্ক্যান) -->
+    <section class="scanner-hero-card">
+      <div style="font-size:1.15rem; font-weight:800; color:#fff; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <i class="fa-solid fa-qrcode" style="color:var(--amber); font-size:1.4rem;"></i>
+        পার্সেল কিউআর কোড স্ক্যানার
+      </div>
+      <p style="font-size:0.78rem; color:#cbd5e1; margin:6px auto 14px; max-width:480px;">
+        শাড়ি ব্যাগে ঢুকিয়ে কিউআর কোডটি ফোনের ক্যামেরা দিয়ে স্ক্যান করুন। স্ক্যান করলেই স্বয়ংক্রিয়ভাবে 'প্যাকিং সম্পন্ন' হিসেবে চিহ্নিত হবে।
+      </p>
+
+      <button type="button" id="btnToggleCamera" class="btn-toggle-camera" onclick="toggleQrCamera()">
+        <i class="fa-solid fa-camera"></i>
+        <span id="cameraBtnText">ক্যামেরা স্ক্যানার চালু করুন</span>
+      </button>
+
+      <!-- Camera Viewport -->
+      <div id="qrCameraWrapper">
+        <div id="qr-reader"></div>
+      </div>
+
+      <!-- Success Notification Banner -->
+      <div id="scanSuccessToast">
+        <!-- Message populated dynamically -->
+      </div>
+
+      <!-- Manual fallback input -->
+      <div class="manual-verify-box">
+        <input type="text" id="manualScanInput" class="manual-input" placeholder="অর্ডার আইডি লিখুন (যেমন: NC-5019)" onkeypress="if(event.key==='Enter') handleManualVerify()">
+        <button type="button" class="btn-manual-verify" onclick="handleManualVerify()">
+          <i class="fa-solid fa-circle-check"></i> ভেরিফাই
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. Filter Tabs -->
+    <div class="pack-filter-row">
+      <button type="button" class="pack-pill-tab active" id="tabPendingPack" onclick="setPackFilter('pending', this)">
+        ⏳ প্যাকিং বাকি (<span id="tabCountPending">0</span>)
+      </button>
+      <button type="button" class="pack-pill-tab" id="tabPackedDone" onclick="setPackFilter('packed', this)">
+        ✅ প্যাকিং সম্পন্ন (<span id="tabCountPacked">0</span>)
+      </button>
+      <button type="button" class="pack-pill-tab" id="tabAllPack" onclick="setPackFilter('all', this)">
+        📋 সমস্ত অর্ডার (<span id="tabCountAll">0</span>)
+      </button>
+    </div>
+
+    <!-- 4. Orders Packaging Cards Container -->
+    <div id="packagingOrdersList">
+      <!-- Populated by JavaScript -->
+    </div>
+
+  </main>
+
+  <script>
+    let allOrders = [];
+    let currentPackFilter = 'pending';
+    let html5QrScannerInstance = null;
+    let isCameraRunning = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadPackagingData();
+
+      // Check if URL has ?scan=NC-XXXX auto-verification parameter
+      const params = new URLSearchParams(window.location.search);
+      const autoScanId = params.get('scan');
+      if (autoScanId) {
+        setTimeout(() => {
+          verifyAndCompletePacking(autoScanId);
+        }, 500);
+      }
+    });
+
+    function loadPackagingData() {
+      try {
+        const stored = localStorage.getItem('nc_orders');
+        allOrders = stored ? JSON.parse(stored) : [];
+      } catch(e) {
+        allOrders = [];
+      }
+      updatePackStats();
+      renderPackCards();
+    }
+
+    function updatePackStats() {
+      const pending = allOrders.filter(o => o.status === 'Order Placed');
+      const packed = allOrders.filter(o => o.status === 'Packed');
+
+      document.getElementById('cntNeedPack').textContent = pending.length;
+      document.getElementById('cntDonePack').textContent = packed.length;
+      document.getElementById('cntTotalOrders').textContent = allOrders.length;
+
+      document.getElementById('tabCountPending').textContent = pending.length;
+      document.getElementById('tabCountPacked').textContent = packed.length;
+      document.getElementById('tabCountAll').textContent = allOrders.length;
+    }
+
+    function setPackFilter(fType, btn) {
+      document.querySelectorAll('.pack-pill-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      currentPackFilter = fType;
+      renderPackCards();
+    }
+
+    // Camera QR Scanner Toggle
+    function toggleQrCamera() {
+      const wrapper = document.getElementById('qrCameraWrapper');
+      const btnText = document.getElementById('cameraBtnText');
+
+      if (!isCameraRunning) {
+        wrapper.style.display = 'block';
+        btnText.textContent = 'ক্যামেরা বন্ধ করুন';
+        startCameraScanner();
+      } else {
+        stopCameraScanner();
+        wrapper.style.display = 'none';
+        btnText.textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
+      }
+    }
+
+    function startCameraScanner() {
+      if (html5QrScannerInstance) {
+        try { html5QrScannerInstance.stop(); } catch(e){}
+      }
+
+      html5QrScannerInstance = new Html5Qrcode("qr-reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+      html5QrScannerInstance.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          // Successfully scanned!
+          handleScannedData(decodedText);
+        },
+        (errorMessage) => {
+          // frame scan error, ignore
+        }
+      ).then(() => {
+        isCameraRunning = true;
+      }).catch((err) => {
+        alert('⚠️ ক্যামেরা চালু করা যাচ্ছে না। অনুগ্রহ করে ব্রাউজারে ক্যামেরার পারমিশন দিন, অথবা নিচের বক্সে অর্ডার আইডি লিখে ভেরিফাই করুন।');
+        isCameraRunning = false;
+        document.getElementById('qrCameraWrapper').style.display = 'none';
+        document.getElementById('cameraBtnText').textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
+      });
+    }
+
+    function stopCameraScanner() {
+      if (html5QrScannerInstance && isCameraRunning) {
+        html5QrScannerInstance.stop().then(() => {
+          isCameraRunning = false;
+        }).catch(() => {});
+      }
+    }
+
+    // Handle Scanned QR Data
+    function handleScannedData(dataStr) {
+      if (!dataStr) return;
+      
+      // Data might be full URL with ?scan=NC-5019 or plain NC-5019
+      let orderId = dataStr.trim();
+      if (orderId.includes('scan=')) {
+        orderId = orderId.split('scan=')[1].split('&')[0];
+      }
+
+      verifyAndCompletePacking(orderId);
+    }
+
+    function handleManualVerify() {
+      const inp = document.getElementById('manualScanInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        alert('অনুগ্রহ করে অর্ডার আইডি দিন (যেমন: NC-5019)');
+        return;
+      }
+      verifyAndCompletePacking(val);
+      if (inp) inp.value = '';
+    }
+
+    // Main Verification Action
+    function verifyAndCompletePacking(orderId) {
+      // Clean order ID
+      const cleanId = orderId.replace('#', '').trim();
+      const idx = allOrders.findIndex(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
+
+      if (idx === -1) {
+        alert(`❌ অর্ডার #${cleanId} সিস্টেমে পাওয়া যায়নি! অনুগ্রহ করে সঠিক কিউআর কোড স্ক্যান করুন।`);
+        return;
+      }
+
+      const ord = allOrders[idx];
+
+      // Update status to 'Packed'
+      allOrders[idx].status = 'Packed';
+      allOrders[idx].packedDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+
+      // Save to localStorage so Admin, Delivery, and Customer reflect it in real-time
+      localStorage.setItem('nc_orders', JSON.stringify(allOrders));
+
+      // Audio feedback & Vibration
+      try {
+        if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
+      } catch(e) {}
+
+      // Show celebration banner
+      const toast = document.getElementById('scanSuccessToast');
+      if (toast) {
+        toast.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>
+            <span>🎉 পার্সেল #${ord.id} সফলভাবে স্ক্যান ও প্যাকিং সম্পন্ন হয়েছে!</span>
+          </div>
+        `;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+      }
+
+      updatePackStats();
+      renderPackCards();
+    }
+
+    // Render Cards
+    function renderPackCards() {
+      const container = document.getElementById('packagingOrdersList');
+      if (!container) return;
+
+      let filtered = allOrders;
+
+      if (currentPackFilter === 'pending') {
+        filtered = allOrders.filter(o => o.status === 'Order Placed');
+      } else if (currentPackFilter === 'packed') {
+        filtered = allOrders.filter(o => o.status === 'Packed');
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-pack-box">
+            <i class="fa-solid fa-box-archive" style="font-size:2.8rem; color:#475569; margin-bottom:12px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">এই তালিকায় কোনো পার্সেল নেই</h3>
+            <p style="font-size:0.8rem; margin-top:4px;">নতুন অর্ডার আসলে এখানে দেখা যাবে।</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(ord => {
+        const isPacked = (ord.status === 'Packed');
+        const isDelivered = (ord.status === 'Delivered');
+
+        // Items HTML
+        let itemsHtml = (ord.items || []).map(it => `
+          <div class="pack-saree-tile">
+            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="pack-saree-img">
+            <div class="pack-saree-info">
+              <div class="pack-saree-title">${it.title}</div>
+              <div class="pack-saree-spec">
+                সাইজ: <strong>${it.selectedSize || 'Free Size'}</strong> • পরিমাণ: <strong>${it.qty || 1} টি</strong> • রং: ${it.selectedColor || 'মূল রং'}
+              </div>
+            </div>
+            <div style="font-weight:800; color:#f59e0b; font-size:0.88rem;">₹${(it.price||0)*(it.qty||1)}</div>
+          </div>
+        `).join('');
+
+        // QR Code URL & Data
+        // Encodes the verification link so scanning with any phone camera or our scanner verifies it
+        const currentUrl = window.location.href.split('?')[0];
+        const qrVerificationUrl = `${currentUrl}?scan=${ord.id}`;
+        const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrVerificationUrl)}`;
+
+        const card = document.createElement('div');
+        card.className = `order-pack-card ${isPacked ? 'packed' : ''}`;
+        card.innerHTML = `
+          <div class="pack-card-header">
+            <div>
+              <span class="pack-order-id">#${ord.id}</span>
+              <span style="font-size:0.72rem; color:#94a3b8; margin-left:8px;">তারিখ: ${ord.date || 'আজ'}</span>
+            </div>
+            <div class="pack-status-badge ${isPacked ? 'done' : ''}">
+              ${isPacked ? '✅ প্যাকিং সম্পন্ন (Packed)' : '⏳ প্যাকিং বাকি (Pending)'}
+            </div>
+          </div>
+
+          <div class="pack-content-split">
+            <!-- Items & Customer Info -->
+            <div class="pack-items-col">
+              <div style="font-size:0.74rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">
+                📦 ব্যাগে ভরার জন্য শাড়ির তালিকা:
+              </div>
+              ${itemsHtml}
+
+              <div class="pack-cust-strip">
+                👤 <strong>গ্রাহক:</strong> ${ord.name || 'সম্মানিত কাস্টমার'} (📞 ${ord.phone || ''})<br>
+                📍 <strong>ঠিকানা:</strong> ${ord.address || 'আমতা, হাওড়া'}<br>
+                💳 <strong>পেমেন্ট:</strong> ${ord.paymentMode === 'UPI' ? '📲 অনলাইন পেইড' : '💵 ক্যাশ অন ডেলিভারি'} (₹${ord.total})
+              </div>
+            </div>
+
+            <!-- Dynamic QR Code Column -->
+            <div class="pack-qr-col">
+              <img src="${qrImgSrc}" class="qr-image-display" alt="QR Code #${ord.id}">
+              <div class="qr-caption">📷 #${ord.id} QR CODE</div>
+              <div style="font-size:0.65rem; color:#94a3b8; margin-top:2px;">ক্যামেরা দিয়ে স্ক্যান করুন</div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="pack-action-footer">
+            <button type="button" class="btn-pack-action btn-print-sticker" onclick="printPackagingSticker('${ord.id}')">
+              <i class="fa-solid fa-print"></i> প্যাকিং কিউআর স্টিকার প্রিন্ট
+            </button>
+
+            ${!isPacked ? `
+              <button type="button" class="btn-pack-action btn-mark-packed" onclick="verifyAndCompletePacking('${ord.id}')">
+                <i class="fa-solid fa-circle-check"></i> প্যাকিং সম্পন্ন নিশ্চিত করুন
+              </button>
+            ` : `
+              <div style="flex:1; text-align:center; padding:10px; background:rgba(16,185,129,0.1); border-radius:10px; font-weight:800; font-size:0.8rem; color:#34d399;">
+                🎉 পার্সেলটি প্রস্তুত আছে! ডেলিভারি পার্টনারের অপেক্ষা।
+              </div>
+            `}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Print Packaging Sticker / Shipping Label with QR Code
+    function printPackagingSticker(orderId) {
+      const ord = allOrders.find(o => o.id === orderId);
+      if (!ord) return;
+
+      const currentUrl = window.location.href.split('?')[0];
+      const qrVerificationUrl = `${currentUrl}?scan=${ord.id}`;
+      const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrVerificationUrl)}`;
+
+      const itemsListText = (ord.items || []).map(i => `• ${i.title} (${i.selectedSize || 'Free Size'}) x ${i.qty || 1}`).join('<br>');
+
+      const printHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shipping Label #${ord.id}</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 15px; color: #000; }
+    .sticker-box {
+      width: 360px;
+      border: 2px dashed #000;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 0 auto;
+    }
+    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
+    .brand { font-size: 18px; font-weight: 900; }
+    .hub { font-size: 11px; font-weight: bold; }
+    .qr-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; border-bottom: 1px dashed #666; padding-bottom: 12px; }
+    .qr-img { width: 130px; height: 130px; }
+    .details { font-size: 12px; line-height: 1.4; }
+    .bold { font-weight: bold; }
+    .pay-strip { background: #eee; padding: 6px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 10px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="sticker-box">
+    <div class="header">
+      <div class="brand">NISHA CREATIONS</div>
+      <div class="hub">EXCLUSIVE SAREE & JEWELLERY BOUTIQUE • AMTA</div>
+    </div>
+
+    <div class="qr-row">
+      <div>
+        <div style="font-size:16px; font-weight:900;">ORDER #${ord.id}</div>
+        <div style="font-size:11px; color:#555;">তারিখ: ${ord.date || 'আজ'}</div>
+        <div style="font-size:12px; margin-top:6px;"><strong>পণ্য:</strong><br>${itemsListText}</div>
+      </div>
+      <img src="${qrImgSrc}" class="qr-img" alt="QR Code">
+    </div>
+
+    <div class="details">
+      <div><strong>গ্রাহক:</strong> ${ord.name} (📞 ${ord.phone})</div>
+      <div><strong>ঠিকানা:</strong> ${ord.address}</div>
+    </div>
+
+    <div class="pay-strip">
+      ${ord.paymentMode === 'UPI' ? '✅ অনলাইন প্রিপেইড (NO CASH)' : `💵 CASH ON DELIVERY: ₹${ord.total}`}
+    </div>
+  </div>
+  <script>
+    window.onload = function() { window.print(); };
+  <\/script>
+</body>
+</html>
+      `;
+
+      const w = window.open('', '_blank');
+      w.document.write(printHtml);
+      w.document.close();
+    }
+  </script>
+</body>
+</html>
