@@ -646,18 +646,20 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: rgba(239, 68, 68, 0.85);
+      background: #ef4444;
       color: #fff;
-      border: none;
-      width: 22px;
-      height: 22px;
+      border: 1.5px solid #fff;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      font-size: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
 
     /* Dynamic Size Selector Chips */
@@ -792,7 +794,158 @@
       border-color: #6366f1;
     }
 
-</style>
+
+    /* 3-Lines Hamburger Menu Button */
+    .btn-menu-trigger {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .btn-menu-trigger:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Slide-out Drawer Overlay */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: none;
+      justify-content: flex-end;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .drawer-content {
+      width: 82%;
+      max-width: 320px;
+      height: 100%;
+      background: #0f172a;
+      border-left: 1.5px solid #334155;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 25px rgba(0,0,0,0.5);
+      animation: slideInRight 0.25s ease-out;
+      overflow-y: auto;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .btn-close-drawer {
+      background: #1e293b;
+      border: none;
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .drawer-section {
+      margin-bottom: 18px;
+    }
+    .drawer-sec-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lang-switch-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .lang-pill-btn {
+      padding: 10px;
+      border-radius: 12px;
+      border: 1.5px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .lang-pill-btn.active {
+      background: #4f46e5;
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.4);
+    }
+
+    .drawer-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drawer-link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      text-decoration: none;
+      color: #f8fafc;
+      transition: background 0.2s;
+    }
+    .drawer-link-item:hover, .drawer-link-item:active {
+      background: #334155;
+    }
+    .drawer-link-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .drawer-link-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .drawer-link-desc {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+
+  </style>
 </head>
 <body>
 
@@ -905,22 +1058,111 @@
         </div>
       </div>
 
+      <!-- 3-Lines Hamburger Menu Trigger -->
       <div class="header-quick-links">
-        <a href="packaging.html" target="_blank" class="btn-hdr-pill" style="background:linear-gradient(135deg, #b45309, #d97706); border:none; color:#fff; font-weight:800;" title="প্যাকেজিং ও কিউআর হাব">
-          <i class="fa-solid fa-box-open"></i> প্যাকেজিং হাব
-        </a>
-        <a href="delivery.html" target="_blank" class="btn-hdr-pill btn-delivery-link" title="ডেলিভারি বয়ের জন্য আলাদা পেজ">
-          <i class="fa-solid fa-motorcycle"></i> ডেলিভারি পোর্টাল
-        </a>
-        <a href="index.html" target="_blank" class="btn-hdr-pill" style="background:#f59e0b; color:#0f172a; border:none; font-weight:800;" title="কাস্টমারদের শপিং পেজ">
-          <i class="fa-solid fa-store"></i> কাস্টমার শপ
-        </a>
-        <button type="button" class="btn-hdr-pill" onclick="lockDashboard()" title="লক করুন">
-          <i class="fa-solid fa-lock"></i>
+        <button type="button" class="btn-menu-trigger" onclick="toggleAdminNavDrawer()" aria-label="Menu">
+          <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- SLIDE-OVER NAVIGATION DRAWER (তিনটি দাঁড়ি মেনু) -->
+  <div id="adminNavDrawerOverlay" class="drawer-overlay" onclick="closeAdminNavDrawer()">
+    <div class="drawer-content" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="brand-logo-hex" style="width:38px; height:38px; font-size:1rem;">NC</div>
+          <div>
+            <div style="font-weight:800; font-size:1rem; color:#fff;">নিশা ক্রিয়েশনস</div>
+            <div style="font-size:0.7rem; color:#94a3b8;">মালিক কন্ট্রোল মেনু ও ভাষা</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close-drawer" onclick="closeAdminNavDrawer()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 1. Language Switcher Block -->
+      <div class="drawer-section">
+        <div class="drawer-sec-label">
+          <i class="fa-solid fa-globe"></i> ভাষা নির্বাচন / Select Language
+        </div>
+        <div class="lang-switch-pills">
+          <button type="button" class="lang-pill-btn active" id="admBtnLangBn" onclick="setAdminLanguage('bn')">
+            🇮🇳 বাংলা
+          </button>
+          <button type="button" class="lang-pill-btn" id="admBtnLangEn" onclick="setAdminLanguage('en')">
+            🇬🇧 English
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Portal Links Block -->
+      <div class="drawer-section">
+        <div class="drawer-sec-label">
+          <i class="fa-solid fa-compass"></i> পোর্টাল লিঙ্কসমূহ / Navigation
+        </div>
+        <div class="drawer-links-list">
+          <a href="packaging.html" target="_blank" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#4f46e5; color:#fff;"><i class="fa-solid fa-boxes-packing"></i></div>
+            <div>
+              <div class="drawer-link-title">ওয়্যারহাউস ও প্যাকিং হাব</div>
+              <div class="drawer-link-desc">প্যাকিং, বারকোড ও ইনবাউন্ড স্টক</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
+          </a>
+
+          <a href="delivery.html" target="_blank" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#0284c7; color:#fff;"><i class="fa-solid fa-motorcycle"></i></div>
+            <div>
+              <div class="drawer-link-title">ডেলিভারি রাইডার পোর্টাল</div>
+              <div class="drawer-link-desc">ক্যাশ কালেকশন ও ডেলিভারি ট্র্যাকিং</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
+          </a>
+
+          <a href="index.html" target="_blank" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#f59e0b; color:#0f172a;"><i class="fa-solid fa-store"></i></div>
+            <div>
+              <div class="drawer-link-title">কাস্টমার অনলাইন শপ</div>
+              <div class="drawer-link-desc">শাড়ি ও গহনা বুকিং পেজ</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. Security & Admin Actions -->
+      <div class="drawer-section">
+        <div class="drawer-sec-label">
+          <i class="fa-solid fa-shield-halved"></i> নিরাপত্তা ও সেটিংস / Settings
+        </div>
+        <div class="drawer-links-list">
+          <div class="drawer-link-item" style="cursor:pointer;" onclick="closeAdminNavDrawer(); openPasswordSettingsModal();">
+            <div class="drawer-link-icon" style="background:#334155; color:#38bdf8;"><i class="fa-solid fa-key"></i></div>
+            <div>
+              <div class="drawer-link-title">পাসওয়ার্ড ও লক সেটিংস</div>
+              <div class="drawer-link-desc">পাসওয়ার্ড পরিবর্তন বা লক নিয়ন্ত্রণ</div>
+            </div>
+          </div>
+
+          <div class="drawer-link-item" style="cursor:pointer;" onclick="closeAdminNavDrawer(); lockDashboard();">
+            <div class="drawer-link-icon" style="background:#be123c; color:#fff;"><i class="fa-solid fa-lock"></i></div>
+            <div>
+              <div class="drawer-link-title">ড্যাশবোর্ড লক করুন</div>
+              <div class="drawer-link-desc">এখনই লগআউট ও পিন লক</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid #1f2937; text-align:center; font-size:0.72rem; color:#64748b;">
+        নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস • আমতা
+      </div>
+    </div>
+  </div>
+
 
   <div class="container">
 
@@ -1801,6 +2043,47 @@
       container.innerHTML = html;
     }
 
+    
+    function toggleAdminNavDrawer() {
+      const drawer = document.getElementById('adminNavDrawerOverlay');
+      if (drawer) {
+        drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
+      }
+    }
+
+    function closeAdminNavDrawer() {
+      const drawer = document.getElementById('adminNavDrawerOverlay');
+      if (drawer) drawer.style.display = 'none';
+    }
+
+    let currentAdminLang = localStorage.getItem('nc_hub_lang') || 'bn';
+
+    function setAdminLanguage(lang) {
+      currentAdminLang = lang;
+      localStorage.setItem('nc_hub_lang', lang);
+
+      document.querySelectorAll('#adminNavDrawerOverlay .lang-pill-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(lang === 'bn' ? 'admBtnLangBn' : 'admBtnLangEn');
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update Tab Labels
+      const setT = (id, text) => { const el = document.getElementById(id); if (el) el.innerHTML = text; };
+      if (lang === 'en') {
+        setT('tabBtnOrders', '<i class="fa-solid fa-boxes-packing"></i> Orders (<span id="countTabOrders">' + ordersList.length + '</span>)');
+        setT('tabBtnWarehouse', '<i class="fa-solid fa-warehouse"></i> Warehouse & Dispatch (<span id="countTabWarehouse">0</span>)');
+        setT('tabBtnStock', '<i class="fa-solid fa-boxes-stacked"></i> Stock & Prices (<span id="countTabStock">0</span>)');
+        setT('tabBtnAdd', '<i class="fa-solid fa-plus-circle"></i> Add New Product');
+        setT('tabBtnReviews', '<i class="fa-solid fa-star"></i> Customer Reviews');
+      } else {
+        setT('tabBtnOrders', '<i class="fa-solid fa-boxes-packing"></i> অর্ডার ম্যানেজমেন্ট (<span id="countTabOrders">' + ordersList.length + '</span>)');
+        setT('tabBtnWarehouse', '<i class="fa-solid fa-warehouse"></i> ওয়্যারহাউস ও ডিসপ্যাচ (<span id="countTabWarehouse">0</span>)');
+        setT('tabBtnStock', '<i class="fa-solid fa-warehouse"></i> শাড়ির স্টক ও দাম (<span id="countTabStock">0</span>)');
+        setT('tabBtnAdd', '<i class="fa-solid fa-plus-circle"></i> নতুন শাড়ি আপলোড');
+        setT('tabBtnReviews', '<i class="fa-solid fa-star"></i> কাস্টমার রিভিউ');
+      }
+      renderFinanceOverview();
+    }
+
     function switchAdminView(tabKey) {
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
@@ -2251,6 +2534,123 @@
       updatePhotoSlotsDisplay();
     }
 
+    
+    // =========================================================
+    // EDIT / DELETE PRODUCT & IMAGE MANAGEMENT
+    // =========================================================
+    let currentEditingProductId = null;
+
+    function openEditImageModal(prodId) {
+      currentEditingProductId = prodId;
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      const p = prods.find(pr => pr.id === prodId);
+      if (!p) {
+        alert('প্রোডাক্ট পাওয়া যায়নি!');
+        return;
+      }
+
+      document.getElementById('editImageProdTitle').textContent = p.title;
+      document.getElementById('editImageProdId').textContent = '#' + p.id;
+      document.getElementById('editImagePreview').src = p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200';
+      document.getElementById('editProductImageModal').style.display = 'flex';
+    }
+
+    function closeEditImageModal() {
+      document.getElementById('editProductImageModal').style.display = 'none';
+      currentEditingProductId = null;
+    }
+
+    function handleReplaceProductImageFile(e) {
+      const file = e.target.files[0];
+      if (!file || !currentEditingProductId) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const newBase64 = evt.target.result;
+        
+        let prods = [];
+        try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+        
+        const idx = prods.findIndex(p => p.id === currentEditingProductId);
+        if (idx !== -1) {
+          prods[idx].img = newBase64;
+          if (prods[idx].images && prods[idx].images.length > 0) {
+            prods[idx].images[0] = newBase64;
+          }
+          localStorage.setItem('nc_products', JSON.stringify(prods));
+          
+          document.getElementById('editImagePreview').src = newBase64;
+          alert('✅ নতুন সঠিক ছবি সফলভাবে আপডেট করা হয়েছে!');
+          renderOwnerStock();
+          renderWarehouseOperations();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeProductImageOnly() {
+      if (!currentEditingProductId) return;
+      if (!confirm('আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটির ছবি মুছে ফেলতে চান?')) return;
+
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+      
+      const idx = prods.findIndex(p => p.id === currentEditingProductId);
+      if (idx !== -1) {
+        prods[idx].img = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'; // default placeholder
+        if (prods[idx].images) prods[idx].images = [];
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+        alert('✅ ভুল ছবিটি সফলভাবে মুছে ফেলা হয়েছে!');
+        closeEditImageModal();
+        renderOwnerStock();
+        renderWarehouseOperations();
+      }
+    }
+
+    function deleteOwnerProduct(prodId) {
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+      
+      const p = prods.find(pr => pr.id === prodId);
+      const title = p ? p.title : prodId;
+
+      if (!confirm(`⚠️ আপনি কি নিশ্চিতভাবে প্রোডাক্টটি ("${title}") সম্পূর্ণ ডিলিট করতে চান?\nডিলিট করলে ওয়েবসাইট ও ওয়্যারহাউস থেকে এটি মুছে যাবে।`)) {
+        return;
+      }
+
+      prods = prods.filter(pr => pr.id !== prodId);
+      localStorage.setItem('nc_products', JSON.stringify(prods));
+
+      let cust = [];
+      try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
+      cust = cust.filter(pr => pr.id !== prodId);
+      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+
+      alert(`🗑️ প্রোডাক্ট #${prodId} সফলভাবে ডিলিট করা হয়েছে!`);
+      renderOwnerStock();
+      renderWarehouseOperations();
+    }
+
+    function confirmDeleteFromModal() {
+      if (currentEditingProductId) {
+        const id = currentEditingProductId;
+        closeEditImageModal();
+        deleteOwnerProduct(id);
+      }
+    }
+
+    function clearAllUploadedStudioPhotos() {
+      if (uploadedPhotoList.length === 0) return;
+      if (confirm('আপনি কি আপলোড স্টুডিওর নির্বাচিত সমস্ত ছবি মুছে ফেলতে চান?')) {
+        uploadedPhotoList = [];
+        updatePhotoSlotsDisplay();
+      }
+    }
+
     // Dynamic Sizing Configuration per Category
     const CATEGORY_SIZE_PRESETS = {
       saree: ['Free Size (৬.৫ মিটার ব্লাউজ পিস সহ)', '৫.৫ মিটার (ব্লাউজ ছাড়া)'],
@@ -2443,7 +2843,158 @@
       border-color: #6366f1;
     }
 
-</style>
+
+    /* 3-Lines Hamburger Menu Button */
+    .btn-menu-trigger {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .btn-menu-trigger:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Slide-out Drawer Overlay */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: none;
+      justify-content: flex-end;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .drawer-content {
+      width: 82%;
+      max-width: 320px;
+      height: 100%;
+      background: #0f172a;
+      border-left: 1.5px solid #334155;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 25px rgba(0,0,0,0.5);
+      animation: slideInRight 0.25s ease-out;
+      overflow-y: auto;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .btn-close-drawer {
+      background: #1e293b;
+      border: none;
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .drawer-section {
+      margin-bottom: 18px;
+    }
+    .drawer-sec-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lang-switch-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .lang-pill-btn {
+      padding: 10px;
+      border-radius: 12px;
+      border: 1.5px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .lang-pill-btn.active {
+      background: #4f46e5;
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.4);
+    }
+
+    .drawer-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drawer-link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      text-decoration: none;
+      color: #f8fafc;
+      transition: background 0.2s;
+    }
+    .drawer-link-item:hover, .drawer-link-item:active {
+      background: #334155;
+    }
+    .drawer-link-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .drawer-link-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .drawer-link-desc {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+
+  </style>
 </head>
 <body>
   <div class="label-box">
@@ -2494,6 +3045,51 @@
     </div>
   </div>
 
+
+  <!-- ==================== EDIT / DELETE PRODUCT & IMAGE MODAL ==================== -->
+  <div id="editProductImageModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
+    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #38bdf8; box-shadow:var(--shadow-lg);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:12px;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
+          <i class="fa-solid fa-image" style="color:#38bdf8;"></i> ভুল ছবি পরিবর্তন বা প্রোডাক্ট ডিলিট
+        </h3>
+        <button type="button" onclick="closeEditImageModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div style="text-align:center; margin-bottom:14px;">
+        <div style="font-weight:800; font-size:0.95rem; color:#f1f5f9;" id="editImageProdTitle">প্রোডাক্টের নাম</div>
+        <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;" id="editImageProdId">#NC-101</div>
+        <div style="margin:12px auto; width:140px; height:140px; border-radius:14px; overflow:hidden; border:2px solid #38bdf8; background:#090d16; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
+          <img id="editImagePreview" src="" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Replace Image Button -->
+        <label class="btn-fast-action" style="background:#0284c7; color:#fff; justify-content:center; padding:10px; cursor:pointer; font-weight:800;">
+          <i class="fa-solid fa-camera-rotate"></i> গ্যালারি থেকে নতুন সঠিক ছবি বাছুন
+          <input type="file" id="replaceImageFileInput" accept="image/*" style="display:none;" onchange="handleReplaceProductImageFile(event)">
+        </label>
+
+        <!-- Remove Image (Keep placeholder) -->
+        <button type="button" class="btn-fast-action" style="background:#475569; color:#f1f5f9; justify-content:center; padding:10px; font-weight:700;" onclick="removeProductImageOnly()">
+          <i class="fa-solid fa-trash-can"></i> শুধু এই ভুল ছবিটি মুছে দিন
+        </button>
+
+        <!-- Delete Entire Product -->
+        <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff; justify-content:center; padding:10px; font-weight:800;" onclick="confirmDeleteFromModal()">
+          <i class="fa-solid fa-trash"></i> সম্পূর্ণ প্রোডাক্টটি ডিলিট করুন
+        </button>
+
+        <button type="button" class="btn-fast-action" style="background:#1e293b; color:#94a3b8; justify-content:center;" onclick="closeEditImageModal()">
+          বন্ধ করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
       `;
@@ -2526,6 +3122,51 @@
       </div>
 
       <div id="adminRackStickersContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;"></div>
+    </div>
+  </div>
+
+
+  <!-- ==================== EDIT / DELETE PRODUCT & IMAGE MODAL ==================== -->
+  <div id="editProductImageModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
+    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #38bdf8; box-shadow:var(--shadow-lg);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:12px;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
+          <i class="fa-solid fa-image" style="color:#38bdf8;"></i> ভুল ছবি পরিবর্তন বা প্রোডাক্ট ডিলিট
+        </h3>
+        <button type="button" onclick="closeEditImageModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div style="text-align:center; margin-bottom:14px;">
+        <div style="font-weight:800; font-size:0.95rem; color:#f1f5f9;" id="editImageProdTitle">প্রোডাক্টের নাম</div>
+        <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;" id="editImageProdId">#NC-101</div>
+        <div style="margin:12px auto; width:140px; height:140px; border-radius:14px; overflow:hidden; border:2px solid #38bdf8; background:#090d16; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
+          <img id="editImagePreview" src="" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Replace Image Button -->
+        <label class="btn-fast-action" style="background:#0284c7; color:#fff; justify-content:center; padding:10px; cursor:pointer; font-weight:800;">
+          <i class="fa-solid fa-camera-rotate"></i> গ্যালারি থেকে নতুন সঠিক ছবি বাছুন
+          <input type="file" id="replaceImageFileInput" accept="image/*" style="display:none;" onchange="handleReplaceProductImageFile(event)">
+        </label>
+
+        <!-- Remove Image (Keep placeholder) -->
+        <button type="button" class="btn-fast-action" style="background:#475569; color:#f1f5f9; justify-content:center; padding:10px; font-weight:700;" onclick="removeProductImageOnly()">
+          <i class="fa-solid fa-trash-can"></i> শুধু এই ভুল ছবিটি মুছে দিন
+        </button>
+
+        <!-- Delete Entire Product -->
+        <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff; justify-content:center; padding:10px; font-weight:800;" onclick="confirmDeleteFromModal()">
+          <i class="fa-solid fa-trash"></i> সম্পূর্ণ প্রোডাক্টটি ডিলিট করুন
+        </button>
+
+        <button type="button" class="btn-fast-action" style="background:#1e293b; color:#94a3b8; justify-content:center;" onclick="closeEditImageModal()">
+          বন্ধ করুন
+        </button>
+      </div>
     </div>
   </div>
 

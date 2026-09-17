@@ -493,6 +493,26 @@
       max-width: 400px;
       box-shadow: var(--shadow-card);
     }
+  
+    .btn-rider-lang-toggle {
+      background: #ffffff;
+      color: #0369a1;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+    .btn-rider-lang-toggle:active {
+      transform: scale(0.95);
+    }
+
   </style>
 </head>
 <body>
@@ -509,12 +529,10 @@
           <div style="font-size:0.72rem; opacity:0.9;">ডেলিভারি পার্টনার হাব • আমতা</div>
         </div>
       </div>
-      <div style="display:flex; gap:6px;">
-        <a href="packaging.html" class="btn-rider-refresh">
-          <i class="fa-solid fa-boxes-packing"></i> ওয়্যারহাউস
-        </a>
-        <button type="button" class="btn-rider-refresh" onclick="loadRiderData()">
-          <i class="fa-solid fa-rotate"></i> রিফ্রেশ
+      <div style="display:flex; align-items:center; gap:6px;">
+        <!-- ONLY LANGUAGE SELECTOR AS REQUESTED -->
+        <button type="button" class="btn-rider-lang-toggle" onclick="toggleRiderLanguage()">
+          <i class="fa-solid fa-language"></i> <span id="rLangDisplay">বাংলা | English</span>
         </button>
       </div>
     </div>
@@ -688,6 +706,7 @@
     let currentRescheduleTargetId = null;
 
     window.addEventListener('DOMContentLoaded', () => {
+      applyRiderLanguage(currentRiderLang);
       loadRiderData();
 
       const params = new URLSearchParams(window.location.search);
@@ -698,6 +717,71 @@
         }, 600);
       }
     });
+
+    
+    let currentRiderLang = localStorage.getItem('nc_hub_lang') || 'bn';
+
+    const RIDER_I18N = {
+      bn: {
+        langDisplay: "বাংলা | English",
+        brandTitle: "নিশা ক্রিয়েশনস লজিস্টিকস",
+        brandSub: "ডেলিভারি পার্টনার হাব • আমতা",
+        cashBannerTitle: "আজকের ক্যাশ কালেকশন (মালিককে জমা দিতে হবে)",
+        cashBannerNote: "ক্যাশ অন ডেলিভারির (COD) সফল পার্সেলের নগদ হিসাব।",
+        depositSlipLink: "জমা রসিদ",
+        cashSub: "(নগদ সংগ্রহ)",
+        pendingLabel: "⏳ বাকি ডেলিভারি",
+        deliveredLabel: "✅ সম্পন্ন",
+        rescheduledLabel: "⚠️ রিসিডিউল",
+        tabDeliveries: "ডেলিভারি রান-শীট",
+        tabEod: "দিনের শেষে ক্যাশ জমা",
+        cameraOpen: "ক্যামেরা স্ক্যানার চালু করুন",
+        cameraClose: "ক্যামেরা বন্ধ করুন",
+        manualPlaceholder: "অর্ডার আইডি লিখুন (যেমন: NC-5019)",
+        submitBtn: "সম্পন্ন",
+        filterPending: "⏳ বাকি ডেলিভারি",
+        filterDelivered: "✅ সম্পন্ন ডেলিভারি",
+        filterAll: "📋 সব অর্ডার"
+      },
+      en: {
+        langDisplay: "English | বাংলা",
+        brandTitle: "Nisha Creations Logistics",
+        brandSub: "Delivery Partner Hub • Amta",
+        cashBannerTitle: "Today's COD Cash Collection (Deposit to Owner)",
+        cashBannerNote: "Total cash collected from Cash on Delivery (COD) parcels.",
+        depositSlipLink: "Deposit Slip",
+        cashSub: "(Cash Collected)",
+        pendingLabel: "⏳ Pending",
+        deliveredLabel: "✅ Completed",
+        rescheduledLabel: "⚠️ Rescheduled",
+        tabDeliveries: "Delivery Run-Sheet",
+        tabEod: "End of Day Settlement",
+        cameraOpen: "Start Camera Scanner",
+        cameraClose: "Stop Camera Scanner",
+        manualPlaceholder: "Enter Order ID (e.g., NC-5019)",
+        submitBtn: "Submit",
+        filterPending: "⏳ Pending",
+        filterDelivered: "✅ Delivered",
+        filterAll: "📋 All Orders"
+      }
+    };
+
+    function applyRiderLanguage(lang) {
+      currentRiderLang = lang;
+      localStorage.setItem('nc_hub_lang', lang);
+      const d = RIDER_I18N[lang] || RIDER_I18N.bn;
+
+      const setT = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+      setT('rLangDisplay', d.langDisplay);
+
+      calculateRiderCash();
+      renderRiderTasks();
+    }
+
+    function toggleRiderLanguage() {
+      const nextLang = (currentRiderLang === 'bn') ? 'en' : 'bn';
+      applyRiderLanguage(nextLang);
+    }
 
     function loadRiderData() {
       try {
