@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Nisha Creations • Executive Boutique Hub (মালিক ও ডেলিভারি ড্যাশবোর্ড)</title>
+  <title>Nisha Creations • মালিক কন্ট্রোল প্যানেল (Owner Admin)</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,35 +13,24 @@
 
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-glass: rgba(255, 255, 255, 0.85);
-      --border: #e2e8f0;
-      --border-subtle: #f1f5f9;
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --text-muted: #94a3b8;
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --surface-light: #1e293b;
+      --border: #283548;
+      --border-subtle: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
       
       --primary: #9333ea;
-      --primary-dark: #7e22ce;
       --primary-light: #f3e8ff;
+      --gold: #f59e0b;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --sky: #38bdf8;
       
-      --emerald: #059669;
-      --emerald-light: #ecfdf5;
-      
-      --amber: #d97706;
-      --amber-light: #fffbeb;
-      
-      --rose: #e11d48;
-      --rose-light: #fff1f2;
-      
-      --sky: #0284c7;
-      --sky-light: #f0f9ff;
-      
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
-      --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12);
-      --shadow-glow: 0 0 20px rgba(147, 51, 234, 0.2);
+      --shadow-lg: 0 14px 30px -5px rgba(0, 0, 0, 0.45);
+      --shadow-glow: 0 0 25px rgba(147, 51, 234, 0.25);
     }
 
     * {
@@ -52,498 +41,148 @@
     }
 
     body {
-      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
       color: var(--text-main);
       min-height: 100vh;
       padding-bottom: 90px;
-      line-height: 1.5;
     }
 
-    /* Top Executive Header */
-    .exec-header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #311042 100%);
+    /* 4-Digit Security PIN Screen */
+    #pinLockModal {
+      position: fixed;
+      inset: 0;
+      background: #090d16;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .pin-box-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pin-badge-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #7e22ce, #ec4899);
+      border-radius: 20px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4);
+    }
+
+    .pin-input-field {
+      width: 180px;
+      letter-spacing: 14px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: #090d16;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
       color: #ffffff;
-      padding: 18px 20px 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      padding: 10px;
+      margin: 20px 0;
+      outline: none;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-pin-unlock {
+      width: 100%;
+      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      border: none;
+      color: #fff;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+      transition: all 0.2s;
+    }
+
+    /* Top Executive Navigation */
+    .exec-header {
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
-    .header-content {
+    .exec-nav-inner {
       max-width: 1100px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
+      gap: 12px;
     }
 
-    .brand-cluster {
+    .brand-meta {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .brand-badge {
-      width: 46px;
-      height: 46px;
-      background: linear-gradient(135deg, #ec4899, #a855f7);
-      border-radius: 14px;
+    .brand-logo-hex {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.25rem;
       font-weight: 800;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .brand-meta h1 {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .brand-meta p {
-      font-size: 0.75rem;
-      color: #cbd5e1;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .live-pulse-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: #10b981;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #10b981;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-exec {
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s ease;
-    }
-
-    .btn-exec:hover, .btn-exec:active {
-      background: rgba(255, 255, 255, 0.22);
-      transform: translateY(-1px);
-    }
-
-    .btn-exec.btn-shop {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      border: none;
       color: #0f172a;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.05rem;
       font-weight: 800;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
-    }
-
-    /* Container */
-    .main-wrap {
-      max-width: 1100px;
-      margin: -12px auto 0;
-      padding: 0 16px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Finance & Overview Banner */
-    .finance-hero-card {
-      background: var(--surface);
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .hero-top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 14px;
-    }
-
-    .revenue-block {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-
-    .revenue-label {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-
-    .revenue-value {
-      font-size: 1.85rem;
-      font-weight: 800;
-      color: var(--emerald);
-      letter-spacing: -0.5px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .badge-revenue-tag {
-      background: var(--emerald-light);
-      color: var(--emerald);
-      border: 1px solid rgba(5, 150, 105, 0.2);
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Stats Quick Grid */
-    .stats-rail {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
-    }
-
-    .stat-pill-card {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: all 0.2s;
-    }
-
-    .stat-pill-card:hover {
-      border-color: var(--primary);
-      background: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .stat-pill-card.urgent {
-      background: #fff7ed;
-      border-color: #fdba74;
-    }
-
-    .stat-pill-top {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-sub);
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .stat-pill-num {
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .stat-pill-sub {
-      font-size: 0.68rem;
-      color: var(--text-muted);
+    .brand-titles p {
+      font-size: 0.72rem;
+      color: var(--text-sub);
       font-weight: 600;
     }
 
-    /* Modern Navigation Tabs */
-    .nav-tabs-bar {
+    .header-quick-links {
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 6px 4px 14px;
-      scrollbar-width: none;
-    }
-    .nav-tabs-bar::-webkit-scrollbar { display: none; }
-
-    .nav-tab-btn {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 16px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-sub);
-      cursor: pointer;
-      display: inline-flex;
       align-items: center;
       gap: 8px;
-      white-space: nowrap;
-      transition: all 0.2s;
-      box-shadow: var(--shadow-sm);
     }
 
-    .nav-tab-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .nav-tab-btn.active {
-      background: linear-gradient(135deg, #7e22ce, #9333ea);
+    .btn-hdr-pill {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
       color: #ffffff;
-      border-color: transparent;
-      box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
-    }
-
-    .nav-tab-count {
-      background: rgba(0, 0, 0, 0.08);
-      padding: 2px 7px;
+      padding: 7px 12px;
       border-radius: 12px;
-      font-size: 0.72rem;
-      font-weight: 800;
-    }
-
-    .nav-tab-btn.active .nav-tab-count {
-      background: rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-    }
-
-    /* Section Views */
-    .tab-section {
-      display: none;
-    }
-    .tab-section.active {
-      display: block;
-      animation: fadeIn 0.25s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Filter & Search Bar for Orders */
-    .filter-search-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .search-input-wrap {
-      display: flex;
-      align-items: center;
-      background: #f8fafc;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 14px;
-      gap: 10px;
-    }
-
-    .search-input-wrap input {
-      border: none;
-      background: transparent;
-      outline: none;
-      font-size: 0.88rem;
-      color: var(--text-main);
-      width: 100%;
-      font-family: inherit;
-    }
-
-    .sub-filter-chips {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .sub-filter-chips::-webkit-scrollbar { display: none; }
-
-    .chip-item {
-      background: #f1f5f9;
-      border: 1px solid transparent;
-      border-radius: 20px;
-      padding: 5px 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-sub);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .chip-item:hover {
-      border-color: var(--primary);
-    }
-
-    .chip-item.active {
-      background: #0f172a;
-      color: #ffffff;
-    }
-
-    /* Order Cards (Flipkart / Amazon Seller style) */
-    .order-card-luxury {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-md);
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .order-card-luxury:hover {
-      box-shadow: var(--shadow-lg);
-      border-color: #cbd5e1;
-    }
-
-    .order-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 12px;
-      margin-bottom: 14px;
-    }
-
-    .order-id-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .order-id-pill {
-      background: #f1f5f9;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 800;
-      font-size: 0.85rem;
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .order-time-tag {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .order-price-pill {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    /* Customer Info Panel */
-    .cust-card-grid {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .cust-row-main {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .cust-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .paymode-badge {
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: #e0f2fe;
-      color: #0369a1;
-      border: 1px solid #bae6fd;
-    }
-    .paymode-badge.cod {
-      background: #fef3c7;
-      color: #92400e;
-      border-color: #fde68a;
-    }
-
-    .cust-address-text {
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      line-height: 1.4;
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-    }
-
-    .cust-action-buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-      flex-wrap: wrap;
-    }
-
-    .btn-action-pill {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 6px 12px;
       font-size: 0.78rem;
       font-weight: 700;
       display: inline-flex;
@@ -554,1053 +193,826 @@
       transition: all 0.2s;
     }
 
-    .btn-action-call {
-      background: #ecfdf5;
-      color: #047857;
-      border-color: #a7f3d0;
-    }
-    .btn-action-call:hover { background: #d1fae5; }
-
-    .btn-action-wa {
-      background: #25d366;
-      color: #ffffff;
-      border-color: #1eb957;
-      box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
-    }
-    .btn-action-wa:hover { background: #1eb957; }
-
-    .btn-action-slip {
-      background: #ffffff;
-      color: #475569;
-    }
-    .btn-action-slip:hover { background: #f1f5f9; }
-
-    /* Items List Inside Order */
-    .order-items-wrap {
-      border-top: 1px dashed var(--border);
-      padding-top: 12px;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .btn-hdr-pill:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    .order-item-tile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #ffffff;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 8px 10px;
-    }
-
-    .order-item-img {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 1px solid var(--border);
-    }
-
-    .order-item-desc {
-      flex: 1;
-    }
-
-    .order-item-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
-      line-height: 1.3;
-    }
-
-    .order-item-tags {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .order-item-amt {
-      font-size: 0.88rem;
+    .btn-delivery-link {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      border: none;
+      color: #fff;
       font-weight: 800;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 2px 10px rgba(14, 165, 233, 0.35);
     }
 
-    /* Interactive Status Pipeline Controller */
-    .status-controller-box {
-      background: #fdf4ff;
-      border: 1.5px solid #f0abfc;
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    /* Main Content */
+    .container {
+      max-width: 1100px;
+      margin: 20px auto 0;
+      padding: 0 16px;
     }
 
-    .status-controller-header {
-      font-size: 0.76rem;
-      font-weight: 800;
-      color: #86198f;
+    /* Confidential Financial Overview (মালিকের গোপন হিসাব) */
+    .confidential-finance-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #172554 100%);
+      border: 1.5px solid #4338ca;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .confidential-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .stepper-buttons-row {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding: 2px 0;
-    }
-    .stepper-buttons-row::-webkit-scrollbar { display: none; }
-
-    .btn-step-status {
-      background: #ffffff;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 6px 10px;
+    .conf-tag {
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
       font-size: 0.72rem;
       font-weight: 800;
-      color: var(--text-sub);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
+      padding: 4px 10px;
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
       gap: 5px;
     }
 
-    .btn-step-status:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .finance-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
     }
 
-    .btn-step-status.current {
+    .f-metric-card {
+      background: rgba(19, 27, 46, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    .f-metric-lbl {
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .f-metric-val {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .f-metric-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Segmented Tabs Navigation */
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 14px;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+
+    .adm-tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .adm-tab-btn.active {
+      background: linear-gradient(135deg, #7e22ce, #9333ea);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Common Card */
+    .owner-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Flash Sale & Promo Manager */
+    .promo-manager-box {
+      background: linear-gradient(135deg, #450a0a, #7f1d1d);
+      border: 1px solid #b91c1c;
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .btn-flash-ctl {
+      background: #fef08a;
+      color: #78350f;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Order Cards */
+    .order-box {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .order-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .status-stepper-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-top: 10px;
+    }
+
+    .btn-step {
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-step.active {
       background: var(--primary);
       color: #ffffff;
       border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(147, 51, 234, 0.35);
     }
-
-    .btn-step-status.current.delivered {
+    .btn-step.active.deliv {
       background: var(--emerald);
       border-color: var(--emerald);
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
     }
 
-    /* Inventory Section Cards */
-    .inventory-card-view {
+    /* Inventory Grid */
+    .inv-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 14px;
     }
 
-    .inv-item-card {
-      background: var(--surface);
+    .inv-card {
+      background: var(--surface-light);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      box-shadow: var(--shadow-sm);
+      border-radius: 14px;
+      padding: 12px;
       display: flex;
       gap: 12px;
       align-items: center;
-      transition: all 0.2s;
     }
 
-    .inv-item-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--primary-light);
-    }
-
-    .inv-img {
+    .inv-thumb {
       width: 65px;
       height: 65px;
-      border-radius: 12px;
+      border-radius: 10px;
       object-fit: cover;
       border: 1px solid var(--border);
     }
 
-    .inv-details {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .inv-title {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.3;
-    }
-
-    .inv-price {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--primary-dark);
-    }
-
-    .inv-stepper {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .btn-inv-qty {
+    .btn-qty-ctl {
       width: 28px;
       height: 28px;
-      border-radius: 8px;
+      background: #090d16;
       border: 1px solid var(--border);
-      background: #f8fafc;
+      color: #fff;
+      border-radius: 6px;
       font-size: 0.85rem;
       font-weight: 800;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .btn-inv-qty:hover {
-      background: #e2e8f0;
-    }
-
-    .inv-qty-input {
-      width: 50px;
+    .stock-val-box {
+      width: 48px;
       height: 28px;
+      background: #090d16;
       border: 1.5px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
+      color: #fff;
       text-align: center;
       font-weight: 800;
-      font-size: 0.85rem;
-      color: var(--text-main);
     }
 
-    .btn-quick-plus {
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      border: 1px solid #f0abfc;
-      border-radius: 6px;
-      padding: 2px 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* Add Product Form */
-    .form-card-luxury {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: var(--shadow-md);
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
+    /* Forms */
     .form-group {
       margin-bottom: 16px;
     }
-
     .form-label {
       display: block;
       font-size: 0.82rem;
       font-weight: 700;
-      color: var(--text-sub);
+      color: #cbd5e1;
       margin-bottom: 6px;
     }
-
-    .form-control {
+    .form-ctrl {
       width: 100%;
-      padding: 10px 14px;
+      background: #090d16;
       border: 1.5px solid var(--border);
       border-radius: 12px;
+      padding: 10px 14px;
+      color: #fff;
       font-size: 0.9rem;
       font-family: inherit;
-      color: var(--text-main);
-      background: #f8fafc;
       outline: none;
-      transition: all 0.2s;
     }
-
-    .form-control:focus {
+    .form-ctrl:focus {
       border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
     }
-
     .form-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-
-    .btn-submit-luxury {
+    .btn-submit-owner {
       width: 100%;
-      background: linear-gradient(135deg, #7e22ce, #9333ea);
-      color: #ffffff;
+      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      color: #fff;
       border: none;
       padding: 14px;
       border-radius: 14px;
-      font-size: 0.95rem;
       font-weight: 800;
+      font-size: 0.95rem;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
 
-    .btn-submit-luxury:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(147, 51, 234, 0.45);
-    }
-
-    /* Print Delivery Slip Modal */
-    .slip-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .slip-content {
-      background: #ffffff;
-      border-radius: 18px;
-      max-width: 420px;
-      width: 100%;
-      padding: 20px;
-      box-shadow: var(--shadow-lg);
-    }
-
-    /* Reviews Grid */
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-    }
-
-    .review-card-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    /* Delivery boy link share card */
+    .deliv-share-card {
+      background: linear-gradient(135deg, #0369a1, #0284c7);
       border-radius: 16px;
-      padding: 14px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Bottom Quick Dock for Mobile */
-    .quick-dock {
-      position: fixed;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 28px;
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-      z-index: 100;
-    }
-
-    .dock-item {
-      color: #94a3b8;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 7px 12px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .dock-item:hover, .dock-item.active {
+      padding: 18px;
       color: #ffffff;
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .dock-item.active {
-      background: var(--primary);
-    }
-
-    /* Empty state */
-    .empty-box {
-      background: var(--surface);
-      border: 1.5px dashed var(--border);
-      border-radius: 20px;
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      font-size: 2.8rem;
-      color: #cbd5e1;
-      margin-bottom: 12px;
-    }
-
-    /* Media queries */
-    @media (max-width: 640px) {
-      .revenue-value { font-size: 1.5rem; }
-      .brand-meta h1 { font-size: 1rem; }
-      .order-card-luxury { padding: 14px; }
-      .form-grid-2 { grid-template-columns: 1fr; }
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Executive Header -->
+  <!-- ==================== 1. SECRET 4-DIGIT PIN LOCK ==================== -->
+  <div id="pinLockModal">
+    <div class="pin-box-card">
+      <div class="pin-badge-icon">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h2 style="font-size:1.25rem; font-weight:800; color:#ffffff;">মালিক সিকিউরিটি যাচাই</h2>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">
+        ব্যবসায়িক গোপনীয়তার জন্য ৪-ডিজিটের গোপন পিন দিন।
+      </p>
+
+      <input type="password" id="ownerPinInput" class="pin-input-field" maxlength="4" placeholder="••••" autofocus onkeypress="if(event.key==='Enter') verifyOwnerPin()">
+
+      <button type="button" class="btn-pin-unlock" onclick="verifyOwnerPin()">
+        <i class="fa-solid fa-unlock-keyhole"></i> ড্যাশবোর্ডে প্রবেশ করুন
+      </button>
+
+      <div style="font-size:0.7rem; color:#64748b; margin-top:14px;">
+        ডিফল্ট পিন: <strong>1234</strong> (সেটিংস থেকে পরিবর্তন করতে পারবেন)
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 2. OWNER HEADER ==================== -->
   <header class="exec-header">
-    <div class="header-content">
-      <div class="brand-cluster">
-        <div class="brand-badge">NC</div>
-        <div class="brand-meta">
+    <div class="exec-nav-inner">
+      <div class="brand-meta">
+        <div class="brand-logo-hex">NC</div>
+        <div class="brand-titles">
           <h1>
-            Nisha Creations Hub
-            <i class="fa-solid fa-circle-check" style="color:#f59e0b; font-size:0.85rem;" title="Verified Boutique"></i>
+            Nisha Creations • Owner Hub
+            <i class="fa-solid fa-shield-halved" style="color:var(--emerald); font-size:0.85rem;" title="মালিক মোড সক্রিয়"></i>
           </h1>
-          <p>
-            <span class="live-pulse-dot"></span>
-            লাইভ কন্ট্রোল সেন্টার • আমতা
-          </p>
+          <p>👑 সম্পূর্ণ গোপনীয় ও সুরক্ষিত ড্যাশবোর্ড • আমতা</p>
         </div>
       </div>
 
-      <div class="header-actions">
-        <button type="button" class="btn-exec" onclick="refreshAdminData()" title="রিফ্রেশ">
-          <i class="fa-solid fa-rotate"></i>
-          <span style="display:none; @media(min-width:480px){display:inline;}">রিফ্রেশ</span>
-        </button>
-
-        <a href="index.html" class="btn-exec btn-shop" title="কাস্টমারদের শপিং পেজে যান">
-          <i class="fa-solid fa-store"></i>
-          <span>কাস্টমার শপ</span>
+      <div class="header-quick-links">
+        <a href="delivery.html" target="_blank" class="btn-hdr-pill btn-delivery-link" title="ডেলিভারি বয়ের জন্য আলাদা পেজ">
+          <i class="fa-solid fa-motorcycle"></i> ডেলিভারি পোর্টাল
         </a>
+        <a href="index.html" target="_blank" class="btn-hdr-pill" style="background:#f59e0b; color:#0f172a; border:none; font-weight:800;" title="কাস্টমারদের শপিং পেজ">
+          <i class="fa-solid fa-store"></i> কাস্টমার শপ
+        </a>
+        <button type="button" class="btn-hdr-pill" onclick="lockDashboard()" title="লক করুন">
+          <i class="fa-solid fa-lock"></i>
+        </button>
       </div>
     </div>
   </header>
 
-  <div class="main-wrap">
+  <div class="container">
 
-    <!-- 1. Executive Finance & Performance Overview Hero Card -->
-    <section class="finance-hero-card">
-      <div class="hero-top-row">
-        <div>
-          <div class="revenue-label">💰 মোট ব্যবসার আয় (Total Sales)</div>
-          <div class="revenue-block">
-            <span class="revenue-value" id="statTotalSales">₹0</span>
-            <span class="badge-revenue-tag">
-              <i class="fa-solid fa-arrow-trend-up"></i> লাইভ আপডেট
-            </span>
-          </div>
+    <!-- ==================== 3. CONFIDENTIAL FINANCE & ACCOUNTS ==================== -->
+    <section class="confidential-finance-banner">
+      <div class="confidential-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="conf-tag"><i class="fa-solid fa-eye-slash"></i> শুধুমাত্র মালিকের জন্য (গোপনীয়)</span>
+          <span style="font-size:0.75rem; color:#e2e8f0; font-weight:600;">• ডেলিভারি পার্টনার এই অংশটি দেখতে পায় না</span>
         </div>
 
-        <div style="display:flex; gap:8px; align-items:center;">
-          <button type="button" class="btn-action-pill" onclick="addDemoOrderForTest()" style="background:#f1f5f9; color:#334155;">
-            <i class="fa-solid fa-vial"></i> ডেমো টেস্ট অর্ডার
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-hdr-pill" onclick="addOwnerDemoOrder()" style="font-size:0.72rem;">
+            <i class="fa-solid fa-vial"></i> ডেমো টেস্ট
           </button>
-          <button type="button" class="btn-action-pill" onclick="exportOrdersJSON()" style="background:#f1f5f9; color:#334155;">
+          <button type="button" class="btn-hdr-pill" onclick="exportOwnerBackup()" style="font-size:0.72rem;">
             <i class="fa-solid fa-download"></i> ব্যাকআপ
           </button>
         </div>
       </div>
 
-      <!-- Live KPI Pills -->
-      <div class="stats-rail">
-        <div class="stat-pill-card" onclick="filterOrdersDirect('all')">
-          <div class="stat-pill-top">
-            <i class="fa-solid fa-boxes-stacked" style="color:var(--primary);"></i> মোট অর্ডার
-          </div>
-          <div class="stat-pill-num" id="statTotalOrders">0</div>
-          <div class="stat-pill-sub">কাস্টমার বুকিং</div>
+      <div class="finance-metrics-grid">
+        <div class="f-metric-card">
+          <div class="f-metric-lbl"><i class="fa-solid fa-coins" style="color:#f59e0b;"></i> মোট বিক্রি (Revenue)</div>
+          <div class="f-metric-val" id="statTotalRevenue" style="color:#10b981;">₹0</div>
+          <div class="f-metric-sub">সফল ও রানিং অর্ডারের মূল্য</div>
         </div>
 
-        <div class="stat-pill-card urgent" onclick="filterOrdersDirect('Order Placed')">
-          <div class="stat-pill-top" style="color:#c2410c;">
-            <i class="fa-solid fa-bell" style="color:#ea580c;"></i> নতুন অর্ডার
-          </div>
-          <div class="stat-pill-num" id="statPendingOrders" style="color:#ea580c;">0</div>
-          <div class="stat-pill-sub">অ্যাকশন প্রয়োজন</div>
+        <div class="f-metric-card">
+          <div class="f-metric-lbl"><i class="fa-solid fa-money-bill-wave" style="color:#10b981;"></i> ক্যাশ কালেকশন (COD)</div>
+          <div class="f-metric-val" id="statCodTotal">₹0</div>
+          <div class="f-metric-sub">ডেলিভারি বয়ের থেকে প্রাপ্য</div>
         </div>
 
-        <div class="stat-pill-card" onclick="filterOrdersDirect('Packed')">
-          <div class="stat-pill-top">
-            <i class="fa-solid fa-box-open" style="color:#8b5cf6;"></i> প্যাকিং
-          </div>
-          <div class="stat-pill-num" id="statPackedOrders">0</div>
-          <div class="stat-pill-sub">প্রস্তুত হচ্ছে</div>
+        <div class="f-metric-card">
+          <div class="f-metric-lbl"><i class="fa-solid fa-mobile-screen" style="color:#38bdf8;"></i> অনলাইন পেমেন্ট (UPI)</div>
+          <div class="f-metric-val" id="statUpiTotal">₹0</div>
+          <div class="f-metric-sub">সরাসরি ব্যাংকে জমা</div>
         </div>
 
-        <div class="stat-pill-card" onclick="filterOrdersDirect('Out for Delivery')">
-          <div class="stat-pill-top">
-            <i class="fa-solid fa-motorcycle" style="color:#0284c7;"></i> ডেলিভারিতে
-          </div>
-          <div class="stat-pill-num" id="statOutOrders">0</div>
-          <div class="stat-pill-sub">আমতায় পথে আছে</div>
-        </div>
-
-        <div class="stat-pill-card" onclick="filterOrdersDirect('Delivered')">
-          <div class="stat-pill-top">
-            <i class="fa-solid fa-circle-check" style="color:#059669;"></i> সম্পন্ন
-          </div>
-          <div class="stat-pill-num" id="statDeliveredOrders" style="color:#059669;">0</div>
-          <div class="stat-pill-sub">সফল ডেলিভারি</div>
+        <div class="f-metric-card">
+          <div class="f-metric-lbl"><i class="fa-solid fa-bell" style="color:#f43f5e;"></i> নতুন পেন্ডিং অর্ডার</div>
+          <div class="f-metric-val" id="statPendingOrders" style="color:#f43f5e;">0</div>
+          <div class="f-metric-sub">প্যাকিংয়ের অপেক্ষা</div>
         </div>
       </div>
     </section>
 
-    <!-- 2. Modern Segmented Tab Switcher -->
-    <nav class="nav-tabs-bar">
-      <button type="button" class="nav-tab-btn active" id="tabNavOrders" onclick="switchSection('orders')">
-        <i class="fa-solid fa-clipboard-list"></i>
-        <span>অর্ডার ও ট্র্যাকিং</span>
-        <span class="nav-tab-count" id="badgeNavOrders">0</span>
-      </button>
-
-      <button type="button" class="nav-tab-btn" id="tabNavInventory" onclick="switchSection('inventory')">
-        <i class="fa-solid fa-warehouse"></i>
-        <span>শাড়ির স্টক ও ইনভেন্টরি</span>
-        <span class="nav-tab-count" id="badgeNavStock">0</span>
-      </button>
-
-      <button type="button" class="nav-tab-btn" id="tabNavAdd" onclick="switchSection('add-product')">
-        <i class="fa-solid fa-plus-circle"></i>
-        <span>নতুন শাড়ি আপলোড</span>
-      </button>
-
-      <button type="button" class="nav-tab-btn" id="tabNavReviews" onclick="switchSection('reviews')">
-        <i class="fa-solid fa-star"></i>
-        <span>কাস্টমার রিভিউ</span>
-        <span class="nav-tab-count" id="badgeNavReviews">0</span>
-      </button>
-    </nav>
-
-    <!-- ==================== SECTION A: ORDERS & TRACKING ==================== -->
-    <section id="sec-orders" class="tab-section active">
-      <!-- Search & Filters -->
-      <div class="filter-search-box">
-        <div class="search-input-wrap">
-          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
-          <input type="text" id="orderSearchInput" placeholder="অর্ডার আইডি (#NC-5019) বা কাস্টমারের নাম/ফোন দিয়ে খুঁজুন..." oninput="handleOrderSearch()">
+    <!-- Quick Delivery Hub Share Strip -->
+    <div class="deliv-share-card">
+      <div>
+        <div style="font-size:0.95rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-motorcycle" style="font-size:1.3rem;"></i>
+          ডেলিভারি পার্টনার লিঙ্ক (Delivery Hub)
         </div>
-
-        <div class="sub-filter-chips">
-          <button type="button" class="chip-item active" onclick="setOrderFilter('all', this)">
-            সব অর্ডার (<span id="countAll">0</span>)
-          </button>
-          <button type="button" class="chip-item" onclick="setOrderFilter('Order Placed', this)">
-            ⏳ নতুন বুকিং (<span id="countPlaced">0</span>)
-          </button>
-          <button type="button" class="chip-item" onclick="setOrderFilter('Packed', this)">
-            📦 প্যাকিং (<span id="countPacked">0</span>)
-          </button>
-          <button type="button" class="chip-item" onclick="setOrderFilter('Out for Delivery', this)">
-            🚚 ডেলিভারিতে (<span id="countOut">0</span>)
-          </button>
-          <button type="button" class="chip-item" onclick="setOrderFilter('Delivered', this)">
-            ✅ সম্পন্ন (<span id="countDelivered">0</span>)
-          </button>
-          <button type="button" class="chip-item" onclick="setOrderFilter('Cancelled', this)">
-            ❌ বাতিল (<span id="countCancelled">0</span>)
-          </button>
+        <div style="font-size:0.76rem; opacity:0.9; margin-top:2px;">
+          এই পেজের লিংকটি আপনার ডেলিভারি বয়কে শেয়ার করে দিন। সে শুধু ঠিকানা ও ক্যাশ দেখতে পাবে, আপনার বিক্রি নয়।
         </div>
       </div>
-
-      <!-- Orders List Container -->
-      <div id="ordersContainer">
-        <!-- Rendered by JavaScript -->
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="copyDeliveryUrl()" class="btn-hdr-pill" style="background:#ffffff; color:#0369a1; font-weight:800;">
+          <i class="fa-regular fa-copy"></i> লিংক কপি করুন
+        </button>
+        <button type="button" onclick="shareDeliveryUrlWhatsApp()" class="btn-hdr-pill" style="background:#25d366; color:#ffffff; font-weight:800; border:none;">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp এ পাঠান
+        </button>
       </div>
-    </section>
+    </div>
 
-    <!-- ==================== SECTION B: INVENTORY & STOCK ==================== -->
-    <section id="sec-inventory" class="tab-section">
-      <div class="filter-search-box">
-        <div class="search-input-wrap">
-          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
-          <input type="text" id="stockSearchInput" placeholder="শাড়ির নাম বা আইডি দিয়ে খুঁজুন..." oninput="handleStockSearch()">
+    <!-- Flash Sale & Urgency Offer Controller -->
+    <div class="promo-manager-box">
+      <div>
+        <div style="font-size:0.95rem; font-weight:800; color:#fef08a; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-fire-flame-curved"></i>
+          ওয়েবসাইট ফ্ল্যাশ সেল ও অফার টাইমার কন্ট্রোল
+        </div>
+        <div style="font-size:0.76rem; color:#fee2e2; margin-top:2px;">
+          বর্তমানে কাস্টমার হোমপেজে ২ ঘণ্টার কাউন্টডাউন টাইমার চলছে। আপনি যখন খুশি রিস্টার্ট করতে পারবেন।
         </div>
       </div>
-
-      <div class="inventory-card-view" id="inventoryGridContainer">
-        <!-- Rendered by JavaScript -->
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-flash-ctl" onclick="restartFlashSale2Hours()">
+          <i class="fa-solid fa-rotate-right"></i> ২ ঘণ্টার টাইমার রিস্টার্ট করুন
+        </button>
+        <button type="button" class="btn-flash-ctl" onclick="promptChangePin()" style="background:#ffffff; color:#0f172a;">
+          <i class="fa-solid fa-key"></i> পিন বদলান
+        </button>
       </div>
-    </section>
+    </div>
 
-    <!-- ==================== SECTION C: ADD NEW PRODUCT ==================== -->
-    <section id="sec-add-product" class="tab-section">
-      <div class="form-card-luxury">
-        <div style="margin-bottom:18px; border-bottom:1px solid var(--border-subtle); padding-bottom:12px;">
-          <h2 style="font-size:1.15rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-            <i class="fa-solid fa-sparkles" style="color:var(--primary);"></i>
-            নতুন শাড়ি বা পোশাক যুক্ত করুন
-          </h2>
-          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-            এখানে তথ্য দিয়ে সাবমিট করলেই কাস্টমাররা ওয়েবসাইটে সরাসরি শাড়িটি কিনতে পারবে।
-          </p>
-        </div>
+    <!-- ==================== 4. OWNER NAVIGATION TABS ==================== -->
+    <div class="admin-tabs">
+      <button type="button" class="adm-tab-btn active" id="tabBtnOrders" onclick="switchAdminView('orders')">
+        <i class="fa-solid fa-boxes-packing"></i> অর্ডার ম্যানেজমেন্ট (<span id="countTabOrders">0</span>)
+      </button>
+      <button type="button" class="adm-tab-btn" id="tabBtnStock" onclick="switchAdminView('stock')">
+        <i class="fa-solid fa-warehouse"></i> শাড়ির স্টক ও দাম (<span id="countTabStock">0</span>)
+      </button>
+      <button type="button" class="adm-tab-btn" id="tabBtnAdd" onclick="switchAdminView('add')">
+        <i class="fa-solid fa-plus-circle"></i> নতুন শাড়ি আপলোড
+      </button>
+      <button type="button" class="adm-tab-btn" id="tabBtnReviews" onclick="switchAdminView('reviews')">
+        <i class="fa-solid fa-star"></i> কাস্টমার রিভিউ
+      </button>
+    </div>
 
-        <form id="newSareeForm" onsubmit="handleNewProductSubmit(event)">
+    <!-- ==================== TAB A: ORDERS LIST ==================== -->
+    <div id="pane-orders" class="tab-pane active">
+      <div id="ordersContainer"></div>
+    </div>
+
+    <!-- ==================== TAB B: STOCK INVENTORY ==================== -->
+    <div id="pane-stock" class="tab-pane">
+      <div class="owner-card" style="padding:14px; margin-bottom:14px;">
+        <input type="text" id="stockFilterInput" class="form-ctrl" placeholder="শাড়ির নাম দিয়ে ফিল্টার করুন..." oninput="renderOwnerStock()">
+      </div>
+      <div class="inv-grid" id="stockGridContainer"></div>
+    </div>
+
+    <!-- ==================== TAB C: ADD NEW PRODUCT ==================== -->
+    <div id="pane-add" class="tab-pane">
+      <div class="owner-card" style="max-width:650px; margin:0 auto;">
+        <h2 style="font-size:1.15rem; font-weight:800; color:#fff; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i> নতুন শাড়ি বা গহনা যোগ করুন
+        </h2>
+
+        <form id="ownerAddProductForm" onsubmit="handleOwnerProductSubmit(event)">
           <div class="form-group">
-            <label class="form-label">শাড়ির পুরো নাম (Product Title) *</label>
-            <input type="text" id="prodTitle" class="form-control" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী পাড়)" required>
+            <label class="form-label">শাড়ির পুরো নাম *</label>
+            <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: ঢাকাই জামদানি সিল্ক শাড়ি" required>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">ক্যাটাগরি (Category) *</label>
-              <select id="prodCategory" class="form-control" required>
+              <label class="form-label">ক্যাটাগরি *</label>
+              <select id="op_cat" class="form-ctrl" required>
                 <option value="saree">শাড়ি (Saree)</option>
                 <option value="kurti">কুর্তি ও সেট (Kurti)</option>
-                <option value="girls">ছোটদের ফ্রক (Girls Frock)</option>
-                <option value="jewel">গহনা ও জুয়েলারি (Jewellery)</option>
+                <option value="girls">ছোটদের ফ্রক (Girls)</option>
+                <option value="jewel">জুয়েলারি ও গহনা (Jewel)</option>
                 <option value="bangles">বালা ও চুড়ি (Bangles)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="form-label">কাপড় / ফেব্রিক (Fabric)</label>
-              <input type="text" id="prodFabric" class="form-control" placeholder="যেমন: Soft Resham Silk">
+              <label class="form-label">ফেব্রিক / উপাদান</label>
+              <input type="text" id="op_fabric" class="form-ctrl" placeholder="Soft Silk">
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">বিক্রি মূল্য (Offer Price - ₹) *</label>
-              <input type="number" id="prodPrice" class="form-control" placeholder="428" required>
+              <label class="form-label">বিক্রি মূল্য (₹) *</label>
+              <input type="number" id="op_price" class="form-ctrl" placeholder="428" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label">আসল মূল্য (MRP - ₹)</label>
-              <input type="number" id="prodMrp" class="form-control" placeholder="999">
+              <label class="form-label">আসল দাম (MRP - ₹)</label>
+              <input type="number" id="op_mrp" class="form-ctrl" placeholder="999">
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">প্রারম্ভিক স্টক সংখ্যা (Pieces) *</label>
-              <input type="number" id="prodStock" class="form-control" value="25" required>
+              <label class="form-label">প্রারম্ভিক স্টক (Pieces) *</label>
+              <input type="number" id="op_stock" class="form-ctrl" value="30" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label">ছবি আপলোড বা লিংক *</label>
-              <input type="text" id="prodImgUrl" class="form-control" placeholder="ছবির অনলাইন লিংক (URL)" required>
+              <label class="form-label">ছবির লিংক (URL) *</label>
+              <input type="text" id="op_img" class="form-ctrl" placeholder="ছবির ওয়েব লিংক বা ফাইল" required>
             </div>
           </div>
 
-          <!-- Quick Image Preview -->
           <div class="form-group" style="display:flex; align-items:center; gap:12px;">
-            <label class="btn-action-pill" style="cursor:pointer; background:#f1f5f9; color:#334155;">
-              <i class="fa-solid fa-camera"></i> মোবাইল গ্যালারি থেকে ছবি বাছুন
-              <input type="file" id="prodImgFileInput" accept="image/*" style="display:none;" onchange="handleAdminFileSelect(event)">
+            <label class="btn-hdr-pill" style="cursor:pointer; background:#1e293b; color:#fff;">
+              <i class="fa-solid fa-camera"></i> গ্যালারি থেকে ফটো দিন
+              <input type="file" id="op_file" accept="image/*" style="display:none;" onchange="handleOwnerImageUpload(event)">
             </label>
-            <img id="prodImgPreview" src="" alt="Preview" style="width:44px; height:44px; border-radius:8px; object-fit:cover; display:none; border:1px solid var(--border);">
+            <img id="op_preview" src="" alt="Preview" style="width:44px; height:44px; border-radius:8px; object-fit:cover; display:none; border:1px solid var(--border);">
           </div>
 
           <div class="form-group">
-            <label class="form-label">শাড়ির আকর্ষণীয় বিবরণ (Description)</label>
-            <textarea id="prodDesc" class="form-control" rows="3" placeholder="আসল কোয়ালিটি, সফট মেটেরিয়াল এবং নিখুঁত ফিনিশিং..."></textarea>
+            <label class="form-label">বিবরণ (Description)</label>
+            <textarea id="op_desc" class="form-ctrl" rows="3" placeholder="আসল কোয়ালিটি ও সফট ফিনিশিং..."></textarea>
           </div>
 
-          <button type="submit" class="btn-submit-luxury">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            শাড়িটি ওয়েবসাইটে লাইভ করুন
+          <button type="submit" class="btn-submit-owner">
+            <i class="fa-solid fa-cloud-arrow-up"></i> ওয়েবসাইটে লাইভ করুন
           </button>
         </form>
       </div>
-    </section>
+    </div>
 
-    <!-- ==================== SECTION D: CUSTOMER REVIEWS ==================== -->
-    <section id="sec-reviews" class="tab-section">
-      <div class="reviews-grid" id="reviewsContainer">
-        <!-- Rendered by JavaScript -->
-      </div>
-    </section>
+    <!-- ==================== TAB D: REVIEWS ==================== -->
+    <div id="pane-reviews" class="tab-pane">
+      <div id="ownerReviewsContainer"></div>
+    </div>
 
   </div>
 
-  <!-- Bottom Floating Dock for Mobile -->
-  <div class="quick-dock">
-    <div class="dock-item active" id="dockOrders" onclick="switchSection('orders')">
-      <i class="fa-solid fa-boxes-packing"></i> অর্ডার
-    </div>
-    <div class="dock-item" id="dockInventory" onclick="switchSection('inventory')">
-      <i class="fa-solid fa-warehouse"></i> স্টক
-    </div>
-    <div class="dock-item" id="dockAdd" onclick="switchSection('add-product')">
-      <i class="fa-solid fa-plus-circle"></i> নতুন শাড়ি
-    </div>
-    <div class="dock-item" id="dockReviews" onclick="switchSection('reviews')">
-      <i class="fa-solid fa-star"></i> রিভিউ
-    </div>
-  </div>
-
-  <!-- JavaScript Application Engine -->
   <script>
     // State
-    let ordersData = [];
-    let currentFilterState = 'all';
-    let searchQuery = '';
+    let ordersList = [];
+    let ownerPin = localStorage.getItem('nc_owner_pin') || '1234';
 
-    window.addEventListener('DOMContentLoaded', () => {
-      refreshAdminData();
-    });
-
-    function refreshAdminData() {
-      loadOrders();
-      updateKPIs();
-      renderOrders();
-      renderInventory();
-      renderReviews();
+    // PIN Verification
+    function verifyOwnerPin() {
+      const entered = document.getElementById('ownerPinInput').value.trim();
+      if (entered === ownerPin) {
+        document.getElementById('pinLockModal').style.display = 'none';
+        sessionStorage.setItem('nc_owner_unlocked', 'true');
+        loadAllOwnerData();
+      } else {
+        alert('❌ ভুল পিন! অনুগ্রহ করে সঠিক ৪-ডিজিটের পিন দিন।');
+        document.getElementById('ownerPinInput').value = '';
+        document.getElementById('ownerPinInput').focus();
+      }
     }
 
-    // Load Orders from Storage
+    function lockDashboard() {
+      sessionStorage.removeItem('nc_owner_unlocked');
+      document.getElementById('ownerPinInput').value = '';
+      document.getElementById('pinLockModal').style.display = 'flex';
+    }
+
+    function promptChangePin() {
+      const cur = prompt('বর্তমান পিন দিন:');
+      if (cur !== ownerPin) { alert('বর্তমান পিন ভুল!'); return; }
+      const newP = prompt('নতুন ৪-সংখ্যার পিন দিন:');
+      if (newP && newP.length === 4 && !isNaN(newP)) {
+        ownerPin = newP;
+        localStorage.setItem('nc_owner_pin', newP);
+        alert(`✅ পিন সফলভাবে পরিবর্তন হয়েছে! নতুন পিন: ${newP}`);
+      } else {
+        alert('❌ অন্তত ৪ সংখ্যার পিন দিতে হবে।');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('nc_owner_unlocked') === 'true') {
+        document.getElementById('pinLockModal').style.display = 'none';
+        loadAllOwnerData();
+      } else {
+        document.getElementById('pinLockModal').style.display = 'flex';
+      }
+    });
+
+    function loadAllOwnerData() {
+      loadOrders();
+      renderFinanceOverview();
+      renderOwnerOrders();
+      renderOwnerStock();
+      renderOwnerReviews();
+    }
+
     function loadOrders() {
       try {
         const stored = localStorage.getItem('nc_orders');
-        ordersData = stored ? JSON.parse(stored) : [];
+        ordersList = stored ? JSON.parse(stored) : [];
       } catch(e) {
-        ordersData = [];
+        ordersList = [];
       }
     }
 
-    // Update KPI Numbers
-    function updateKPIs() {
-      const total = ordersData.length;
-      const pending = ordersData.filter(o => o.status === 'Order Placed').length;
-      const packed = ordersData.filter(o => o.status === 'Packed').length;
-      const out = ordersData.filter(o => o.status === 'Out for Delivery').length;
-      const delivered = ordersData.filter(o => o.status === 'Delivered').length;
-      const cancelled = ordersData.filter(o => o.status === 'Cancelled').length;
-
-      const totalSales = ordersData
+    // Finance & KPIs
+    function renderFinanceOverview() {
+      const totalRev = ordersList
         .filter(o => o.status !== 'Cancelled')
         .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
 
-      document.getElementById('statTotalSales').textContent = '₹' + totalSales.toLocaleString('en-IN');
-      document.getElementById('statTotalOrders').textContent = total;
+      const codTotal = ordersList
+        .filter(o => o.paymentMode === 'COD' && o.status !== 'Cancelled')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      const upiTotal = ordersList
+        .filter(o => o.paymentMode === 'UPI' && o.status !== 'Cancelled')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      const pending = ordersList.filter(o => o.status === 'Order Placed').length;
+
+      document.getElementById('statTotalRevenue').textContent = '₹' + totalRev.toLocaleString('en-IN');
+      document.getElementById('statCodTotal').textContent = '₹' + codTotal.toLocaleString('en-IN');
+      document.getElementById('statUpiTotal').textContent = '₹' + upiTotal.toLocaleString('en-IN');
       document.getElementById('statPendingOrders').textContent = pending;
-      document.getElementById('statPackedOrders').textContent = packed;
-      document.getElementById('statOutOrders').textContent = out;
-      document.getElementById('statDeliveredOrders').textContent = delivered;
-
-      // Badges
-      document.getElementById('badgeNavOrders').textContent = total;
-      document.getElementById('countAll').textContent = total;
-      document.getElementById('countPlaced').textContent = pending;
-      document.getElementById('countPacked').textContent = packed;
-      document.getElementById('countOut').textContent = out;
-      document.getElementById('countDelivered').textContent = delivered;
-      document.getElementById('countCancelled').textContent = cancelled;
+      document.getElementById('countTabOrders').textContent = ordersList.length;
     }
 
-    // Switch Tab Section
-    function switchSection(secKey) {
-      document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+    // Tab Navigation
+    function switchAdminView(tabKey) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
 
-      const targetSec = document.getElementById(`sec-${secKey}`);
-      if (targetSec) targetSec.classList.add('active');
+      const pane = document.getElementById(`pane-${tabKey}`);
+      if (pane) pane.classList.add('active');
 
-      if (secKey === 'orders') {
-        document.getElementById('tabNavOrders').classList.add('active');
-        document.getElementById('dockOrders').classList.add('active');
-        renderOrders();
-      } else if (secKey === 'inventory') {
-        document.getElementById('tabNavInventory').classList.add('active');
-        document.getElementById('dockInventory').classList.add('active');
-        renderInventory();
-      } else if (secKey === 'add-product') {
-        document.getElementById('tabNavAdd').classList.add('active');
-        document.getElementById('dockAdd').classList.add('active');
-      } else if (secKey === 'reviews') {
-        document.getElementById('tabNavReviews').classList.add('active');
-        document.getElementById('dockReviews').classList.add('active');
-        renderReviews();
+      if (tabKey === 'orders') {
+        document.getElementById('tabBtnOrders').classList.add('active');
+        renderOwnerOrders();
+      } else if (tabKey === 'stock') {
+        document.getElementById('tabBtnStock').classList.add('active');
+        renderOwnerStock();
+      } else if (tabKey === 'add') {
+        document.getElementById('tabBtnAdd').classList.add('active');
+      } else if (tabKey === 'reviews') {
+        document.getElementById('tabBtnReviews').classList.add('active');
+        renderOwnerReviews();
       }
-    }
-
-    // Filter Handlers
-    function setOrderFilter(status, btn) {
-      document.querySelectorAll('.chip-item').forEach(c => c.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      currentFilterState = status;
-      renderOrders();
-    }
-
-    function filterOrdersDirect(status) {
-      switchSection('orders');
-      currentFilterState = status;
-      document.querySelectorAll('.chip-item').forEach(c => {
-        if (status === 'all' && c.textContent.includes('সব অর্ডার')) c.classList.add('active');
-        else if (status !== 'all' && c.getAttribute('onclick').includes(status)) c.classList.add('active');
-        else c.classList.remove('active');
-      });
-      renderOrders();
-    }
-
-    function handleOrderSearch() {
-      searchQuery = document.getElementById('orderSearchInput').value.trim().toLowerCase();
-      renderOrders();
     }
 
     // Render Orders
-    function renderOrders() {
+    function renderOwnerOrders() {
       const container = document.getElementById('ordersContainer');
       if (!container) return;
 
-      let filtered = ordersData;
-
-      // Status Filter
-      if (currentFilterState !== 'all') {
-        filtered = filtered.filter(o => o.status === currentFilterState);
-      }
-
-      // Text Search
-      if (searchQuery) {
-        filtered = filtered.filter(o => {
-          const id = (o.id || '').toLowerCase();
-          const name = (o.name || '').toLowerCase();
-          const phone = (o.phone || '').toLowerCase();
-          const addr = (o.address || '').toLowerCase();
-          return id.includes(searchQuery) || name.includes(searchQuery) || phone.includes(searchQuery) || addr.includes(searchQuery);
-        });
-      }
-
-      if (filtered.length === 0) {
+      if (ordersList.length === 0) {
         container.innerHTML = `
-          <div class="empty-box">
-            <div class="empty-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-            <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-main);">এই তালিকায় কোনো অর্ডার নেই</h3>
-            <p style="font-size:0.78rem; margin-top:4px;">কাস্টমাররা অর্ডার করলে এখানে তৎক্ষণাৎ জমা হবে।</p>
+          <div class="owner-card" style="text-align:center; padding:40px 20px; color:var(--text-sub);">
+            <i class="fa-solid fa-inbox" style="font-size:2.5rem; color:#475569; margin-bottom:10px;"></i>
+            <div style="font-size:1rem; font-weight:800; color:#ffffff;">কোনো অর্ডার নেই</div>
+            <div style="font-size:0.75rem; margin-top:4px;">কাস্টমার ওয়েবসাইট থেকে অর্ডার করলে সাথে সাথে এখানে আসবে।</div>
           </div>
         `;
         return;
       }
 
       container.innerHTML = '';
-      filtered.forEach(ord => {
-        // Items HTML
-        let itemsHtml = '';
-        if (ord.items && Array.isArray(ord.items)) {
-          ord.items.forEach(it => {
-            itemsHtml += `
-              <div class="order-item-tile">
-                <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="order-item-img" alt="Item">
-                <div class="order-item-desc">
-                  <div class="order-item-title">${it.title}</div>
-                  <div class="order-item-tags">
-                    <span>সাইজ: <strong>${it.selectedSize || 'Free Size'}</strong></span>
-                    <span>পরিমাণ: <strong>${it.qty || 1} টি</strong></span>
-                    <span>রং: <strong>${it.selectedColor || 'মূল রং'}</strong></span>
-                  </div>
-                </div>
-                <div class="order-item-amt">₹${(it.price || 0) * (it.qty || 1)}</div>
-              </div>
-            `;
-          });
-        }
+      ordersList.forEach(ord => {
+        let itemsHtml = (ord.items || []).map(it => `
+          <div style="display:flex; align-items:center; gap:10px; background:#090d16; padding:8px; border-radius:8px; margin-top:6px;">
+            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=80'}" style="width:38px; height:38px; border-radius:6px; object-fit:cover;">
+            <div style="flex:1;">
+              <div style="font-size:0.82rem; font-weight:700; color:#fff;">${it.title}</div>
+              <div style="font-size:0.7rem; color:#94a3b8;">সাইজ: ${it.selectedSize||'Free Size'} • পরিমাণ: ${it.qty||1} টি</div>
+            </div>
+            <div style="font-weight:800; font-size:0.85rem; color:#fff;">₹${(it.price||0)*(it.qty||1)}</div>
+          </div>
+        `).join('');
 
-        const phoneClean = (ord.phone || '9239413517').replace(/[^0-9]/g, '');
-        const waMsg = encodeURIComponent(`নমস্কার ${ord.name || 'গ্রাহক'}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার অর্ডার #${ord.id}-এর বর্তমান আপডেট:
-স্ট্যাটাস: ${ord.status}।
-মোট প্রদেয় বিল: ₹${ord.total} (${ord.paymentMode || 'COD'})।
-যেকোনো প্রয়োজনে আমাদের কল করুন: 9239413517`);
+        const phoneClean = (ord.phone || '').replace(/[^0-9]/g, '');
 
-        const card = document.createElement('div');
-        card.className = 'order-card-luxury';
-        card.innerHTML = `
-          <div class="order-card-top">
-            <div class="order-id-group">
-              <span class="order-id-pill"><i class="fa-solid fa-receipt" style="color:var(--primary);"></i> #${ord.id}</span>
-              <span class="order-time-tag"><i class="fa-regular fa-clock"></i> ${ord.date || 'আজ'}</span>
+        const box = document.createElement('div');
+        box.className = 'order-box';
+        box.innerHTML = `
+          <div class="order-header-row">
+            <div>
+              <span style="font-weight:800; font-size:0.92rem; color:#f59e0b;">Order #${ord.id}</span>
+              <span style="font-size:0.7rem; color:#94a3b8; margin-left:8px;">${ord.date || 'আজ'}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="paymode-badge ${ord.paymentMode === 'COD' ? 'cod' : ''}">
-                ${ord.paymentMode === 'UPI' ? '📲 অনলাইন পেমেন্ট (UPI)' : '💵 ক্যাশ অন ডেলিভারি (COD)'}
+              <span style="font-size:0.72rem; padding:3px 8px; border-radius:6px; background:${ord.paymentMode==='UPI'?'#0284c7':'#d97706'}; color:#fff; font-weight:800;">
+                ${ord.paymentMode === 'UPI' ? '📲 UPI Paid' : '💵 Cash on Delivery'}
               </span>
-              <span class="order-price-pill">₹${ord.total}</span>
+              <span style="font-weight:800; font-size:1.1rem; color:#10b981;">₹${ord.total}</span>
             </div>
           </div>
 
-          <!-- Customer info -->
-          <div class="cust-card-grid">
-            <div class="cust-row-main">
-              <div class="cust-title">
-                <i class="fa-solid fa-circle-user" style="color:var(--primary); font-size:1.15rem;"></i>
-                <span>${ord.name || 'সম্মানিত গ্রাহক'}</span>
-              </div>
-              <div style="font-size:0.75rem; font-weight:700; color:var(--text-sub);">
-                📞 ${ord.phone || 'ফোন নম্বর নেই'}
-              </div>
-            </div>
-
-            <div class="cust-address-text">
-              <i class="fa-solid fa-location-dot" style="color:#ef4444; margin-top:2px;"></i>
-              <span><strong>ঠিকানা:</strong> ${ord.address || 'আমতা, হাওড়া'}</span>
-            </div>
-
-            <div class="cust-action-buttons">
-              <a href="tel:${phoneClean}" class="btn-action-pill btn-action-call">
-                <i class="fa-solid fa-phone"></i> সরাসরি কল
-              </a>
-              <a href="https://wa.me/91${phoneClean}?text=${waMsg}" target="_blank" class="btn-action-pill btn-action-wa">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp আপডেট
-              </a>
-              <button type="button" class="btn-action-pill btn-action-slip" onclick="printDeliverySlip('${ord.id}')">
-                <i class="fa-solid fa-print"></i> ডেলিভারি স্লিপ
-              </button>
-            </div>
+          <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">
+            👤 <strong>${ord.name}</strong> • 📞 <a href="tel:${phoneClean}" style="color:#38bdf8; text-decoration:none;">${phoneClean}</a><br>
+            📍 <strong>ঠিকানা:</strong> ${ord.address}
           </div>
 
-          <!-- Items -->
-          <div class="order-items-wrap">
-            ${itemsHtml}
-          </div>
+          ${itemsHtml}
 
-          <!-- Visual Status Pipeline Controller -->
-          <div class="status-controller-box">
-            <div class="status-controller-header">
-              <span><i class="fa-solid fa-route"></i> লাইভ ডেলিভারি পাইপলাইন আপডেট করুন:</span>
-              <span style="font-size:0.7rem; font-weight:700;">ট্যাপ করলেই পরিবর্তন হবে</span>
+          <!-- Status Update Stepper -->
+          <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+            <div style="font-size:0.74rem; color:#94a3b8; font-weight:700; margin-bottom:6px;">
+              মালিক কন্ট্রোল: স্ট্যাটাস পরিবর্তন করুন
             </div>
-            <div class="stepper-buttons-row">
-              <button type="button" class="btn-step-status ${ord.status === 'Order Placed' ? 'current' : ''}" onclick="updateOrderStatus('${ord.id}', 'Order Placed')">
-                ⏳ নতুন বুকিং
-              </button>
-              <button type="button" class="btn-step-status ${ord.status === 'Packed' ? 'current' : ''}" onclick="updateOrderStatus('${ord.id}', 'Packed')">
-                📦 প্যাকিং
-              </button>
-              <button type="button" class="btn-step-status ${ord.status === 'Out for Delivery' ? 'current' : ''}" onclick="updateOrderStatus('${ord.id}', 'Out for Delivery')">
-                🚚 ডেলিভারিতে
-              </button>
-              <button type="button" class="btn-step-status ${ord.status === 'Delivered' ? 'current delivered' : ''}" onclick="updateOrderStatus('${ord.id}', 'Delivered')">
-                ✅ সম্পন্ন
-              </button>
-              <button type="button" class="btn-step-status ${ord.status === 'Cancelled' ? 'current' : ''}" onclick="updateOrderStatus('${ord.id}', 'Cancelled')">
-                ❌ বাতিল
-              </button>
+            <div class="status-stepper-row">
+              <button type="button" class="btn-step ${ord.status==='Order Placed'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Order Placed')">⏳ নতুন বুকিং</button>
+              <button type="button" class="btn-step ${ord.status==='Packed'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Packed')">📦 প্যাকিং সম্পন্ন</button>
+              <button type="button" class="btn-step ${ord.status==='Out for Delivery'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Out for Delivery')">🚚 ডেলিভারিতে বেরিয়েছে</button>
+              <button type="button" class="btn-step ${ord.status==='Delivered'?'active deliv':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Delivered')">✅ ডেলিভারি সম্পন্ন</button>
+              <button type="button" class="btn-step ${ord.status==='Cancelled'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Cancelled')">❌ বাতিল</button>
             </div>
           </div>
         `;
-        container.appendChild(card);
+        container.appendChild(box);
       });
     }
 
-    // Update Status Action
-    function updateOrderStatus(orderId, newStatus) {
-      const idx = ordersData.findIndex(o => o.id === orderId);
+    function setOwnerOrderStatus(orderId, newStatus) {
+      const idx = ordersList.findIndex(o => o.id === orderId);
       if (idx === -1) return;
+      ordersList[idx].status = newStatus;
+      if (newStatus === 'Delivered') ordersList[idx].deliveredDate = new Date().toLocaleDateString('bn-IN');
 
-      ordersData[idx].status = newStatus;
-      if (newStatus === 'Delivered') {
-        ordersData[idx].deliveredDate = new Date().toLocaleDateString('bn-IN');
-      }
-
-      // Save to localStorage immediately so Customer index.html reflects it
-      localStorage.setItem('nc_orders', JSON.stringify(ordersData));
-
-      updateKPIs();
-      renderOrders();
-
-      // Quick toast
-      alert(`✅ অর্ডার #${orderId}-এর স্ট্যাটাস "${newStatus}" করা হয়েছে! কাস্টমার ট্র্যাকিংয়ে লাইভ আপডেট হয়ে গেছে।`);
+      localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+      renderFinanceOverview();
+      renderOwnerOrders();
+      alert(`✅ অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে "${newStatus}" করা হয়েছে!`);
     }
 
-    // Print Delivery Slip Dialog
-    function printDeliverySlip(orderId) {
-      const ord = ordersData.find(o => o.id === orderId);
-      if (!ord) return;
-
-      const itemsTxt = (ord.items || []).map(i => `${i.title} (${i.selectedSize || 'Free Size'}) x ${i.qty || 1} = ₹${(i.price||0)*(i.qty||1)}`).join('\n');
-      const slip = 
-`=============================
-   NISHA CREATIONS • AMTA
-      DELIVERY SLIP
-=============================
-অর্ডার আইডি: #${ord.id}
-তারিখ: ${ord.date || 'আজ'}
-গ্রাহক: ${ord.name}
-মোবাইল: ${ord.phone}
-ঠিকানা: ${ord.address}
------------------------------
-পণ্য তালিকা:
-${itemsTxt}
------------------------------
-পেমেন্ট মোড: ${ord.paymentMode || 'COD'}
-মোট সংগ্রহযোগ্য টাকা: ₹${ord.total}
-=============================`;
-
-      const w = window.open('', '_blank', 'width=450,height=600');
-      w.document.write(`<pre style="font-family:monospace; font-size:13px; padding:20px;">${slip}</pre>`);
-      w.document.close();
-      w.print();
-    }
-
-    // Render Inventory
-    function renderInventory() {
-      const grid = document.getElementById('inventoryGridContainer');
+    // Stock
+    function renderOwnerStock() {
+      const grid = document.getElementById('stockGridContainer');
       if (!grid) return;
 
-      let allProds = [];
+      let prods = [];
       try {
         const stored = localStorage.getItem('nc_products');
-        if (stored) allProds = JSON.parse(stored);
+        if (stored) prods = JSON.parse(stored);
       } catch(e) {}
 
-      if (!allProds || allProds.length === 0) {
-        allProds = [
+      if (!prods || prods.length === 0) {
+        prods = [
           { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 428, stock: 45, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100' },
           { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 549, stock: 30, img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=100' },
-          { id: 'NC-103', title: 'Santipuri Tant Cotton Saree', category: 'saree', price: 349, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=100' },
-          { id: 'NC-104', title: 'Designer Choker & Earring Combo', category: 'jewel', price: 199, stock: 15, img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100' }
+          { id: 'NC-103', title: 'Santipuri Tant Cotton Saree', category: 'saree', price: 349, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=100' }
         ];
       }
 
-      document.getElementById('badgeNavStock').textContent = allProds.length;
-
-      const q = (document.getElementById('stockSearchInput')?.value || '').trim().toLowerCase();
-      let filtered = allProds;
-      if (q) {
-        filtered = filtered.filter(p => (p.title || '').toLowerCase().includes(q) || (p.id || '').toLowerCase().includes(q));
-      }
+      document.getElementById('countTabStock').textContent = prods.length;
+      const q = (document.getElementById('stockFilterInput')?.value || '').toLowerCase();
+      if (q) prods = prods.filter(p => (p.title||'').toLowerCase().includes(q) || (p.id||'').toLowerCase().includes(q));
 
       grid.innerHTML = '';
-      filtered.forEach(p => {
+      prods.forEach(p => {
         const curStock = p.stock !== undefined ? p.stock : 25;
         const card = document.createElement('div');
-        card.className = 'inv-item-card';
+        card.className = 'inv-card';
         card.innerHTML = `
-          <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="inv-img" alt="Saree">
-          <div class="inv-details">
-            <div class="inv-title">${p.title}</div>
-            <div style="font-size:0.72rem; color:var(--text-muted);">আইডি: ${p.id} • ${p.category || 'saree'}</div>
-            <div class="inv-price">মূল্য: ₹${p.price}</div>
-
-            <div class="inv-stepper">
-              <button type="button" class="btn-inv-qty" onclick="adjustStock('${p.id}', -1)">-</button>
-              <input type="number" class="inv-qty-input" id="stockInp_${p.id}" value="${curStock}" onchange="saveStockDirect('${p.id}', this.value)">
-              <button type="button" class="btn-inv-qty" onclick="adjustStock('${p.id}', 1)">+</button>
-              <button type="button" class="btn-quick-plus" onclick="adjustStock('${p.id}', 5)">+5</button>
-              <button type="button" class="btn-quick-plus" onclick="adjustStock('${p.id}', 10)">+10</button>
+          <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="inv-thumb">
+          <div style="flex:1;">
+            <div style="font-size:0.85rem; font-weight:800; color:#fff;">${p.title}</div>
+            <div style="font-size:0.7rem; color:#94a3b8;">${p.id} • মূল্য: ₹${p.price}</div>
+            <div style="display:flex; align-items:center; gap:4px; margin-top:6px;">
+              <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', -1)">-</button>
+              <input type="number" class="stock-val-box" id="inpStock_${p.id}" value="${curStock}" onchange="saveOwnerStock('${p.id}', this.value)">
+              <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', 1)">+</button>
+              <button type="button" class="btn-qty-ctl" style="width:36px; font-size:0.7rem; background:#334155;" onclick="adjustOwnerStock('${p.id}', 5)">+5</button>
             </div>
           </div>
         `;
@@ -1608,137 +1020,117 @@ ${itemsTxt}
       });
     }
 
-    function adjustStock(prodId, delta) {
-      const inp = document.getElementById(`stockInp_${prodId}`);
+    function adjustOwnerStock(id, delta) {
+      const inp = document.getElementById(`inpStock_${id}`);
       if (!inp) return;
-      let val = Math.max(0, (parseInt(inp.value) || 0) + delta);
-      inp.value = val;
-      saveStockDirect(prodId, val);
+      const newVal = Math.max(0, (parseInt(inp.value) || 0) + delta);
+      inp.value = newVal;
+      saveOwnerStock(id, newVal);
     }
 
-    function saveStockDirect(prodId, newStock) {
-      const cleanVal = Math.max(0, parseInt(newStock) || 0);
-
-      // Update nc_products
-      let all = JSON.parse(localStorage.getItem('nc_products') || '[]');
-      const idx = all.findIndex(p => p.id === prodId);
+    function saveOwnerStock(id, val) {
+      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      const idx = prods.findIndex(p => p.id === id);
       if (idx !== -1) {
-        all[idx].stock = cleanVal;
-        all[idx].inStock = cleanVal > 0;
-        localStorage.setItem('nc_products', JSON.stringify(all));
-      }
-
-      // Update nc_custom_products
-      let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
-      const cIdx = cust.findIndex(p => p.id === prodId);
-      if (cIdx !== -1) {
-        cust[cIdx].stock = cleanVal;
-        cust[cIdx].inStock = cleanVal > 0;
-        localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+        prods[idx].stock = parseInt(val) || 0;
+        prods[idx].inStock = prods[idx].stock > 0;
+        localStorage.setItem('nc_products', JSON.stringify(prods));
       }
     }
 
-    function handleStockSearch() {
-      renderInventory();
+    // Flash sale
+    function restartFlashSale2Hours() {
+      const end = Date.now() + (2 * 60 * 60 * 1000);
+      localStorage.setItem('nc_flash_sale_end', end);
+      alert('⚡ সফল! হোমপেজের ফ্ল্যাশ সেল টাইমার নতুন করে ২ ঘণ্টার জন্য শুরু হয়েছে।');
     }
 
-    // Add New Product Handler
-    function handleAdminFileSelect(e) {
+    // Add Product
+    function handleOwnerImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
         const b64 = evt.target.result;
-        document.getElementById('prodImgUrl').value = b64;
-        const prev = document.getElementById('prodImgPreview');
+        document.getElementById('op_img').value = b64;
+        const prev = document.getElementById('op_preview');
         prev.src = b64;
         prev.style.display = 'block';
       };
       reader.readAsDataURL(file);
     }
 
-    function handleNewProductSubmit(e) {
+    function handleOwnerProductSubmit(e) {
       e.preventDefault();
-      const title = document.getElementById('prodTitle').value.trim();
-      const cat = document.getElementById('prodCategory').value;
-      const fabric = document.getElementById('prodFabric').value.trim() || 'Resham Silk';
-      const price = parseInt(document.getElementById('prodPrice').value) || 450;
-      const mrp = parseInt(document.getElementById('prodMrp').value) || (price * 2);
-      const stock = parseInt(document.getElementById('prodStock').value) || 20;
-      const img = document.getElementById('prodImgUrl').value.trim() || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400';
-      const desc = document.getElementById('prodDesc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম কালেকশন';
+      const title = document.getElementById('op_title').value.trim();
+      const cat = document.getElementById('op_cat').value;
+      const fabric = document.getElementById('op_fabric').value.trim() || 'Cotton Silk';
+      const price = parseInt(document.getElementById('op_price').value) || 450;
+      const mrp = parseInt(document.getElementById('op_mrp').value) || (price * 2);
+      const stock = parseInt(document.getElementById('op_stock').value) || 30;
+      const img = document.getElementById('op_img').value.trim();
+      const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
 
       const newProd = {
         id: 'NC-CUST-' + Date.now().toString().slice(-6),
-        title: title,
-        category: cat,
-        fabric: fabric,
-        price: price,
-        mrp: mrp,
-        stock: stock,
-        inStock: stock > 0,
-        img: img,
-        desc: desc,
+        title, category: cat, fabric, price, mrp, stock, inStock: stock > 0, img, desc,
         dateAdded: new Date().toISOString()
       };
 
-      let customList = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
-      customList.unshift(newProd);
-      localStorage.setItem('nc_custom_products', JSON.stringify(customList));
+      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      prods.unshift(newProd);
+      localStorage.setItem('nc_products', JSON.stringify(prods));
 
-      let prodsList = JSON.parse(localStorage.getItem('nc_products') || '[]');
-      prodsList.unshift(newProd);
-      localStorage.setItem('nc_products', JSON.stringify(prodsList));
+      let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      cust.unshift(newProd);
+      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
 
-      alert('🎉 অভিনন্দন! নতুন পণ্যটি সফলভাবে ওয়েবসাইটে যুক্ত হয়েছে এবং কাস্টমাররা তা দেখতে পাবে।');
-      document.getElementById('newSareeForm').reset();
-      document.getElementById('prodImgPreview').style.display = 'none';
-      switchSection('inventory');
+      alert('🎉 সফল! নতুন শাড়িটি ওয়েবসাইটে যুক্ত হয়ে গেছে।');
+      document.getElementById('ownerAddProductForm').reset();
+      document.getElementById('op_preview').style.display = 'none';
+      switchAdminView('stock');
     }
 
-    // Render Reviews
-    function renderReviews() {
-      const container = document.getElementById('reviewsContainer');
+    // Reviews
+    function renderOwnerReviews() {
+      const container = document.getElementById('ownerReviewsContainer');
       if (!container) return;
-
       const revs = JSON.parse(localStorage.getItem('nc_user_reviews') || '[]');
-      document.getElementById('badgeNavReviews').textContent = revs.length;
-
       if (revs.length === 0) {
-        container.innerHTML = `
-          <div class="empty-box" style="grid-column: 1/-1;">
-            <div class="empty-icon"><i class="fa-regular fa-star"></i></div>
-            <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-main);">এখনও কোনো রিভিউ জমা পড়েনি</h3>
-            <p style="font-size:0.78rem; margin-top:4px;">কাস্টমারদের কাছে পণ্য ডেলিভারি সম্পন্ন হলে তারা ছবি সহ রিভিউ দিতে পারবে।</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="owner-card" style="text-align:center; color:#94a3b8;">এখনও কোনো কাস্টমার রিভিউ নেই।</div>`;
         return;
       }
+      container.innerHTML = revs.map(r => `
+        <div class="owner-card" style="margin-bottom:10px;">
+          <div style="font-weight:800; color:#fff;">👤 ${r.name || 'কাস্টমার'} — ⭐ ${r.rating || 5}/5</div>
+          <div style="font-size:0.8rem; color:#cbd5e1; margin-top:4px;">"${r.comment || ''}"</div>
+          ${r.photo ? `<img src="${r.photo}" style="width:100px; height:100px; border-radius:8px; object-fit:cover; margin-top:8px;">` : ''}
+        </div>
+      `).join('');
+    }
 
-      container.innerHTML = '';
-      revs.forEach(r => {
-        const card = document.createElement('div');
-        card.className = 'review-card-item';
-        card.innerHTML = `
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-            <div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">👤 ${r.name || 'গ্রাহক'}</div>
-            <div style="color:#f59e0b; font-size:0.8rem;">
-              ${'★'.repeat(r.rating || 5)}${'☆'.repeat(5 - (r.rating || 5))}
-            </div>
-          </div>
-          <div style="font-size:0.8rem; color:var(--text-sub); line-height:1.4;">"${r.comment || 'দারুণ শাড়ি, কাপড় খুব সফট!'}"</div>
-          ${r.photo ? `<img src="${r.photo}" style="width:100%; height:120px; border-radius:10px; object-fit:cover; margin-top:10px; border:1px solid var(--border);">` : ''}
-          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:8px;">তারিখ: ${r.date || 'সম্প্রতি'}</div>
-        `;
-        container.appendChild(card);
+    // Share delivery link
+    function copyDeliveryUrl() {
+      const url = window.location.href.replace('admin.html', 'delivery.html');
+      navigator.clipboard.writeText(url).then(() => {
+        alert('📋 ডেলিভারি পোর্টালের লিংক কপি হয়েছে!
+' + url);
+      }).catch(() => {
+        prompt('ডেলিভারি লিংক কপি করুন:', url);
       });
     }
 
-    // Test Demo Order Generator
-    function addDemoOrderForTest() {
-      const demoId = 'NC-' + Math.floor(1000 + Math.random() * 9000);
+    function shareDeliveryUrlWhatsApp() {
+      const url = window.location.href.replace('admin.html', 'delivery.html');
+      const text = encodeURIComponent(`নমস্কার, নিশা ক্রিয়েশনসের ডেলিভারি পোর্টাল লিংক:\n${url}\nপ্রতিটি ডেলিভারির পর স্ট্যাটাস আপডেট করে দিন।`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    // Demo & Backup
+    function addOwnerDemoOrder() {
+      const dId = 'NC-' + Math.floor(1000 + Math.random() * 9000);
       const demoOrder = {
-        id: demoId,
+        id: dId,
         date: new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' }),
         status: 'Order Placed',
         total: 799,
@@ -1747,32 +1139,20 @@ ${itemsTxt}
         phone: '9832100000',
         address: 'আমতা থানা রোড, আমতা, হাওড়া - 711401',
         items: [
-          {
-            id: 'NC-101',
-            title: 'ঢাকাই জামদানি শাড়ি (রয়েল ব্লু ও গোল্ডেন)',
-            price: 799,
-            qty: 1,
-            selectedSize: 'Free Size',
-            selectedColor: 'রয়েল ব্লু',
-            img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120'
-          }
+          { id: 'NC-101', title: 'ঢাকাই জামদানি শাড়ি (রয়েল ব্লু ও গোল্ডেন)', price: 799, qty: 1, selectedSize: 'Free Size', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120' }
         ]
       };
-
-      ordersData.unshift(demoOrder);
-      localStorage.setItem('nc_orders', JSON.stringify(ordersData));
-      updateKPIs();
-      renderOrders();
-      alert(`🎉 ডেমো টেস্ট অর্ডার #${demoId} তৈরি হয়েছে!
-আপনি এখন স্ট্যাটাস পরিবর্তন করে টেস্ট করে দেখতে পারেন।`);
+      ordersList.unshift(demoOrder);
+      localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+      loadAllOwnerData();
+      alert(`🎉 ডেমো টেস্ট অর্ডার #${dId} সফলভাবে যুক্ত হয়েছে!`);
     }
 
-    // Export JSON backup
-    function exportOrdersJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ordersData, null, 2));
+    function exportOwnerBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ordersList, null, 2));
       const a = document.createElement('a');
       a.href = dataStr;
-      a.download = `Nisha_Creations_Orders_Backup_${Date.now()}.json`;
+      a.download = `Nisha_Creations_Orders_${Date.now()}.json`;
       a.click();
     }
   </script>
