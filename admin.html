@@ -773,60 +773,120 @@
       color: #34d399;
     }
 
+
+    .order-filter-pill {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 6px 12px;
+      border-radius: 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .order-filter-pill.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #6366f1;
+    }
+
 </style>
 </head>
 <body>
 
-  <!-- ==================== 1. SECRET 4-DIGIT PIN LOCK (TOUCH & KEYPAD OPTIMIZED) ==================== -->
+  <!-- ==================== 1. OWNER SECURE LOGIN MODAL ==================== -->
   <div id="pinLockModal">
     <div class="pin-box-card">
       <div class="pin-badge-icon">
-        <i class="fa-solid fa-lock"></i>
+        <i class="fa-solid fa-shield-halved"></i>
       </div>
-      <h2 style="font-size:1.25rem; font-weight:800; color:#ffffff;">মালিক ড্যাশবোর্ড লগইন</h2>
-      <p style="font-size:0.76rem; color:#94a3b8; margin-top:4px;">
-        নিচে ৪ সংখ্যার পিন দিন (ডিফল্ট: 1234) অথবা সরাসরি প্রবেশ করুন।
+      <h2 style="font-size:1.3rem; font-weight:800; color:#ffffff; letter-spacing:-0.3px;">নিশা ক্রিয়েশনস • মালিক ড্যাশবোর্ড</h2>
+      <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px; margin-bottom:16px;">
+        আপনার পাসওয়ার্ড দিন (নাম বা সংখ্যা উভয়ই ব্যবহার করতে পারবেন)
       </p>
 
-      <form id="pinUnlockForm" onsubmit="event.preventDefault(); verifyOwnerPin(); return false;">
-        <input type="text" 
-               id="ownerPinInput" 
-               class="pin-input-field" 
-               maxlength="4" 
-               inputmode="numeric" 
-               pattern="[0-9]*" 
-               placeholder="1234" 
-               autocomplete="off" 
-               oninput="onPinInputAuto(this.value)">
+      <!-- Error Message Banner -->
+      <div id="pinErrorMsg" style="display:none; background:rgba(244,63,94,0.15); border:1px solid #f43f5e; color:#fb7185; padding:10px; border-radius:12px; font-size:0.82rem; font-weight:700; margin-bottom:14px; text-align:left;">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="pinErrorText">ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন অথবা সরাসরি প্রবেশ করুন।</span>
+      </div>
 
-        <!-- On-Screen Touch Dialpad -->
-        <div class="dialpad-grid">
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('1')">1</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('2')">2</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('3')">3</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('4')">4</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('5')">5</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('6')">6</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('7')">7</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('8')">8</button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('9')">9</button>
-          <button type="button" class="btn-dial-digit btn-dial-del" onclick="dialBackspace()"><i class="fa-solid fa-delete-left"></i></button>
-          <button type="button" class="btn-dial-digit" onclick="dialDigit('0')">0</button>
-          <button type="button" class="btn-dial-digit" style="background:#059669; border-color:#059669;" onclick="verifyOwnerPin()"><i class="fa-solid fa-check"></i></button>
+      <form id="pinUnlockForm" onsubmit="event.preventDefault(); verifyOwnerPin(); return false;">
+        <div style="position:relative; margin-bottom:14px;">
+          <input type="password" 
+                 id="ownerPinInput" 
+                 placeholder="পাসওয়ার্ড বা নাম লিখুন (ডিফল্ট: 1234)" 
+                 autocomplete="current-password"
+                 style="width:100%; font-size:1.05rem; font-weight:700; background:#090d16; border:2px solid var(--primary); border-radius:14px; color:#ffffff; padding:14px 44px 14px 16px; outline:none; transition:all 0.2s;">
+          <button type="button" onclick="togglePasswordVisibility('ownerPinInput', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:#94a3b8; font-size:1.1rem; cursor:pointer; padding:6px;">
+            <i class="fa-solid fa-eye"></i>
+          </button>
         </div>
 
-        <button type="button" id="btnUnlockSubmit" class="btn-pin-unlock" onclick="verifyOwnerPin()">
-          <i class="fa-solid fa-unlock-keyhole"></i> ড্যাশবোর্ডে প্রবেশ করুন
+        <button type="submit" class="btn-pin-unlock" style="width:100%; height:48px; background:linear-gradient(135deg, #059669, #10b981); border:none; color:#fff; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+          <i class="fa-solid fa-lock-open"></i> ড্যাশবোর্ডে প্রবেশ করুন
         </button>
 
-        <!-- Prominent 1-Click Direct Access Button -->
-        <button type="button" class="btn-pin-unlock" onclick="bypassPinDirect()" style="margin-top:10px; background:#334155; border:1px solid #475569;">
-          <i class="fa-solid fa-door-open"></i> 🔓 কোনো পিন ছাড়া সরাসরি প্রবেশ করুন
-        </button>
+        <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
+          <button type="button" class="btn-pin-bypass" onclick="bypassPinDirect()" style="background:transparent; border:none; color:#38bdf8; font-size:0.85rem; font-weight:800; cursor:pointer; text-decoration:underline;">
+            <i class="fa-solid fa-bolt"></i> কোনো পাসওয়ার্ড ছাড়াই সরাসরি প্রবেশ করুন
+          </button>
+
+          <button type="button" onclick="resetPasswordToDefault()" style="background:transparent; border:none; color:#64748b; font-size:0.75rem; cursor:pointer; text-decoration:underline;">
+            <i class="fa-solid fa-rotate-left"></i> পাসওয়ার্ড ভুলে গেছেন? ডিফল্ট '1234' এ রিসেট করুন
+          </button>
+        </div>
       </form>
+    </div>
+  </div>
 
-      <div style="font-size:0.72rem; color:#94a3b8; margin-top:12px;">
-        ডিফল্ট পিন: <strong>1234</strong> (টাইপ করলেই সরাসরি খুলে যাবে)
+  <!-- ==================== PASSWORD & SECURITY SETTINGS MODAL ==================== -->
+  <div id="passwordSettingsModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
+    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #818cf8; box-shadow:var(--shadow-lg);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:14px;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
+          <i class="fa-solid fa-key" style="color:#818cf8;"></i> পাসওয়ার্ড ও নিরাপত্তা সেটিংস
+        </h3>
+        <button type="button" onclick="closePasswordSettingsModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div style="font-size:0.82rem; line-height:1.5; color:#cbd5e1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px 12px; border-radius:10px; border:1px solid #1f2937; margin-bottom:10px;">
+          <span>বর্তমান সক্রিয় পাসওয়ার্ড:</span>
+          <strong id="curPassDisplay" style="color:#38bdf8; font-size:1.05rem; font-family:monospace; letter-spacing:1px;">1234</strong>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px 12px; border-radius:10px; border:1px solid #1f2937; margin-bottom:14px;">
+          <span>লক সিস্টেম স্ট্যাটাস:</span>
+          <span id="lockStatusBadge" style="font-weight:800; font-size:0.75rem; padding:3px 8px; border-radius:8px; background:#065f46; color:#a7f3d0;">সক্রিয় (Active)</span>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#94a3b8; margin-bottom:6px;">
+            নতুন পাসওয়ার্ড / নাম / পিন লিখুন:
+          </label>
+          <input type="text" id="newOwnerPassInp" class="form-ctrl" placeholder="যেমন: saheb, nisha, 1234, amta99" style="width:100%; font-size:0.95rem; font-weight:700; background:#090d16; border:1.5px solid #4f46e5; border-radius:10px; color:#fff; padding:10px 12px;">
+          <small style="color:#94a3b8; font-size:0.7rem; display:block; margin-top:4px;">
+            * নিজের নাম, দোকানের নাম, কোনো শব্দ বা সংখ্যা যেকোনো কিছু লিখতে পারেন।
+          </small>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff; justify-content:center; height:42px; font-weight:800;" onclick="saveNewOwnerPassword()">
+            <i class="fa-solid fa-floppy-disk"></i> নতুন পাসওয়ার্ড সেভ করুন
+          </button>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button type="button" class="btn-fast-action" style="background:#334155; color:#cbd5e1; justify-content:center;" onclick="togglePinLockOption()">
+              <i class="fa-solid fa-power-off"></i> লক অন / অফ
+            </button>
+            <button type="button" class="btn-fast-action" style="background:#1e293b; color:#f87171; justify-content:center;" onclick="resetPasswordToDefault()">
+              <i class="fa-solid fa-rotate-left"></i> রিসেট (1234)
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -959,7 +1019,10 @@
       <button type="button" class="adm-tab-btn active" id="tabBtnOrders" onclick="switchAdminView('orders')">
         <i class="fa-solid fa-boxes-packing"></i> অর্ডার ম্যানেজমেন্ট (<span id="countTabOrders">0</span>)
       </button>
-      <button type="button" class="adm-tab-btn" id="tabBtnStock" onclick="switchAdminView('stock')">
+            <button type="button" class="adm-tab-btn" id="tabBtnWarehouse" onclick="switchAdminView('warehouse')">
+        <i class="fa-solid fa-warehouse"></i> ওয়্যারহাউস ও ডিসপ্যাচ (<span id="countTabWarehouse">0</span>)
+      </button>
+<button type="button" class="adm-tab-btn" id="tabBtnStock" onclick="switchAdminView('stock')">
         <i class="fa-solid fa-warehouse"></i> শাড়ির স্টক ও দাম (<span id="countTabStock">0</span>)
       </button>
       <button type="button" class="adm-tab-btn" id="tabBtnAdd" onclick="switchAdminView('add')">
@@ -972,10 +1035,110 @@
 
     <!-- ==================== TAB A: ORDERS LIST ==================== -->
     <div id="pane-orders" class="tab-pane active">
+      
+      <div style="display:flex; gap:8px; margin-bottom:14px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;">
+        <button type="button" class="order-filter-pill active" id="ofAll" onclick="filterAdminOrders('all', this)">📋 সমস্ত (<span id="ofAllCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofPlaced" onclick="filterAdminOrders('Order Placed', this)">⏳ পিকিং বাকি (<span id="ofPlacedCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofPacked" onclick="filterAdminOrders('Packed', this)">📦 প্যাকিং সম্পন্ন (<span id="ofPackedCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofOut" onclick="filterAdminOrders('Out for Delivery', this)">🚚 পথে আছে (<span id="ofOutCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofDelivered" onclick="filterAdminOrders('Delivered', this)">✅ ডেলিভারি সম্পন্ন (<span id="ofDeliveredCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofRescheduled" onclick="filterAdminOrders('Rescheduled', this)">⚠️ রিসিডিউল (<span id="ofRescheduledCount">0</span>)</button>
+        <button type="button" class="order-filter-pill" id="ofReturned" onclick="filterAdminOrders('Returned', this)">🔄 রিটার্ন (<span id="ofReturnedCount">0</span>)</button>
+      </div>
+
       <div id="ordersContainer"></div>
     </div>
 
     <!-- ==================== TAB B: STOCK INVENTORY ==================== -->
+    
+    <!-- ==================== TAB WAREHOUSE: WMS & DISPATCH HUB ==================== -->
+    <div id="pane-warehouse" class="tab-pane">
+      <!-- Warehouse Operations Header -->
+      <div class="owner-card" style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#ffffff;"><i class="fa-solid fa-warehouse" style="color:#818cf8;"></i> নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস ও ডিসপ্যাচ হাব</h3>
+            <p style="font-size:0.75rem; color:var(--text-sub);">আমতা সেন্ট্রাল ফুলফিলমেন্ট সেন্টার • রুট ট্র্যাকিং ও ইনভেন্টরি বিন কন্ট্রোল</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <a href="packaging.html" target="_blank" class="btn-fast-action" style="background:#4338ca; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-boxes-packing"></i> প্যাকিং স্টেশন খুলুন
+            </a>
+            <a href="delivery.html" target="_blank" class="btn-fast-action" style="background:#0369a1; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-motorcycle"></i> রাইডার হাব খুলুন
+            </a>
+          </div>
+        </div>
+
+        <!-- Pipeline Stats -->
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; text-align:center;">
+          <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
+            <div style="font-size:1.3rem; font-weight:800; color:#f59e0b;" id="whCountPlaced">0</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);">⏳ পিকিং বাকি</div>
+          </div>
+          <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
+            <div style="font-size:1.3rem; font-weight:800; color:#818cf8;" id="whCountPacked">0</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);">📦 প্যাকড ও সিল</div>
+          </div>
+          <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
+            <div style="font-size:1.3rem; font-weight:800; color:#38bdf8;" id="whCountOut">0</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);">🚚 পথে আছে</div>
+          </div>
+          <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
+            <div style="font-size:1.3rem; font-weight:800; color:#10b981;" id="whCountDelivered">0</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);">✅ ডেলিভার্ড</div>
+          </div>
+          <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
+            <div style="font-size:1.3rem; font-weight:800; color:#f87171;" id="whCountReturned">0</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);">🔄 রিটার্ন/RTO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Return & RTO Quality Check Station -->
+      <div class="owner-card" style="margin-bottom:18px; border:1.5px solid #4f46e5;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:#818cf8; margin-bottom:6px;">
+          <i class="fa-solid fa-arrow-rotate-left"></i> রিটার্ন ও আরটিও স্টেশন (RTO Quality Inspection & Restock)
+        </h4>
+        <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:10px;">
+          ডেলিভারি ব্যর্থ হয়ে ফিরে আসা পার্সেল স্ক্যান বা আইডি দিয়ে যাচাই করে অটোমেটিক স্টকে রিস্টোর করুন।
+        </p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <input type="text" id="whReturnOrderIdInp" class="form-ctrl" style="flex:1; min-width:180px;" placeholder="ফেরত পার্সেল আইডি (যেমন: NC-5019)">
+          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff;" onclick="processWarehouseReturn('restock')">
+            <i class="fa-solid fa-check-to-slot"></i> QC Pass -> রিস্টক (+১ স্টক)
+          </button>
+          <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff;" onclick="processWarehouseReturn('damaged')">
+            <i class="fa-solid fa-triangle-exclamation"></i> ড্যামেজড হিসেবে নথিভুক্ত
+          </button>
+        </div>
+      </div>
+
+      <!-- Dispatch Bagging Hub -->
+      <div class="owner-card" style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:800; color:#38bdf8;">
+              <i class="fa-solid fa-truck-ramp-box"></i> আউটবাউন্ড ডিসপ্যাচ ব্যাগ ও রাইডার হ্যান্ডওভার
+            </h4>
+            <div style="font-size:0.75rem; color:var(--text-sub);">আমতা ও সংলগ্ন এলাকার ডেলিভারি রাইডারদের জন্য ব্যাচ ব্যাগ তৈরি ও বরাদ্দ।</div>
+          </div>
+          <button type="button" class="btn-fast-action" style="background:#312e81; color:#c7d2fe; font-size:0.78rem;" onclick="adminCreateDispatchBagPrompt()">
+            <i class="fa-solid fa-plus"></i> নতুন ডিসপ্যাচ ব্যাগ
+          </button>
+        </div>
+        <div id="adminDispatchBagsContainer"></div>
+      </div>
+
+      <!-- Storage Bins Matrix -->
+      <div class="owner-card">
+        <h4 style="font-size:0.95rem; font-weight:800; color:#f59e0b; margin-bottom:12px;">
+          <i class="fa-solid fa-table-cells-large"></i> ওয়্যারহাউস স্টোরেজ র‍্যাক ও বিন লোকেশন ইনভেন্টরি
+        </h4>
+        <div id="warehouseBinsMatrixContainer"></div>
+      </div>
+    </div>
+
     <div id="pane-stock" class="tab-pane">
       <div class="owner-card" style="padding:14px; margin-bottom:14px;">
         <input type="text" id="stockFilterInput" class="form-ctrl" placeholder="শাড়ির নাম দিয়ে ফিল্টার করুন..." oninput="renderOwnerStock()">
@@ -1146,33 +1309,23 @@
   <script>
     // State
     let ordersList = [];
+
+    // Password & PIN Management (Allows Names, Text, and Numbers)
     let ownerPin = localStorage.getItem('nc_owner_pin') || '1234';
 
-    // Touch Dialpad Handlers
-    function dialDigit(digit) {
-      const inp = document.getElementById('ownerPinInput');
+    function togglePasswordVisibility(inpId, btn) {
+      const inp = document.getElementById(inpId);
       if (!inp) return;
-      if (inp.value.length < 4) {
-        inp.value += digit;
-        if (inp.value.length === 4) {
-          setTimeout(verifyOwnerPin, 80);
-        }
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+      } else {
+        inp.type = 'password';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
       }
     }
 
-    function dialBackspace() {
-      const inp = document.getElementById('ownerPinInput');
-      if (inp) inp.value = inp.value.slice(0, -1);
-    }
-
-    // Auto-unlock when user finishes typing 4 digits in keyboard
-    function onPinInputAuto(val) {
-      if (val && val.length >= 4) {
-        setTimeout(verifyOwnerPin, 80);
-      }
-    }
-
-    // Direct Bypass (১ ক্লিকে সরাসরি ঢোকা)
+    // Direct Bypass (১ ক্লিকে সরাসরি ড্যাশবোর্ডে ঢোকা)
     function bypassPinDirect() {
       const modal = document.getElementById('pinLockModal');
       if (modal) modal.style.display = 'none';
@@ -1182,17 +1335,84 @@
       handleCategoryChangeForSizes('saree');
     }
 
-    // PIN Verification
+    // Verify Password (Supports Names, Words, Numbers - Case-Insensitive / Trimmed)
     function verifyOwnerPin() {
       const inp = document.getElementById('ownerPinInput');
+      const errBox = document.getElementById('pinErrorMsg');
       const entered = inp ? inp.value.trim() : '';
-      if (entered === ownerPin || entered === '1234' || entered === '') {
+      const currentSaved = (localStorage.getItem('nc_owner_pin') || '1234').trim();
+
+      if (entered.toLowerCase() === currentSaved.toLowerCase() || entered === '1234' || entered === '') {
+        if (errBox) errBox.style.display = 'none';
         bypassPinDirect();
       } else {
-        alert('❌ ভুল পিন! ডিফল্ট পিন হলো: 1234\nঅথবা নিচের "কোনো পিন ছাড়া সরাসরি প্রবেশ করুন" বাটনে চাপ দিন।');
-        if (inp) {
-          inp.value = '';
+        if (errBox) {
+          errBox.style.display = 'block';
+          document.getElementById('pinErrorText').textContent = '❌ ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন (ডিফল্ট: 1234) অথবা নিচের লিঙ্কে ক্লিক করে সরাসরি প্রবেশ করুন।';
         }
+        if (inp) inp.select();
+      }
+    }
+
+    // Open Password Settings Modal
+    function openPasswordSettingsModal() {
+      const curPin = localStorage.getItem('nc_owner_pin') || '1234';
+      const isPinDisabled = localStorage.getItem('nc_pin_disabled') === 'true';
+
+      const disp = document.getElementById('curPassDisplay');
+      if (disp) disp.textContent = curPin;
+
+      const badge = document.getElementById('lockStatusBadge');
+      if (badge) {
+        if (isPinDisabled) {
+          badge.textContent = 'নিষ্ক্রিয় (Disabled)';
+          badge.style.background = '#7f1d1d';
+          badge.style.color = '#fecaca';
+        } else {
+          badge.textContent = 'সক্রিয় (Active)';
+          badge.style.background = '#065f46';
+          badge.style.color = '#a7f3d0';
+        }
+      }
+
+      const inp = document.getElementById('newOwnerPassInp');
+      if (inp) inp.value = '';
+
+      const modal = document.getElementById('passwordSettingsModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closePasswordSettingsModal() {
+      const modal = document.getElementById('passwordSettingsModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function saveNewOwnerPassword() {
+      const inp = document.getElementById('newOwnerPassInp');
+      const newP = inp ? inp.value.trim() : '';
+      if (!newP) {
+        alert('অনুগ্রহ করে নতুন পাসওয়ার্ড লিখুন (নাম বা সংখ্যা যেকোনো কিছু হতে পারে)।');
+        return;
+      }
+
+      localStorage.setItem('nc_owner_pin', newP);
+      ownerPin = newP;
+
+      const disp = document.getElementById('curPassDisplay');
+      if (disp) disp.textContent = newP;
+
+      alert(`✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!\nআপনার নতুন পাসওয়ার্ড হলো: "${newP}"`);
+      closePasswordSettingsModal();
+    }
+
+    function resetPasswordToDefault() {
+      if (confirm('আপনি কি পাসওয়ার্ডটি রিসেট করে ডিফল্ট "1234" করতে চান?')) {
+        localStorage.setItem('nc_owner_pin', '1234');
+        ownerPin = '1234';
+        const disp = document.getElementById('curPassDisplay');
+        if (disp) disp.textContent = '1234';
+        alert('✅ পাসওয়ার্ড সফলভাবে রিসেট হয়ে ডিফল্ট "1234" করা হয়েছে!');
+        closePasswordSettingsModal();
       }
     }
 
@@ -1200,46 +1420,22 @@
       const disabled = localStorage.getItem('nc_pin_disabled') === 'true';
       if (disabled) {
         localStorage.removeItem('nc_pin_disabled');
-        alert('🔒 পিন লক পুনরায় সক্রিয় করা হয়েছে।');
+        alert('🔒 পাসওয়ার্ড লক পুনরায় সক্রিয় করা হয়েছে।');
       } else {
         localStorage.setItem('nc_pin_disabled', 'true');
-        alert('🔓 পিন লক বন্ধ করা হয়েছে! এরপর থেকে পেজ খুললে কোনো পাসওয়ার্ড চাইবে না।');
+        alert('🔓 পাসওয়ার্ড লক বন্ধ করা হয়েছে! এরপর থেকে পেজ খুললে সরাসরি ড্যাশবোর্ড চলে আসবে।');
       }
+      openPasswordSettingsModal();
     }
 
     function lockDashboard() {
       sessionStorage.removeItem('nc_owner_unlocked');
-      document.getElementById('ownerPinInput').value = '';
-      document.getElementById('pinLockModal').style.display = 'flex';
+      localStorage.removeItem('nc_owner_unlocked_persist');
+      const inp = document.getElementById('ownerPinInput');
+      if (inp) inp.value = '';
+      const modal = document.getElementById('pinLockModal');
+      if (modal) modal.style.display = 'flex';
     }
-
-    function promptChangePin() {
-      const cur = prompt('বর্তমান পিন দিন:');
-      if (cur !== ownerPin) { alert('বর্তমান পিন ভুল!'); return; }
-      const newP = prompt('নতুন ৪-সংখ্যার পিন দিন:');
-      if (newP && newP.length === 4 && !isNaN(newP)) {
-        ownerPin = newP;
-        localStorage.setItem('nc_owner_pin', newP);
-        alert(`✅ পিন সফলভাবে পরিবর্তন হয়েছে! নতুন পিন: ${newP}`);
-      } else {
-        alert('❌ অন্তত ৪ সংখ্যার পিন দিতে হবে।');
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const isPinDisabled = localStorage.getItem('nc_pin_disabled') === 'true';
-      const isUnlocked = sessionStorage.getItem('nc_owner_unlocked') === 'true' || localStorage.getItem('nc_owner_unlocked_persist') === 'true';
-
-      if (isPinDisabled || isUnlocked) {
-        const modal = document.getElementById('pinLockModal');
-        if (modal) modal.style.display = 'none';
-        loadAllOwnerData();
-      handleCategoryChangeForSizes('saree');
-      } else {
-        const modal = document.getElementById('pinLockModal');
-        if (modal) modal.style.display = 'flex';
-      }
-    });
 
     function loadAllOwnerData() {
       loadOrders();
@@ -1282,6 +1478,248 @@
     }
 
     // Tab Navigation
+    
+    let adminOrderFilter = 'all';
+
+    function filterAdminOrders(statusFilter, btn) {
+      document.querySelectorAll('.order-filter-pill').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      adminOrderFilter = statusFilter;
+      renderOwnerOrders();
+    }
+
+    // Helper: Warehouse Storage Bin resolver
+    function resolveItemWarehouseBin(item) {
+      if (item.binLocation) return item.binLocation;
+      const cat = (item.category || '').toLowerCase();
+      const type = (item.type || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+
+      if (cat.includes('jamdani') || title.includes('jamdani') || title.includes('ঢাকাই')) {
+        return 'র‍্যাক A-01 (জামদানি শাড়ি ব্লক)';
+      } else if (cat.includes('silk') || title.includes('silk') || title.includes('সিল্ক') || title.includes('katan')) {
+        return 'র‍্যাক A-02 (সফট সিল্ক ও কাতান জোন)';
+      } else if (cat.includes('tant') || title.includes('tant') || title.includes('তাঁত')) {
+        return 'র‍্যাক B-01 (শান্তিপুরী তাঁত কটন)';
+      } else if (cat.includes('kurti') || title.includes('kurti') || title.includes('কুর্তি')) {
+        return 'র‍্যাক C-01 (কুর্তি ও সালোয়ার হ্যাঙ্গার)';
+      } else if (cat.includes('necklace') || cat.includes('jewel') || title.includes('jewellery') || title.includes('গহনা')) {
+        return 'শেলফ J-01 (গোল্ড প্লেটেড ব্রাইডাল জুয়েলারি)';
+      } else if (cat.includes('bangle') || title.includes('churi') || title.includes('চুড়ি') || title.includes('বালা')) {
+        return 'শেলফ J-02 (ডিজাইনার বালা ও চুড়ি ড্রয়ার)';
+      } else if (type.includes('girls') || cat.includes('frock') || title.includes('frock') || title.includes('লেহেঙ্গা')) {
+        return 'বিন F-01 (ছোটদের ফ্রক ও বেবি লেহেঙ্গা)';
+      }
+      return 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
+    }
+
+    function renderWarehouseOperations() {
+      // 1. Pipeline Stats
+      const placed = ordersList.filter(o => o.status === 'Order Placed').length;
+      const packed = ordersList.filter(o => o.status === 'Packed').length;
+      const out = ordersList.filter(o => o.status === 'Out for Delivery').length;
+      const delivered = ordersList.filter(o => o.status === 'Delivered').length;
+      const returned = ordersList.filter(o => o.status === 'Returned' || o.status === 'Rescheduled').length;
+
+      const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      setEl('whCountPlaced', placed);
+      setEl('whCountPacked', packed);
+      setEl('whCountOut', out);
+      setEl('whCountDelivered', delivered);
+      setEl('whCountReturned', returned);
+      setEl('countTabWarehouse', (placed + packed));
+
+      // 2. Dispatch Bags
+      renderAdminDispatchBags();
+
+      // 3. Storage Bins Matrix
+      renderWarehouseBinsMatrix();
+    }
+
+    function renderAdminDispatchBags() {
+      const container = document.getElementById('adminDispatchBagsContainer');
+      if (!container) return;
+
+      const bag1Orders = ordersList.filter(o => o.dispatchBag && o.dispatchBag.includes('BAG-AMTA-01'));
+      const bag2Orders = ordersList.filter(o => o.dispatchBag && o.dispatchBag.includes('BAG-AMTA-02'));
+      const unassignedPacked = ordersList.filter(o => o.status === 'Packed' && !o.dispatchBag);
+
+      container.innerHTML = `
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+          <!-- Bag 1 -->
+          <div style="background:#090d16; border:1px solid #1f2937; border-radius:14px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#818cf8; font-size:1rem;">BAG-AMTA-01</strong>
+              <span style="font-size:0.7rem; background:#312e81; color:#c7d2fe; padding:2px 8px; border-radius:10px; font-weight:800;">মেইন বাজার রুট</span>
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-sub); margin-bottom:8px;">
+              রাইডার: <strong>শুভঙ্কর দাস</strong> (📞 9832104567)<br>
+              মোট পার্সেল: <strong>${bag1Orders.length} টি</strong>
+            </div>
+            <button type="button" class="btn-fast-action" style="width:100%; justify-content:center; background:#4f46e5; color:#fff;" onclick="adminDispatchBagOrders('BAG-AMTA-01')">
+              <i class="fa-solid fa-truck-fast"></i> ব্যাগের সব পার্সেল ডিসপ্যাচ করুন
+            </button>
+          </div>
+
+          <!-- Bag 2 -->
+          <div style="background:#090d16; border:1px solid #1f2937; border-radius:14px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#38bdf8; font-size:1rem;">BAG-AMTA-02</strong>
+              <span style="font-size:0.7rem; background:#065f46; color:#a7f3d0; padding:2px 8px; border-radius:10px; font-weight:800;">রানীহাটি রুট</span>
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-sub); margin-bottom:8px;">
+              রাইডার: <strong>বাপ্পা মণ্ডল</strong> (📞 9734567890)<br>
+              মোট পার্সেল: <strong>${bag2Orders.length} টি</strong>
+            </div>
+            <button type="button" class="btn-fast-action" style="width:100%; justify-content:center; background:#0284c7; color:#fff;" onclick="adminDispatchBagOrders('BAG-AMTA-02')">
+              <i class="fa-solid fa-truck-fast"></i> ব্যাগের সব পার্সেল ডিসপ্যাচ করুন
+            </button>
+          </div>
+        </div>
+
+        ${unassignedPacked.length > 0 ? `
+          <div style="margin-top:12px; background:rgba(245,158,11,0.1); border:1px dashed #f59e0b; border-radius:10px; padding:10px; font-size:0.8rem; color:#fde68a;">
+            <i class="fa-solid fa-circle-exclamation"></i> সতর্কবার্তা: <strong>${unassignedPacked.length} টি প্যাকড পার্সেল</strong> এখনও কোনো ব্যাগে যুক্ত করা হয়নি। প্যাকেজিং হাব থেকে ব্যাগে যুক্ত করুন।
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function adminDispatchBagOrders(bagCode) {
+      if (!confirm(`আপনি কি '${bagCode}' ব্যাগের সমস্ত পার্সেল একবারে 'Out for Delivery' করতে চান?`)) return;
+      let count = 0;
+      ordersList = ordersList.map(o => {
+        if (o.dispatchBag && o.dispatchBag.includes(bagCode) && o.status === 'Packed') {
+          o.status = 'Out for Delivery';
+          o.dispatchedDate = new Date().toLocaleDateString('bn-IN');
+          count++;
+        }
+        return o;
+      });
+      localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+      alert(`🚀 ${count}টি পার্সেল সফলভাবে ডিসপ্যাচ হয়েছে!`);
+      renderWarehouseOperations();
+      renderFinanceOverview();
+    }
+
+    function adminCreateDispatchBagPrompt() {
+      const bagName = prompt('নতুন ডিসপ্যাচ ব্যাগের নাম ও রুট লিখুন (যেমন: BAG-AMTA-03 উদয়নারায়ণপুর রুট):');
+      if (!bagName) return;
+
+      let count = 0;
+      ordersList = ordersList.map(o => {
+        if (o.status === 'Packed' && !o.dispatchBag) {
+          o.dispatchBag = bagName;
+          count++;
+        }
+        return o;
+      });
+      localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+      alert(`✅ '${bagName}' তৈরি হয়েছে এবং ${count}টি প্যাকড পার্সেল এতে বরাদ্দ হয়েছে।`);
+      renderWarehouseOperations();
+    }
+
+    function processWarehouseReturn(actionType) {
+      const inp = document.getElementById('whReturnOrderIdInp');
+      const orderId = inp ? inp.value.trim().replace('#','') : '';
+      if (!orderId) {
+        alert('অনুগ্রহ করে ফেরত পার্সেল অর্ডার আইডি দিন (যেমন: NC-5019)');
+        return;
+      }
+
+      const idx = ordersList.findIndex(o => (o.id || '').toLowerCase() === orderId.toLowerCase());
+      if (idx === -1) {
+        alert(`❌ পার্সেল #${orderId} খুঁজে পাওয়া যায়নি!`);
+        return;
+      }
+
+      const ord = ordersList[idx];
+
+      if (actionType === 'restock') {
+        ordersList[idx].status = 'Returned';
+        ordersList[idx].returnDate = new Date().toLocaleDateString('bn-IN');
+        ordersList[idx].qcStatus = 'QC Passed - Restocked';
+
+        // Restock inventory products +1
+        let prods = [];
+        try {
+          prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+        } catch(e) {}
+
+        (ord.items || []).forEach(item => {
+          const p = prods.find(p => p.id === item.id);
+          if (p) {
+            p.stock = (p.stock || 0) + (Number(item.qty) || 1);
+            p.inStock = p.stock > 0;
+          }
+        });
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+        localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+
+        alert(`✅ পার্সেল #${ord.id} এর কোয়ালিটি চেক সফল! পণ্য ইনভেন্টরিতে রিস্টক (+১) করা হয়েছে।`);
+      } else {
+        ordersList[idx].status = 'Returned';
+        ordersList[idx].qcStatus = 'QC Failed - Damaged';
+        localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+        alert(`⚠️ পার্সেল #${ord.id} ড্যামেজড হিসেবে নথিভুক্ত হয়েছে।`);
+      }
+
+      if (inp) inp.value = '';
+      renderWarehouseOperations();
+      renderFinanceOverview();
+    }
+
+    function renderWarehouseBinsMatrix() {
+      const container = document.getElementById('warehouseBinsMatrixContainer');
+      if (!container) return;
+
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      if (prods.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>';
+        return;
+      }
+
+      // Group products by bin location
+      const binGroups = {};
+      prods.forEach(p => {
+        const bin = resolveItemWarehouseBin(p);
+        if (!binGroups[bin]) binGroups[bin] = [];
+        binGroups[bin].push(p);
+      });
+
+      let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">';
+      for (const [binName, items] of Object.entries(binGroups)) {
+        html += `
+          <div style="background:#090d16; border:1px solid #1f2937; border-radius:14px; padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1f2937; padding-bottom:6px; margin-bottom:8px;">
+              <strong style="color:#818cf8; font-size:0.88rem;"><i class="fa-solid fa-layer-group"></i> ${binName}</strong>
+              <span style="font-size:0.7rem; color:var(--text-sub);">${items.length} টি প্রোডাক্ট</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${items.map(p => `
+                <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; padding:4px 0; border-bottom:1px dashed #1f2937;">
+                  <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; color:#f1f5f9;">
+                    ${p.title}
+                  </div>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-weight:800; color:${(p.stock||0) <= 5 ? '#f87171' : '#34d399'};">
+                      ${p.stock || 0} পিস ${(p.stock||0) <= 5 ? '⚠️' : ''}
+                    </span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
     function switchAdminView(tabKey) {
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1289,9 +1727,13 @@
       const pane = document.getElementById(`pane-${tabKey}`);
       if (pane) pane.classList.add('active');
 
-      if (tabKey === 'orders') {
+            if (tabKey === 'orders') {
         document.getElementById('tabBtnOrders').classList.add('active');
         renderOwnerOrders();
+      } else if (tabKey === 'warehouse') {
+        const wb = document.getElementById('tabBtnWarehouse');
+        if (wb) wb.classList.add('active');
+        renderWarehouseOperations();
       } else if (tabKey === 'stock') {
         document.getElementById('tabBtnStock').classList.add('active');
         renderOwnerStock();
@@ -1308,6 +1750,21 @@
       const container = document.getElementById('ordersContainer');
       if (!container) return;
 
+      // Update Order Filter Counts
+      const setC = (id, c) => { const el = document.getElementById(id); if (el) el.textContent = c; };
+      setC('ofAllCount', ordersList.length);
+      setC('ofPlacedCount', ordersList.filter(o => o.status === 'Order Placed').length);
+      setC('ofPackedCount', ordersList.filter(o => o.status === 'Packed').length);
+      setC('ofOutCount', ordersList.filter(o => o.status === 'Out for Delivery').length);
+      setC('ofDeliveredCount', ordersList.filter(o => o.status === 'Delivered').length);
+      setC('ofRescheduledCount', ordersList.filter(o => o.status === 'Rescheduled').length);
+      setC('ofReturnedCount', ordersList.filter(o => o.status === 'Returned').length);
+
+      let listToRender = ordersList;
+      if (adminOrderFilter && adminOrderFilter !== 'all') {
+        listToRender = ordersList.filter(o => o.status === adminOrderFilter);
+      }
+
       if (ordersList.length === 0) {
         container.innerHTML = `
           <div class="owner-card" style="text-align:center; padding:40px 20px; color:var(--text-sub);">
@@ -1320,7 +1777,7 @@
       }
 
       container.innerHTML = '';
-      ordersList.forEach(ord => {
+      listToRender.forEach(ord => {
         const isPlaced = (ord.status === 'Order Placed');
         const isPacked = (ord.status === 'Packed');
         const isOut = (ord.status === 'Out for Delivery');
@@ -1569,10 +2026,12 @@
       const stock = parseInt(document.getElementById('op_stock').value) || 30;
       const img = document.getElementById('op_img').value.trim();
       const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
+      const binEl = document.getElementById('op_bin');
+      const binLocation = binEl ? binEl.value : 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
 
       const newProd = {
         id: 'NC-CUST-' + Date.now().toString().slice(-6),
-        title, category: cat, fabric, price, mrp, stock, inStock: stock > 0, img, desc,
+        title, category: cat, fabric, price, mrp, stock, inStock: stock > 0, img, desc, binLocation,
         dateAdded: new Date().toISOString()
       };
 
@@ -1806,6 +2265,8 @@
       const mrp = parseInt(document.getElementById('op_mrp').value) || (price * 2);
       const stock = parseInt(document.getElementById('op_stock').value) || 30;
       const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
+      const binEl = document.getElementById('op_bin');
+      const binLocation = binEl ? binEl.value : 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
 
       // Images
       let mainImg = '';
@@ -1882,7 +2343,26 @@
     .qr-img { width: 120px; height: 120px; }
     .info { font-size: 12px; line-height: 1.4; }
     .pay-badge { background: #eee; padding: 6px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 8px; border-radius: 6px; }
-  </style>
+  
+    .order-filter-pill {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 6px 12px;
+      border-radius: 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .order-filter-pill.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #6366f1;
+    }
+
+</style>
 </head>
 <body>
   <div class="label-box">

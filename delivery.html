@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Nisha Creations • ডেলিভারি পার্টনার হাব (Delivery Partner Hub)</title>
+  <title>Nisha Creations • লাস্ট-মাইল ডেলিভারি পার্টনার হাব (Rider Logistics)</title>
   
   <!-- Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,9 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
   <style>
     :root {
-      --bg: #0f172a;
+      --bg: #0b1120;
       --surface: #1e293b;
       --surface-light: #334155;
       --border: #334155;
@@ -25,8 +28,9 @@
       --emerald: #10b981;
       --amber: #f59e0b;
       --rose: #f43f5e;
+      --indigo: #6366f1;
       
-      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.35);
+      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     * {
@@ -41,19 +45,18 @@
       background: var(--bg);
       color: var(--text-main);
       min-height: 100vh;
-      padding-bottom: 70px;
+      padding-bottom: 75px;
     }
 
-    /* Rider Top Bar */
+    /* Rider Header */
     .rider-header {
-      background: #0284c7;
       background: linear-gradient(135deg, #0369a1, #0284c7);
       color: #ffffff;
       padding: 16px 18px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 4px 18px rgba(2, 132, 199, 0.35);
     }
 
     .rider-header-inner {
@@ -80,12 +83,12 @@
       align-items: center;
       justify-content: center;
       font-size: 1.3rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .btn-rider-refresh {
       background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       color: #ffffff;
       padding: 6px 12px;
       border-radius: 20px;
@@ -95,6 +98,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
     }
 
     .container {
@@ -103,13 +107,13 @@
       padding: 16px;
     }
 
-    /* End-of-Day Cash & Task Summary (দিনের শেষে ক্যাশ হিসাব) */
+    /* Cash Summary Banner */
     .cash-summary-card {
       background: linear-gradient(135deg, #1e293b, #0f172a);
       border: 2px solid #38bdf8;
       border-radius: 20px;
       padding: 18px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       box-shadow: var(--shadow-card);
     }
 
@@ -148,8 +152,8 @@
 
     .rider-stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       margin-top: 14px;
       padding-top: 12px;
       border-top: 1px solid #334155;
@@ -157,7 +161,7 @@
 
     .r-stat-box {
       background: rgba(255, 255, 255, 0.05);
-      padding: 10px;
+      padding: 10px 6px;
       border-radius: 12px;
       text-align: center;
     }
@@ -170,12 +174,71 @@
     }
 
     .r-stat-lbl {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: #94a3b8;
       font-weight: 700;
     }
 
-    /* Filter Tabs */
+    /* Sub Navigation Tabs */
+    .delivery-tabs-row {
+      display: flex;
+      gap: 8px;
+      background: var(--surface);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .d-tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .d-tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Delivery Camera Scanner Box */
+    .delivery-scanner-card {
+      background: linear-gradient(135deg, #0c4a6e, #1e293b);
+      border: 2px solid #38bdf8;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 18px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+
+    .btn-rider-camera {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Area Filter Pills */
     .filter-pills-row {
       display: flex;
       gap: 8px;
@@ -190,7 +253,7 @@
       color: var(--text-sub);
       padding: 8px 14px;
       border-radius: 20px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
@@ -219,17 +282,22 @@
       background: rgba(16, 185, 129, 0.06);
     }
 
+    .delivery-card.rescheduled {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+    }
+
     .card-top-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
       margin-bottom: 12px;
     }
 
     .order-tag {
-      font-size: 0.95rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: #38bdf8;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -239,258 +307,197 @@
       font-size: 0.72rem;
       font-weight: 800;
       padding: 4px 10px;
-      border-radius: 12px;
+      border-radius: 20px;
     }
 
-    .badge-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    .badge-out {
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-    .badge-delivered {
-      background: #dcfce7;
-      color: #15803d;
-    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-out { background: #e0f2fe; color: #0369a1; }
+    .badge-delivered { background: #dcfce7; color: #15803d; }
+    .badge-rescheduled { background: #ffedd5; color: #c2410c; }
 
-    /* Customer Info Block */
     .cust-info-block {
-      margin-bottom: 14px;
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #1e293b;
     }
 
     .cust-name-row {
-      font-size: 1.15rem;
+      font-size: 0.92rem;
       font-weight: 800;
-      color: #ffffff;
+      color: #f8fafc;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .cust-address-row {
-      font-size: 0.88rem;
-      color: #e2e8f0;
-      line-height: 1.4;
-      background: #0f172a;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      margin: 8px 0;
+      font-size: 0.82rem;
+      color: #cbd5e1;
       display: flex;
-      align-items: flex-start;
       gap: 8px;
+      line-height: 1.4;
     }
 
-    /* Big Direct Contact Buttons (Call & WhatsApp) */
     .contact-action-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
     .btn-contact {
-      padding: 12px;
+      padding: 10px;
       border-radius: 12px;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       text-decoration: none;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
     }
 
     .btn-contact-call {
-      background: #10b981;
+      background: #0284c7;
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
-    .btn-contact-call:hover { background: #059669; }
 
     .btn-contact-wa {
-      background: #25d366;
+      background: #16a34a;
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
     }
-    .btn-contact-wa:hover { background: #1eb957; }
 
-    /* Payment Alert Box (High Visibility) */
     .payment-alert-box {
       border-radius: 14px;
       padding: 12px 14px;
-      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 12px;
     }
 
     .pay-box-cod {
-      background: linear-gradient(135deg, #78350f, #92400e);
-      border: 1.5px solid #f59e0b;
-      color: #fff;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1.5px dashed #f59e0b;
+      color: #fef08a;
     }
 
     .pay-box-upi {
-      background: linear-gradient(135deg, #064e3b, #047857);
+      background: rgba(16, 185, 129, 0.15);
       border: 1.5px solid #10b981;
-      color: #fff;
+      color: #a7f3d0;
     }
 
     .pay-alert-title {
       font-size: 0.75rem;
-      font-weight: 700;
-      opacity: 0.9;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
     .pay-alert-amt {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Items Accordion */
-    .items-preview-strip {
+    /* Change Calculator Box */
+    .change-calc-box {
       background: #0f172a;
+      border: 1px solid #334155;
       border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .item-mini-row {
+      padding: 10px 12px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .item-mini-thumb {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 1px solid #334155;
-    }
-
-    .item-mini-info {
-      flex: 1;
-    }
-
-    .item-mini-name {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.3;
-    }
-
-    .item-mini-meta {
-      font-size: 0.7rem;
-      color: #94a3b8;
-    }
-
-    /* Primary Action Buttons (Mark as Delivered) */
-    .delivery-actions-bar {
-      display: flex;
-      flex-direction: column;
       gap: 8px;
     }
 
-    .btn-mark-delivered {
-      width: 100%;
+    .change-calc-input {
+      width: 100px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .change-return-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #34d399;
+      flex: 1;
+      text-align: right;
+    }
+
+    .delivery-actions-bar {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-action-deliver {
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
       border: none;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-      transition: all 0.2s;
-    }
-
-    .btn-mark-delivered:hover {
-      background: #047857;
-      transform: translateY(-1px);
-    }
-
-    .btn-mark-out {
-      width: 100%;
-      background: #0284c7;
-      color: #ffffff;
-      border: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 12px;
-      font-size: 0.88rem;
       font-weight: 800;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .empty-rider-box {
-      background: var(--surface);
-      border: 1.5px dashed var(--border);
-      border-radius: 20px;
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-muted);
-    }
-  
-    /* Delivery Camera Scanner Card */
-    .delivery-scanner-card {
-      background: linear-gradient(135deg, #0c4a6e, #075985);
-      border: 2px solid #0284c7;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow-card);
-      text-align: center;
-    }
-
-    .btn-rider-camera {
-      width: 100%;
-      background: linear-gradient(135deg, #0284c7, #0369a1);
-      color: #ffffff;
-      border: 1.5px solid #38bdf8;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 0.98rem;
+    .btn-action-reschedule {
+      background: #334155;
+      color: #f87171;
+      border: 1px solid #475569;
+      padding: 12px;
+      border-radius: 12px;
       font-weight: 800;
+      font-size: 0.78rem;
       cursor: pointer;
-      display: flex;
+    }
+
+    /* Modal */
+    .rider-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 99999;
+      display: none;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-      transition: all 0.2s;
+      padding: 16px;
+      backdrop-filter: blur(6px);
     }
 
-    .btn-rider-camera:active {
-      transform: scale(0.98);
-      background: #0284c7;
+    .rider-modal-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: var(--shadow-card);
     }
-
-</style>
-  <!-- HTML5 QR Code Scanner -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  </style>
 </head>
 <body>
 
-  <!-- Rider Header -->
+  <!-- Header -->
   <header class="rider-header">
     <div class="rider-header-inner">
       <div class="rider-brand">
@@ -498,86 +505,90 @@
           <i class="fa-solid fa-motorcycle"></i>
         </div>
         <div>
-          <div style="font-size:1.05rem; font-weight:800; line-height:1.2;">Nisha Creations Hub</div>
-          <div style="font-size:0.72rem; opacity:0.9;">ডেলিভারি পার্টনার • আমতা</div>
+          <div style="font-size:1.1rem; font-weight:800; line-height:1.2;">নিশা ক্রিয়েশনস লজিস্টিকস</div>
+          <div style="font-size:0.72rem; opacity:0.9;">ডেলিভারি পার্টনার হাব • আমতা</div>
         </div>
       </div>
-
-      <button type="button" class="btn-rider-refresh" onclick="loadRiderData()">
-        <i class="fa-solid fa-rotate"></i> রিফ্রেশ
-      </button>
+      <div style="display:flex; gap:6px;">
+        <a href="packaging.html" class="btn-rider-refresh">
+          <i class="fa-solid fa-boxes-packing"></i> ওয়্যারহাউস
+        </a>
+        <button type="button" class="btn-rider-refresh" onclick="loadRiderData()">
+          <i class="fa-solid fa-rotate"></i> রিফ্রেশ
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="container">
+  <div class="container">
 
-    <!-- 1. End-of-Day Cash & Task Summary (দিনের শেষে ক্যাশ হিসাব) -->
+    <!-- Cash & Task Summary Banner -->
     <section class="cash-summary-card">
       <div class="cash-main-title">
-        <span><i class="fa-solid fa-sack-dollar" style="color:#f59e0b;"></i> আজকের ক্যাশ কালেকশন</span>
-        <span style="font-size:0.7rem; color:#94a3b8;">(মালিককে জমা দিতে হবে)</span>
+        <span><i class="fa-solid fa-hand-holding-dollar"></i> আজকের ক্যাশ কালেকশন (মালিককে জমা দিতে হবে)</span>
+        <span style="font-size:0.7rem; color:#38bdf8; cursor:pointer;" onclick="openEodSlipModal()">
+          <i class="fa-solid fa-receipt"></i> জমা রসিদ
+        </span>
       </div>
 
       <div class="cash-main-amount">
         <span id="riderCodCashTotal">₹0</span>
+        <span style="font-size:0.8rem; font-weight:700; color:#94a3b8;">(নগদ সংগ্রহ)</span>
       </div>
 
       <div class="cash-note">
         <i class="fa-solid fa-circle-info"></i>
-        <span>ক্যাশ অন ডেলিভারির (COD) যতগুলো পার্সেল আপনি সফলভাবে দিয়েছেন, শুধু সেই টাকার মোট হিসাব।</span>
+        <span>ক্যাশ অন ডেলিভারির (COD) সফল পার্সেলের নগদ হিসাব।</span>
       </div>
 
       <div class="rider-stats-grid">
         <div class="r-stat-box">
           <div class="r-stat-val" id="riderPendingCount" style="color:#f59e0b;">0</div>
-          <div class="r-stat-lbl">বাকি ডেলিভারি</div>
+          <div class="r-stat-lbl">⏳ বাকি ডেলিভারি</div>
         </div>
         <div class="r-stat-box">
           <div class="r-stat-val" id="riderDeliveredCount" style="color:#34d399;">0</div>
-          <div class="r-stat-lbl">সম্পন্ন ডেলিভারি</div>
+          <div class="r-stat-lbl">✅ সম্পন্ন</div>
+        </div>
+        <div class="r-stat-box">
+          <div class="r-stat-val" id="riderRescheduledCount" style="color:#f87171;">0</div>
+          <div class="r-stat-lbl">⚠️ রিসিডিউল</div>
         </div>
       </div>
     </section>
 
-    <!-- 2. QR Camera Scanner Card (পার্সেল কিউআর কোড স্ক্যানার) -->
+    <!-- Sub Navigation -->
+    <div class="delivery-tabs-row">
+      <button type="button" class="d-tab-btn active" id="tabDeliveries" onclick="switchRiderMode('tasks')">
+        <i class="fa-solid fa-route"></i> ডেলিভারি রান-শীট
+      </button>
+      <button type="button" class="d-tab-btn" id="tabEod" onclick="openEodSlipModal()">
+        <i class="fa-solid fa-file-invoice-dollar"></i> দিনের শেষে ক্যাশ জমা
+      </button>
+    </div>
+
+    <!-- Scanner Hero Card -->
     <section class="delivery-scanner-card">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-        <div style="font-size:1.05rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-qrcode" style="color:#38bdf8; font-size:1.3rem;"></i>
-          কিউআর স্ক্যান করে সরাসরি ডেলিভারি দিন
-        </div>
-        <span style="font-size:0.72rem; background:#0369a1; color:#fff; padding:3px 10px; border-radius:12px; font-weight:800; border:1px solid #38bdf8;">
-          ১-টাচ সম্পন্ন
-        </span>
-      </div>
-
-      <p style="font-size:0.78rem; color:#e0f2fe; margin-bottom:12px; text-align:left; line-height:1.4;">
-        কাস্টমারের ঠিকানায় পৌঁছে পার্সেলের গায়ের কিউআর কোডটি ফোনের ক্যামেরা দিয়ে স্ক্যান করুন। স্ক্যান করলেই স্বয়ংক্রিয়ভাবে মালিক ও কাস্টমারের কাছে লাইভ আপডেট চলে যাবে যে ডেলিভারি সম্পন্ন হয়েছে।
-      </p>
-
       <button type="button" id="btnRiderToggleCamera" class="btn-rider-camera" onclick="toggleRiderQrCamera()">
-        <i class="fa-solid fa-camera"></i>
+        <i class="fa-solid fa-qrcode"></i>
         <span id="riderCameraBtnText">ক্যামেরা স্ক্যানার চালু করুন</span>
       </button>
 
-      <!-- Live Camera Viewport -->
       <div id="riderQrCameraWrapper" style="display:none; margin-top:14px; border-radius:16px; overflow:hidden; border:2.5px solid #38bdf8; background:#000;">
         <div id="rider-qr-reader" style="width:100%;"></div>
       </div>
 
-      <!-- Scan Toast -->
       <div id="riderScanToast" style="display:none; margin-top:12px; background:linear-gradient(135deg, #065f46, #059669); border:1.5px solid #34d399; padding:12px; border-radius:12px; font-weight:800; font-size:0.88rem; color:#fff;"></div>
 
-      <!-- Manual Input Fallback -->
-      <div style="display:flex; gap:8px; margin-top:12px;">
-        <input type="text" id="manualDeliveryInput" placeholder="অথবা অর্ডার আইডি লিখুন (যেমন: NC-5019)" style="flex:1; background:#0f172a; border:1.5px solid #334155; border-radius:12px; padding:10px; color:#fff; font-size:0.84rem; text-align:center; font-weight:700;" onkeypress="if(event.key==='Enter') handleManualRiderScan()">
-        <button type="button" onclick="handleManualRiderScan()" style="background:#10b981; color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:800; font-size:0.82rem; cursor:pointer;">
-          <i class="fa-solid fa-circle-check"></i> সম্পন্ন
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <input type="text" id="manualDeliveryInput" placeholder="অর্ডার আইডি লিখুন (যেমন: NC-5019)" style="flex:1; background:#0f172a; border:1.5px solid #334155; border-radius:12px; padding:10px; color:#fff; font-size:0.84rem; text-align:center; font-weight:700;" onkeypress="if(event.key==='Enter') handleManualRiderScan()">
+        <button type="button" style="background:#0284c7; color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:800;" onclick="handleManualRiderScan()">
+          সম্পন্ন
         </button>
       </div>
     </section>
 
-    <!-- 3. Filter Tabs -->
+    <!-- Filters -->
     <div class="filter-pills-row">
       <button type="button" class="filter-pill active" id="fPending" onclick="setRiderFilter('pending', this)">
         ⏳ বাকি ডেলিভারি (<span id="cntPending">0</span>)
@@ -590,24 +601,142 @@
       </button>
     </div>
 
-    <!-- 3. Delivery Tasks Container -->
-    <div id="riderTasksContainer">
-      <!-- Populated by JavaScript -->
-    </div>
+    <!-- Rider Tasks Container -->
+    <div id="riderTasksContainer"></div>
 
-  </main>
+  </div>
+
+  <!-- RESCHEDULE / ATTEMPT FAILED MODAL -->
+  <div id="rescheduleModal" class="rider-modal-overlay">
+    <div class="rider-modal-card">
+      <h3 style="font-size:1.05rem; font-weight:800; color:#f87171; margin-bottom:8px;">
+        <i class="fa-solid fa-triangle-exclamation"></i> ডেলিভারি ব্যর্থ / রিসিডিউল
+      </h3>
+      <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">
+        অর্ডার #<span id="modalRescheduleOrderId"></span> ডেলিভারি না হওয়ার সঠিক কারণ নির্বাচন করুন:
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+        <label style="font-size:0.8rem; color:#cbd5e1; display:flex; align-items:center; gap:8px; background:#0f172a; padding:8px 10px; border-radius:8px; cursor:pointer;">
+          <input type="radio" name="rescheduleReason" value="গ্রাহক বাড়িতে উপস্থিত ছিলেন না" checked> গ্রাহক বাড়িতে উপস্থিত ছিলেন না
+        </label>
+        <label style="font-size:0.8rem; color:#cbd5e1; display:flex; align-items:center; gap:8px; background:#0f172a; padding:8px 10px; border-radius:8px; cursor:pointer;">
+          <input type="radio" name="rescheduleReason" value="গ্রাহকের ফোন বন্ধ অথবা ধরেননি"> গ্রাহকের ফোন বন্ধ অথবা ধরেননি
+        </label>
+        <label style="font-size:0.8rem; color:#cbd5e1; display:flex; align-items:center; gap:8px; background:#0f172a; padding:8px 10px; border-radius:8px; cursor:pointer;">
+          <input type="radio" name="rescheduleReason" value="ক্যাশ টাকা প্রস্তুত নেই (আগামীকাল নেবেন)"> ক্যাশ টাকা প্রস্তুত নেই (আগামীকাল নেবেন)
+        </label>
+        <label style="font-size:0.8rem; color:#cbd5e1; display:flex; align-items:center; gap:8px; background:#0f172a; padding:8px 10px; border-radius:8px; cursor:pointer;">
+          <input type="radio" name="rescheduleReason" value="সঠিক ঠিকানা বা ল্যান্ডমার্ক পাওয়া যায়নি"> সঠিক ঠিকানা বা ল্যান্ডমার্ক পাওয়া যায়নি
+        </label>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" style="flex:1; background:#f43f5e; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="submitReschedule()">
+          রিসিডিউল কনফার্ম
+        </button>
+        <button type="button" style="background:#334155; color:#cbd5e1; border:none; padding:10px 16px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="closeRescheduleModal()">
+          বাতিল
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- END OF DAY CASH DEPOSIT SLIP MODAL -->
+  <div id="eodSlipModal" class="rider-modal-overlay">
+    <div class="rider-modal-card" style="max-width:440px;">
+      <div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:12px;">
+        <div style="font-weight:800; font-size:1.1rem; color:#38bdf8;">নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">রাইডার ক্যাশ ও পার্সেল জমা স্লিপ • আমতা হাব</div>
+      </div>
+
+      <div style="font-size:0.85rem; line-height:1.6; margin-bottom:14px; background:#0f172a; padding:12px; border-radius:12px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#94a3b8;">তারিখ ও সময়:</span>
+          <strong id="slipDateTime">17 Sep 2026</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#94a3b8;">সফল ডেলিভারি:</span>
+          <strong style="color:#34d399;" id="slipDeliveredCount">0 টি</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#94a3b8;">ব্যর্থ / রিসিডিউল:</span>
+          <strong style="color:#f87171;" id="slipReturnedCount">0 টি</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px dashed #334155; padding-top:6px; margin-top:6px;">
+          <span style="color:#fde68a; font-weight:800;">মালিককে জমা নগদ ক্যাশ:</span>
+          <strong style="color:#34d399; font-size:1.2rem;" id="slipCashTotal">₹0</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" style="flex:1; background:#16a34a; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="shareEodSlipWhatsApp()">
+          <i class="fa-brands fa-whatsapp"></i> মালিককে স্লিপ পাঠান
+        </button>
+        <button type="button" style="background:#334155; color:#cbd5e1; border:none; padding:10px 14px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="closeEodSlipModal()">
+          বন্ধ করুন
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script>
     let riderOrders = [];
     let currentRiderFilter = 'pending';
-
-    
-    // =========================================================
-    // DELIVERY CAMERA QR CODE SCANNER (ক্যামেরা স্ক্যানার)
-    // =========================================================
     let riderQrScannerInstance = null;
     let isRiderCameraActive = false;
+    let currentRescheduleTargetId = null;
 
+    window.addEventListener('DOMContentLoaded', () => {
+      loadRiderData();
+
+      const params = new URLSearchParams(window.location.search);
+      const urlScanId = params.get('scan') || params.get('deliver');
+      if (urlScanId) {
+        setTimeout(() => {
+          processDeliveryCompletion(urlScanId);
+        }, 600);
+      }
+    });
+
+    function loadRiderData() {
+      try {
+        const stored = localStorage.getItem('nc_orders');
+        riderOrders = stored ? JSON.parse(stored) : [];
+      } catch(e) {
+        riderOrders = [];
+      }
+      calculateRiderCash();
+      renderRiderTasks();
+    }
+
+    function calculateRiderCash() {
+      const codCollected = riderOrders
+        .filter(o => o.status === 'Delivered' && o.paymentMode === 'COD')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      const pendingOrders = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery');
+      const deliveredOrders = riderOrders.filter(o => o.status === 'Delivered');
+      const rescheduledOrders = riderOrders.filter(o => o.status === 'Rescheduled');
+
+      document.getElementById('riderCodCashTotal').textContent = '₹' + codCollected.toLocaleString('en-IN');
+      document.getElementById('riderPendingCount').textContent = pendingOrders.length;
+      document.getElementById('riderDeliveredCount').textContent = deliveredOrders.length;
+      document.getElementById('riderRescheduledCount').textContent = rescheduledOrders.length;
+
+      document.getElementById('cntPending').textContent = pendingOrders.length;
+      document.getElementById('cntDelivered').textContent = deliveredOrders.length;
+      document.getElementById('cntAll').textContent = riderOrders.length;
+    }
+
+    function setRiderFilter(type, btn) {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      currentRiderFilter = type;
+      renderRiderTasks();
+    }
+
+    // Camera Scanner
     function toggleRiderQrCamera() {
       const wrapper = document.getElementById('riderQrCameraWrapper');
       const btnText = document.getElementById('riderCameraBtnText');
@@ -641,7 +770,7 @@
       ).then(() => {
         isRiderCameraActive = true;
       }).catch((err) => {
-        alert('⚠️ ক্যামেরা চালু করা যায়নি। অনুগ্রহ করে ব্রাউজারে ক্যামেরার অনুমতি দিন, অথবা নিচের বক্সে অর্ডার আইডি লিখে সম্পন্ন করুন।');
+        alert('⚠️ ক্যামেরা চালু করা যায়নি। ব্রাউজারে ক্যামেরার পারমিশন দিন অথবা নিচে অর্ডার আইডি লিখে সম্পন্ন করুন।');
         isRiderCameraActive = false;
         document.getElementById('riderQrCameraWrapper').style.display = 'none';
         document.getElementById('riderCameraBtnText').textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
@@ -664,7 +793,6 @@
       } else if (orderId.includes('deliver=')) {
         orderId = orderId.split('deliver=')[1].split('&')[0];
       }
-
       processDeliveryCompletion(orderId);
     }
 
@@ -679,53 +807,49 @@
       if (inp) inp.value = '';
     }
 
-    // Process Delivery Completion via QR Code
     function processDeliveryCompletion(orderId) {
       const cleanId = orderId.replace('#', '').trim();
       const idx = riderOrders.findIndex(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
 
       if (idx === -1) {
-        alert(`❌ পার্সেল #${cleanId} ডেলিভারি তালিকায় পাওয়া যায়নি! অনুগ্রহ করে সঠিক কিউআর কোড স্ক্যান করুন।`);
+        alert(`❌ পার্সেল #${cleanId} সিস্টেমে পাওয়া যায়নি!`);
         return;
       }
 
       const ord = riderOrders[idx];
 
       if (ord.status === 'Delivered') {
-        alert(`ℹ️ অর্ডার #${ord.id} ইতিমধ্যে সফলভাবে ডেলিভারি করা হয়ে গেছে!`);
+        alert(`ℹ️ অর্ডার #${ord.id} ইতিমধ্যে সফলভাবে ডেলিভারি সম্পন্ন হয়েছে!`);
         return;
       }
 
       const isCod = (ord.paymentMode === 'COD');
-      let promptMsg = `📦 পার্সেল #${ord.id} স্ক্যান হয়েছে!\nগ্রাহক: ${ord.name}\nঠিকানা: ${ord.address}\n\n`;
+      const custName = ord.name || ord.customer || 'সম্মানিত গ্রাহক';
+      let promptMsg = `📦 পার্সেল #${ord.id} ভেরিফিকেশন:\nগ্রাহক: ${custName}\nঠিকানা: ${ord.address}\n\n`;
 
       if (isCod) {
         promptMsg += `⚠️ নগদ টাকা সংগ্রহ করুন: ₹${ord.total}\nআপনি কি কাস্টমারের থেকে নগদ ₹${ord.total} বুঝে পেয়েছেন এবং পার্সেল বুঝিয়ে দিয়েছেন?`;
       } else {
-        promptMsg += `✅ অনলাইন প্রিপেইড অর্ডার (কোনো টাকা নিতে হবে না)\nআপনি কি পার্সেলটি কাস্টমারকে সফলভাবে বুঝিয়ে দিয়েছেন?`;
+        promptMsg += `✅ অনলাইন প্রিপেইড অর্ডার (কোনো টাকা নিতে হবে না)\nআপনি কি পার্সেলটি বুঝিয়ে দিয়েছেন?`;
       }
 
       if (!confirm(promptMsg)) return;
 
-      // Update Order Status to Delivered
       riderOrders[idx].status = 'Delivered';
       riderOrders[idx].deliveredDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
 
-      // Save to localStorage immediately so Owner Admin and Customer live track update
       localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
 
-      // Audio / Vibration feedback
       try {
         if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
       } catch(e) {}
 
-      // Show toast
       const toast = document.getElementById('riderScanToast');
       if (toast) {
         toast.innerHTML = `
           <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
             <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>
-            <span>🎉 পার্সেল #${ord.id} ডেলিভারি সফল হয়েছে! ${isCod ? `নগদ ₹${ord.total} ক্যাশ হিসাবে যুক্ত হয়েছে।` : ''}</span>
+            <span>🎉 পার্সেল #${ord.id} ডেলিভারি সফল! ${isCod ? `নগদ ₹${ord.total} ক্যাশ হিসাবে যুক্ত হয়েছে।` : ''}</span>
           </div>
         `;
         toast.style.display = 'block';
@@ -736,58 +860,58 @@
       renderRiderTasks();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function calculateChangeHelper(orderTotal, inputEl, outputId) {
+      const given = Number(inputEl.value) || 0;
+      const out = document.getElementById(outputId);
+      if (!out) return;
+
+      if (given < orderTotal) {
+        out.innerHTML = `<span style="color:#f87171;">আরও ₹${orderTotal - given} বাকি</span>`;
+      } else if (given === orderTotal) {
+        out.innerHTML = `<span style="color:#34d399;">সঠিক টাকা ✅</span>`;
+      } else {
+        out.innerHTML = `<span style="color:#38bdf8;">ফেরত দিন: ₹${given - orderTotal} 💵</span>`;
+      }
+    }
+
+    function openRescheduleModal(orderId) {
+      currentRescheduleTargetId = orderId;
+      document.getElementById('modalRescheduleOrderId').textContent = orderId;
+      document.getElementById('rescheduleModal').style.display = 'flex';
+    }
+
+    function closeRescheduleModal() {
+      document.getElementById('rescheduleModal').style.display = 'none';
+      currentRescheduleTargetId = null;
+    }
+
+    function submitReschedule() {
+      if (!currentRescheduleTargetId) return;
+      const reasonEl = document.querySelector('input[name="rescheduleReason"]:checked');
+      const reason = reasonEl ? reasonEl.value : 'পরে চেষ্টা';
+
+      const idx = riderOrders.findIndex(o => o.id === currentRescheduleTargetId);
+      if (idx !== -1) {
+        riderOrders[idx].status = 'Rescheduled';
+        riderOrders[idx].rescheduleReason = reason;
+        riderOrders[idx].rescheduledAt = new Date().toLocaleDateString('bn-IN');
+        localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
+      }
+
+      closeRescheduleModal();
+      alert(`⚠️ পার্সেল #${currentRescheduleTargetId} রিসিডিউল তালিকায় নথিভুক্ত হয়েছে।`);
       loadRiderData();
-      // Auto-scan from URL parameter
-      const params = new URLSearchParams(window.location.search);
-      const urlScanId = params.get('scan') || params.get('deliver');
-      if (urlScanId) {
-        setTimeout(() => {
-          processDeliveryCompletion(urlScanId);
-        }, 600);
+    }
+
+    function setOrderStatusRider(orderId, status) {
+      const idx = riderOrders.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        riderOrders[idx].status = status;
+        localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
+        loadRiderData();
       }
-
-    });
-
-    function loadRiderData() {
-      try {
-        const stored = localStorage.getItem('nc_orders');
-        riderOrders = stored ? JSON.parse(stored) : [];
-      } catch(e) {
-        riderOrders = [];
-      }
-      calculateRiderCash();
-      renderRiderTasks();
     }
 
-    // Calculate Cash Collected & Task Counts
-    function calculateRiderCash() {
-      // Cash collected today = delivered COD orders
-      const codCollected = riderOrders
-        .filter(o => o.status === 'Delivered' && o.paymentMode === 'COD')
-        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
-
-      const pendingOrders = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery');
-      const deliveredOrders = riderOrders.filter(o => o.status === 'Delivered');
-
-      document.getElementById('riderCodCashTotal').textContent = '₹' + codCollected.toLocaleString('en-IN');
-      document.getElementById('riderPendingCount').textContent = pendingOrders.length;
-      document.getElementById('riderDeliveredCount').textContent = deliveredOrders.length;
-
-      document.getElementById('cntPending').textContent = pendingOrders.length;
-      document.getElementById('cntDelivered').textContent = deliveredOrders.length;
-      document.getElementById('cntAll').textContent = riderOrders.length;
-    }
-
-    // Filter Handler
-    function setRiderFilter(type, btn) {
-      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      currentRiderFilter = type;
-      renderRiderTasks();
-    }
-
-    // Render Tasks
     function renderRiderTasks() {
       const container = document.getElementById('riderTasksContainer');
       if (!container) return;
@@ -795,17 +919,17 @@
       let filtered = riderOrders;
 
       if (currentRiderFilter === 'pending') {
-        filtered = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery');
+        filtered = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery' || o.status === 'Rescheduled');
       } else if (currentRiderFilter === 'delivered') {
         filtered = riderOrders.filter(o => o.status === 'Delivered');
       }
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="empty-rider-box">
+          <div style="text-align:center; padding:36px 16px; background:var(--surface); border-radius:20px; border:1px solid var(--border);">
             <i class="fa-solid fa-box-open" style="font-size:2.8rem; color:#475569; margin-bottom:10px;"></i>
             <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">কোনো ডেলিভারি টাস্ক নেই</h3>
-            <p style="font-size:0.8rem; margin-top:4px;">নতুন অর্ডার আসলে এই তালিকায় দেখা যাবে।</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">নতুন অর্ডার আসলে এখানে দেখা যাবে।</p>
           </div>
         `;
         return;
@@ -813,49 +937,44 @@
 
       container.innerHTML = '';
       filtered.forEach(ord => {
-        const isDelivered = ord.status === 'Delivered';
-        const isCod = ord.paymentMode === 'COD';
+        const isDelivered = (ord.status === 'Delivered');
+        const isRescheduled = (ord.status === 'Rescheduled');
+        const isCod = (ord.paymentMode === 'COD');
         const phoneClean = (ord.phone || '').replace(/[^0-9]/g, '');
+        const custName = ord.name || ord.customer || 'সম্মানিত গ্রাহক';
 
-        // WhatsApp message for delivery boy
-        const waMsg = encodeURIComponent(`নমস্কার ${ord.name || 'গ্রাহক'}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার শাড়ির পার্সেল (#${ord.id}) নিয়ে ডেলিভারি পার্টনার আসছি। 
+        const waMsg = encodeURIComponent(`নমস্কার ${custName}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার পার্সেল (#${ord.id}) নিয়ে ডেলিভারি পার্টনার আসছি। 
 ১০ মিনিটের মধ্যে পৌঁছাব। অনুগ্রহ করে প্রস্তুত থাকুন।
 প্রদেয় বিল: ₹${ord.total} (${isCod ? 'ক্যাশ অন ডেলিভারি' : 'অনলাইন পেইড'})।`);
 
-        // Items mini HTML
         let itemsHtml = (ord.items || []).map(it => `
-          <div class="item-mini-row">
-            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=80'}" class="item-mini-thumb">
-            <div class="item-mini-info">
-              <div class="item-mini-name">${it.title}</div>
-              <div class="item-mini-meta">সাইজ: ${it.selectedSize || 'Free Size'} • পরিমাণ: ${it.qty || 1} টি</div>
-            </div>
-            <div style="font-size:0.85rem; font-weight:800; color:#fff;">₹${(it.price||0)*(it.qty||1)}</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid #1f2937; font-size:0.78rem;">
+            <span>${it.title} (${it.selectedSize || 'Free'} • ${it.qty || 1} টি)</span>
+            <span style="font-weight:800; color:#f59e0b;">₹${(it.price||0)*(it.qty||1)}</span>
           </div>
         `).join('');
 
         const card = document.createElement('div');
-        card.className = `delivery-card ${isDelivered ? 'completed' : ''}`;
+        card.className = `delivery-card ${isDelivered ? 'completed' : (isRescheduled ? 'rescheduled' : '')}`;
         card.innerHTML = `
           <div class="card-top-strip">
             <div class="order-tag">#${ord.id}</div>
-            <div class="status-badge ${isDelivered ? 'badge-delivered' : (ord.status === 'Out for Delivery' ? 'badge-out' : 'badge-pending')}">
-              ${isDelivered ? '✅ ডেলিভারি সম্পন্ন' : (ord.status === 'Out for Delivery' ? '🚚 পথে আছে' : '⏳ ডেলিভারি বাকি')}
+            <div class="status-badge ${isDelivered ? 'badge-delivered' : (isRescheduled ? 'badge-rescheduled' : (ord.status === 'Out for Delivery' ? 'badge-out' : 'badge-pending'))}">
+              ${isDelivered ? '✅ ডেলিভারি সম্পন্ন' : (isRescheduled ? '⚠️ রিসিডিউল' : (ord.status === 'Out for Delivery' ? '🚚 পথে আছে' : '⏳ ডেলিভারি বাকি'))}
             </div>
           </div>
 
-          <!-- Customer Name & Address -->
+          <!-- Customer Info -->
           <div class="cust-info-block">
             <div class="cust-name-row">
               <i class="fa-solid fa-user" style="color:#38bdf8;"></i>
-              <span>${ord.name || 'সম্মানিত গ্রাহক'}</span>
+              <span>${custName}</span>
             </div>
-
             <div class="cust-address-row">
               <i class="fa-solid fa-location-dot" style="color:#ef4444; font-size:1.1rem; margin-top:2px;"></i>
               <div>
                 <strong>ডেলিভারি ঠিকানা:</strong><br>
-                ${ord.address || 'আমতা, হাওড়া - 711401'}
+                ${ord.address || 'আমতা, হাওড়া - ৭১১৪০১'}
               </div>
             </div>
           </div>
@@ -870,14 +989,14 @@
             </a>
           </div>
 
-          <!-- Payment Alert Box (High Visibility) -->
+          <!-- Payment Alert Box -->
           <div class="payment-alert-box ${isCod ? 'pay-box-cod' : 'pay-box-upi'}">
             <div>
               <div class="pay-alert-title">
-                ${isCod ? '💵 কাস্টমারের থেকে ক্যাশ সংগ্রহ করুন:' : '✅ অনলাইন পেমেন্ট সম্পন্ন:'}
+                ${isCod ? '💵 কাস্টমারের থেকে নগদ সংগ্রহ:' : '✅ অনলাইন পেমেন্ট সম্পন্ন:'}
               </div>
               <div style="font-size:0.75rem; opacity:0.9;">
-                ${isCod ? 'শাড়ি বুঝিয়ে দিয়ে নগদ টাকা নিন' : 'কোনো টাকা নিতে হবে না (PAID)'}
+                ${isCod ? 'শাড়ি বুঝিয়ে দিয়ে টাকা নিন' : 'কোনো টাকা নিতে হবে না (PAID)'}
               </div>
             </div>
             <div class="pay-alert-amt">
@@ -885,68 +1004,80 @@
             </div>
           </div>
 
-          <!-- Items Strip -->
-          <div class="items-preview-strip">
+          ${isCod && !isDelivered ? `
+            <!-- Change Calculator Helper -->
+            <div class="change-calc-box">
+              <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">গ্রাহক দিলেন:</span>
+              <input type="number" class="change-calc-input" placeholder="₹${ord.total}" oninput="calculateChangeHelper(${ord.total}, this, 'change_out_${ord.id}')">
+              <div class="change-return-tag" id="change_out_${ord.id}">হিসাব প্রস্তুত</div>
+            </div>
+          ` : ''}
+
+          <!-- Items Summary -->
+          <div style="background:#0f172a; border-radius:12px; padding:10px 12px; margin-bottom:12px;">
             <div style="font-size:0.72rem; font-weight:800; color:#94a3b8; margin-bottom:4px;">
-              <i class="fa-solid fa-bag-shopping"></i> পার্সেলের ভেতরের শাড়ি:
+              <i class="fa-solid fa-bag-shopping"></i> পার্সেলের ভেতরে:
             </div>
             ${itemsHtml}
           </div>
 
-          <!-- Delivery Actions -->
-          <div class="delivery-actions-bar">
-            ${!isDelivered ? `
-              ${ord.status !== 'Out for Delivery' ? `
-                <button type="button" class="btn-mark-out" onclick="setOrderStatusRider('${ord.id}', 'Out for Delivery')">
-                  <i class="fa-solid fa-motorcycle"></i> ডেলিভারি দিতে রওনা হলাম (Out for Delivery)
-                </button>
-              ` : ''}
-
-              <button type="button" class="btn-mark-delivered" onclick="markDeliveredPrompt('${ord.id}', ${isCod ? ord.total : 0})">
-                <i class="fa-solid fa-circle-check"></i>
-                ${isCod ? `ক্যাশ ₹${ord.total} সংগ্রহ করলাম ও ডেলিভারি সম্পন্ন` : 'ডেলিভারি সম্পন্ন (Mark as Delivered)'}
+          <!-- Actions -->
+          ${!isDelivered ? `
+            <div class="delivery-actions-bar">
+              <button type="button" class="btn-action-deliver" onclick="processDeliveryCompletion('${ord.id}')">
+                <i class="fa-solid fa-circle-check"></i> ডেলিভারি সফল
               </button>
-            ` : `
-              <div style="text-align:center; padding:8px; font-size:0.8rem; font-weight:800; color:#34d399; background:rgba(16,185,129,0.1); border-radius:10px;">
-                🎉 এই অর্ডারটি সফলভাবে ডেলিভারি করা হয়েছে!
-              </div>
-            `}
-          </div>
+              <button type="button" class="btn-action-reschedule" onclick="openRescheduleModal('${ord.id}')">
+                <i class="fa-solid fa-clock-rotate-left"></i> ব্যর্থ / রিসিডিউল
+              </button>
+            </div>
+          ` : `
+            <div style="text-align:center; padding:8px; background:rgba(16,185,129,0.1); border-radius:10px; color:#34d399; font-size:0.8rem; font-weight:800;">
+              <i class="fa-solid fa-circle-check"></i> ${ord.deliveredDate ? `ডেলিভারি সম্পন্ন: ${ord.deliveredDate}` : 'ডেলিভারি সম্পন্ন'}
+            </div>
+          `}
         `;
         container.appendChild(card);
       });
     }
 
-    // Rider Action: Mark Delivered
-    function markDeliveredPrompt(orderId, codAmount) {
-      let confirmMsg = `আপনি কি নিশ্চিত যে অর্ডার #${orderId} কাস্টমারকে সঠিক ঠিকানায় ডেলিভারি দিয়েছেন?`;
-      if (codAmount > 0) {
-        confirmMsg += `\n\n⚠️ নিশ্চিত করুন: কাস্টমারের থেকে নগদ ₹${codAmount} বুঝে পেয়েছেন তো?`;
-      }
+    // EOD Slip
+    function openEodSlipModal() {
+      const codCollected = riderOrders
+        .filter(o => o.status === 'Delivered' && o.paymentMode === 'COD')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
 
-      if (!confirm(confirmMsg)) return;
+      const deliveredCount = riderOrders.filter(o => o.status === 'Delivered').length;
+      const returnedCount = riderOrders.filter(o => o.status === 'Rescheduled').length;
 
-      setOrderStatusRider(orderId, 'Delivered');
+      document.getElementById('slipDateTime').textContent = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour:'2-digit', minute:'2-digit' });
+      document.getElementById('slipDeliveredCount').textContent = deliveredCount + ' টি';
+      document.getElementById('slipReturnedCount').textContent = returnedCount + ' টি';
+      document.getElementById('slipCashTotal').textContent = '₹' + codCollected.toLocaleString('en-IN');
+
+      document.getElementById('eodSlipModal').style.display = 'flex';
     }
 
-    function setOrderStatusRider(orderId, status) {
-      const idx = riderOrders.findIndex(o => o.id === orderId);
-      if (idx === -1) return;
+    function closeEodSlipModal() {
+      document.getElementById('eodSlipModal').style.display = 'none';
+    }
 
-      riderOrders[idx].status = status;
-      if (status === 'Delivered') {
-        riderOrders[idx].deliveredDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
-      }
+    function shareEodSlipWhatsApp() {
+      const codCollected = riderOrders
+        .filter(o => o.status === 'Delivered' && o.paymentMode === 'COD')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const deliveredCount = riderOrders.filter(o => o.status === 'Delivered').length;
+      const returnedCount = riderOrders.filter(o => o.status === 'Rescheduled').length;
 
-      // Save to localStorage so Owner Admin (admin.html) and Customer (index.html) sync immediately!
-      localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
+      const text = encodeURIComponent(`📦 *নিশা ক্রিয়েশনস ওয়্যারহাউস - দৈনিক ডেলিভারি ও ক্যাশ জমা স্লিপ*
+তারিখ: ${new Date().toLocaleDateString('bn-IN')}
 
-      calculateRiderCash();
-      renderRiderTasks();
+✅ সফল ডেলিভারি: ${deliveredCount} টি
+⚠️ রিসিডিউল / ফেরত: ${returnedCount} টি
+💵 মালিককে প্রদেয় মোট COD ক্যাশ: ₹${codCollected.toLocaleString('en-IN')}
 
-      alert(status === 'Delivered' 
-        ? `✅ অর্ডার #${orderId} সফলভাবে ডেলিভারি মার্ক করা হয়েছে! ক্যাশ হিসাবে জমা হয়েছে।` 
-        : `🚚 অর্ডার #${orderId} এখন "পথে আছে (Out for Delivery)" স্ট্যাটাসে রাখা হয়েছে।`);
+রাইডার দ্বারা প্রস্তুত ও ভেরিফাইড।`);
+      window.open(`https://wa.me/919239413517?text=${text}`, '_blank');
     }
   </script>
 </body>

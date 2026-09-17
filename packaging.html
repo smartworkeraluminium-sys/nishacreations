@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Nisha Creations • প্যাকেজিং ও কিউআর হাব (Packaging & QR Hub)</title>
+  <title>Nisha Creations • ওয়্যারহাউস প্যাকিং ও ডিসপ্যাচ হাব (Warehouse Packstation)</title>
   
   <!-- Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,21 +16,24 @@
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --surface: #131b2e;
-      --surface-light: #1e293b;
-      --border: #283548;
-      --text-main: #f8fafc;
+      --bg: #090d16;
+      --surface: #111827;
+      --surface-light: #1f2937;
+      --border: #374151;
+      --border-accent: #4f46e5;
+      --text-main: #f9fafb;
       --text-sub: #cbd5e1;
-      --text-muted: #94a3b8;
+      --text-muted: #9ca3af;
       
       --amber: #f59e0b;
       --emerald: #10b981;
       --primary: #9333ea;
       --sky: #0284c7;
+      --indigo: #6366f1;
       --rose: #f43f5e;
       
-      --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.55);
+      --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
     }
 
     * {
@@ -50,17 +53,18 @@
 
     /* Header */
     .pack-header {
-      background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #d97706 100%);
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
       color: #ffffff;
       padding: 16px 20px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 18px rgba(180, 83, 9, 0.35);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .header-inner {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -77,14 +81,27 @@
     .pack-icon-box {
       width: 44px;
       height: 44px;
-      background: #ffffff;
-      color: #b45309;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
       border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.35rem;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
+    }
+
+    .pack-brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      line-height: 1.15;
+    }
+
+    .pack-brand-sub {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 600;
     }
 
     .header-links {
@@ -94,8 +111,8 @@
     }
 
     .btn-pack-pill {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: #ffffff;
       padding: 6px 12px;
       border-radius: 20px;
@@ -111,76 +128,110 @@
     }
 
     .btn-pack-pill:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 18px auto 0;
       padding: 0 16px;
     }
 
-    /* Stats Overview Banner */
+    /* Warehouse Stats Banner */
     .pack-stats-banner {
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: 20px;
-      padding: 18px;
+      padding: 16px;
       margin-bottom: 20px;
       box-shadow: var(--shadow-lg);
     }
 
     .pack-stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       text-align: center;
     }
 
     .p-stat-box {
-      background: #090d16;
+      background: #0b0f19;
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 12px 8px;
+      padding: 10px 6px;
     }
 
     .p-stat-num {
-      font-size: 1.6rem;
+      font-size: 1.45rem;
       font-weight: 800;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     .p-stat-lbl {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--text-muted);
       margin-top: 2px;
     }
 
-    /* QR Camera Scanner Box */
+    /* Warehouse Station Tabs */
+    .station-nav-bar {
+      display: flex;
+      gap: 8px;
+      background: var(--surface);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .station-tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .station-tab-btn.active {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+    }
+
+    /* Scanner Hero Card */
     .scanner-hero-card {
-      background: linear-gradient(135deg, #1e1b4b, #311042);
-      border: 2px solid #8b5cf6;
+      background: linear-gradient(135deg, #1e1b4b, #2e1065);
+      border: 2px solid #6366f1;
       border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 18px;
+      margin-bottom: 20px;
       text-align: center;
       box-shadow: var(--shadow-lg);
     }
 
     .btn-toggle-camera {
-      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
       color: #ffffff;
       border: none;
-      padding: 14px 24px;
+      padding: 12px 22px;
       border-radius: 16px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
       transition: all 0.2s;
     }
 
@@ -194,9 +245,9 @@
       position: relative;
       border-radius: 18px;
       overflow: hidden;
-      border: 2px solid #a855f7;
+      border: 2px solid #818cf8;
       background: #000;
-      max-width: 420px;
+      max-width: 380px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -205,7 +256,6 @@
       width: 100%;
     }
 
-    /* Manual QR Code verification input */
     .manual-verify-box {
       margin-top: 14px;
       display: flex;
@@ -220,51 +270,33 @@
     .manual-input {
       flex: 1;
       background: #090d16;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
+      border: 1.5px solid #4f46e5;
+      border-radius: 14px;
       padding: 10px 14px;
-      color: #fff;
+      color: #ffffff;
       font-size: 0.9rem;
+      font-weight: 700;
       outline: none;
       text-align: center;
-      font-weight: 700;
     }
 
     .manual-input:focus {
-      border-color: var(--primary);
+      border-color: #818cf8;
+      box-shadow: var(--shadow-glow);
     }
 
     .btn-manual-verify {
-      background: #10b981;
-      color: #fff;
+      background: #4f46e5;
       border: none;
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    /* Scan Alert Banner */
-    #scanSuccessToast {
-      display: none;
-      background: linear-gradient(135deg, #065f46, #059669);
-      border: 1.5px solid #34d399;
       color: #ffffff;
+      padding: 10px 18px;
       border-radius: 14px;
-      padding: 14px;
-      margin-top: 14px;
-      font-size: 0.92rem;
       font-weight: 800;
-      animation: popIn 0.3s ease;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    /* Tabs Filter */
+    /* Filter Sub-Tabs */
     .pack-filter-row {
       display: flex;
       gap: 8px;
@@ -277,7 +309,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text-sub);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 20px;
       font-size: 0.82rem;
       font-weight: 800;
@@ -287,9 +319,9 @@
     }
 
     .pack-pill-tab.active {
-      background: var(--amber);
-      color: #0f172a;
-      border-color: var(--amber);
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
     }
 
     /* Order Packaging Card */
@@ -301,6 +333,7 @@
       margin-bottom: 18px;
       box-shadow: var(--shadow-lg);
       position: relative;
+      transition: border-color 0.2s;
     }
 
     .order-pack-card.packed {
@@ -318,9 +351,9 @@
     }
 
     .pack-order-id {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 800;
-      color: #f59e0b;
+      color: #818cf8;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
@@ -328,70 +361,43 @@
       font-size: 0.72rem;
       font-weight: 800;
       padding: 4px 10px;
-      border-radius: 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pack-status-badge.pending {
       background: #fef3c7;
       color: #92400e;
     }
+
     .pack-status-badge.done {
       background: #dcfce7;
       color: #15803d;
     }
 
-    /* Packaging Details Split (Items on left, QR on right) */
-    .pack-content-split {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      align-items: center;
+    .pack-status-badge.out {
+      background: #e0f2fe;
+      color: #0369a1;
     }
 
-    .pack-items-col {
-      flex: 1;
-      min-width: 240px;
-    }
-
-    .pack-qr-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #090d16;
-      padding: 12px;
-      border-radius: 16px;
-      border: 1.5px solid var(--border);
-      text-align: center;
-    }
-
-    .qr-image-display {
-      width: 140px;
-      height: 140px;
-      border-radius: 8px;
-      background: #fff;
-      padding: 6px;
-    }
-
-    .qr-caption {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: var(--amber);
-      margin-top: 6px;
-    }
-
-    /* Saree Item Tile */
+    /* Item Tile with Warehouse Bin Location */
     .pack-saree-tile {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: #090d16;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 8px;
+      background: #0b0f19;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      margin-bottom: 10px;
     }
 
     .pack-saree-img {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
       object-fit: cover;
       border: 1px solid var(--border);
     }
@@ -403,74 +409,267 @@
     .pack-saree-title {
       font-size: 0.88rem;
       font-weight: 800;
-      color: #ffffff;
-      line-height: 1.3;
+      color: #f9fafb;
+      line-height: 1.25;
+      margin-bottom: 4px;
     }
 
     .pack-saree-spec {
-      font-size: 0.74rem;
-      color: #94a3b8;
-      margin-top: 2px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
-    /* Customer details inside card */
-    .pack-cust-strip {
-      font-size: 0.8rem;
+    .warehouse-bin-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #1e1b4b;
+      color: #a5b4fc;
+      border: 1px solid #4338ca;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    /* Quality Assurance 4-Point Checklist */
+    .qa-box {
+      background: #0b0f19;
+      border: 1px dashed #4b5563;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+
+    .qa-title {
+      font-size: 0.78rem;
+      font-weight: 800;
       color: #cbd5e1;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 12px;
-      border-radius: 10px;
-      margin-top: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
     }
 
-    /* Action Buttons inside Card */
-    .pack-action-footer {
+    .qa-checks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .qa-label {
+      font-size: 0.72rem;
+      color: var(--text-sub);
       display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .qa-label input[type="checkbox"] {
+      accent-color: #10b981;
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Action Buttons in Pack Card */
+    .pack-actions-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
       gap: 10px;
       margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
     }
 
     .btn-pack-action {
-      flex: 1;
-      padding: 12px;
+      height: 44px;
       border-radius: 12px;
       font-size: 0.85rem;
       font-weight: 800;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
+      cursor: pointer;
       border: none;
       transition: all 0.2s;
     }
 
-    .btn-mark-packed {
+    .btn-pack-complete {
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
     }
-    .btn-mark-packed:active { background: #047857; }
 
-    .btn-print-sticker {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #ffffff;
+    .btn-pack-waybill {
+      background: #1f2937;
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
     }
-    .btn-print-sticker:hover { background: #334155; }
 
-    /* Empty state */
-    .empty-pack-box {
-      background: var(--surface);
-      border: 1.5px dashed var(--border);
-      border-radius: 20px;
-      padding: 40px 20px;
+    .btn-pack-waybill:hover {
+      background: #374151;
+    }
+
+    /* Waybill / Shipping Label Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .waybill-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 2px solid #0f172a;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .wb-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .wb-brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+
+    .wb-routing-box {
+      border: 2px solid #0f172a;
+      padding: 6px 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: #f1f5f9;
+      border-radius: 6px;
       text-align: center;
-      color: var(--text-muted);
+    }
+
+    .wb-barcode-mock {
+      font-family: 'Courier New', monospace;
+      font-size: 1.4rem;
+      letter-spacing: 4px;
+      text-align: center;
+      background: #f8fafc;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #cbd5e1;
+      font-weight: 900;
+    }
+
+    .wb-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .wb-pay-banner {
+      background: #fef08a;
+      border: 2px dashed #ca8a04;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .wb-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn-wb-print {
+      flex: 1;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-wb-close {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Pick Wave View Table */
+    .pick-table-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pick-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #0b0f19;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      border: 1px solid #1f2937;
+    }
+
+    .pick-item-row.picked-done {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    /* Dispatch Bag View */
+    .bag-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .bag-header-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .empty-pack-box {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
     }
   </style>
 </head>
@@ -481,37 +680,40 @@
     <div class="header-inner">
       <div class="pack-brand">
         <div class="pack-icon-box">
-          <i class="fa-solid fa-box-open"></i>
+          <i class="fa-solid fa-boxes-packing"></i>
         </div>
         <div>
-          <div style="font-size:1.05rem; font-weight:800; line-height:1.2;">Nisha Creations Hub</div>
-          <div style="font-size:0.72rem; opacity:0.9;">📦 প্যাকেজিং ও কিউআর ডিসপ্যাচ পোর্টাল • আমতা</div>
+          <div class="pack-brand-title">নিশা ক্রিয়েশনস • ওয়্যারহাউস হাব</div>
+          <div class="pack-brand-sub">প্যাকিং, পিকিং ও ডিসপ্যাচ স্টেশন • আমতা</div>
         </div>
       </div>
-
       <div class="header-links">
-        <a href="admin.html" class="btn-pack-pill" title="মালিক ড্যাশবোর্ড">
-          <i class="fa-solid fa-crown"></i> <span>অ্যাডমিন</span>
+        <a href="admin.html" class="btn-pack-pill">
+          <i class="fa-solid fa-user-shield"></i> অ্যাডমিন
         </a>
-        <a href="delivery.html" class="btn-pack-pill" title="ডেলিভারি হাব">
-          <i class="fa-solid fa-motorcycle"></i> <span>ডেলিভারি</span>
+        <a href="delivery.html" class="btn-pack-pill">
+          <i class="fa-solid fa-motorcycle"></i> ডেলিভারি
         </a>
       </div>
     </div>
   </header>
 
-  <main class="container">
+  <div class="container">
 
-    <!-- 1. Stats Overview -->
+    <!-- Top Warehouse Stats Banner -->
     <section class="pack-stats-banner">
       <div class="pack-stats-grid">
         <div class="p-stat-box">
-          <div class="p-stat-num" id="cntNeedPack" style="color:var(--amber);">0</div>
-          <div class="p-stat-lbl">⏳ প্যাকিং বাকি</div>
+          <div class="p-stat-num" id="cntNeedPick" style="color:var(--amber);">0</div>
+          <div class="p-stat-lbl">⏳ পিকিং বাকি</div>
+        </div>
+        <div class="p-stat-box">
+          <div class="p-stat-num" id="cntNeedPack" style="color:var(--rose);">0</div>
+          <div class="p-stat-lbl">📦 প্যাকিং বাকি</div>
         </div>
         <div class="p-stat-box">
           <div class="p-stat-num" id="cntDonePack" style="color:var(--emerald);">0</div>
-          <div class="p-stat-lbl">✅ প্যাকিং সম্পন্ন</div>
+          <div class="p-stat-lbl">🏷️ রেডি ফর ডিসপ্যাচ</div>
         </div>
         <div class="p-stat-box">
           <div class="p-stat-num" id="cntTotalOrders" style="color:var(--sky);">0</div>
@@ -520,70 +722,187 @@
       </div>
     </section>
 
-    <!-- 2. QR Camera Scanner Card (ক্যামেরা দিয়ে সরাসরি স্ক্যান) -->
-    <section class="scanner-hero-card">
-      <div style="font-size:1.15rem; font-weight:800; color:#fff; display:flex; align-items:center; justify-content:center; gap:8px;">
-        <i class="fa-solid fa-qrcode" style="color:var(--amber); font-size:1.4rem;"></i>
-        পার্সেল কিউআর কোড স্ক্যানার
-      </div>
-      <p style="font-size:0.78rem; color:#cbd5e1; margin:6px auto 14px; max-width:480px;">
-        শাড়ি ব্যাগে ঢুকিয়ে কিউআর কোডটি ফোনের ক্যামেরা দিয়ে স্ক্যান করুন। স্ক্যান করলেই স্বয়ংক্রিয়ভাবে 'প্যাকিং সম্পন্ন' হিসেবে চিহ্নিত হবে।
-      </p>
-
-      <button type="button" id="btnToggleCamera" class="btn-toggle-camera" onclick="toggleQrCamera()">
-        <i class="fa-solid fa-camera"></i>
-        <span id="cameraBtnText">ক্যামেরা স্ক্যানার চালু করুন</span>
+    <!-- Warehouse Station Mode Switcher -->
+    <nav class="station-nav-bar">
+      <button type="button" class="station-tab-btn active" id="tabModePack" onclick="switchWarehouseStation('pack')">
+        <i class="fa-solid fa-box-open"></i> প্যাকিং স্টেশন
       </button>
+      <button type="button" class="station-tab-btn" id="tabModePick" onclick="switchWarehouseStation('pick')">
+        <i class="fa-solid fa-list-check"></i> র‍্যাক পিকিং শিট
+      </button>
+      <button type="button" class="station-tab-btn" id="tabModeBags" onclick="switchWarehouseStation('bags')">
+        <i class="fa-solid fa-truck-ramp-box"></i> ডিসপ্যাচ ব্যাগিং
+      </button>
+    </nav>
 
-      <!-- Camera Viewport -->
-      <div id="qrCameraWrapper">
-        <div id="qr-reader"></div>
-      </div>
+    <!-- SECTION 1: PACKSTATION (DEFAULT) -->
+    <div id="stationPackView">
+      
+      <!-- Camera & Barcode QR Scanner Hero Card -->
+      <section class="scanner-hero-card">
+        <button type="button" id="btnToggleCamera" class="btn-toggle-camera" onclick="toggleQrCamera()">
+          <i class="fa-solid fa-camera"></i>
+          <span id="cameraBtnText">ক্যামেরা স্ক্যানার চালু করুন</span>
+        </button>
 
-      <!-- Success Notification Banner -->
-      <div id="scanSuccessToast">
-        <!-- Message populated dynamically -->
-      </div>
+        <div id="qrCameraWrapper">
+          <div id="qr-reader"></div>
+        </div>
 
-      <!-- Manual fallback input -->
-      <div class="manual-verify-box">
-        <input type="text" id="manualScanInput" class="manual-input" placeholder="অর্ডার আইডি লিখুন (যেমন: NC-5019)" onkeypress="if(event.key==='Enter') handleManualVerify()">
-        <button type="button" class="btn-manual-verify" onclick="handleManualVerify()">
-          <i class="fa-solid fa-circle-check"></i> ভেরিফাই
+        <div id="scanSuccessToast" style="display:none; margin-top:12px; background:linear-gradient(135deg, #065f46, #059669); border:1.5px solid #34d399; padding:12px; border-radius:12px; font-weight:800; font-size:0.88rem; color:#fff;"></div>
+
+        <div class="manual-verify-box">
+          <input type="text" id="manualScanInput" class="manual-input" placeholder="অর্ডার আইডি লিখুন (যেমন: NC-5019)" onkeypress="if(event.key==='Enter') handleManualVerify()">
+          <button type="button" class="btn-manual-verify" onclick="handleManualVerify()">
+            <i class="fa-solid fa-barcode"></i> ভেরিফাই
+          </button>
+        </div>
+      </section>
+
+      <!-- Pack Filters -->
+      <div class="pack-filter-row">
+        <button type="button" class="pack-pill-tab active" id="tabPendingPack" onclick="setPackFilter('pending', this)">
+          ⏳ প্যাকিং বাকি (<span id="tabCountPending">0</span>)
+        </button>
+        <button type="button" class="pack-pill-tab" id="tabPackedDone" onclick="setPackFilter('packed', this)">
+          ✅ প্যাকিং সম্পন্ন (<span id="tabCountPacked">0</span>)
+        </button>
+        <button type="button" class="pack-pill-tab" id="tabAllPack" onclick="setPackFilter('all', this)">
+          📋 সমস্ত অর্ডার (<span id="tabCountAll">0</span>)
         </button>
       </div>
-    </section>
 
-    <!-- 3. Filter Tabs -->
-    <div class="pack-filter-row">
-      <button type="button" class="pack-pill-tab active" id="tabPendingPack" onclick="setPackFilter('pending', this)">
-        ⏳ প্যাকিং বাকি (<span id="tabCountPending">0</span>)
-      </button>
-      <button type="button" class="pack-pill-tab" id="tabPackedDone" onclick="setPackFilter('packed', this)">
-        ✅ প্যাকিং সম্পন্ন (<span id="tabCountPacked">0</span>)
-      </button>
-      <button type="button" class="pack-pill-tab" id="tabAllPack" onclick="setPackFilter('all', this)">
-        📋 সমস্ত অর্ডার (<span id="tabCountAll">0</span>)
-      </button>
+      <!-- Orders List Container -->
+      <div id="packagingOrdersList"></div>
     </div>
 
-    <!-- 4. Orders Packaging Cards Container -->
-    <div id="packagingOrdersList">
-      <!-- Populated by JavaScript -->
+    <!-- SECTION 2: WAREHOUSE PICK WAVE (RACK & SHELF PICKING) -->
+    <div id="stationPickView" style="display:none;">
+      <div class="pick-table-card">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">ওয়্যারহাউস পিকিং তালিকা (Rack & Bin Pick Wave)</h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);">প্যাকিং করার আগে স্টোরেজ র‍্যাক থেকে আইটেমগুলো সংগ্রহ করুন।</p>
+          </div>
+          <button type="button" class="btn-pack-pill" onclick="renderPickWaveItems()">
+            <i class="fa-solid fa-rotate"></i> রিফ্রেশ
+          </button>
+        </div>
+        <div id="pickWaveContainer"></div>
+      </div>
     </div>
 
-  </main>
+    <!-- SECTION 3: OUTBOUND DISPATCH BAGGING -->
+    <div id="stationBagsView" style="display:none;">
+      <div class="pick-table-card">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">আউটবাউন্ড ডিসপ্যাচ ব্যাগিং ও রাইডার হ্যান্ডওভার</h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);">প্যাক করা পার্সেলগুলোকে ডেলিভারি ব্যাগে সাজিয়ে রাইডারকে দিন।</p>
+          </div>
+          <button type="button" class="btn-pack-pill" onclick="createNewDispatchBagPrompt()">
+            <i class="fa-solid fa-plus"></i> নতুন ডিসপ্যাচ ব্যাগ তৈরি করুন
+          </button>
+        </div>
+        <div id="dispatchBagsContainer"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WAYBILL / SHIPPING LABEL MODAL -->
+  <div id="waybillModal" class="modal-overlay">
+    <div class="waybill-sheet" id="waybillPrintArea">
+      <div class="wb-brand-row">
+        <div>
+          <div class="wb-brand-title"><i class="fa-solid fa-box"></i> NISHA CREATIONS</div>
+          <div style="font-size:0.72rem; color:#475569; font-weight:700;">CENTRAL FULFILLMENT HUB • AMTA</div>
+        </div>
+        <div class="wb-routing-box">
+          <div style="font-size:0.6rem; color:#64748b;">DELIVERY HUB</div>
+          AMTA - 711401
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-weight:800; font-size:0.85rem;" id="wbOrderId">#NC-5019</span>
+        <span style="font-size:0.75rem; color:#64748b;" id="wbOrderDate">তারিখ: 17 Sep 2026</span>
+      </div>
+
+      <div class="wb-barcode-mock" id="wbBarcodeText">||| ||||| |||| || ||||| ||</div>
+
+      <div style="text-align:center; margin:8px 0;">
+        <img id="wbQrCodeImg" src="" style="width:110px; height:110px; border:1px solid #cbd5e1; padding:2px; border-radius:8px;">
+      </div>
+
+      <div class="wb-info-grid">
+        <div>
+          <strong style="color:#64748b; font-size:0.7rem;">গ্রাহকের বিবরণ (DELIVER TO):</strong>
+          <div style="font-weight:800; font-size:0.9rem;" id="wbCustName">Saheb Ghanti</div>
+          <div style="font-size:0.78rem; line-height:1.3; margin-top:2px;" id="wbCustAddress">আমতা চাঁদনী, রানীহাটি রোড, হাওড়া - ৭১১৪০১</div>
+          <div style="font-size:0.78rem; font-weight:700; margin-top:2px;" id="wbCustPhone">📞 9239413517</div>
+        </div>
+        <div>
+          <strong style="color:#64748b; font-size:0.7rem;">প্রেরক / RETURN ADDRESS:</strong>
+          <div style="font-weight:700; font-size:0.78rem;">নিশা ক্রিয়েশনস ওয়্যারহাউস</div>
+          <div style="font-size:0.72rem; color:#475569;">আমতা চাঁদনী বাজার সংলগ্ন,<br>হাওড়া - ৭১১৪০১, পশ্চিমবঙ্গ</div>
+        </div>
+      </div>
+
+      <div class="wb-pay-banner" id="wbPaymentBanner">
+        CASH ON DELIVERY: ₹466
+      </div>
+
+      <div style="font-size:0.75rem; color:#475569; border-top:1px solid #cbd5e1; padding-top:6px;">
+        <strong>পার্সেলের ভেতরে:</strong> <span id="wbItemDesc">Pure Dhakai Jamdani Saree (1 pc)</span>
+      </div>
+
+      <div class="wb-actions-row">
+        <button type="button" class="btn-wb-print" onclick="window.print()">
+          <i class="fa-solid fa-print"></i> লেবেল প্রিন্ট করুন
+        </button>
+        <button type="button" class="btn-wb-close" onclick="closeWaybillModal()">
+          বন্ধ করুন
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script>
     let allOrders = [];
     let currentPackFilter = 'pending';
+    let currentStationMode = 'pack';
     let html5QrScannerInstance = null;
     let isCameraRunning = false;
+
+    // Warehouse Bin / Rack Location Mapping Helper
+    function getWarehouseBinLocation(item) {
+      if (item.binLocation) return item.binLocation;
+      const cat = (item.category || '').toLowerCase();
+      const type = (item.type || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+
+      if (cat.includes('jamdani') || title.includes('jamdani') || title.includes('ঢাকাই')) {
+        return 'র‍্যাক A-01 (জামদানি শাড়ি ব্লক)';
+      } else if (cat.includes('silk') || title.includes('silk') || title.includes('সিল্ক') || title.includes('katan')) {
+        return 'র‍্যাক A-02 (সফট সিল্ক ও কাতান জোন)';
+      } else if (cat.includes('tant') || title.includes('tant') || title.includes('তাঁত')) {
+        return 'র‍্যাক B-01 (শান্তিপুরী তাঁত কটন)';
+      } else if (cat.includes('kurti') || title.includes('kurti') || title.includes('কুর্তি')) {
+        return 'র‍্যাক C-01 (কুর্তি ও সালোয়ার হ্যাঙ্গার)';
+      } else if (cat.includes('necklace') || cat.includes('jewel') || title.includes('jewellery') || title.includes('গহনা')) {
+        return 'শেলফ J-01 (গোল্ড প্লেটেড ব্রাইডাল জুয়েলারি)';
+      } else if (cat.includes('bangle') || title.includes('churi') || title.includes('চুড়ি') || title.includes('বালা')) {
+        return 'শেলফ J-02 (ডিজাইনার বালা ও চুড়ি ড্রয়ার)';
+      } else if (type.includes('girls') || cat.includes('frock') || title.includes('frock') || title.includes('লেহেঙ্গা')) {
+        return 'বিন F-01 (ছোটদের ফ্রক ও বেবি লেহেঙ্গা)';
+      }
+      return 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       loadPackagingData();
 
-      // Check if URL has ?scan=NC-XXXX auto-verification parameter
       const params = new URLSearchParams(window.location.search);
       const autoScanId = params.get('scan');
       if (autoScanId) {
@@ -601,20 +920,63 @@
         allOrders = [];
       }
       updatePackStats();
-      renderPackCards();
+      if (currentStationMode === 'pack') {
+        renderPackCards();
+      } else if (currentStationMode === 'pick') {
+        renderPickWaveItems();
+      } else if (currentStationMode === 'bags') {
+        renderDispatchBags();
+      }
     }
 
     function updatePackStats() {
-      const pending = allOrders.filter(o => o.status === 'Order Placed');
-      const packed = allOrders.filter(o => o.status === 'Packed');
+      const pendingOrders = allOrders.filter(o => o.status === 'Order Placed');
+      const packedOrders = allOrders.filter(o => o.status === 'Packed');
 
-      document.getElementById('cntNeedPack').textContent = pending.length;
-      document.getElementById('cntDonePack').textContent = packed.length;
+      // Total individual items across pending orders that need picking
+      let needPickItemsCount = 0;
+      pendingOrders.forEach(o => {
+        (o.items || []).forEach(it => {
+          needPickItemsCount += (Number(it.qty) || 1);
+        });
+      });
+
+      document.getElementById('cntNeedPick').textContent = needPickItemsCount;
+      document.getElementById('cntNeedPack').textContent = pendingOrders.length;
+      document.getElementById('cntDonePack').textContent = packedOrders.length;
       document.getElementById('cntTotalOrders').textContent = allOrders.length;
 
-      document.getElementById('tabCountPending').textContent = pending.length;
-      document.getElementById('tabCountPacked').textContent = packed.length;
+      document.getElementById('tabCountPending').textContent = pendingOrders.length;
+      document.getElementById('tabCountPacked').textContent = packedOrders.length;
       document.getElementById('tabCountAll').textContent = allOrders.length;
+    }
+
+    // Switch between Packstation, Pick Wave, and Dispatch Bags
+    function switchWarehouseStation(mode) {
+      currentStationMode = mode;
+      document.querySelectorAll('.station-tab-btn').forEach(b => b.classList.remove('active'));
+      
+      const pView = document.getElementById('stationPackView');
+      const pickView = document.getElementById('stationPickView');
+      const bagsView = document.getElementById('stationBagsView');
+
+      pView.style.display = 'none';
+      pickView.style.display = 'none';
+      bagsView.style.display = 'none';
+
+      if (mode === 'pack') {
+        document.getElementById('tabModePack').classList.add('active');
+        pView.style.display = 'block';
+        renderPackCards();
+      } else if (mode === 'pick') {
+        document.getElementById('tabModePick').classList.add('active');
+        pickView.style.display = 'block';
+        renderPickWaveItems();
+      } else if (mode === 'bags') {
+        document.getElementById('tabModeBags').classList.add('active');
+        bagsView.style.display = 'block';
+        renderDispatchBags();
+      }
     }
 
     function setPackFilter(fType, btn) {
@@ -652,16 +1014,13 @@
         { facingMode: "environment" },
         config,
         (decodedText) => {
-          // Successfully scanned!
           handleScannedData(decodedText);
         },
-        (errorMessage) => {
-          // frame scan error, ignore
-        }
+        (errorMessage) => {}
       ).then(() => {
         isCameraRunning = true;
       }).catch((err) => {
-        alert('⚠️ ক্যামেরা চালু করা যাচ্ছে না। অনুগ্রহ করে ব্রাউজারে ক্যামেরার পারমিশন দিন, অথবা নিচের বক্সে অর্ডার আইডি লিখে ভেরিফাই করুন।');
+        alert('⚠️ ক্যামেরা চালু করা যাচ্ছে না। ব্রাউজারে ক্যামেরার পারমিশন দিন অথবা নিচের বক্সে অর্ডার আইডি লিখে ভেরিফাই করুন।');
         isCameraRunning = false;
         document.getElementById('qrCameraWrapper').style.display = 'none';
         document.getElementById('cameraBtnText').textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
@@ -676,16 +1035,12 @@
       }
     }
 
-    // Handle Scanned QR Data
     function handleScannedData(dataStr) {
       if (!dataStr) return;
-      
-      // Data might be full URL with ?scan=NC-5019 or plain NC-5019
       let orderId = dataStr.trim();
       if (orderId.includes('scan=')) {
         orderId = orderId.split('scan=')[1].split('&')[0];
       }
-
       verifyAndCompletePacking(orderId);
     }
 
@@ -700,38 +1055,33 @@
       if (inp) inp.value = '';
     }
 
-    // Main Verification Action
+    // Main Verification Action (Pack & Seal)
     function verifyAndCompletePacking(orderId) {
-      // Clean order ID
       const cleanId = orderId.replace('#', '').trim();
       const idx = allOrders.findIndex(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
 
       if (idx === -1) {
-        alert(`❌ অর্ডার #${cleanId} সিস্টেমে পাওয়া যায়নি! অনুগ্রহ করে সঠিক কিউআর কোড স্ক্যান করুন।`);
+        alert(`❌ অর্ডার #${cleanId} ওয়্যারহাউস ডাটাবেসে পাওয়া যায়নি!`);
         return;
       }
 
       const ord = allOrders[idx];
 
-      // Update status to 'Packed'
       allOrders[idx].status = 'Packed';
       allOrders[idx].packedDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+      allOrders[idx].waybillNo = allOrders[idx].waybillNo || ('NC-WB-' + ord.id);
 
-      // Save to localStorage so Admin, Delivery, and Customer reflect it in real-time
       localStorage.setItem('nc_orders', JSON.stringify(allOrders));
 
-      // Audio feedback & Vibration
       try {
         if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
       } catch(e) {}
 
-      // Show celebration banner
       const toast = document.getElementById('scanSuccessToast');
       if (toast) {
         toast.innerHTML = `
           <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
-            <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>
-            <span>🎉 পার্সেল #${ord.id} সফলভাবে স্ক্যান ও প্যাকিং সম্পন্ন হয়েছে!</span>
+            <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>            <span>🎉 পার্সেল #${ord.id} প্যাকিং ও বারকোড সিল সম্পন্ন! ডিসপ্যাচের জন্য প্রস্তুত।</span>
           </div>
         `;
         toast.style.display = 'block';
@@ -742,7 +1092,7 @@
       renderPackCards();
     }
 
-    // Render Cards
+    // Render Packaging Order Cards
     function renderPackCards() {
       const container = document.getElementById('packagingOrdersList');
       if (!container) return;
@@ -760,7 +1110,7 @@
           <div class="empty-pack-box">
             <i class="fa-solid fa-box-archive" style="font-size:2.8rem; color:#475569; margin-bottom:12px;"></i>
             <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">এই তালিকায় কোনো পার্সেল নেই</h3>
-            <p style="font-size:0.8rem; margin-top:4px;">নতুন অর্ডার আসলে এখানে দেখা যাবে।</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">নতুন কাস্টমার বুকিং আসলে এখানে দেখাবে।</p>
           </div>
         `;
         return;
@@ -769,27 +1119,27 @@
       container.innerHTML = '';
       filtered.forEach(ord => {
         const isPacked = (ord.status === 'Packed');
+        const isOut = (ord.status === 'Out for Delivery');
         const isDelivered = (ord.status === 'Delivered');
 
-        // Items HTML
-        let itemsHtml = (ord.items || []).map(it => `
-          <div class="pack-saree-tile">
-            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="pack-saree-img">
-            <div class="pack-saree-info">
-              <div class="pack-saree-title">${it.title}</div>
-              <div class="pack-saree-spec">
-                সাইজ: <strong>${it.selectedSize || 'Free Size'}</strong> • পরিমাণ: <strong>${it.qty || 1} টি</strong> • রং: ${it.selectedColor || 'মূল রং'}
+        let itemsHtml = (ord.items || []).map(it => {
+          const bin = getWarehouseBinLocation(it);
+          return `
+            <div class="pack-saree-tile">
+              <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="pack-saree-img">
+              <div class="pack-saree-info">
+                <div class="pack-saree-title">${it.title}</div>
+                <div class="pack-saree-spec">
+                  সাইজ: <strong>${it.selectedSize || 'Free Size'}</strong> • পরিমাণ: <strong>${it.qty || 1} টি</strong> • রং: ${it.selectedColor || 'মূল রং'}
+                </div>
+                <div class="warehouse-bin-tag">
+                  <i class="fa-solid fa-warehouse"></i> ${bin}
+                </div>
               </div>
+              <div style="font-weight:800; color:#f59e0b; font-size:0.88rem;">₹${(it.price||0)*(it.qty||1)}</div>
             </div>
-            <div style="font-weight:800; color:#f59e0b; font-size:0.88rem;">₹${(it.price||0)*(it.qty||1)}</div>
-          </div>
-        `).join('');
-
-        // QR Code URL & Data
-        // Encodes the verification link so scanning with any phone camera or our scanner verifies it
-        const currentUrl = window.location.href.split('?')[0];
-        const qrVerificationUrl = `${currentUrl}?scan=${ord.id}`;
-        const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrVerificationUrl)}`;
+          `;
+        }).join('');
 
         const card = document.createElement('div');
         card.className = `order-pack-card ${isPacked ? 'packed' : ''}`;
@@ -798,126 +1148,263 @@
             <div>
               <span class="pack-order-id">#${ord.id}</span>
               <span style="font-size:0.72rem; color:#94a3b8; margin-left:8px;">তারিখ: ${ord.date || 'আজ'}</span>
+              ${ord.dispatchBag ? `<span style="margin-left:8px; font-size:0.7rem; background:#312e81; color:#c7d2fe; padding:2px 8px; border-radius:10px; font-weight:800;"><i class="fa-solid fa-bag-shopping"></i> ${ord.dispatchBag}</span>` : ''}
             </div>
-            <div class="pack-status-badge ${isPacked ? 'done' : ''}">
-              ${isPacked ? '✅ প্যাকিং সম্পন্ন (Packed)' : '⏳ প্যাকিং বাকি (Pending)'}
-            </div>
-          </div>
-
-          <div class="pack-content-split">
-            <!-- Items & Customer Info -->
-            <div class="pack-items-col">
-              <div style="font-size:0.74rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">
-                📦 ব্যাগে ভরার জন্য শাড়ির তালিকা:
-              </div>
-              ${itemsHtml}
-
-              <div class="pack-cust-strip">
-                👤 <strong>গ্রাহক:</strong> ${ord.name || 'সম্মানিত কাস্টমার'} (📞 ${ord.phone || ''})<br>
-                📍 <strong>ঠিকানা:</strong> ${ord.address || 'আমতা, হাওড়া'}<br>
-                💳 <strong>পেমেন্ট:</strong> ${ord.paymentMode === 'UPI' ? '📲 অনলাইন পেইড' : '💵 ক্যাশ অন ডেলিভারি'} (₹${ord.total})
-              </div>
-            </div>
-
-            <!-- Dynamic QR Code Column -->
-            <div class="pack-qr-col">
-              <img src="${qrImgSrc}" class="qr-image-display" alt="QR Code #${ord.id}">
-              <div class="qr-caption">📷 #${ord.id} QR CODE</div>
-              <div style="font-size:0.65rem; color:#94a3b8; margin-top:2px;">ক্যামেরা দিয়ে স্ক্যান করুন</div>
+            <div class="pack-status-badge ${isDelivered ? 'done' : (isOut ? 'out' : (isPacked ? 'done' : 'pending'))}">
+              ${isDelivered ? '✅ ডেলিভারি সম্পন্ন' : (isOut ? '🚚 পথে আছে' : (isPacked ? '✅ প্যাকিং সম্পন্ন' : '⏳ প্যাকিং বাকি'))}
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="pack-action-footer">
-            <button type="button" class="btn-pack-action btn-print-sticker" onclick="printPackagingSticker('${ord.id}')">
-              <i class="fa-solid fa-print"></i> প্যাকিং কিউআর স্টিকার প্রিন্ট
-            </button>
+          <!-- Customer Meta -->
+          <div style="font-size:0.82rem; margin-bottom:12px; line-height:1.4; color:#cbd5e1; background:#0f172a; padding:10px 12px; border-radius:12px; border:1px solid #1f2937;">
+            <div><strong>গ্রাহক:</strong> ${ord.name || ord.customer || 'সম্মানিত গ্রাহক'} (📞 ${ord.phone || 'অজানা'})</div>
+            <div><strong>ডেলিভারি ঠিকানা:</strong> ${ord.address || 'আমতা, হাওড়া'}</div>
+            <div style="margin-top:4px; font-weight:800; color:${ord.paymentMode === 'COD' ? '#f59e0b' : '#34d399'};">
+              পেমেন্ট: ${ord.paymentMode === 'COD' ? `ক্যাশ অন ডেলিভারি (সংগ্রহ ₹${ord.total})` : `অনলাইন পেমেন্ট সম্পন্ন (₹${ord.total})`}
+            </div>
+          </div>
 
+          <!-- Items Strip -->
+          <div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:6px;">
+            <i class="fa-solid fa-cubes-stacked"></i> পার্সেলের আইটেম ও র‍্যাক লোকেশন:
+          </div>
+          ${itemsHtml}
+
+          <!-- 4-Point Quality Inspection Checklist -->
+          <div class="qa-box">
+            <div class="qa-title">
+              <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i>
+              ওয়্যারহাউস ৪-পয়েন্ট কোয়ালিটি কন্ট্রোল চেকলিস্ট:
+            </div>
+            <div class="qa-checks-grid">
+              <label class="qa-label">
+                <input type="checkbox" ${isPacked ? 'checked disabled' : 'checked'} id="qa_fab_${ord.id}"> ফেব্রিক ও কোয়ালিটি অক্ষত
+              </label>
+              <label class="qa-label">
+                <input type="checkbox" ${isPacked ? 'checked disabled' : 'checked'} id="qa_size_${ord.id}"> সঠিক সাইজ ও কালার ভেরিফাইড
+              </label>
+              <label class="qa-label">
+                <input type="checkbox" ${isPacked ? 'checked disabled' : 'checked'} id="qa_inv_${ord.id}"> ইনভয়েস ও ফ্রি গিফট অন্তর্ভুক্ত
+              </label>
+              <label class="qa-label">
+                <input type="checkbox" ${isPacked ? 'checked disabled' : 'checked'} id="qa_seal_${ord.id}"> টেম্পার-প্রুফ সিকিউরিটি সিল
+              </label>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pack-actions-grid">
             ${!isPacked ? `
-              <button type="button" class="btn-pack-action btn-mark-packed" onclick="verifyAndCompletePacking('${ord.id}')">
-                <i class="fa-solid fa-circle-check"></i> প্যাকিং সম্পন্ন নিশ্চিত করুন
+              <button type="button" class="btn-pack-action btn-pack-complete" onclick="verifyAndCompletePacking('${ord.id}')">
+                <i class="fa-solid fa-check-double"></i> প্যাকিং ও সিল সম্পন্ন
               </button>
             ` : `
-              <div style="flex:1; text-align:center; padding:10px; background:rgba(16,185,129,0.1); border-radius:10px; font-weight:800; font-size:0.8rem; color:#34d399;">
-                🎉 পার্সেলটি প্রস্তুত আছে! ডেলিভারি পার্টনারের অপেক্ষা।
-              </div>
+              <button type="button" class="btn-pack-action" style="background:#1e293b; color:#10b981; border:1px solid #059669;" onclick="alert('পার্সেল #${ord.id} ইতিমধ্যে সিল সম্পন্ন হয়েছে।')">
+                <i class="fa-solid fa-circle-check"></i> রেডি ফর ডিসপ্যাচ
+              </button>
             `}
+            <button type="button" class="btn-pack-action btn-pack-waybill" onclick="openWaybillModal('${ord.id}')">
+              <i class="fa-solid fa-print"></i> শিপিং লেবেল / বিল
+            </button>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    // Print Packaging Sticker / Shipping Label with QR Code
-    function printPackagingSticker(orderId) {
+    // Waybill Modal Actions
+    function openWaybillModal(orderId) {
       const ord = allOrders.find(o => o.id === orderId);
       if (!ord) return;
 
-      const currentUrl = window.location.href.split('?')[0];
-      const qrVerificationUrl = `${currentUrl}?scan=${ord.id}`;
-      const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrVerificationUrl)}`;
+      document.getElementById('wbOrderId').textContent = '#' + ord.id;
+      document.getElementById('wbOrderDate').textContent = 'তারিখ: ' + (ord.date || 'আজ');
+      document.getElementById('wbCustName').textContent = ord.name || ord.customer || 'সম্মানিত গ্রাহক';
+      document.getElementById('wbCustAddress').textContent = ord.address || 'আমতা, হাওড়া - ৭১১৪০১';
+      document.getElementById('wbCustPhone').textContent = '📞 ' + (ord.phone || '');
 
-      const itemsListText = (ord.items || []).map(i => `• ${i.title} (${i.selectedSize || 'Free Size'}) x ${i.qty || 1}`).join('<br>');
+      const isCod = (ord.paymentMode === 'COD');
+      const pBanner = document.getElementById('wbPaymentBanner');
+      if (isCod) {
+        pBanner.textContent = `CASH ON DELIVERY (COD): ₹${ord.total}`;
+        pBanner.style.background = '#fef08a';
+        pBanner.style.borderColor = '#ca8a04';
+        pBanner.style.color = '#854d0e';
+      } else {
+        pBanner.textContent = `PREPAID ONLINE (UPI): ₹${ord.total} (NO CASH TO COLLECT)`;
+        pBanner.style.background = '#dcfce7';
+        pBanner.style.borderColor = '#15803d';
+        pBanner.style.color = '#166534';
+      }
 
-      const printHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Shipping Label #${ord.id}</title>
-  <style>
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 15px; color: #000; }
-    .sticker-box {
-      width: 360px;
-      border: 2px dashed #000;
-      padding: 16px;
-      border-radius: 12px;
-      margin: 0 auto;
+      const itemTitles = (ord.items || []).map(i => `${i.title} (${i.qty || 1} পিস)`).join(', ');
+      document.getElementById('wbItemDesc').textContent = itemTitles || 'শাড়ি ও পোশাক';
+
+      const barcodeMock = `*NC-${ord.id}-${ord.paymentMode || 'COD'}*`;
+      document.getElementById('wbBarcodeText').textContent = barcodeMock;
+
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://nisha-creations.hub/verify?id=' + ord.id)}`;
+      document.getElementById('wbQrCodeImg').src = qrUrl;
+
+      document.getElementById('waybillModal').style.display = 'flex';
     }
-    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
-    .brand { font-size: 18px; font-weight: 900; }
-    .hub { font-size: 11px; font-weight: bold; }
-    .qr-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; border-bottom: 1px dashed #666; padding-bottom: 12px; }
-    .qr-img { width: 130px; height: 130px; }
-    .details { font-size: 12px; line-height: 1.4; }
-    .bold { font-weight: bold; }
-    .pay-strip { background: #eee; padding: 6px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 10px; border-radius: 6px; }
-  </style>
-</head>
-<body>
-  <div class="sticker-box">
-    <div class="header">
-      <div class="brand">NISHA CREATIONS</div>
-      <div class="hub">EXCLUSIVE SAREE & JEWELLERY BOUTIQUE • AMTA</div>
-    </div>
 
-    <div class="qr-row">
-      <div>
-        <div style="font-size:16px; font-weight:900;">ORDER #${ord.id}</div>
-        <div style="font-size:11px; color:#555;">তারিখ: ${ord.date || 'আজ'}</div>
-        <div style="font-size:12px; margin-top:6px;"><strong>পণ্য:</strong><br>${itemsListText}</div>
-      </div>
-      <img src="${qrImgSrc}" class="qr-img" alt="QR Code">
-    </div>
+    function closeWaybillModal() {
+      document.getElementById('waybillModal').style.display = 'none';
+    }
 
-    <div class="details">
-      <div><strong>গ্রাহক:</strong> ${ord.name} (📞 ${ord.phone})</div>
-      <div><strong>ঠিকানা:</strong> ${ord.address}</div>
-    </div>
+    // SECTION 2: PICK WAVE RENDERING
+    function renderPickWaveItems() {
+      const container = document.getElementById('pickWaveContainer');
+      if (!container) return;
 
-    <div class="pay-strip">
-      ${ord.paymentMode === 'UPI' ? '✅ অনলাইন প্রিপেইড (NO CASH)' : `💵 CASH ON DELIVERY: ₹${ord.total}`}
-    </div>
-  </div>
-  <script>
-    window.onload = function() { window.print(); };
-  <\/script>
-</body>
-</html>
+      const pendingOrders = allOrders.filter(o => o.status === 'Order Placed');
+
+      if (pendingOrders.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px; color:var(--text-muted);">
+            <i class="fa-solid fa-clipboard-check" style="font-size:2.5rem; color:#10b981; margin-bottom:10px;"></i>
+            <h4>কোনো পিকিং বাকি নেই!</h4>
+            <p style="font-size:0.8rem; margin-top:4px;">সব নতুন অর্ডারের আইটেম সংগ্রহ ও প্যাকিং এগিয়ে আছে।</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group items by Bin Location
+      const binGroups = {};
+      pendingOrders.forEach(ord => {
+        (ord.items || []).forEach(it => {
+          const bin = getWarehouseBinLocation(it);
+          if (!binGroups[bin]) binGroups[bin] = [];
+          binGroups[bin].push({
+            orderId: ord.id,
+            title: it.title,
+            size: it.selectedSize || 'Free',
+            qty: it.qty || 1,
+            img: it.img
+          });
+        });
+      });
+
+      let html = '';
+      for (const [binName, items] of Object.entries(binGroups)) {
+        html += `
+          <div style="background:#0b0f19; border:1px solid #1f2937; border-radius:14px; padding:12px; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px; font-weight:800; color:#818cf8; font-size:0.88rem; margin-bottom:8px; border-bottom:1px solid #1f2937; padding-bottom:6px;">
+              <i class="fa-solid fa-warehouse"></i> ${binName} (${items.length} টি আইটেম)
+            </div>
+            ${items.map(it => `
+              <div class="pick-item-row" id="pickRow_${it.orderId}_${Math.random().toString(36).substr(2,4)}">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=60'}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
+                  <div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#fff;">${it.title}</div>
+                    <div style="font-size:0.72rem; color:var(--text-muted);">অর্ডার: #${it.orderId} • সাইজ: ${it.size}</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-weight:800; color:#f59e0b; font-size:0.88rem;">${it.qty} পিস</span>
+                  <input type="checkbox" style="width:18px; height:18px; accent-color:#10b981;" onchange="this.closest('.pick-item-row').classList.toggle('picked-done')">
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // SECTION 3: DISPATCH BAGGING
+    function renderDispatchBags() {
+      const container = document.getElementById('dispatchBagsContainer');
+      if (!container) return;
+
+      const packedOrders = allOrders.filter(o => o.status === 'Packed');
+
+      container.innerHTML = `
+        <div style="background:#0b0f19; border:1px solid #1f2937; border-radius:14px; padding:14px; margin-bottom:16px;">
+          <div style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:8px;">
+            <i class="fa-solid fa-box-check"></i> রেডি পার্সেল বরাদ্দকরণ:
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+            বর্তমানে মোট <strong>${packedOrders.length} টি পার্সেল</strong> প্যাকিং ও সিল সম্পন্ন হয়ে ডিসপ্যাচ ব্যাগে ওঠার অপেক্ষায় আছে।
+          </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-pack-pill" style="background:#312e81; border-color:#4f46e5;" onclick="assignPackedOrdersToBag('BAG-AMTA-01 (আমতা মেইন বাজার রুট)')">
+              <i class="fa-solid fa-plus"></i> BAG-AMTA-01 এ এসাইন করুন
+            </button>
+            <button type="button" class="btn-pack-pill" style="background:#065f46; border-color:#059669;" onclick="assignPackedOrdersToBag('BAG-AMTA-02 (রানীহাটি-উদয়নারায়ণপুর রুট)')">
+              <i class="fa-solid fa-plus"></i> BAG-AMTA-02 এ এসাইন করুন
+            </button>
+          </div>
+        </div>
+
+        <div style="font-size:0.82rem; font-weight:800; color:#cbd5e1; margin-bottom:10px;">
+          <i class="fa-solid fa-truck-fast"></i> সক্রিয় ডিসপ্যাচ ব্যাগসমূহ:
+        </div>
+        <div class="bag-card">
+          <div class="bag-header-strip">
+            <div>
+              <strong style="color:#818cf8; font-size:0.95rem;">BAG-AMTA-01</strong>
+              <div style="font-size:0.72rem; color:var(--text-muted);">রুট: আমতা চাঁদনী বাজার, ভগোষ্ঠী পাড়া • রাইডার: শুভঙ্কর দাস</div>
+            </div>
+            <span style="font-size:0.72rem; background:#065f46; color:#a7f3d0; padding:3px 8px; border-radius:12px; font-weight:800;">রেডি ফর হ্যান্ডওভার</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-sub); margin-bottom:10px;">
+            পার্সেল সংখ্যা: <strong>${allOrders.filter(o => o.dispatchBag && o.dispatchBag.includes('BAG-AMTA-01')).length} টি</strong>
+          </div>
+          <button type="button" class="btn-pack-pill" style="width:100%; justify-content:center; background:#4f46e5;" onclick="handoverBagToRider('BAG-AMTA-01')">
+            <i class="fa-solid fa-handshake"></i> রাইডারকে হ্যান্ডওভার করুন (Out for Delivery)
+          </button>
+        </div>
       `;
+    }
 
-      const w = window.open('', '_blank');
-      w.document.write(printHtml);
-      w.document.close();
+    function assignPackedOrdersToBag(bagName) {
+      let count = 0;
+      allOrders = allOrders.map(o => {
+        if (o.status === 'Packed' && !o.dispatchBag) {
+          o.dispatchBag = bagName;
+          count++;
+        }
+        return o;
+      });
+
+      if (count === 0) {
+        alert('নতুন কোনো প্যাকিং সম্পন্ন পার্সেল পাওয়া যায়নি যা ব্যাগে যুক্ত করা যেতে পারে।');
+        return;
+      }
+
+      localStorage.setItem('nc_orders', JSON.stringify(allOrders));
+      alert(`✅ সফলভাবে ${count}টি পার্সেল '${bagName}' এ যুক্ত করা হয়েছে!`);
+      loadPackagingData();
+    }
+
+    function handoverBagToRider(bagCode) {
+      if (!confirm(`আপনি কি '${bagCode}' ব্যাগের সমস্ত পার্সেল রাইডারের হাতে তুলে দিতে চান এবং 'Out for Delivery' মার্ক করতে চান?`)) return;
+
+      let count = 0;
+      allOrders = allOrders.map(o => {
+        if (o.dispatchBag && o.dispatchBag.includes(bagCode) && o.status === 'Packed') {
+          o.status = 'Out for Delivery';
+          o.dispatchedDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+          count++;
+        }
+        return o;
+      });
+
+      localStorage.setItem('nc_orders', JSON.stringify(allOrders));
+      alert(`🚀 হ্যান্ডওভার সম্পন্ন! ${count}টি পার্সেল এখন 'Out for Delivery' হিসেবে লাইভ ট্র্যাক হচ্ছে।`);
+      loadPackagingData();
+    }
+
+    function createNewDispatchBagPrompt() {
+      const bagName = prompt('নতুন ডিসপ্যাচ ব্যাগের নাম ও রুট লিখুন (যেমন: BAG-AMTA-03 উদয়নারায়ণপুর রুট):');
+      if (bagName) {
+        assignPackedOrdersToBag(bagName);
+      }
     }
   </script>
 </body>
