@@ -593,7 +593,187 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-  </style>
+  
+    /* Multi-Photo Upload 5-Slot Grid */
+    .photo-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+
+    .photo-slot-box {
+      border: 2px dashed #475569;
+      background: #090d16;
+      border-radius: 12px;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .photo-slot-box:hover {
+      border-color: var(--primary);
+    }
+
+    .photo-slot-box.has-img {
+      border-style: solid;
+      border-color: #059669;
+    }
+
+    .photo-slot-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-slot-lbl {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-align: center;
+      padding: 0 4px;
+      pointer-events: none;
+    }
+
+    .btn-remove-slot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(239, 68, 68, 0.85);
+      color: #fff;
+      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    /* Dynamic Size Selector Chips */
+    .size-chips-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+
+    .size-chip-lbl {
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .size-chip-lbl input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 15px;
+      height: 15px;
+    }
+
+    .size-chip-lbl.active {
+      background: #4c1d95;
+      border-color: #a855f7;
+      color: #ffffff;
+    }
+
+    /* Live Sitting Pipeline Stepper on Order Card */
+    .live-sitting-tracker {
+      background: #090d16;
+      border: 1.5px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+      margin-bottom: 12px;
+    }
+
+    .sitting-tracker-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .sitting-stepper-line {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      position: relative;
+    }
+
+    .sitting-step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-circle-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1e293b;
+      color: #64748b;
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      transition: all 0.2s;
+    }
+
+    .step-circle-icon.active {
+      background: #059669;
+      color: #fff;
+      border-color: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+
+    .step-circle-icon.pending {
+      background: #b45309;
+      color: #fff;
+      border-color: #f59e0b;
+      animation: pulse 1.5s infinite;
+    }
+
+    .step-label-txt {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+      line-height: 1.2;
+    }
+
+    .step-label-txt.active {
+      color: #34d399;
+    }
+
+</style>
 </head>
 <body>
 
@@ -805,74 +985,152 @@
 
     <!-- ==================== TAB C: ADD NEW PRODUCT ==================== -->
     <div id="pane-add" class="tab-pane">
-      <div class="owner-card" style="max-width:650px; margin:0 auto;">
-        <h2 style="font-size:1.15rem; font-weight:800; color:#fff; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-          <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i> নতুন শাড়ি বা গহনা যোগ করুন
-        </h2>
+      <div class="owner-card" style="max-width:720px; margin:0 auto;">
+        <div style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+          <h2 style="font-size:1.2rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-camera-retro" style="color:var(--amber);"></i>
+            নতুন শাড়ি / পোশাক আপলোড স্টুডিও
+          </h2>
+          <p style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">
+            📸 একসঙ্গে ৪-৫টি ছবি আপলোড করুন, রেট (দাম) এবং কুর্তি/শাড়ির সঠিক সাইজ নির্ধারণ করে সরাসরি লাইভ করুন।
+          </p>
+        </div>
 
         <form id="ownerAddProductForm" onsubmit="handleOwnerProductSubmit(event)">
+          
+          <!-- 1. Product Name -->
           <div class="form-group">
-            <label class="form-label">শাড়ির পুরো নাম *</label>
-            <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: ঢাকাই জামদানি সিল্ক শাড়ি" required>
+            <label class="form-label">শাড়ির পুরো নাম (Product Title) *</label>
+            <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: সফট জামদানি কাতান শাড়ি (রয়েল ব্লু ও গোল্ডেন পাড়)" required>
           </div>
 
+          <!-- 2. Category & Fabric -->
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">ক্যাটাগরি *</label>
-              <select id="op_cat" class="form-ctrl" required>
-                <option value="saree">শাড়ি (Saree)</option>
-                <option value="kurti">কুর্তি ও সেট (Kurti)</option>
-                <option value="girls">ছোটদের ফ্রক (Girls)</option>
-                <option value="jewel">জুয়েলারি ও গহনা (Jewel)</option>
-                <option value="bangles">বালা ও চুড়ি (Bangles)</option>
+              <label class="form-label">ক্যাটাগরি নির্বাচন করুন *</label>
+              <select id="op_cat" class="form-ctrl" onchange="handleCategoryChangeForSizes(this.value)" required>
+                <option value="saree">👗 শাড়ি (Saree)</option>
+                <option value="kurti">👚 কুর্তি ও কুর্তি সেট (Kurti)</option>
+                <option value="blouse">🥻 ব্লাউজ ও টপ (Blouse & Tops)</option>
+                <option value="girls">👧 ছোটদের ফ্রক ও লেহেঙ্গা (Girls Frock)</option>
+                <option value="jewel">💎 গহনা ও জুয়েলারি (Jewellery)</option>
+                <option value="bangles">✨ বালা ও চুড়ি (Bangles)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="form-label">ফেব্রিক / উপাদান</label>
-              <input type="text" id="op_fabric" class="form-ctrl" placeholder="Soft Silk">
+              <label class="form-label">ফেব্রিক / উপাদান (Fabric)</label>
+              <input type="text" id="op_fabric" class="form-ctrl" placeholder="যেমন: Pure Soft Resham Silk">
             </div>
           </div>
 
+          <!-- 3. Dynamic Size Selector Chips -->
+          <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+              <label class="form-label" style="margin-bottom:0; color:#f59e0b;">
+                <i class="fa-solid fa-ruler-combined"></i> সাইজ নির্ধারণ করুন (Available Sizes) *:
+              </label>
+              <span id="selectedSizesCountNotice" style="font-size:0.72rem; color:#34d399; font-weight:800;">১টি সাইজ নির্বাচিত</span>
+            </div>
+            <div style="font-size:0.7rem; color:#94a3b8; margin-bottom:8px;">
+              যে যে সাইজগুলো আপনার স্টকে আছে সেগুলো টিক চিহ্ন (✓) দিয়ে রাখুন:
+            </div>
+
+            <!-- Size Chips Container populated dynamically by JS -->
+            <div class="size-chips-wrapper" id="dynamicSizeChipsContainer">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Custom Size Input -->
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" id="customSizeAddInput" class="form-ctrl" placeholder="অন্য কোনো সাইজ থাকলে লিখুন..." style="padding:6px 10px; font-size:0.78rem;">
+              <button type="button" class="btn-hdr-pill" onclick="addCustomSizeChip()" style="font-size:0.75rem; background:#334155;">
+                <i class="fa-solid fa-plus"></i> যোগ করুন
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Pricing & Rates (রেট / দাম) -->
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">বিক্রি মূল্য (₹) *</label>
-              <input type="number" id="op_price" class="form-ctrl" placeholder="428" required>
+              <label class="form-label">বিক্রি মূল্য / রেট (Sell Price - ₹) *</label>
+              <input type="number" id="op_price" class="form-ctrl" placeholder="428" oninput="calculateDiscountPreview()" required>
             </div>
 
             <div class="form-group">
               <label class="form-label">আসল দাম (MRP - ₹)</label>
-              <input type="number" id="op_mrp" class="form-ctrl" placeholder="999">
+              <input type="number" id="op_mrp" class="form-ctrl" placeholder="999" oninput="calculateDiscountPreview()">
             </div>
           </div>
 
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label">প্রারম্ভিক স্টক (Pieces) *</label>
-              <input type="number" id="op_stock" class="form-ctrl" value="30" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">ছবির লিংক (URL) *</label>
-              <input type="text" id="op_img" class="form-ctrl" placeholder="ছবির ওয়েব লিংক বা ফাইল" required>
-            </div>
+          <!-- Discount Preview Pill -->
+          <div id="priceDiscountPreviewPill" style="display:none; background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:8px 12px; border-radius:10px; font-size:0.78rem; font-weight:800; margin-bottom:14px;">
+            <!-- Auto calculated -->
           </div>
 
-          <div class="form-group" style="display:flex; align-items:center; gap:12px;">
-            <label class="btn-hdr-pill" style="cursor:pointer; background:#1e293b; color:#fff;">
-              <i class="fa-solid fa-camera"></i> গ্যালারি থেকে ফটো দিন
-              <input type="file" id="op_file" accept="image/*" style="display:none;" onchange="handleOwnerImageUpload(event)">
-            </label>
-            <img id="op_preview" src="" alt="Preview" style="width:44px; height:44px; border-radius:8px; object-fit:cover; display:none; border:1px solid var(--border);">
-          </div>
-
+          <!-- 5. Initial Stock -->
           <div class="form-group">
-            <label class="form-label">বিবরণ (Description)</label>
-            <textarea id="op_desc" class="form-ctrl" rows="3" placeholder="আসল কোয়ালিটি ও সফট ফিনিশিং..."></textarea>
+            <label class="form-label">প্রারম্ভিক স্টক সংখ্যা (মোট কত পিস স্টকে আছে) *</label>
+            <input type="number" id="op_stock" class="form-ctrl" value="30" required>
           </div>
 
-          <button type="submit" class="btn-submit-owner">
-            <i class="fa-solid fa-cloud-arrow-up"></i> ওয়েবসাইটে লাইভ করুন
+          <!-- 6. 5-Photo Simultaneous Gallery Upload (একসঙ্গে ৪ থেকে ৫টি ছবি) -->
+          <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <label class="form-label" style="margin-bottom:0; color:#38bdf8;">
+                <i class="fa-solid fa-images"></i> শাড়ির ৪-৫টি ফটো একসাথে আপলোড করুন *:
+              </label>
+              <span id="uploadedPhotosCountBadge" style="font-size:0.72rem; color:#cbd5e1; font-weight:800;">০/৫টি ছবি যোগ হয়েছে</span>
+            </div>
+            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:10px;">
+              ফোনের গ্যালারি থেকে শাড়ির কভার, আঁচল, পাড় এবং ব্লাউজের ছবি একসাথে সিলেক্ট করুন।
+            </p>
+
+            <label class="btn-hdr-pill" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; border:none; padding:10px 16px; font-size:0.84rem; display:inline-flex; width:100%; justify-content:center; margin-bottom:12px;">
+              <i class="fa-solid fa-camera"></i> গ্যালারি থেকে ৪-৫টি ছবি একসাথে বাছুন (Choose 4-5 Photos)
+              <input type="file" id="op_multi_files" accept="image/*" multiple style="display:none;" onchange="handleMultipleAdminPhotos(event)">
+            </label>
+
+            <!-- 5 Photo Slots Grid -->
+            <div class="photo-slots-grid" id="photoSlotsGrid">
+              <div class="photo-slot-box" id="slotBox_0">
+                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+                <div class="photo-slot-lbl">ছবি ১ (কভার)</div>
+              </div>
+              <div class="photo-slot-box" id="slotBox_1">
+                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+                <div class="photo-slot-lbl">ছবি ২ (আঁচল)</div>
+              </div>
+              <div class="photo-slot-box" id="slotBox_2">
+                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+                <div class="photo-slot-lbl">ছবি ৩ (পাড় ও কাজ)</div>
+              </div>
+              <div class="photo-slot-box" id="slotBox_3">
+                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+                <div class="photo-slot-lbl">ছবি ৪ (ব্লাউজ পিস)</div>
+              </div>
+              <div class="photo-slot-box" id="slotBox_4">
+                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+                <div class="photo-slot-lbl">ছবি ৫ (মডেল লুক)</div>
+              </div>
+            </div>
+
+            <!-- Optional Online Image URL input -->
+            <div style="margin-top:6px;">
+              <input type="text" id="op_img_url_fallback" class="form-ctrl" placeholder="অথবা সরাসরি ছবির অনলাইন লিংক দিতে পারেন..." style="font-size:0.75rem; padding:8px 10px;">
+            </div>
+          </div>
+
+          <!-- 7. Description -->
+          <div class="form-group">
+            <label class="form-label">শাড়ির আকর্ষণীয় বিবরণ (Description)</label>
+            <textarea id="op_desc" class="form-ctrl" rows="3" placeholder="আসল কোয়ালিটি, সফট সুতো এবং প্রিমিয়াম ফিনিশিং..."></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit-owner" style="font-size:1rem; padding:15px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            শাড়িটি সফলভাবে ওয়েবসাইটে লাইভ করুন 🚀
           </button>
         </form>
       </div>
@@ -921,6 +1179,7 @@
       sessionStorage.setItem('nc_owner_unlocked', 'true');
       localStorage.setItem('nc_owner_unlocked_persist', 'true');
       loadAllOwnerData();
+      handleCategoryChangeForSizes('saree');
     }
 
     // PIN Verification
@@ -975,6 +1234,7 @@
         const modal = document.getElementById('pinLockModal');
         if (modal) modal.style.display = 'none';
         loadAllOwnerData();
+      handleCategoryChangeForSizes('saree');
       } else {
         const modal = document.getElementById('pinLockModal');
         if (modal) modal.style.display = 'flex';
@@ -1061,67 +1321,140 @@
 
       container.innerHTML = '';
       ordersList.forEach(ord => {
+        const isPlaced = (ord.status === 'Order Placed');
+        const isPacked = (ord.status === 'Packed');
+        const isOut = (ord.status === 'Out for Delivery');
+        const isDelivered = (ord.status === 'Delivered');
+        const isCancelled = (ord.status === 'Cancelled');
+
         let itemsHtml = (ord.items || []).map(it => `
           <div style="display:flex; align-items:center; gap:10px; background:#090d16; padding:8px; border-radius:8px; margin-top:6px;">
-            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=80'}" style="width:38px; height:38px; border-radius:6px; object-fit:cover;">
+            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=80'}" style="width:42px; height:42px; border-radius:6px; object-fit:cover;">
             <div style="flex:1;">
-              <div style="font-size:0.82rem; font-weight:700; color:#fff;">${it.title}</div>
-              <div style="font-size:0.7rem; color:#94a3b8;">সাইজ: ${it.selectedSize||'Free Size'} • পরিমাণ: ${it.qty||1} টি</div>
+              <div style="font-size:0.84rem; font-weight:800; color:#fff;">${it.title}</div>
+              <div style="font-size:0.72rem; color:#94a3b8;">
+                সাইজ: <strong style="color:#f59e0b;">${it.selectedSize || 'Free Size'}</strong> • পরিমাণ: <strong>${it.qty || 1} টি</strong> • রং: ${it.selectedColor || 'মূল রং'}
+              </div>
             </div>
-            <div style="font-weight:800; font-size:0.85rem; color:#fff;">₹${(it.price||0)*(it.qty||1)}</div>
+            <div style="font-weight:800; font-size:0.88rem; color:#34d399;">₹${(it.price || 0) * (it.qty || 1)}</div>
           </div>
         `).join('');
 
         const phoneClean = (ord.phone || '').replace(/[^0-9]/g, '');
+
+        // Dynamic QR code generation for this order
+        const currentDomain = window.location.href.split('admin.html')[0];
+        const qrVerificationUrl = `${currentDomain}packaging.html?scan=${ord.id}`;
+        const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrVerificationUrl)}`;
 
         const box = document.createElement('div');
         box.className = 'order-box';
         box.innerHTML = `
           <div class="order-header-row">
             <div>
-              <span style="font-weight:800; font-size:0.92rem; color:#f59e0b;">Order #${ord.id}</span>
-              <span style="font-size:0.7rem; color:#94a3b8; margin-left:8px;">${ord.date || 'আজ'}</span>
+              <span style="font-weight:800; font-size:1rem; color:#f59e0b; font-family:'Plus Jakarta Sans',sans-serif;">Order #${ord.id}</span>
+              <span style="font-size:0.72rem; color:#94a3b8; margin-left:8px;"><i class="fa-regular fa-clock"></i> ${ord.date || 'আজ'}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:0.72rem; padding:3px 8px; border-radius:6px; background:${ord.paymentMode==='UPI'?'#0284c7':'#d97706'}; color:#fff; font-weight:800;">
-                ${ord.paymentMode === 'UPI' ? '📲 UPI Paid' : '💵 Cash on Delivery'}
+              <span style="font-size:0.72rem; padding:4px 10px; border-radius:8px; background:${ord.paymentMode==='UPI'?'#0284c7':'#d97706'}; color:#fff; font-weight:800;">
+                ${ord.paymentMode === 'UPI' ? '📲 অনলাইন পেইড (UPI)' : '💵 ক্যাশ অন ডেলিভারি (COD)'}
               </span>
-              <span style="font-weight:800; font-size:1.1rem; color:#10b981;">₹${ord.total}</span>
+              <span style="font-weight:800; font-size:1.15rem; color:#10b981; font-family:'Plus Jakarta Sans',sans-serif;">₹${ord.total}</span>
             </div>
           </div>
 
-          <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">
-            👤 <strong>${ord.name}</strong> • 📞 <a href="tel:${phoneClean}" style="color:#38bdf8; text-decoration:none;">${phoneClean}</a><br>
+          <!-- Customer details -->
+          <div style="font-size:0.84rem; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">
+            👤 <strong>${ord.name}</strong> • 📞 <a href="tel:${phoneClean}" style="color:#38bdf8; text-decoration:none; font-weight:800;">${phoneClean}</a><br>
             📍 <strong>ঠিকানা:</strong> ${ord.address}
           </div>
 
+          <!-- Items list -->
           ${itemsHtml}
 
-          <!-- Status Update Stepper -->
-          <!-- QR Code & Packaging Strip -->
-          <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=65x65&data=${encodeURIComponent(window.location.href.replace('admin.html', 'packaging.html') + '?scan=' + ord.id)}" style="width:42px; height:42px; border-radius:6px; background:#fff; padding:2px;">
-              <div style="font-size:0.72rem; color:#cbd5e1;">
-                <span style="color:#f59e0b; font-weight:800;">📷 কিউআর কোড প্রস্তুত</span><br>
-                <span>প্যাকেজিং টিম স্ক্যান করলেই 'Packed' হবে</span>
+          <!-- ================= 4. LIVE SITTING TRACKER (বসে বসে লাইভ ট্র্যাকিং দেখা) ================= -->
+          <div class="live-sitting-tracker">
+            <div class="sitting-tracker-title">
+              <span><i class="fa-solid fa-route"></i> লাইভ ডেলিভারি ও প্যাকিং পাইপলাইন:</span>
+              <span style="font-size:0.7rem; color:#34d399;">● লাইভ ট্র্যাকিং সক্রিয়</span>
+            </div>
+
+            <div class="sitting-stepper-line">
+              <!-- Step 1: Order Placed -->
+              <div class="sitting-step-item">
+                <div class="step-circle-icon active">
+                  <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div class="step-label-txt active">১. বুকিং প্রাপ্ত</div>
+              </div>
+
+              <!-- Step 2: Packaging (QR Code Scanned) -->
+              <div class="sitting-step-item">
+                <div class="step-circle-icon ${isPacked || isOut || isDelivered ? 'active' : (isPlaced ? 'pending' : '')}">
+                  <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div class="step-label-txt ${isPacked || isOut || isDelivered ? 'active' : ''}">
+                  ২. প্যাকিং ${isPacked || isOut || isDelivered ? 'সম্পন্ন' : 'চলছে'}
+                </div>
+              </div>
+
+              <!-- Step 3: Out for Delivery -->
+              <div class="sitting-step-item">
+                <div class="step-circle-icon ${isOut || isDelivered ? 'active' : (isPacked ? 'pending' : '')}">
+                  <i class="fa-solid fa-motorcycle"></i>
+                </div>
+                <div class="step-label-txt ${isOut || isDelivered ? 'active' : ''}">
+                  ৩. ডেলিভারিতে
+                </div>
+              </div>
+
+              <!-- Step 4: Delivered -->
+              <div class="sitting-step-item">
+                <div class="step-circle-icon ${isDelivered ? 'active' : (isOut ? 'pending' : '')}">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="step-label-txt ${isDelivered ? 'active' : ''}">
+                  ৪. ডেলিভার্ড
+                </div>
               </div>
             </div>
-            <a href="packaging.html?scan=${ord.id}" target="_blank" class="btn-hdr-pill" style="background:#090d16; color:#f59e0b; border:1px solid #d97706; font-size:0.72rem;">
-              <i class="fa-solid fa-print"></i> প্যাকিং স্টিকার প্রিন্ট
-            </a>
           </div>
 
+          <!-- ================= 5. QR CODE & PACKAGING ACTIONS ================= -->
+          <div style="background:#090d16; border:1px solid #1e293b; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:8px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${qrImgSrc}" style="width:60px; height:60px; border-radius:8px; background:#fff; padding:3px; border:1px solid #334155;">
+              <div>
+                <div style="font-size:0.8rem; font-weight:800; color:#f59e0b;">
+                  📷 পার্সেল কিউআর কোড প্রস্তুত
+                </div>
+                <div style="font-size:0.7rem; color:#94a3b8;">
+                  প্যাকেজিং টিম ক্যামেরা দিয়ে স্ক্যান করলেই 'প্যাকিং সম্পন্ন' হবে
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-hdr-pill" onclick="printOwnerQrLabel('${ord.id}')" style="background:#f59e0b; color:#0f172a; border:none; font-weight:800;">
+                <i class="fa-solid fa-print"></i> কিউআর স্টিকার প্রিন্ট
+              </button>
+              <a href="packaging.html?scan=${ord.id}" target="_blank" class="btn-hdr-pill" style="background:#334155; color:#fff;">
+                <i class="fa-solid fa-box-open"></i> প্যাকিং পোর্টালে যান
+              </a>
+            </div>
+          </div>
+
+          <!-- Manual Status Change Stepper if Admin wants to override -->
           <div style="margin-top:10px; border-top:1px dashed var(--border); padding-top:8px;">
-            <div style="font-size:0.74rem; color:#94a3b8; font-weight:700; margin-bottom:6px;">
-              মালিক কন্ট্রোল: স্ট্যাটাস পরিবর্তন করুন
+            <div style="font-size:0.72rem; color:#94a3b8; font-weight:700; margin-bottom:6px;">
+              মালিক মোড: প্রয়োজনে নিজে স্ট্যাটাস পরিবর্তন করুন
             </div>
             <div class="status-stepper-row">
-              <button type="button" class="btn-step ${ord.status==='Order Placed'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Order Placed')">⏳ নতুন বুকিং</button>
-              <button type="button" class="btn-step ${ord.status==='Packed'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Packed')">📦 প্যাকিং সম্পন্ন</button>
-              <button type="button" class="btn-step ${ord.status==='Out for Delivery'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Out for Delivery')">🚚 ডেলিভারিতে বেরিয়েছে</button>
-              <button type="button" class="btn-step ${ord.status==='Delivered'?'active deliv':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Delivered')">✅ ডেলিভারি সম্পন্ন</button>
-              <button type="button" class="btn-step ${ord.status==='Cancelled'?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Cancelled')">❌ বাতিল</button>
+              <button type="button" class="btn-step ${isPlaced?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Order Placed')">⏳ নতুন বুকিং</button>
+              <button type="button" class="btn-step ${isPacked?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Packed')">📦 প্যাকিং সম্পন্ন</button>
+              <button type="button" class="btn-step ${isOut?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Out for Delivery')">🚚 ডেলিভারিতে বেরিয়েছে</button>
+              <button type="button" class="btn-step ${isDelivered?'active deliv':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Delivered')">✅ ডেলিভারি সম্পন্ন</button>
+              <button type="button" class="btn-step ${isCancelled?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Cancelled')">❌ বাতিল</button>
             </div>
           </div>
         `;
@@ -1310,6 +1643,7 @@
       ordersList.unshift(demoOrder);
       localStorage.setItem('nc_orders', JSON.stringify(ordersList));
       loadAllOwnerData();
+      handleCategoryChangeForSizes('saree');
       alert(`🎉 ডেমো টেস্ট অর্ডার #${dId} সফলভাবে যুক্ত হয়েছে!`);
     }
 
@@ -1320,6 +1654,269 @@
       a.download = `Nisha_Creations_Orders_${Date.now()}.json`;
       a.click();
     }
-  </script>
+  
+    // =========================================================
+    // MULTI-PHOTO GALLERY (4-5 PHOTOS AT ONCE) & DYNAMIC SIZING
+    // =========================================================
+    let uploadedPhotoList = []; // Stores Base64 of up to 5 photos
+
+    function handleMultipleAdminPhotos(e) {
+      const files = Array.from(e.target.files).slice(0, 5);
+      if (!files || files.length === 0) return;
+
+      uploadedPhotoList = [];
+      let loadedCount = 0;
+
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedPhotoList.push(evt.target.result);
+          loadedCount++;
+          if (loadedCount === files.length) {
+            updatePhotoSlotsDisplay();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updatePhotoSlotsDisplay() {
+      const slotNames = ['ছবি ১ (কভার)', 'ছবি ২ (আঁচল)', 'ছবি ৩ (পাড় ও কাজ)', 'ছবি ৪ (ব্লাউজ পিস)', 'ছবি ৫ (মডেল লুক)'];
+      const countBadge = document.getElementById('uploadedPhotosCountBadge');
+      if (countBadge) countBadge.textContent = `${uploadedPhotoList.length}/৫টি ছবি যোগ হয়েছে`;
+
+      for (let i = 0; i < 5; i++) {
+        const box = document.getElementById(`slotBox_${i}`);
+        if (!box) continue;
+
+        if (uploadedPhotoList[i]) {
+          box.className = 'photo-slot-box has-img';
+          box.innerHTML = `
+            <img src="${uploadedPhotoList[i]}" alt="Slot ${i+1}">
+            <button type="button" class="btn-remove-slot" onclick="removePhotoSlot(${i}, event)">✕</button>
+          `;
+        } else {
+          box.className = 'photo-slot-box';
+          box.innerHTML = `
+            <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
+            <div class="photo-slot-lbl">${slotNames[i]}</div>
+          `;
+        }
+      }
+    }
+
+    function removePhotoSlot(idx, event) {
+      if (event) event.stopPropagation();
+      uploadedPhotoList.splice(idx, 1);
+      updatePhotoSlotsDisplay();
+    }
+
+    // Dynamic Sizing Configuration per Category
+    const CATEGORY_SIZE_PRESETS = {
+      saree: ['Free Size (৬.৫ মিটার ব্লাউজ পিস সহ)', '৫.৫ মিটার (ব্লাউজ ছাড়া)'],
+      kurti: ['S (36)', 'M (38)', 'L (40)', 'XL (42)', 'XXL (44)', '3XL (46)'],
+      blouse: ['32 Chest', '34 Chest', '36 Chest', '38 Chest', '40 Chest', '42 Chest'],
+      girls: ['1-2 Yrs', '3-4 Yrs', '5-6 Yrs', '7-8 Yrs', '9-10 Yrs'],
+      jewel: ['Free Size', 'Adjustable Fit'],
+      bangles: ['2.4 (Small)', '2.6 (Medium)', '2.8 (Large)']
+    };
+
+    let currentSelectedSizes = [];
+
+    function handleCategoryChangeForSizes(catKey) {
+      const container = document.getElementById('dynamicSizeChipsContainer');
+      if (!container) return;
+
+      const preset = CATEGORY_SIZE_PRESETS[catKey] || ['Free Size'];
+      currentSelectedSizes = [...preset]; // By default select all sizes in preset
+
+      container.innerHTML = '';
+      preset.forEach(sz => {
+        const id = 'sz_chk_' + sz.replace(/[^a-zA-Z0-9]/g, '_');
+        container.innerHTML += `
+          <label class="size-chip-lbl active" id="lbl_${id}">
+            <input type="checkbox" id="${id}" value="${sz}" checked onchange="toggleSizeChip(this)">
+            <span>${sz}</span>
+          </label>
+        `;
+      });
+      updateSelectedSizesNotice();
+    }
+
+    function toggleSizeChip(chk) {
+      const lbl = document.getElementById(`lbl_${chk.id}`);
+      if (chk.checked) {
+        if (!currentSelectedSizes.includes(chk.value)) currentSelectedSizes.push(chk.value);
+        if (lbl) lbl.classList.add('active');
+      } else {
+        currentSelectedSizes = currentSelectedSizes.filter(s => s !== chk.value);
+        if (lbl) lbl.classList.remove('active');
+      }
+      updateSelectedSizesNotice();
+    }
+
+    function addCustomSizeChip() {
+      const inp = document.getElementById('customSizeAddInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) return;
+
+      if (!currentSelectedSizes.includes(val)) {
+        currentSelectedSizes.push(val);
+        const container = document.getElementById('dynamicSizeChipsContainer');
+        const id = 'sz_chk_' + val.replace(/[^a-zA-Z0-9]/g, '_');
+        container.innerHTML += `
+          <label class="size-chip-lbl active" id="lbl_${id}">
+            <input type="checkbox" id="${id}" value="${val}" checked onchange="toggleSizeChip(this)">
+            <span>${val}</span>
+          </label>
+        `;
+        updateSelectedSizesNotice();
+      }
+      inp.value = '';
+    }
+
+    function updateSelectedSizesNotice() {
+      const el = document.getElementById('selectedSizesCountNotice');
+      if (el) el.textContent = `${currentSelectedSizes.length}টি সাইজ নির্বাচিত`;
+    }
+
+    function calculateDiscountPreview() {
+      const p = parseInt(document.getElementById('op_price').value) || 0;
+      const m = parseInt(document.getElementById('op_mrp').value) || 0;
+      const pill = document.getElementById('priceDiscountPreviewPill');
+      if (!pill) return;
+
+      if (p > 0 && m > p) {
+        const offPct = Math.round(((m - p) / m) * 100);
+        const saveRs = m - p;
+        pill.innerHTML = `💰 গ্রাহক ছাড় পাবেন: <strong>${offPct}% OFF</strong> (সাশ্রয়: ₹${saveRs}) • লাভজনক রেট!`;
+        pill.style.display = 'block';
+      } else {
+        pill.style.display = 'none';
+      }
+    }
+
+    // Submit Product Handler
+    function handleOwnerProductSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('op_title').value.trim();
+      const cat = document.getElementById('op_cat').value;
+      const fabric = document.getElementById('op_fabric').value.trim() || 'Cotton Silk';
+      const price = parseInt(document.getElementById('op_price').value) || 450;
+      const mrp = parseInt(document.getElementById('op_mrp').value) || (price * 2);
+      const stock = parseInt(document.getElementById('op_stock').value) || 30;
+      const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
+
+      // Images
+      let mainImg = '';
+      let subImgs = [];
+
+      if (uploadedPhotoList.length > 0) {
+        mainImg = uploadedPhotoList[0];
+        subImgs = uploadedPhotoList.slice(1);
+      } else {
+        const fallback = document.getElementById('op_img_url_fallback').value.trim();
+        mainImg = fallback || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500';
+      }
+
+      // Sizes
+      const finalSizes = currentSelectedSizes.length > 0 ? currentSelectedSizes : ['Free Size'];
+
+      const newProd = {
+        id: 'NC-PROD-' + Date.now().toString().slice(-6),
+        title: title,
+        category: cat,
+        fabric: fabric,
+        price: price,
+        mrp: mrp,
+        stock: stock,
+        inStock: stock > 0,
+        img: mainImg,
+        subImages: subImgs,
+        availableSizes: finalSizes,
+        effectiveSizeChart: cat === 'kurti' ? 'kurti' : (cat === 'girls' ? 'kids_frock' : 'saree_blouse'),
+        desc: desc,
+        dateAdded: new Date().toISOString()
+      };
+
+      // Save to nc_products
+      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      prods.unshift(newProd);
+      localStorage.setItem('nc_products', JSON.stringify(prods));
+
+      // Save to nc_custom_products
+      let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      cust.unshift(newProd);
+      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+
+      alert(`🎉 অভিনন্দন! "${title}" সফলভাবে আপলোড হয়েছে!\n${finalSizes.length}টি সাইজ এবং ${uploadedPhotoList.length || 1}টি ছবি ওয়েবসাইটে লাইভ দেখতে পাবেন।`);
+
+      document.getElementById('ownerAddProductForm').reset();
+      uploadedPhotoList = [];
+      updatePhotoSlotsDisplay();
+      switchAdminView('stock');
+    }
+
+    // Print Owner QR Shipping Label
+    function printOwnerQrLabel(orderId) {
+      const ord = ordersList.find(o => o.id === orderId);
+      if (!ord) return;
+
+      const currentDomain = window.location.href.split('admin.html')[0];
+      const qrVerificationUrl = `${currentDomain}packaging.html?scan=${ord.id}`;
+      const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrVerificationUrl)}`;
+
+      const itemsText = (ord.items || []).map(i => `• ${i.title} (${i.selectedSize || 'Free Size'}) x ${i.qty || 1}`).join('<br>');
+
+      const labelHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Packaging Shipping Label #${ord.id}</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 15px; }
+    .label-box { width: 340px; border: 2px dashed #000; padding: 14px; border-radius: 10px; margin: 0 auto; }
+    .brand-hdr { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 6px; }
+    .hub-txt { font-size: 11px; text-align: center; color: #555; margin-top: 2px; }
+    .qr-sec { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; border-bottom: 1px dashed #777; padding-bottom: 10px; }
+    .qr-img { width: 120px; height: 120px; }
+    .info { font-size: 12px; line-height: 1.4; }
+    .pay-badge { background: #eee; padding: 6px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 8px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="label-box">
+    <div class="brand-hdr">NISHA CREATIONS</div>
+    <div class="hub-txt">EXCLUSIVE BOUTIQUE • AMTA, HOWRAH</div>
+
+    <div class="qr-sec">
+      <div>
+        <div style="font-size:16px; font-weight:bold;">ORDER #${ord.id}</div>
+        <div style="font-size:11px; color:#555;">তারিখ: ${ord.date || 'আজ'}</div>
+        <div style="font-size:12px; margin-top:4px;"><strong>পণ্য:</strong><br>${itemsText}</div>
+      </div>
+      <img src="${qrImgSrc}" class="qr-img" alt="QR Code">
+    </div>
+
+    <div class="info">
+      <div><strong>গ্রাহক:</strong> ${ord.name} (📞 ${ord.phone})</div>
+      <div><strong>ঠিকানা:</strong> ${ord.address}</div>
+    </div>
+
+    <div class="pay-badge">
+      ${ord.paymentMode === 'UPI' ? '✅ অনলাইন প্রিপেইড (পেইড)' : `💵 CASH ON DELIVERY: ₹${ord.total}`}
+    </div>
+  </div>
+  <script>window.onload = function(){ window.print(); };<\/script>
+</body>
+</html>
+      `;
+
+      const w = window.open('', '_blank');
+      w.document.write(labelHtml);
+      w.document.close();
+    }
+
+</script>
 </body>
 </html>

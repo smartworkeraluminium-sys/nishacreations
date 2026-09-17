@@ -449,7 +449,44 @@
       text-align: center;
       color: var(--text-muted);
     }
-  </style>
+  
+    /* Delivery Camera Scanner Card */
+    .delivery-scanner-card {
+      background: linear-gradient(135deg, #0c4a6e, #075985);
+      border: 2px solid #0284c7;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+      text-align: center;
+    }
+
+    .btn-rider-camera {
+      width: 100%;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: 1.5px solid #38bdf8;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-rider-camera:active {
+      transform: scale(0.98);
+      background: #0284c7;
+    }
+
+</style>
+  <!-- HTML5 QR Code Scanner -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -502,7 +539,45 @@
       </div>
     </section>
 
-    <!-- 2. Filter Tabs -->
+    <!-- 2. QR Camera Scanner Card (পার্সেল কিউআর কোড স্ক্যানার) -->
+    <section class="delivery-scanner-card">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <div style="font-size:1.05rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-qrcode" style="color:#38bdf8; font-size:1.3rem;"></i>
+          কিউআর স্ক্যান করে সরাসরি ডেলিভারি দিন
+        </div>
+        <span style="font-size:0.72rem; background:#0369a1; color:#fff; padding:3px 10px; border-radius:12px; font-weight:800; border:1px solid #38bdf8;">
+          ১-টাচ সম্পন্ন
+        </span>
+      </div>
+
+      <p style="font-size:0.78rem; color:#e0f2fe; margin-bottom:12px; text-align:left; line-height:1.4;">
+        কাস্টমারের ঠিকানায় পৌঁছে পার্সেলের গায়ের কিউআর কোডটি ফোনের ক্যামেরা দিয়ে স্ক্যান করুন। স্ক্যান করলেই স্বয়ংক্রিয়ভাবে মালিক ও কাস্টমারের কাছে লাইভ আপডেট চলে যাবে যে ডেলিভারি সম্পন্ন হয়েছে।
+      </p>
+
+      <button type="button" id="btnRiderToggleCamera" class="btn-rider-camera" onclick="toggleRiderQrCamera()">
+        <i class="fa-solid fa-camera"></i>
+        <span id="riderCameraBtnText">ক্যামেরা স্ক্যানার চালু করুন</span>
+      </button>
+
+      <!-- Live Camera Viewport -->
+      <div id="riderQrCameraWrapper" style="display:none; margin-top:14px; border-radius:16px; overflow:hidden; border:2.5px solid #38bdf8; background:#000;">
+        <div id="rider-qr-reader" style="width:100%;"></div>
+      </div>
+
+      <!-- Scan Toast -->
+      <div id="riderScanToast" style="display:none; margin-top:12px; background:linear-gradient(135deg, #065f46, #059669); border:1.5px solid #34d399; padding:12px; border-radius:12px; font-weight:800; font-size:0.88rem; color:#fff;"></div>
+
+      <!-- Manual Input Fallback -->
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <input type="text" id="manualDeliveryInput" placeholder="অথবা অর্ডার আইডি লিখুন (যেমন: NC-5019)" style="flex:1; background:#0f172a; border:1.5px solid #334155; border-radius:12px; padding:10px; color:#fff; font-size:0.84rem; text-align:center; font-weight:700;" onkeypress="if(event.key==='Enter') handleManualRiderScan()">
+        <button type="button" onclick="handleManualRiderScan()" style="background:#10b981; color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:800; font-size:0.82rem; cursor:pointer;">
+          <i class="fa-solid fa-circle-check"></i> সম্পন্ন
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. Filter Tabs -->
     <div class="filter-pills-row">
       <button type="button" class="filter-pill active" id="fPending" onclick="setRiderFilter('pending', this)">
         ⏳ বাকি ডেলিভারি (<span id="cntPending">0</span>)
@@ -526,8 +601,152 @@
     let riderOrders = [];
     let currentRiderFilter = 'pending';
 
+    
+    // =========================================================
+    // DELIVERY CAMERA QR CODE SCANNER (ক্যামেরা স্ক্যানার)
+    // =========================================================
+    let riderQrScannerInstance = null;
+    let isRiderCameraActive = false;
+
+    function toggleRiderQrCamera() {
+      const wrapper = document.getElementById('riderQrCameraWrapper');
+      const btnText = document.getElementById('riderCameraBtnText');
+
+      if (!isRiderCameraActive) {
+        wrapper.style.display = 'block';
+        btnText.textContent = 'ক্যামেরা বন্ধ করুন';
+        startRiderCamera();
+      } else {
+        stopRiderCamera();
+        wrapper.style.display = 'none';
+        btnText.textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
+      }
+    }
+
+    function startRiderCamera() {
+      if (riderQrScannerInstance) {
+        try { riderQrScannerInstance.stop(); } catch(e){}
+      }
+
+      riderQrScannerInstance = new Html5Qrcode("rider-qr-reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+      riderQrScannerInstance.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          handleRiderScannedData(decodedText);
+        },
+        (error) => {}
+      ).then(() => {
+        isRiderCameraActive = true;
+      }).catch((err) => {
+        alert('⚠️ ক্যামেরা চালু করা যায়নি। অনুগ্রহ করে ব্রাউজারে ক্যামেরার অনুমতি দিন, অথবা নিচের বক্সে অর্ডার আইডি লিখে সম্পন্ন করুন।');
+        isRiderCameraActive = false;
+        document.getElementById('riderQrCameraWrapper').style.display = 'none';
+        document.getElementById('riderCameraBtnText').textContent = 'ক্যামেরা স্ক্যানার চালু করুন';
+      });
+    }
+
+    function stopRiderCamera() {
+      if (riderQrScannerInstance && isRiderCameraActive) {
+        riderQrScannerInstance.stop().then(() => {
+          isRiderCameraActive = false;
+        }).catch(() => {});
+      }
+    }
+
+    function handleRiderScannedData(dataStr) {
+      if (!dataStr) return;
+      let orderId = dataStr.trim();
+      if (orderId.includes('scan=')) {
+        orderId = orderId.split('scan=')[1].split('&')[0];
+      } else if (orderId.includes('deliver=')) {
+        orderId = orderId.split('deliver=')[1].split('&')[0];
+      }
+
+      processDeliveryCompletion(orderId);
+    }
+
+    function handleManualRiderScan() {
+      const inp = document.getElementById('manualDeliveryInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        alert('অনুগ্রহ করে অর্ডার আইডি লিখুন (যেমন: NC-5019)');
+        return;
+      }
+      processDeliveryCompletion(val);
+      if (inp) inp.value = '';
+    }
+
+    // Process Delivery Completion via QR Code
+    function processDeliveryCompletion(orderId) {
+      const cleanId = orderId.replace('#', '').trim();
+      const idx = riderOrders.findIndex(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
+
+      if (idx === -1) {
+        alert(`❌ পার্সেল #${cleanId} ডেলিভারি তালিকায় পাওয়া যায়নি! অনুগ্রহ করে সঠিক কিউআর কোড স্ক্যান করুন।`);
+        return;
+      }
+
+      const ord = riderOrders[idx];
+
+      if (ord.status === 'Delivered') {
+        alert(`ℹ️ অর্ডার #${ord.id} ইতিমধ্যে সফলভাবে ডেলিভারি করা হয়ে গেছে!`);
+        return;
+      }
+
+      const isCod = (ord.paymentMode === 'COD');
+      let promptMsg = `📦 পার্সেল #${ord.id} স্ক্যান হয়েছে!\nগ্রাহক: ${ord.name}\nঠিকানা: ${ord.address}\n\n`;
+
+      if (isCod) {
+        promptMsg += `⚠️ নগদ টাকা সংগ্রহ করুন: ₹${ord.total}\nআপনি কি কাস্টমারের থেকে নগদ ₹${ord.total} বুঝে পেয়েছেন এবং পার্সেল বুঝিয়ে দিয়েছেন?`;
+      } else {
+        promptMsg += `✅ অনলাইন প্রিপেইড অর্ডার (কোনো টাকা নিতে হবে না)\nআপনি কি পার্সেলটি কাস্টমারকে সফলভাবে বুঝিয়ে দিয়েছেন?`;
+      }
+
+      if (!confirm(promptMsg)) return;
+
+      // Update Order Status to Delivered
+      riderOrders[idx].status = 'Delivered';
+      riderOrders[idx].deliveredDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+
+      // Save to localStorage immediately so Owner Admin and Customer live track update
+      localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
+
+      // Audio / Vibration feedback
+      try {
+        if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
+      } catch(e) {}
+
+      // Show toast
+      const toast = document.getElementById('riderScanToast');
+      if (toast) {
+        toast.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>
+            <span>🎉 পার্সেল #${ord.id} ডেলিভারি সফল হয়েছে! ${isCod ? `নগদ ₹${ord.total} ক্যাশ হিসাবে যুক্ত হয়েছে।` : ''}</span>
+          </div>
+        `;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+      }
+
+      calculateRiderCash();
+      renderRiderTasks();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       loadRiderData();
+      // Auto-scan from URL parameter
+      const params = new URLSearchParams(window.location.search);
+      const urlScanId = params.get('scan') || params.get('deliver');
+      if (urlScanId) {
+        setTimeout(() => {
+          processDeliveryCompletion(urlScanId);
+        }, 600);
+      }
+
     });
 
     function loadRiderData() {
