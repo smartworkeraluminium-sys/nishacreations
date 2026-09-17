@@ -2193,3 +2193,129 @@
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
     }
+
+
+/* =========================================================================
+   BULLETPROOF FALLBACK STYLES FOR ORDERS & REVIEWS
+   Supports .nisha-*, .meesho-*, and .nc-* classes seamlessly
+   ========================================================================= */
+.nisha-orders-container, .meesho-orders-container, .nc-orders-container {
+  padding: 12px 14px 75px 14px !important;
+  max-width: 540px !important;
+  margin: 0 auto !important;
+}
+
+.nisha-order-card, .meesho-order-card, .nc-order-card {
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  border: 1px solid #e2e8f0 !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04) !important;
+}
+
+.nisha-prod-meta-row, .meesho-prod-meta-row, .nc-prod-meta-row {
+  padding: 14px !important;
+  display: flex !important;
+  gap: 12px !important;
+  align-items: center !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.nisha-prod-thumb, .meesho-prod-thumb, .nc-prod-thumb {
+  width: 68px !important;
+  height: 68px !important;
+  border-radius: 10px !important;
+  object-fit: cover !important;
+  border: 1px solid #e2e8f0 !important;
+  flex-shrink: 0 !important;
+  background: #f8fafc !important;
+}
+
+.nisha-prod-meta-info, .meesho-prod-meta-info, .nc-prod-meta-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.nisha-order-num-id, .meesho-order-num-id, .nc-order-num-id {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  margin-bottom: 2px !important;
+}
+
+.nisha-prod-name-title, .meesho-prod-name-title, .nc-prod-name-title {
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.25 !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.nisha-prod-specs-line, .meesho-prod-specs-line, .nc-prod-specs-line {
+  font-size: 0.74rem !important;
+  color: #475569 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+.nisha-stars-container, .meesho-stars-container, .nc-stars-container {
+  display: flex !important;
+  justify-content: space-between !important;
+  max-width: 320px !important;
+  margin: 4px auto 0 auto !important;
+  user-select: none !important;
+}
+
+.nisha-star-column, .meesho-star-column, .nc-star-column {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 3px !important;
+  cursor: pointer !important;
+}
+
+.nisha-star-column i, .meesho-star-column i, .nc-star-column i {
+  font-size: 1.85rem !important;
+  color: #cbd5e1 !important;
+}
+
+.nisha-star-label-text, .meesho-star-label-text, .nc-star-label-text {
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+}
+
+.nisha-actions-footer-bar, .meesho-actions-footer-bar, .nc-actions-footer-bar {
+  padding: 10px 14px !important;
+  display: flex !important;
+  gap: 10px !important;
+  background: #ffffff !important;
+}
+
+.nisha-action-link-btn, .meesho-action-link-btn, .nc-action-link-btn {
+  flex: 1 !important;
+  padding: 9px !important;
+  border-radius: 8px !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+}
+
+.nisha-action-link-btn.wa, .meesho-action-link-btn.wa, .nc-action-link-btn.wa {
+  background: #25d366 !important;
+  color: #ffffff !important;
+  border-color: #25d366 !important;
+}

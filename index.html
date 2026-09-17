@@ -22,7 +22,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260917_v3">
+  <!-- Cache Buster & SW Unregister -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for(let r of regs) r.unregister();
+      }).catch(function(){});
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (let name of names) caches.delete(name);
+      }).catch(function(){});
+    }
+  </script>
 </head>
 <body>
 
@@ -552,7 +565,7 @@
   </div>
 
   <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Nisha Creations Image 23 & 24) ================= -->
-  <div id="screen-orders" class="screen-view nisha-orders-container">
+  <div id="screen-orders" class="screen-view nisha-orders-container" style="padding:12px 14px 75px 14px; max-width:540px; margin:0 auto;">
     <!-- Nisha Creations Style Top Header (ছবি 1 ও 2) -->
     <div class="nisha-orders-header-bar">
       <div class="nisha-orders-title-left">
@@ -1341,8 +1354,8 @@
     </button>
   </nav>
 
-  <script src="products.js"></script>
-  <script src="app.js"></script>
+  <script src="products.js?v=20260917_v3"></script>
+  <script src="app.js?v=20260917_v3"></script>
 
     <!-- ================= ORDER SUCCESS & WHATSAPP DISPATCH MODAL ================= -->
   <div id="orderSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:260; align-items:center; justify-content:center; padding:16px;">

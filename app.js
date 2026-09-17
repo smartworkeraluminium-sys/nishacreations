@@ -1,3 +1,24 @@
+
+// =========================================================================
+// RUNTIME BRAND SANITIZER & LOCALSTORAGE MIGRATION
+// =========================================================================
+function sanitizeBoutiqueRuntime() {
+  try {
+    // 1. Force PDP badge to 'নিশা স্পেশাল'
+    const b = document.getElementById('t-pdpReturnSecBadge');
+    if (b) b.textContent = 'নিশা স্পেশাল';
+
+    // 2. Clean localStorage nc_orders
+    let ords = localStorage.getItem('nc_orders');
+    if (ords && (ords.includes('Meesho') || ords.includes('মেসো') || ords.includes('মেশো') || ords.includes('Flipkart'))) {
+      ords = ords.replace(/Meesho\s*স্পেশাল|Meesho\s*Special/gi, 'নিশা স্পেশাল');
+      ords = ords.replace(/Meesho|মেসো|মেশো/gi, 'নিশা');
+      ords = ords.replace(/Flipkart/gi, 'নিশা বুটিক');
+      localStorage.setItem('nc_orders', ords);
+    }
+  } catch(e) {}
+}
+
 // =========================================================================
 // app.js - নিশা ক্রিয়েশনস অ্যাপের সমস্ত কার্যক্ষমতা ও লজিক
 // কার্ট, অর্ডার প্লেস, লাইভ ট্র্যাকিং, সার্চ, ফিল্টার, ভাষা পরিবর্তন ও রিভিউ
@@ -341,7 +362,7 @@
         pdpSelectSizeLbl: "Select Size:",
         pdpSizeChartBtn: "📏 View Size Chart",
         pdpReturnSecHeader: "Return Policy & Savings:",
-        pdpReturnSecBadge: "Boutique Special",
+        pdpReturnSecBadge: "নিশা স্পেশাল",
         pdpReturnAllLabel: "(All Return Options Allowed)",
         pdpReturnAllDesc: "Easy 7-day returns & replacement for any reason if size or fit is not right.",
         pdpReturnDefDesc: "Return only if wrong or defective item delivered. Extra savings for you!",
@@ -978,7 +999,8 @@
 
     function resetToGitHubLogo() {
       localStorage.removeItem('nc_boutique_logo');
-      initBrandLogo();
+      sanitizeBoutiqueRuntime();
+    initBrandLogo();
       checkAndShowWelcomeGift();
       alert(currentLang === 'bn' ? "লোগো রিসেট হয়েছে! গিটহাবের logo.png লোড করা হচ্ছে।" : "Logo reset to GitHub logo.png!");
     }
@@ -2365,7 +2387,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     // Cross-Tab & Cross-Window Instant Live Sync with admin.html
     window.addEventListener('storage', function(e) {
       if (e.key === 'nc_custom_products' || e.key === 'nc_products' || e.key === 'nc_reels' || e.key === 'nc_coupons' || e.key === 'nc_boutique_logo') {
-        initBrandLogo();
+        sanitizeBoutiqueRuntime();
+    initBrandLogo();
         loadAllProducts();
     initSaleCountdown();
         renderReels();
@@ -2495,7 +2518,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       }).catch(function() {});
     }
 
-      initBrandLogo();
+      sanitizeBoutiqueRuntime();
+    initBrandLogo();
     applyLanguage();
     loadAllProducts();
     renderReels();
@@ -2867,7 +2891,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       showScreen('home');
       if (wishlist.length === 0) {
         alert("আপনার উইশলিস্টে কোনো প্রোডাক্ট সেভ করা নেই! প্রোডাক্টের ওপর হার্ট আইকন চাপুন।");
-        initBrandLogo();
+        sanitizeBoutiqueRuntime();
+    initBrandLogo();
     applyLanguage();
     loadAllProducts();
     renderReels();
@@ -2932,7 +2957,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       const targetBubble = document.getElementById(`ucat-${cat}`);
       if (targetBubble) targetBubble.classList.add('active');
       if (cat === 'all') {
-        initBrandLogo();
+        sanitizeBoutiqueRuntime();
+    initBrandLogo();
     applyLanguage();
     loadAllProducts();
     renderReels();
@@ -3509,7 +3535,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       }
       localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
       updateWishlistBadgesGlobal();
-      initBrandLogo();
+      sanitizeBoutiqueRuntime();
+    initBrandLogo();
     applyLanguage();
     loadAllProducts();
     renderReels();
@@ -4815,24 +4842,24 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
                     ADD FEEDBACK ❯
                   </span>
                 </div>
-                <div class="nisha-stars-container">
-                  <div class="nisha-star-column" onclick="quickRateOrderDirect('${ord.id}', 1, '${safeProdTitle}', '${firstItem.id || ""}')">
+                <div class="nisha-stars-container" style="display:flex; justify-content:space-between; max-width:320px; margin:4px auto 0 auto; user-select:none;">
+                  <div class="nisha-star-column" style="display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;" onclick="quickRateOrderDirect('${ord.id}', 1, '${safeProdTitle}', '${firstItem.id || ""}')">
                     <i class="fa-regular fa-star"></i>
                     <span class="nisha-star-label-text">Very Bad</span>
                   </div>
-                  <div class="nisha-star-column" onclick="quickRateOrderDirect('${ord.id}', 2, '${safeProdTitle}', '${firstItem.id || ""}')">
+                  <div class="nisha-star-column" style="display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;" onclick="quickRateOrderDirect('${ord.id}', 2, '${safeProdTitle}', '${firstItem.id || ""}')">
                     <i class="fa-regular fa-star"></i>
                     <span class="nisha-star-label-text">Bad</span>
                   </div>
-                  <div class="nisha-star-column" onclick="quickRateOrderDirect('${ord.id}', 3, '${safeProdTitle}', '${firstItem.id || ""}')">
+                  <div class="nisha-star-column" style="display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;" onclick="quickRateOrderDirect('${ord.id}', 3, '${safeProdTitle}', '${firstItem.id || ""}')">
                     <i class="fa-regular fa-star"></i>
                     <span class="nisha-star-label-text">Ok-Ok</span>
                   </div>
-                  <div class="nisha-star-column" onclick="quickRateOrderDirect('${ord.id}', 4, '${safeProdTitle}', '${firstItem.id || ""}')">
+                  <div class="nisha-star-column" style="display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;" onclick="quickRateOrderDirect('${ord.id}', 4, '${safeProdTitle}', '${firstItem.id || ""}')">
                     <i class="fa-regular fa-star"></i>
                     <span class="nisha-star-label-text">Good</span>
                   </div>
-                  <div class="nisha-star-column" onclick="quickRateOrderDirect('${ord.id}', 5, '${safeProdTitle}', '${firstItem.id || ""}')">
+                  <div class="nisha-star-column" style="display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;" onclick="quickRateOrderDirect('${ord.id}', 5, '${safeProdTitle}', '${firstItem.id || ""}')">
                     <i class="fa-regular fa-star"></i>
                     <span class="nisha-star-label-text">Very Good</span>
                   </div>
@@ -4842,9 +4869,9 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
           }
 
           container.innerHTML += `
-            <div class="nisha-order-card">
-              <div class="nisha-prod-meta-row">
-                <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product">
+            <div class="nisha-order-card" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; margin-bottom:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.04);">
+              <div class="nisha-prod-meta-row" style="display:flex; gap:12px; align-items:center; padding:14px; border-bottom:1px solid #f1f5f9;">
+                <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
                 <div class="nisha-prod-meta-info">
                   <div class="nisha-order-num-id">Order #${ord.id} • ${displayDate}</div>
                   <div class="nisha-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
@@ -4939,11 +4966,11 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
                 <div class="nisha-addr-phone-line">📞 ${ord.phone || '9239413517'}</div>
               </div>
 
-              <div class="nisha-actions-footer-bar">
-                <a href="tel:9239413517" class="nisha-action-link-btn">
+              <div class="nisha-actions-footer-bar" style="display:flex; gap:10px; padding:10px 14px; background:#ffffff;">
+                <a href="tel:9239413517" class="nisha-action-link-btn" style="flex:1; padding:9px; border-radius:8px; font-size:0.78rem; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; border:1px solid #cbd5e1; background:#f8fafc; color:#334155;">
                   <i class="fa-solid fa-phone"></i> ${isEn ? "Call Us" : "কল করুন"}
                 </a>
-                <a href="https://wa.me/919239413517?text=${encodeURIComponent((isEn ? 'Hello Nisha Boutique, I want to inquire about my order #' : 'নমস্কার নিশা দিদি, আমার অর্ডার #') + ord.id)}" target="_blank" class="nisha-action-link-btn wa">
+                <a href="https://wa.me/919239413517?text=${encodeURIComponent((isEn ? 'Hello Nisha Boutique, I want to inquire about my order #' : 'নমস্কার নিশা দিদি, আমার অর্ডার #') + ord.id)}" target="_blank" class="nisha-action-link-btn wa" style="flex:1; padding:9px; border-radius:8px; font-size:0.78rem; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; background:#25d366; color:#ffffff; border:1px solid #25d366;">
                   <i class="fa-brands fa-whatsapp"></i> ${isEn ? "WhatsApp" : "WhatsApp"}
                 </a>
               </div>
@@ -4956,10 +4983,10 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         // CASE B: IN-PROGRESS / CANCELLED ORDER
         // =========================================================================
         container.innerHTML += `
-          <div class="nisha-order-card">
+          <div class="nisha-order-card" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; margin-bottom:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.04);">
             <!-- Product Header -->
-            <div class="nisha-prod-meta-row">
-              <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product">
+            <div class="nisha-prod-meta-row" style="display:flex; gap:12px; align-items:center; padding:14px; border-bottom:1px solid #f1f5f9;">
+              <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
               <div class="nisha-prod-meta-info">
                 <div class="nisha-order-num-id">Order #${ord.id} • ${displayDate}</div>
                 <div class="nisha-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
@@ -5327,7 +5354,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
       products.unshift(newProd);
       localStorage.setItem('nc_products', JSON.stringify(products));
-      initBrandLogo();
+      sanitizeBoutiqueRuntime();
+    initBrandLogo();
     applyLanguage();
     loadAllProducts();
     renderReels();
