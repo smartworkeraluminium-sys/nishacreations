@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nisha Creations - Seller & Delivery Hub (মালিক ও ডেলিভারি ড্যাশবোর্ড)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #9c27b0;
+      --primary-dark: #7b1fa2;
+      --primary-light: #f3e5f5;
+      --accent: #f59e0b;
+      --green: #10b981;
+      --blue: #2563eb;
+      --red: #ef4444;
+      --text: #0f172a;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    /* Header */
+    .admin-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .brand-col {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(156, 39, 176, 0.25);
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-refresh {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: #334155;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-refresh:hover {
+      background: #e2e8f0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 4px;
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* Navigation Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 8px;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-bar::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+    }
+
+    /* Filter Chips */
+    .filter-chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .filter-chips-row::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: #475569;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .chip-btn.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    /* Order Card */
+    .order-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: box-shadow 0.2s;
+    }
+
+    .order-card:hover {
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .order-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .order-id-badge {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .order-date-text {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .order-status-pill {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .status-placed { background: #fef08a; color: #854d0e; }
+    .status-packed { background: #e0e7ff; color: #3730a3; }
+    .status-out { background: #fed7aa; color: #9a3412; }
+    .status-delivered { background: #dcfce7; color: #166534; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+    /* Customer Info Box */
+    .cust-info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .cust-name {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cust-address {
+      font-size: 0.8rem;
+      color: #475569;
+      margin: 4px 0 8px 0;
+      line-height: 1.4;
+    }
+
+    .cust-contact-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-call {
+      background: #ffffff;
+      border: 1.5px solid #bbf7d0;
+      color: #15803d;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-wa {
+      background: #25d366;
+      border: none;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Items Box */
+    .items-box {
+      margin-bottom: 14px;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #f1f5f9;
+    }
+    .item-row:last-child { border-bottom: none; }
+
+    .item-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-meta {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .item-total {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    /* Status Update Row */
+    .status-update-bar {
+      background: #fdf4ff;
+      border: 1.5px solid #f0abfc;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .status-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+
+    .status-dropdown {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary);
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 0.82rem;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-save-status {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(156,39,176,0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-save-status:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Form Styles for Products */
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-primary-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(156,39,176,0.3);
+      transition: transform 0.15s;
+    }
+
+    .btn-primary-submit:active {
+      transform: scale(0.98);
+    }
+
+    /* Inventory Table */
+    .inv-table-wrap {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .inv-table th {
+      background: #f8fafc;
+      padding: 12px 14px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .inv-table td {
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .stock-input {
+      width: 60px;
+      padding: 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .btn-quick-save {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-quick-save:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="admin-header">
+    <div class="brand-col">
+      <div class="brand-logo-icon">NC</div>
+      <div>
+        <div class="brand-title">Nisha Creations Hub</div>
+        <div class="brand-sub">মালিক ও ডেলিভারি কন্ট্রোল সেন্টার • আমতা</div>
+      </div>
+    </div>
+    <div class="admin-actions">
+      <button class="btn-refresh" onclick="loadAllAdminData()">
+        <i class="fa-solid fa-rotate"></i> রিফ্রেশ
+      </button>
+      <a href="index.html" class="btn-refresh" style="text-decoration:none; background:#fdf4ff; border-color:#f0abfc; color:var(--primary);">
+        <i class="fa-solid fa-store"></i> কাস্টমার শপ
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Stats Overview Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-lbl"><i class="fa-solid fa-box" style="color:var(--primary);"></i> মোট অর্ডার</span>
+        <span class="stat-val" id="statTotalOrders">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-lbl"><i class="fa-solid fa-clock" style="color:var(--accent);"></i> পেন্ডিং অর্ডার</span>
+        <span class="stat-val" id="statPendingOrders" style="color:#d97706;">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-lbl"><i class="fa-solid fa-motorcycle" style="color:#2563eb;"></i> ডেলিভারিতে আছে</span>
+        <span class="stat-val" id="statOutOrders" style="color:#2563eb;">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-lbl"><i class="fa-solid fa-circle-check" style="color:var(--green);"></i> সম্পন্ন ডেলিভারি</span>
+        <span class="stat-val" id="statDeliveredOrders" style="color:var(--green);">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-lbl"><i class="fa-solid fa-indian-rupee-sign" style="color:#059669;"></i> মোট বিক্রি</span>
+        <span class="stat-val" id="statTotalSales">₹0</span>
+      </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" id="tabBtnOrders" onclick="switchAdminTab('orders')">
+        <i class="fa-solid fa-list-check"></i> অর্ডার লিস্ট ও ট্র্যাকিং
+      </button>
+      <button class="tab-btn" id="tabBtnInventory" onclick="switchAdminTab('inventory')">
+        <i class="fa-solid fa-warehouse"></i> স্টক ও ইনভেন্টরি
+      </button>
+      <button class="tab-btn" id="tabBtnAddProduct" onclick="switchAdminTab('add-product')">
+        <i class="fa-solid fa-circle-plus"></i> নতুন শাড়ি / পণ্য যোগ
+      </button>
+      <button class="tab-btn" id="tabBtnReviews" onclick="switchAdminTab('reviews')">
+        <i class="fa-solid fa-star"></i> কাস্টমার রিভিউ
+      </button>
+    </div>
+
+    <!-- ================= SECTION 1: ORDERS & DELIVERY ================= -->
+    <section id="secOrders">
+      <!-- Filter Chips -->
+      <div class="filter-chips-row">
+        <button class="chip-btn active" onclick="filterOrdersBy('all', this)">সব অর্ডার (<span id="countAllOrders">0</span>)</button>
+        <button class="chip-btn" onclick="filterOrdersBy('Order Placed', this)">নতুন বুকিং (<span id="countPlaced">0</span>)</button>
+        <button class="chip-btn" onclick="filterOrdersBy('Packed', this)">প্যাকিং সম্পন্ন (<span id="countPacked">0</span>)</button>
+        <button class="chip-btn" onclick="filterOrdersBy('Out for Delivery', this)">ডেলিভারিতে বেরিয়েছে (<span id="countOut">0</span>)</button>
+        <button class="chip-btn" onclick="filterOrdersBy('Delivered', this)">ডেলিভারি সম্পন্ন (<span id="countDelivered">0</span>)</button>
+        <button class="chip-btn" onclick="filterOrdersBy('Cancelled', this)">বাতিল / Cancelled (<span id="countCancelled">0</span>)</button>
+      </div>
+
+      <!-- Orders List Container -->
+      <div id="adminOrdersContainer">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= SECTION 2: INVENTORY & STOCK ================= -->
+    <section id="secInventory" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:1.05rem; font-weight:800; color:#0f172a;">দোকানের স্টক ম্যানেজমেন্ট</h3>
+        <span style="font-size:0.75rem; color:var(--muted);">প্রতিটি পণ্যের স্টক সংখ্যা পরিবর্তন করে 'সেভ' করুন</span>
+      </div>
+
+      <div class="inv-table-wrap">
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>ছবি ও নাম</th>
+              <th>ক্যাটাগরি</th>
+              <th>দাম</th>
+              <th>বর্তমান স্টক</th>
+              <th>অ্যাকশন</th>
+            </tr>
+          </thead>
+          <tbody id="adminInventoryTableBody">
+            <!-- Rendered by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= SECTION 3: ADD NEW PRODUCT ================= -->
+    <section id="secAddProduct" style="display:none;">
+      <div class="form-card">
+        <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">নতুন শাড়ি বা পোশাক যুক্ত করুন</h3>
+        <p style="font-size:0.75rem; color:var(--muted); margin-bottom:18px;">এখানে পণ্য যুক্ত করলে তা সাথে সাথে কাস্টমার ফাইলে (index.html) প্রদর্শিত হবে।</p>
+
+        <form id="newProductForm" onsubmit="handleAddNewProduct(event)">
+          <div class="form-group">
+            <label class="form-label">শাড়ি বা পোশাকের নাম (Title) *</label>
+            <input type="text" class="form-input" id="p_title" placeholder="যেমন: ঢাকাই জামদানি শাড়ি (লাল ও সোনালী জরির কাজ)" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">ক্যাটাগরি (Category) *</label>
+              <select class="form-select" id="p_category" required>
+                <option value="saree">শাড়ি (Saree)</option>
+                <option value="kurti">কুর্তি ও সেট (Kurti)</option>
+                <option value="girls">মেয়েদের ফ্রক (Girls)</option>
+                <option value="jewellery">জুয়েলারি ও গহনা</option>
+                <option value="bags">ব্যাগ ও পার্স</option>
+                <option value="perfume">পারফিউম ও আতর</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ফ্যাব্রিক / সাবক্যাটাগরি</label>
+              <input type="text" class="form-input" id="p_fabric" placeholder="যেমন: Soft Silk, Jamdani, Tant">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">বিক্রয় মূল্য (Price ₹) *</label>
+              <input type="number" class="form-input" id="p_price" placeholder="450" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">আসল দাম (MRP ₹)</label>
+              <input type="number" class="form-input" id="p_mrp" placeholder="1200">
+            </div>
+            <div class="form-group">
+              <label class="form-label">শুরুর স্টক (Quantity) *</label>
+              <input type="number" class="form-input" id="p_stock" value="50" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ছবির লিংক (Image URL) *</label>
+            <input type="url" class="form-input" id="p_img" placeholder="https://images.unsplash.com/..." required>
+            <span style="font-size:0.68rem; color:var(--muted); margin-top:3px; display:block;">অথবা নিচের বোতাম দিয়ে ফোন থেকে ফটো নির্বাচন করুন:</span>
+            <input type="file" id="p_file_input" accept="image/*" onchange="handleImageFileSelect(this)" style="margin-top:6px; font-size:0.8rem;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">বিবরণ / শাড়ির বর্ণনা (Description)</label>
+            <textarea class="form-textarea" id="p_desc" rows="2" placeholder="খাঁটি সিল্ক ফেব্রিক, অল-ওভার জরি কাজ, ব্লাউজ পিস সহ..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary-submit">
+            <i class="fa-solid fa-cloud-arrow-up"></i> শপ ও ক্যাটালগে যুক্ত করুন
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= SECTION 4: CUSTOMER REVIEWS ================= -->
+    <section id="secReviews" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:1.05rem; font-weight:800; color:#0f172a;">গ্রাহকদের রিভিউ ও ফিডব্যাক</h3>
+        <span style="font-size:0.75rem; color:var(--muted);">কাস্টমারদের দেওয়া সমস্ত রিভিউ ও রেটিং</span>
+      </div>
+      <div id="adminReviewsContainer">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // State
+    let ordersList = [];
+    let currentFilter = 'all';
+
+    // 1. Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAllAdminData();
+    });
+
+    function loadAllAdminData() {
+      loadOrdersFromStorage();
+      loadStatsOverview();
+      renderOrdersList();
+      renderInventoryTable();
+      renderReviewsList();
+    }
+
+    // 2. Load Orders from LocalStorage
+    function loadOrdersFromStorage() {
+      const stored = localStorage.getItem('nc_orders');
+      if (stored) {
+        try {
+          ordersList = JSON.parse(stored);
+        } catch(e) {
+          ordersList = [];
+        }
+      } else {
+        ordersList = [];
+      }
+    }
+
+    // 3. Stats Calculation
+    function loadStatsOverview() {
+      const total = ordersList.length;
+      const pending = ordersList.filter(o => o.status === 'Order Placed').length;
+      const packed = ordersList.filter(o => o.status === 'Packed').length;
+      const out = ordersList.filter(o => o.status === 'Out for Delivery').length;
+      const delivered = ordersList.filter(o => o.status === 'Delivered').length;
+      const cancelled = ordersList.filter(o => o.status === 'Cancelled').length;
+
+      const sales = ordersList
+        .filter(o => o.status !== 'Cancelled')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      document.getElementById('statTotalOrders').textContent = total;
+      document.getElementById('statPendingOrders').textContent = pending;
+      document.getElementById('statOutOrders').textContent = out;
+      document.getElementById('statDeliveredOrders').textContent = delivered;
+      document.getElementById('statTotalSales').textContent = '₹' + sales;
+
+      // Update chip counts
+      document.getElementById('countAllOrders').textContent = total;
+      document.getElementById('countPlaced').textContent = pending;
+      document.getElementById('countPacked').textContent = packed;
+      document.getElementById('countOut').textContent = out;
+      document.getElementById('countDelivered').textContent = delivered;
+      document.getElementById('countCancelled').textContent = cancelled;
+    }
+
+    // 4. Tab Switching
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('secOrders').style.display = 'none';
+      document.getElementById('secInventory').style.display = 'none';
+      document.getElementById('secAddProduct').style.display = 'none';
+      document.getElementById('secReviews').style.display = 'none';
+
+      if (tabName === 'orders') {
+        document.getElementById('tabBtnOrders').classList.add('active');
+        document.getElementById('secOrders').style.display = 'block';
+        renderOrdersList();
+      } else if (tabName === 'inventory') {
+        document.getElementById('tabBtnInventory').classList.add('active');
+        document.getElementById('secInventory').style.display = 'block';
+        renderInventoryTable();
+      } else if (tabName === 'add-product') {
+        document.getElementById('tabBtnAddProduct').classList.add('active');
+        document.getElementById('secAddProduct').style.display = 'block';
+      } else if (tabName === 'reviews') {
+        document.getElementById('tabBtnReviews').classList.add('active');
+        document.getElementById('secReviews').style.display = 'block';
+        renderReviewsList();
+      }
+    }
+
+    // 5. Order Filter
+    function filterOrdersBy(status, btn) {
+      document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      currentFilter = status;
+      renderOrdersList();
+    }
+
+    // 6. Render Orders List
+    function renderOrdersList() {
+      const container = document.getElementById('adminOrdersContainer');
+      if (!container) return;
+
+      let filtered = ordersList;
+      if (currentFilter !== 'all') {
+        filtered = ordersList.filter(o => o.status === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:40px 20px; text-align:center; color:var(--muted); margin-top:10px;">
+            <i class="fa-solid fa-clipboard-list" style="font-size:2.5rem; color:#cbd5e1; margin-bottom:10px;"></i>
+            <div style="font-weight:800; font-size:1rem; color:#334155;">এই ক্যাটাগরিতে কোনো অর্ডার নেই</div>
+            <div style="font-size:0.75rem; margin-top:4px;">কাস্টমার ফাইল (index.html) থেকে নতুন অর্ডার আসলে এখানে রিয়েল-টাইমে জমা হবে।</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(ord => {
+        let statusClass = 'status-placed';
+        let statusText = 'অর্ডার গৃহীত (Placed)';
+        if (ord.status === 'Packed') { statusClass = 'status-packed'; statusText = 'প্যাকিং সম্পন্ন (Packed)'; }
+        else if (ord.status === 'Out for Delivery') { statusClass = 'status-out'; statusText = 'ডেলিভারিতে আছে (Out)'; }
+        else if (ord.status === 'Delivered') { statusClass = 'status-delivered'; statusText = 'ডেলিভারি সম্পন্ন (Delivered)'; }
+        else if (ord.status === 'Cancelled') { statusClass = 'status-cancelled'; statusText = 'বাতিল (Cancelled)'; }
+
+        // Items list
+        let itemsHtml = '';
+        if (ord.items && Array.isArray(ord.items)) {
+          ord.items.forEach(it => {
+            itemsHtml += `
+              <div class="item-row">
+                <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="item-thumb" alt="item">
+                <div class="item-info">
+                  <div class="item-title">${it.title || 'Pure Saree'}</div>
+                  <div class="item-meta">
+                    <span>সাইজ: <strong>${it.selectedSize || 'Free Size'}</strong></span>
+                    <span>পরিমাণ: <strong>${it.qty || 1}</strong></span>
+                    <span>রং: <strong>${it.selectedColor || 'Standard'}</strong></span>
+                  </div>
+                </div>
+                <div class="item-total">₹${it.price * (it.qty || 1)}</div>
+              </div>
+            `;
+          });
+        }
+
+        const phoneClean = (ord.phone || '9239413517').replace(/[^0-9]/g, '');
+        const waMsg = encodeURIComponent(`নমস্কার ${ord.name || 'গ্রাহক'}, নিশা ক্রিয়েশনস থেকে আপনার অর্ডার #${ord.id}-এর আপডেট: বর্তমান স্ট্যাটাস: ${ord.status}। ডেলিভারি সংক্রান্ত যেকোনো তথ্যের জন্য যোগাযোগ করুন।`);
+
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        card.innerHTML = `
+          <div class="order-top">
+            <div>
+              <div class="order-id-badge">
+                <i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Order #${ord.id}
+              </div>
+              <div class="order-date-text">তারিখ ও সময়: ${ord.date || 'আজ'}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="order-status-pill ${statusClass}">${statusText}</span>
+              <span style="font-weight:800; font-size:1.1rem; color:#0f172a;">₹${ord.total}</span>
+            </div>
+          </div>
+
+          <!-- Customer Details & Quick Call/WhatsApp -->
+          <div class="cust-info-box">
+            <div class="cust-name">
+              <i class="fa-solid fa-user" style="color:var(--primary);"></i> ${ord.name || 'গ্রাহক'}
+              <span style="font-size:0.7rem; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px; margin-left:6px;">
+                পেমেন্ট: <strong>${ord.paymentMode || 'COD'}</strong>
+              </span>
+            </div>
+            <div class="cust-address">
+              📍 <strong>ঠিকানা:</strong> ${ord.address || 'আমতা, হাওড়া - 711401'}
+            </div>
+            <div class="cust-contact-bar">
+              <a href="tel:${phoneClean}" class="btn-call">
+                <i class="fa-solid fa-phone"></i> কল করুন (${phoneClean})
+              </a>
+              <a href="https://wa.me/91${phoneClean}?text=${waMsg}" target="_blank" class="btn-wa">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp আপডেট পাঠান
+              </a>
+            </div>
+          </div>
+
+          <!-- Ordered Items -->
+          <div class="items-box">
+            ${itemsHtml}
+          </div>
+
+          <!-- Status Update Dropdown & Save Button (মূল রিকোয়েস্ট অনুযায়ী) -->
+          <div class="status-update-bar">
+            <div class="status-select-wrap">
+              <span class="status-label"><i class="fa-solid fa-pen-to-square"></i> স্ট্যাটাস আপডেট:</span>
+              <select class="status-dropdown" id="statusSelect_${ord.id}">
+                <option value="Order Placed" ${ord.status === 'Order Placed' ? 'selected' : ''}>⏳ Order Placed (নতুন বুকিং)</option>
+                <option value="Packed" ${ord.status === 'Packed' ? 'selected' : ''}>📦 Packed (প্যাকিং সম্পন্ন)</option>
+                <option value="Out for Delivery" ${ord.status === 'Out for Delivery' ? 'selected' : ''}>🚚 Out for Delivery (ডেলিভারিতে বেরিয়েছে)</option>
+                <option value="Delivered" ${ord.status === 'Delivered' ? 'selected' : ''}>✅ Delivered (ডেলিভারি সম্পন্ন)</option>
+                <option value="Cancelled" ${ord.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled (অর্ডার বাতিল)</option>
+              </select>
+            </div>
+            <button type="button" class="btn-save-status" onclick="saveOrderStatus('${ord.id}')">
+              <i class="fa-solid fa-floppy-disk"></i> Save Status
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 7. Save Order Status to Local Storage
+    function saveOrderStatus(orderId) {
+      const selectEl = document.getElementById(`statusSelect_${orderId}`);
+      if (!selectEl) return;
+      const newStatus = selectEl.value;
+
+      const idx = ordersList.findIndex(o => o.id === orderId);
+      if (idx === -1) {
+        alert('অর্ডারটি পাওয়া যায়নি!');
+        return;
+      }
+
+      ordersList[idx].status = newStatus;
+
+      // If out for delivery or delivered, update timestamp
+      if (newStatus === 'Delivered') {
+        ordersList[idx].deliveredDate = new Date().toLocaleDateString('bn-IN');
+      }
+
+      // Save to localStorage so Customer App (index.html) reflects it immediately!
+      localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+
+      loadStatsOverview();
+      renderOrdersList();
+
+      alert(`✅ অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে "${newStatus}" করা হয়েছে!
+কাস্টমার অ্যাপে লাইভ ট্র্যাকিং স্বয়ংক্রিয়ভাবে আপডেট হয়ে গেছে।`);
+    }
+
+    // 8. Render Inventory Table
+    function renderInventoryTable() {
+      const tbody = document.getElementById('adminInventoryTableBody');
+      if (!tbody) return;
+
+      const storedCustom = localStorage.getItem('nc_custom_products');
+      let customProds = storedCustom ? JSON.parse(storedCustom) : [];
+      
+      const storedProds = localStorage.getItem('nc_products');
+      let allProds = storedProds ? JSON.parse(storedProds) : [];
+
+      if (allProds.length === 0) {
+        allProds = [
+          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 428, stock: 45, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100' },
+          { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 549, stock: 30, img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=100' },
+          { id: 'NC-103', title: 'Santipuri Tant Cotton Saree', category: 'saree', price: 349, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=100' }
+        ];
+      }
+
+      tbody.innerHTML = '';
+      allProds.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;">
+              <div>
+                <div style="font-weight:800; color:#0f172a;">${p.title}</div>
+                <div style="font-size:0.7rem; color:var(--muted);">ID: ${p.id}</div>
+              </div>
+            </div>
+          </td>
+          <td><span style="background:#f1f5f9; padding:2px 8px; border-radius:6px; font-weight:700; font-size:0.75rem;">${p.category || 'saree'}</span></td>
+          <td><strong style="color:var(--primary);">₹${p.price}</strong></td>
+          <td>
+            <input type="number" class="stock-input" id="stock_${p.id}" value="${p.stock !== undefined ? p.stock : 50}">
+          </td>
+          <td>
+            <button class="btn-quick-save" onclick="saveProductStockQuick('${p.id}')">💾 সেভ</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function saveProductStockQuick(prodId) {
+      const input = document.getElementById(`stock_${prodId}`);
+      if (!input) return;
+      const newStock = parseInt(input.value) || 0;
+
+      let allProds = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      const idx = allProds.findIndex(p => p.id === prodId);
+      if (idx !== -1) {
+        allProds[idx].stock = newStock;
+        allProds[idx].inStock = newStock > 0;
+        localStorage.setItem('nc_products', JSON.stringify(allProds));
+      }
+
+      let customProds = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      const cIdx = customProds.findIndex(p => p.id === prodId);
+      if (cIdx !== -1) {
+        customProds[cIdx].stock = newStock;
+        customProds[cIdx].inStock = newStock > 0;
+        localStorage.setItem('nc_custom_products', JSON.stringify(customProds));
+      }
+
+      alert(`✅ প্রোডাক্ট ID ${prodId}-এর স্টক আপডেট করে ${newStock} করা হয়েছে!`);
+    }
+
+    // 9. Add New Product
+    function handleAddNewProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('p_title').value.trim();
+      const category = document.getElementById('p_category').value;
+      const fabric = document.getElementById('p_fabric').value.trim() || 'Cotton Silk';
+      const price = parseInt(document.getElementById('p_price').value) || 350;
+      const mrp = parseInt(document.getElementById('p_mrp').value) || (price * 2);
+      const stock = parseInt(document.getElementById('p_stock').value) || 50;
+      const img = document.getElementById('p_img').value.trim();
+      const desc = document.getElementById('p_desc').value.trim() || 'নিশা ক্রিয়েশনসের এক্সক্লুসিভ কালেকশন';
+
+      const newProd = {
+        id: 'NC-CUST-' + Date.now().toString().slice(-6),
+        title: title,
+        category: category,
+        fabric: fabric,
+        price: price,
+        mrp: mrp,
+        stock: stock,
+        inStock: stock > 0,
+        img: img,
+        desc: desc,
+        dateAdded: new Date().toISOString()
+      };
+
+      // Save to nc_custom_products
+      let customProds = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      customProds.unshift(newProd);
+      localStorage.setItem('nc_custom_products', JSON.stringify(customProds));
+
+      // Also append to nc_products
+      let allProds = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      allProds.unshift(newProd);
+      localStorage.setItem('nc_products', JSON.stringify(allProds));
+
+      alert('🎉 অভিনন্দন! নতুন পণ্যটি সফলভাবে যুক্ত হয়েছে এবং কাস্টমার শপে লাইভ হয়ে গেছে!');
+      document.getElementById('newProductForm').reset();
+      switchAdminTab('inventory');
+    }
+
+    function handleImageFileSelect(input) {
+      const file = input.files && input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('p_img').value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // 10. Customer Reviews List
+    function renderReviewsList() {
+      const container = document.getElementById('adminReviewsContainer');
+      if (!container) return;
+
+      const stored = localStorage.getItem('nc_user_reviews');
+      let reviews = stored ? JSON.parse(stored) : [];
+
+      if (reviews.length === 0) {
+        container.innerHTML = `
+          <div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:30px; text-align:center; color:var(--muted);">
+            <i class="fa-solid fa-comments" style="font-size:2rem; color:#cbd5e1; margin-bottom:8px;"></i>
+            <div style="font-weight:800; color:#334155;">কোনো কাস্টমার রিভিউ পাওয়া যায়নি</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      reviews.forEach(r => {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          stars += `<i class="fa-solid fa-star" style="color:${i <= r.rating ? '#f59e0b' : '#cbd5e1'};"></i> `;
+        }
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div>
+              <strong style="color:#0f172a; font-size:0.95rem;">${r.name || 'আমতার গ্রাহক'}</strong>
+              <span style="font-size:0.75rem; color:var(--muted); margin-left:8px;">${r.date || ''}</span>
+            </div>
+            <div>${stars} (${r.rating} ★)</div>
+          </div>
+          <div style="font-size:0.8rem; font-weight:700; color:var(--primary); margin-bottom:4px;">
+            পণ্য: ${r.product || 'শাড়ি'}
+          </div>
+          <div style="font-size:0.82rem; color:#334155; line-height:1.4;">
+            "${r.comment || ''}"
+          </div>
+          ${r.photo ? `
+            <div style="margin-top:8px;">
+              <img src="${r.photo}" style="width:70px; height:70px; border-radius:8px; object-fit:cover; border:1px solid var(--border); cursor:pointer;" onclick="window.open('${r.photo}', '_blank')">
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
