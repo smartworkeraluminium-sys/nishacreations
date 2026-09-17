@@ -723,15 +723,18 @@
     </section>
 
     <!-- Warehouse Station Mode Switcher -->
-    <nav class="station-nav-bar">
+    <nav class="station-nav-bar" style="overflow-x:auto; scrollbar-width:none;">
       <button type="button" class="station-tab-btn active" id="tabModePack" onclick="switchWarehouseStation('pack')">
-        <i class="fa-solid fa-box-open"></i> প্যাকিং স্টেশন
+        <i class="fa-solid fa-box-open"></i> প্যাকিং
       </button>
       <button type="button" class="station-tab-btn" id="tabModePick" onclick="switchWarehouseStation('pick')">
-        <i class="fa-solid fa-list-check"></i> র‍্যাক পিকিং শিট
+        <i class="fa-solid fa-list-check"></i> র‍্যাক পিকিং
       </button>
       <button type="button" class="station-tab-btn" id="tabModeBags" onclick="switchWarehouseStation('bags')">
-        <i class="fa-solid fa-truck-ramp-box"></i> ডিসপ্যাচ ব্যাগিং
+        <i class="fa-solid fa-truck-ramp-box"></i> ব্যাগিং
+      </button>
+      <button type="button" class="station-tab-btn" id="tabModeBarcodes" onclick="switchWarehouseStation('barcodes')">
+        <i class="fa-solid fa-barcode"></i> বারকোড ও র‍্যাক
       </button>
     </nav>
 
@@ -929,6 +932,38 @@
       }
     }
 
+    
+    // Smart Amta Locality & Area Route Detector
+    function detectAmtaDeliveryRoute(address) {
+      const addr = (address || '').toLowerCase();
+      if (addr.includes('চাঁদনী') || addr.includes('থানা') || addr.includes('বাজার') || addr.includes('স্ট্যান্ড') || addr.includes('chandni') || addr.includes('bazar') || addr.includes('thana')) {
+        return 'BAG-AMTA-01 (আমতা মেইন বাজার ও চাঁদনী রুট)';
+      } else if (addr.includes('রানীহাটি') || addr.includes('ভগোষ্ঠী') || addr.includes('পোল') || addr.includes('ranihati') || addr.includes('vogopoti') || addr.includes('para')) {
+        return 'BAG-AMTA-02 (রানীহাটি ও ভগোষ্ঠী পাড়া রুট)';
+      } else if (addr.includes('রসপুর') || addr.includes('উদয়নারায়ণপুর') || addr.includes('জয়পুর') || addr.includes('raspur') || addr.includes('udaynarayanpur')) {
+        return 'BAG-AMTA-03 (রসপুর ও দূরবর্তী রুট)';
+      }
+      return 'BAG-AMTA-01 (আমতা মেইন বাজার ও চাঁদনী রুট)';
+    }
+
+    // Auto-Sort Orders by Area Route
+    function autoSortOrdersByRoute() {
+      let count = 0;
+      allOrders = allOrders.map(o => {
+        if (!o.dispatchBag || o.dispatchBag === '') {
+          o.dispatchBag = detectAmtaDeliveryRoute(o.address);
+          count++;
+        }
+        return o;
+      });
+      localStorage.setItem('nc_orders', JSON.stringify(allOrders));
+      if (count > 0) {
+        alert(`✅ সিস্টেম স্বয়ংক্রিয়ভাবে ${count}টি অর্ডারের আমতা এরিয়া ও ডেলিভারি রুট ব্যাগ নির্ধারণ করেছে!`);
+      }
+      updatePackStats();
+      if (currentStationMode === 'bags') renderDispatchBags();
+    }
+
     function updatePackStats() {
       const pendingOrders = allOrders.filter(o => o.status === 'Order Placed');
       const packedOrders = allOrders.filter(o => o.status === 'Packed');
@@ -960,9 +995,11 @@
       const pickView = document.getElementById('stationPickView');
       const bagsView = document.getElementById('stationBagsView');
 
+      const barView = document.getElementById('stationBarcodesView');
       pView.style.display = 'none';
       pickView.style.display = 'none';
       bagsView.style.display = 'none';
+      if (barView) barView.style.display = 'none';
 
       if (mode === 'pack') {
         document.getElementById('tabModePack').classList.add('active');
@@ -976,6 +1013,12 @@
         document.getElementById('tabModeBags').classList.add('active');
         bagsView.style.display = 'block';
         renderDispatchBags();
+      } else if (mode === 'barcodes') {
+        const tb = document.getElementById('tabModeBarcodes');
+        if (tb) tb.classList.add('active');
+        const bv = document.getElementById('stationBarcodesView');
+        if (bv) bv.style.display = 'block';
+        renderRackStickers();
       }
     }
 
@@ -984,6 +1027,120 @@
       if (btn) btn.classList.add('active');
       currentPackFilter = fType;
       renderPackCards();
+    }
+
+    
+    // Default Warehouse Storage Racks
+    const DEFAULT_WAREHOUSE_RACKS = [
+      { id: 'RACK-A01', title: 'র‍্যাক A-০১', category: 'Pure Dhakai Jamdani Saree (জামদানি শাড়ি ব্লক)' },
+      { id: 'RACK-A02', title: 'র‍্যাক A-০২', category: 'Soft Silk & Katan Saree (সফট সিল্ক ও কাতান জোন)' },
+      { id: 'RACK-B01', title: 'র‍্যাক B-০১', category: 'Bengal Handloom Tant Saree (শান্তিপুরী তাঁত কটন)' },
+      { id: 'RACK-C01', title: 'র‍্যাক C-০১', category: 'Blouse & Anarkali Kurti (ব্লাউজ ও কুর্তি হ্যাঙ্গার)' },
+      { id: 'SHELF-J01', title: 'শেলফ J-০১', category: 'Gold-Plated Bridal Jewellery (ব্রাইডাল নেকলেস ও চোকার)' },
+      { id: 'SHELF-J02', title: 'শেলফ J-০২', category: 'Designer Bangles & Churi (ডিজাইনার চুড়ি ও বালা ড্রয়ার)' },
+      { id: 'SHELF-J03', title: 'শেলফ J-০৩', category: 'Kundan Drop Earrings (ঝুমকো ও কানের দুল ড্রয়ার)' },
+      { id: 'BIN-F01', title: 'বিন F-০১', category: 'Princess Frock & Baby Lehenga (ছোটদের ফ্রক ও লেহেঙ্গা)' }
+    ];
+
+    function getSavedWarehouseRacks() {
+      try {
+        const s = localStorage.getItem('nc_custom_racks');
+        return s ? JSON.parse(s) : DEFAULT_WAREHOUSE_RACKS;
+      } catch(e) {
+        return DEFAULT_WAREHOUSE_RACKS;
+      }
+    }
+
+    function addNewCustomRack() {
+      const inp = document.getElementById('newRackNameInp');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        alert('অনুগ্রহ করে র‍্যাকের নাম লিখুন (যেমন: র‍্যাক D-০১ লেডিস ব্যাগ)');
+        return;
+      }
+
+      const racks = getSavedWarehouseRacks();
+      const code = 'RACK-' + Date.now().toString().slice(-4);
+      racks.push({
+        id: code,
+        title: val,
+        category: 'কাস্টম স্টোরেজ র‍্যাক'
+      });
+
+      localStorage.setItem('nc_custom_racks', JSON.stringify(racks));
+      alert(`✅ নতুন র‍্যাক '${val}' সফলভাবে তৈরি হয়েছে! নিচে এর বারকোড ও কিউআর স্টিকার যোগ হয়েছে।`);
+      if (inp) inp.value = '';
+      renderRackStickers();
+    }
+
+    function renderRackStickers() {
+      const container = document.getElementById('rackStickersGrid');
+      if (!container) return;
+
+      const racks = getSavedWarehouseRacks();
+
+      container.innerHTML = racks.map(rk => {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(rk.id)}`;
+        return `
+          <div style="background:#ffffff; color:#0f172a; border-radius:14px; padding:14px; border:2px solid #0f172a; box-shadow:0 4px 12px rgba(0,0,0,0.15); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1.5px solid #0f172a; padding-bottom:6px; margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:900; font-size:1.15rem; color:#1e1b4b;">${rk.title}</div>
+                  <div style="font-size:0.7rem; font-weight:700; color:#475569;">নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস</div>
+                </div>
+                <span style="font-size:0.75rem; background:#0f172a; color:#fff; padding:2px 8px; border-radius:6px; font-weight:800;">${rk.id}</span>
+              </div>
+              <div style="font-size:0.75rem; color:#334155; font-weight:700; margin-bottom:8px;">
+                📦 সংরক্ষিত পণ্য: <strong>${rk.category}</strong>
+              </div>
+              
+              <!-- QR Code & Visual Barcode Box -->
+              <div style="display:flex; align-items:center; gap:12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:8px;">
+                <img src="${qrUrl}" style="width:75px; height:75px; border-radius:6px; border:1px solid #cbd5e1;">
+                <div style="flex:1;">
+                  <div style="font-family:'Courier New', monospace; font-size:1.2rem; font-weight:900; letter-spacing:3px;">
+                    |||| || ||| ||
+                  </div>
+                  <div style="font-family:monospace; font-size:0.8rem; font-weight:800; color:#0f172a;">*${rk.id}*</div>
+                  <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">মোবাইল ক্যামেরা দিয়ে স্ক্যান করলেই চিনবে</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:6px;">
+              <button type="button" class="btn-pack-pill" style="flex:1; justify-content:center; background:#0f172a; color:#fff; font-size:0.75rem;" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> প্রিন্ট স্টিকার
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Quick Test Order for Picking Simulation
+    function addQuickTestOrderForPicking() {
+      const tId = 'NC-' + Math.floor(1000 + Math.random() * 9000);
+      const testOrder = {
+        id: tId,
+        date: new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' }),
+        customer: 'প্রিয়াঙ্কা দাস (আমতা বাজার)',
+        phone: '9832100000',
+        address: 'আমতা থানা রোড, আমতা চাঁদনী, হাওড়া - 711401',
+        total: 1098,
+        paymentMode: 'COD',
+        status: 'Order Placed',
+        items: [
+          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', price: 799, qty: 1, selectedSize: 'Free Size', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100' },
+          { id: 'NC-106', title: 'Designer Handcrafted Gold-Plated Churi / Bangles', price: 299, qty: 1, selectedSize: '2.6', img: 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=100' }
+        ]
+      };
+
+      allOrders.unshift(testOrder);
+      localStorage.setItem('nc_orders', JSON.stringify(allOrders));
+      alert(`🎉 ১টি নতুন টেস্ট অর্ডার #${tId} তৈরি হয়েছে!\nএখন 'র‍্যাক পিকিং শিট'-এ জামদানি শাড়ি (র‍্যাক A-০১) এবং চুড়ি (শেলফ J-০২) সরাসরি দেখতে পাবেন।`);
+      loadPackagingData();
+      switchWarehouseStation('pick');
     }
 
     // Camera QR Scanner Toggle
@@ -1035,13 +1192,150 @@
       }
     }
 
+    
+    // Show Product Rack & Stock Finder
+    function showProductWarehouseFinder(identifier) {
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      const cleanId = (identifier || '').toLowerCase().trim();
+      const p = prods.find(pr => (pr.id || '').toLowerCase() === cleanId || (pr.title || '').toLowerCase().includes(cleanId));
+
+      const modal = document.getElementById('productFinderModal');
+      const content = document.getElementById('finderModalContent');
+      if (!modal || !content) return;
+
+      if (!p) {
+        content.innerHTML = `
+          <div style="text-align:center; padding:20px 10px;">
+            <i class="fa-solid fa-circle-question" style="font-size:2.5rem; color:#f87171; margin-bottom:10px;"></i>
+            <h4 style="font-size:1rem; font-weight:800; color:#fff;">প্রোডাক্ট পাওয়া যায়নি!</h4>
+            <p style="font-size:0.78rem; color:#9ca3af; margin-top:4px;">"${identifier}" নামে কোনো শাড়ি, কুর্তি বা গহনা ডাটাবেসে নেই।</p>
+          </div>
+        `;
+        modal.style.display = 'flex';
+        return;
+      }
+
+      const bin = getWarehouseBinLocation(p);
+      const pendingCount = allOrders.filter(o => o.status === 'Order Placed')
+        .reduce((sum, o) => sum + (o.items || []).filter(it => it.id === p.id).reduce((s, it) => s + (Number(it.qty)||1), 0), 0);
+
+      content.innerHTML = `
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px; background:#0b0f19; padding:10px; border-radius:12px; border:1px solid #1f2937;">
+          <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" style="width:65px; height:65px; border-radius:10px; object-fit:cover;">
+          <div>
+            <div style="font-size:0.9rem; font-weight:800; color:#f9fafb; line-height:1.25;">${p.title}</div>
+            <div style="font-size:0.72rem; color:#9ca3af; margin-top:2px;">আইডি: <strong>#${p.id}</strong> • ক্যাটাগরি: ${p.category || 'পোশাক'}</div>
+            <div style="font-weight:800; color:#f59e0b; font-size:0.9rem; margin-top:3px;">₹${p.price}</div>
+          </div>
+        </div>
+
+        <!-- Exact Warehouse Location -->
+        <div style="background:linear-gradient(135deg, #1e1b4b, #312e81); border:1.5px solid #6366f1; border-radius:14px; padding:12px; margin-bottom:14px;">
+          <div style="font-size:0.7rem; color:#c7d2fe; font-weight:700; text-transform:uppercase;">
+            <i class="fa-solid fa-location-dot"></i> ওয়্যারহাউস স্টোরেজ অবস্থান:
+          </div>
+          <div style="font-size:1.1rem; font-weight:800; color:#ffffff; margin:4px 0;">
+            ${bin}
+          </div>
+          <div style="font-size:0.72rem; color:#a5b4fc;">
+            মাল গাড়ি থেকে নামিয়ে সরাসরি এই তাকে বা বক্সে রাখুন।
+          </div>
+        </div>
+
+        <!-- Stock Statistics -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div style="background:#0b0f19; padding:10px; border-radius:10px; border:1px solid #1f2937; text-align:center;">
+            <div style="font-size:1.25rem; font-weight:800; color:#34d399;">${p.stock || 0} পিস</div>
+            <div style="font-size:0.68rem; color:#9ca3af;">বর্তমানে র‍্যাকে মজুদ</div>
+          </div>
+          <div style="background:#0b0f19; padding:10px; border-radius:10px; border:1px solid #1f2937; text-align:center;">
+            <div style="font-size:1.25rem; font-weight:800; color:#f59e0b;">${pendingCount} পিস</div>
+            <div style="font-size:0.68rem; color:#9ca3af;">প্যাকিংয়ে প্রয়োজন</div>
+          </div>
+        </div>
+
+        <!-- Quick Inbound Stock Addition (গাড়ি থেকে মাল এলে) -->
+        <div style="background:#0b0f19; border:1px solid #374151; border-radius:12px; padding:12px; margin-bottom:14px;">
+          <div style="font-size:0.75rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">
+            <i class="fa-solid fa-cart-flatbed"></i> গাড়ি থেকে নতুন মাল স্টকে যোগ করুন:
+          </div>
+          <div style="display:flex; gap:8px;">
+            <input type="number" id="inboundQty_${p.id}" class="manual-input" placeholder="কয় পিস এলো?" style="padding:8px; font-size:0.85rem;" min="1">
+            <button type="button" class="btn-manual-verify" style="background:#059669; padding:8px 14px; font-size:0.8rem;" onclick="addInboundStock('${p.id}')">
+              + স্টকে যুক্ত করুন
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="btn-pack-pill" style="width:100%; justify-content:center; background:#1f2937; color:#fff;" onclick="closeProductFinderModal()">
+          সম্পন্ন
+        </button>
+      `;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeProductFinderModal() {
+      const modal = document.getElementById('productFinderModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function addInboundStock(productId) {
+      const inp = document.getElementById(`inboundQty_${productId}`);
+      const qty = parseInt(inp ? inp.value : 0);
+      if (!qty || qty <= 0) {
+        alert('অনুগ্রহ করে সঠিক সংখ্যা লিখুন (যেমন: ১০, ২০)');
+        return;
+      }
+
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      const idx = prods.findIndex(p => p.id === productId);
+      if (idx !== -1) {
+        prods[idx].stock = (prods[idx].stock || 0) + qty;
+        prods[idx].inStock = prods[idx].stock > 0;
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+        alert(`🎉 সফলভাবে ${qty} পিস নতুন স্টক ওয়্যারহাউস ইনভেন্টরিতে যুক্ত হয়েছে! নতুন মজুদ: ${prods[idx].stock} পিস।`);
+        showProductWarehouseFinder(productId);
+      }
+    }
+
     function handleScannedData(dataStr) {
       if (!dataStr) return;
-      let orderId = dataStr.trim();
-      if (orderId.includes('scan=')) {
-        orderId = orderId.split('scan=')[1].split('&')[0];
+      let raw = dataStr.trim();
+      let cleanId = raw;
+      if (cleanId.includes('scan=')) {
+        cleanId = cleanId.split('scan=')[1].split('&')[0];
+      } else if (cleanId.includes('id=')) {
+        cleanId = cleanId.split('id=')[1].split('&')[0];
       }
-      verifyAndCompletePacking(orderId);
+      cleanId = cleanId.replace('#', '').trim();
+
+      // 1. Check if it matches an existing Order ID
+      const isOrder = allOrders.some(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
+      if (isOrder) {
+        verifyAndCompletePacking(cleanId);
+        return;
+      }
+
+      // 2. Check if it matches a Product ID or Barcode
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e){}
+      const isProduct = prods.some(p => (p.id || '').toLowerCase() === cleanId.toLowerCase() || (p.title || '').toLowerCase().includes(cleanId.toLowerCase()));
+      if (isProduct || cleanId.startsWith('NC-1') || cleanId.startsWith('NC-CUST')) {
+        showProductWarehouseFinder(cleanId);
+        return;
+      }
+
+      // Fallback: try order packing or show finder
+      verifyAndCompletePacking(cleanId);
     }
 
     function handleManualVerify() {
@@ -1262,10 +1556,20 @@
 
       if (pendingOrders.length === 0) {
         container.innerHTML = `
-          <div style="text-align:center; padding:30px; color:var(--text-muted);">
-            <i class="fa-solid fa-clipboard-check" style="font-size:2.5rem; color:#10b981; margin-bottom:10px;"></i>
-            <h4>কোনো পিকিং বাকি নেই!</h4>
-            <p style="font-size:0.8rem; margin-top:4px;">সব নতুন অর্ডারের আইটেম সংগ্রহ ও প্যাকিং এগিয়ে আছে।</p>
+          <div style="text-align:center; padding:32px 16px; background:#0b0f19; border-radius:16px; border:1px dashed #374151;">
+            <i class="fa-solid fa-clipboard-check" style="font-size:2.8rem; color:#10b981; margin-bottom:12px;"></i>
+            <h4 style="font-size:1.1rem; font-weight:800; color:#ffffff;">কোনো পিকিং বাকি নেই!</h4>
+            <p style="font-size:0.8rem; color:#9ca3af; margin-top:6px; max-width:440px; margin-left:auto; margin-right:auto; line-height:1.4;">
+              বর্তমানে আপনার ৩টি পার্সেল ইতিমধ্যে প্যাকিং বা ডেলিভারি সম্পন্ন হয়েছে। নতুন কোনো কাস্টমার অর্ডার আসা মাত্রই সেই শাড়ি, ব্লাউজ বা চুড়ি কোন র‍্যাক থেকে তুলতে হবে তা এখানে সরাসরি নির্দেশিকা সহ ভেসে উঠবে।
+            </p>
+            <div style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+              <button type="button" class="btn-pack-pill" style="background:#4f46e5; color:#fff; padding:10px 16px; font-size:0.82rem;" onclick="addQuickTestOrderForPicking()">
+                <i class="fa-solid fa-flask"></i> ১টি টেস্ট অর্ডার বানিয়ে র‍্যাক পিকিং পরীক্ষা করুন
+              </button>
+              <button type="button" class="btn-pack-pill" style="background:#0284c7; color:#fff; padding:10px 16px; font-size:0.82rem;" onclick="switchWarehouseStation('barcodes')">
+                <i class="fa-solid fa-barcode"></i> নতুন র‍্যাক ও বারকোড স্টিকার তৈরি করুন
+              </button>
+            </div>
           </div>
         `;
         return;
@@ -1331,7 +1635,10 @@
           <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
             বর্তমানে মোট <strong>${packedOrders.length} টি পার্সেল</strong> প্যাকিং ও সিল সম্পন্ন হয়ে ডিসপ্যাচ ব্যাগে ওঠার অপেক্ষায় আছে।
           </p>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+          <button type="button" class="btn-pack-pill" style="background:#0284c7; border-color:#38bdf8;" onclick="autoSortOrdersByRoute()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> ঠিকানা অনুযায়ী অটোমেটিক এরিয়া রুট ভাগ করুন
+          </button>
             <button type="button" class="btn-pack-pill" style="background:#312e81; border-color:#4f46e5;" onclick="assignPackedOrdersToBag('BAG-AMTA-01 (আমতা মেইন বাজার রুট)')">
               <i class="fa-solid fa-plus"></i> BAG-AMTA-01 এ এসাইন করুন
             </button>
@@ -1407,5 +1714,63 @@
       }
     }
   </script>
+
+  
+    <!-- SECTION 4: BARCODE & RACK STUDIO (নতুন র‍্যাক তৈরি ও বারকোড প্রিন্টার) -->
+    <div id="stationBarcodesView" style="display:none;">
+      <div class="pick-table-card" style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+          <div>
+            <h3 style="font-size:1.15rem; font-weight:800; color:#818cf8;">
+              <i class="fa-solid fa-tags"></i> বারকোড ও র‍্যাক স্টুডিও (Barcode & Rack Studio)
+            </h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);">
+              নতুন তাক/র‍্যাক তৈরি করুন এবং মোবাইল থেকে স্ক্যান করার জন্য বারকোড ও কিউআর স্টিকার প্রিন্ট করুন।
+            </p>
+          </div>
+          <button type="button" class="btn-pack-pill" style="background:#059669; color:#fff;" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> সমস্ত স্টিকার প্রিন্ট করুন
+          </button>
+        </div>
+
+        <!-- Add Custom Rack Box -->
+        <div style="background:#0b0f19; border:1px solid #1f2937; border-radius:14px; padding:14px; margin-bottom:16px;">
+          <h4 style="font-size:0.88rem; font-weight:800; color:#cbd5e1; margin-bottom:8px;">
+            <i class="fa-solid fa-plus-circle" style="color:#10b981;"></i> নতুন র‍্যাক বা তাক যুক্ত করুন:
+          </h4>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input type="text" id="newRackNameInp" class="manual-input" placeholder="যেমন: র‍্যাক D-০১ (লেডিস ব্যাগ ও পার্স)" style="flex:1; min-width:200px; text-align:left; padding:10px 14px;">
+            <button type="button" class="btn-manual-verify" style="background:#4f46e5;" onclick="addNewCustomRack()">
+              + র‍্যাক সংরক্ষণ করুন
+            </button>
+          </div>
+        </div>
+
+        <!-- Barcode Stickers Grid -->
+        <div style="font-size:0.85rem; font-weight:800; color:#94a3b8; margin-bottom:10px;">
+          <i class="fa-solid fa-qrcode"></i> তৈরি করা র‍্যাক ও শেলফ স্টিকারসমূহ (তাক বা বক্সে সাঁটানোর জন্য):
+        </div>
+        <div id="rackStickersGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:12px;"></div>
+      </div>
+    </div>
+
+  <!-- PRODUCT RACK FINDER & INBOUND STOCK MODAL -->
+  <div id="productFinderModal" class="modal-overlay" style="display:none;">
+    <div class="waybill-sheet" style="max-width:400px; background:#111827; color:#fff; border:2px solid #818cf8;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #374151; padding-bottom:10px; margin-bottom:12px;">
+        <h3 style="font-size:1.05rem; font-weight:800; color:#818cf8;">
+          <i class="fa-solid fa-barcode"></i> প্রোডাক্ট ও র‍্যাক ফাইন্ডার
+        </h3>
+        <button type="button" onclick="closeProductFinderModal()" style="background:transparent; border:none; color:#9ca3af; font-size:1.2rem; cursor:pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="finderModalContent">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
