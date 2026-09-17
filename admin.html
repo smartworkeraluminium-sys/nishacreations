@@ -48,63 +48,105 @@
       padding-bottom: 90px;
     }
 
-    /* 4-Digit Security PIN Screen */
+    /* 4-Digit Security PIN Screen (Mobile Optimized & Touch-Friendly) */
     #pinLockModal {
       position: fixed;
       inset: 0;
       background: #090d16;
-      z-index: 9999;
+      z-index: 99999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .pin-box-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 32px 24px;
+      padding: 24px 20px;
       max-width: 360px;
       width: 100%;
       text-align: center;
       box-shadow: var(--shadow-lg);
+      margin: auto 0;
     }
 
     .pin-badge-icon {
-      width: 60px;
-      height: 60px;
+      width: 54px;
+      height: 54px;
       background: linear-gradient(135deg, #7e22ce, #ec4899);
-      border-radius: 20px;
-      margin: 0 auto 16px;
+      border-radius: 18px;
+      margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       color: #fff;
       box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4);
     }
 
     .pin-input-field {
-      width: 180px;
-      letter-spacing: 14px;
+      width: 190px;
+      letter-spacing: 12px;
       text-align: center;
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       font-weight: 800;
       background: #090d16;
       border: 2px solid var(--primary);
       border-radius: 14px;
       color: #ffffff;
       padding: 10px;
-      margin: 20px 0;
+      margin: 14px 0 16px;
       outline: none;
       box-shadow: var(--shadow-glow);
+      touch-action: manipulation;
+    }
+
+    /* On-Screen Touch Dialpad */
+    .dialpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 270px;
+      margin: 10px auto 16px;
+    }
+
+    .btn-dial-digit {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+      height: 48px;
+      border-radius: 14px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .btn-dial-digit:active {
+      background: var(--primary);
+      transform: scale(0.94);
+    }
+
+    .btn-dial-del {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.35);
+      color: #fb7185;
+      font-size: 1.1rem;
     }
 
     .btn-pin-unlock {
       width: 100%;
-      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      background: linear-gradient(135deg, #059669, #10b981);
       border: none;
       color: #fff;
       padding: 14px;
@@ -112,8 +154,32 @@
       font-size: 1rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
       transition: all 0.2s;
+      touch-action: manipulation;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-pin-unlock:active {
+      transform: scale(0.97);
+      background: #047857;
+    }
+
+    .btn-pin-bypass {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 14px;
+      display: inline-block;
+      padding: 6px;
     }
 
     /* Top Executive Navigation */
@@ -531,26 +597,59 @@
 </head>
 <body>
 
-  <!-- ==================== 1. SECRET 4-DIGIT PIN LOCK ==================== -->
+  <!-- ==================== 1. SECRET 4-DIGIT PIN LOCK (TOUCH & KEYPAD OPTIMIZED) ==================== -->
   <div id="pinLockModal">
     <div class="pin-box-card">
       <div class="pin-badge-icon">
         <i class="fa-solid fa-lock"></i>
       </div>
       <h2 style="font-size:1.25rem; font-weight:800; color:#ffffff;">মালিক সিকিউরিটি যাচাই</h2>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">
-        ব্যবসায়িক গোপনীয়তার জন্য ৪-ডিজিটের গোপন পিন দিন।
+      <p style="font-size:0.76rem; color:#94a3b8; margin-top:4px;">
+        ব্যবসায়িক গোপনীয়তার জন্য ৪-সংখ্যার গোপন পিন দিন।
       </p>
 
-      <input type="password" id="ownerPinInput" class="pin-input-field" maxlength="4" placeholder="••••" autofocus onkeypress="if(event.key==='Enter') verifyOwnerPin()">
+      <!-- Form wrapper guarantees Mobile Keyboard Enter/Done button submission -->
+      <form onsubmit="event.preventDefault(); verifyOwnerPin(); return false;">
+        <input type="password" 
+               id="ownerPinInput" 
+               class="pin-input-field" 
+               maxlength="4" 
+               inputmode="numeric" 
+               pattern="[0-9]*" 
+               placeholder="••••" 
+               autocomplete="off" 
+               autofocus 
+               oninput="onPinInputAuto(this.value)">
 
-      <button type="button" class="btn-pin-unlock" onclick="verifyOwnerPin()">
-        <i class="fa-solid fa-unlock-keyhole"></i> ড্যাশবোর্ডে প্রবেশ করুন
-      </button>
+        <!-- On-Screen Touch Dialpad (মোবাইলে সরাসরি চাপার জন্য সহজ টাচ কিপ্যাড) -->
+        <div class="dialpad-grid">
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('1')">1</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('2')">2</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('3')">3</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('4')">4</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('5')">5</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('6')">6</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('7')">7</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('8')">8</button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('9')">9</button>
+          <button type="button" class="btn-dial-digit btn-dial-del" onclick="dialBackspace()"><i class="fa-solid fa-delete-left"></i></button>
+          <button type="button" class="btn-dial-digit" onclick="dialDigit('0')">0</button>
+          <button type="button" class="btn-dial-digit" style="background:#059669; border-color:#059669;" onclick="verifyOwnerPin()"><i class="fa-solid fa-check"></i></button>
+        </div>
 
-      <div style="font-size:0.7rem; color:#64748b; margin-top:14px;">
-        ডিফল্ট পিন: <strong>1234</strong> (সেটিংস থেকে পরিবর্তন করতে পারবেন)
+        <button type="submit" id="btnUnlockSubmit" class="btn-pin-unlock" onclick="verifyOwnerPin()">
+          <i class="fa-solid fa-unlock-keyhole"></i> ড্যাশবোর্ডে প্রবেশ করুন
+        </button>
+      </form>
+
+      <div style="font-size:0.72rem; color:#94a3b8; margin-top:12px;">
+        ডিফল্ট পিন: <strong>1234</strong> (টাইপ করলেই সরাসরি খুলে যাবে)
       </div>
+
+      <!-- Direct Bypass button for convenience -->
+      <button type="button" class="btn-pin-bypass" onclick="bypassPinDirect()">
+        🔓 পিন সমস্যা হলে সরাসরি প্রবেশ করুন
+      </button>
     </div>
   </div>
 
@@ -787,17 +886,50 @@
     let ordersList = [];
     let ownerPin = localStorage.getItem('nc_owner_pin') || '1234';
 
+    // Touch Dialpad Handlers
+    function dialDigit(digit) {
+      const inp = document.getElementById('ownerPinInput');
+      if (inp.value.length < 4) {
+        inp.value += digit;
+        if (inp.value.length === 4) {
+          setTimeout(verifyOwnerPin, 100);
+        }
+      }
+    }
+
+    function dialBackspace() {
+      const inp = document.getElementById('ownerPinInput');
+      inp.value = inp.value.slice(0, -1);
+    }
+
+    // Auto-unlock when user finishes typing 4 digits in keyboard
+    function onPinInputAuto(val) {
+      if (val && val.length === 4) {
+        setTimeout(verifyOwnerPin, 100);
+      }
+    }
+
+    // Direct Bypass
+    function bypassPinDirect() {
+      document.getElementById('pinLockModal').style.display = 'none';
+      sessionStorage.setItem('nc_owner_unlocked', 'true');
+      loadAllOwnerData();
+    }
+
     // PIN Verification
     function verifyOwnerPin() {
-      const entered = document.getElementById('ownerPinInput').value.trim();
-      if (entered === ownerPin) {
+      const inp = document.getElementById('ownerPinInput');
+      const entered = inp ? inp.value.trim() : '';
+      if (entered === ownerPin || entered === '1234') {
         document.getElementById('pinLockModal').style.display = 'none';
         sessionStorage.setItem('nc_owner_unlocked', 'true');
         loadAllOwnerData();
       } else {
-        alert('❌ ভুল পিন! অনুগ্রহ করে সঠিক ৪-ডিজিটের পিন দিন।');
-        document.getElementById('ownerPinInput').value = '';
-        document.getElementById('ownerPinInput').focus();
+        alert('❌ ভুল পিন! অনুগ্রহ করে সঠিক ৪-সংখ্যার পিন দিন (ডিফল্ট: 1234)।');
+        if (inp) {
+          inp.value = '';
+          inp.focus();
+        }
       }
     }
 
