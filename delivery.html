@@ -18,19 +18,19 @@
     :root {
       --bg: #0b1120;
       --surface: #1e293b;
-      --surface-light: #334155;
+      --surface-light: #283548;
       --border: #334155;
       --text-main: #f8fafc;
       --text-sub: #cbd5e1;
       --text-muted: #94a3b8;
       
-      --brand: #0284c7;
-      --emerald: #10b981;
-      --amber: #f59e0b;
-      --rose: #f43f5e;
-      --indigo: #6366f1;
+      --brand: #2563eb;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --indigo: #4f46e5;
       
-      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.35);
     }
 
     * {
@@ -513,6 +513,157 @@
       transform: scale(0.95);
     }
 
+  
+    /* 3-Lines Hamburger Menu Button */
+    .btn-menu-trigger {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .btn-menu-trigger:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Slide-out Drawer Overlay */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: none;
+      justify-content: flex-end;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .drawer-content {
+      width: 82%;
+      max-width: 320px;
+      height: 100%;
+      background: #0f172a;
+      border-left: 1.5px solid #334155;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 25px rgba(0,0,0,0.5);
+      animation: slideInRight 0.25s ease-out;
+      overflow-y: auto;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .btn-close-drawer {
+      background: #1e293b;
+      border: none;
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .drawer-section {
+      margin-bottom: 18px;
+    }
+    .drawer-sec-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lang-switch-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .lang-pill-btn {
+      padding: 10px;
+      border-radius: 12px;
+      border: 1.5px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .lang-pill-btn.active {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+    }
+
+    .drawer-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drawer-link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      text-decoration: none;
+      color: #f8fafc;
+      transition: background 0.2s;
+    }
+    .drawer-link-item:hover, .drawer-link-item:active {
+      background: #334155;
+    }
+    .drawer-link-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .drawer-link-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .drawer-link-desc {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+
   </style>
 </head>
 <body>
@@ -529,14 +680,102 @@
           <div style="font-size:0.72rem; opacity:0.9;">ডেলিভারি পার্টনার হাব • আমতা</div>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:6px;">
-        <!-- ONLY LANGUAGE SELECTOR AS REQUESTED -->
-        <button type="button" class="btn-rider-lang-toggle" onclick="toggleRiderLanguage()">
-          <i class="fa-solid fa-language"></i> <span id="rLangDisplay">বাংলা | English</span>
+      <!-- 3-Lines Hamburger Menu Button -->
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="btn-menu-trigger" onclick="toggleRiderDrawer()" aria-label="Menu">
+          <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- SLIDE-OVER RIDER NAVIGATION DRAWER (তিনটি দাঁড়ি মেনু) -->
+  <div id="riderNavDrawerOverlay" class="drawer-overlay" onclick="closeRiderDrawer()">
+    <div class="drawer-content" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="rider-icon" style="width:36px; height:36px; font-size:1.1rem; border-radius:10px;">
+            <i class="fa-solid fa-motorcycle"></i>
+          </div>
+          <div>
+            <div style="font-weight:800; font-size:1rem; color:#fff;">নিশা লজিস্টিকস</div>
+            <div style="font-size:0.7rem; color:#94a3b8;" id="rDrawerSub">রাইডার মেনু ও সেটিংস</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close-drawer" onclick="closeRiderDrawer()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 1. Language Selection -->
+      <div class="drawer-section">
+        <div class="drawer-sec-label">
+          <i class="fa-solid fa-globe"></i> <span id="rDrawerLangLbl">ভাষা নির্বাচন / Select Language</span>
+        </div>
+        <div class="lang-switch-pills">
+          <button type="button" class="lang-pill-btn active" id="rBtnLangBn" onclick="setRiderLanguageExact('bn')">
+            🇮🇳 বাংলা
+          </button>
+          <button type="button" class="lang-pill-btn" id="rBtnLangEn" onclick="setRiderLanguageExact('en')">
+            🇬🇧 English
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Rider Tools & Settlement -->
+      <div class="drawer-section">
+        <div class="drawer-sec-label">
+          <i class="fa-solid fa-toolbox"></i> <span id="rDrawerToolsLbl">রাইডার টুলস ও হিসাব</span>
+        </div>
+        <div class="drawer-links-list">
+          <div class="drawer-link-item" style="cursor:pointer;" onclick="closeRiderDrawer(); openEodSlipModal();">
+            <div class="drawer-link-icon" style="background:#059669; color:#fff;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+            <div>
+              <div class="drawer-link-title" id="rD-eodTitle">ক্যাশ জমা স্লিপ ও হিসাব</div>
+              <div class="drawer-link-desc" id="rD-eodDesc">মালিককে জমা দেওয়ার নগদ রসিদ</div>
+            </div>
+          </div>
+
+          <a href="tel:9239413517" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#2563eb; color:#fff;"><i class="fa-solid fa-phone-volume"></i></div>
+            <div>
+              <div class="drawer-link-title" id="rD-callTitle">ওয়্যারহাউস মালিককে কল</div>
+              <div class="drawer-link-desc">📞 9239413517 (জরুরি সহায়তা)</div>
+            </div>
+          </a>
+
+          <a href="https://wa.me/919239413517?text=নমস্কার%20দাদা,%20আমতা%20ডেলিভারি%20রুট%20থেকে%20আপডেট%20দিচ্ছি।" target="_blank" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#16a34a; color:#fff;"><i class="fa-brands fa-whatsapp"></i></div>
+            <div>
+              <div class="drawer-link-title" id="rD-waTitle">মালিককে WhatsApp আপডেট</div>
+              <div class="drawer-link-desc">লাইভ লোকেশন বা মেসেজ পাঠান</div>
+            </div>
+          </a>
+
+          <div class="drawer-link-item" style="cursor:pointer;" onclick="closeRiderDrawer(); loadRiderData();">
+            <div class="drawer-link-icon" style="background:#334155; color:#38bdf8;"><i class="fa-solid fa-rotate"></i></div>
+            <div>
+              <div class="drawer-link-title" id="rD-syncTitle">ডাটা রিফ্রেশ ও সিঙ্ক</div>
+              <div class="drawer-link-desc">নতুন অর্ডার তালিকা লোড করুন</div>
+            </div>
+          </div>
+
+          <a href="packaging.html" class="drawer-link-item">
+            <div class="drawer-link-icon" style="background:#4f46e5; color:#fff;"><i class="fa-solid fa-boxes-packing"></i></div>
+            <div>
+              <div class="drawer-link-title" id="rD-packTitle">ওয়্যারহাউস প্যাকিং হাব</div>
+              <div class="drawer-link-desc">পার্সেল প্রস্তুত ও স্ক্যানিং স্টেশন</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid #1f2937; text-align:center; font-size:0.72rem; color:#64748b;">
+        Nisha Last-Mile Logistics • Amta
+      </div>
+    </div>
+  </div>
+
 
   <div class="container">
 
@@ -766,13 +1005,45 @@
       }
     };
 
+    
+    function toggleRiderDrawer() {
+      const drawer = document.getElementById('riderNavDrawerOverlay');
+      if (drawer) drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function closeRiderDrawer() {
+      const drawer = document.getElementById('riderNavDrawerOverlay');
+      if (drawer) drawer.style.display = 'none';
+    }
+
+    function setRiderLanguageExact(lang) {
+      applyRiderLanguage(lang);
+      document.querySelectorAll('#riderNavDrawerOverlay .lang-pill-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(lang === 'bn' ? 'rBtnLangBn' : 'rBtnLangEn');
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
     function applyRiderLanguage(lang) {
       currentRiderLang = lang;
       localStorage.setItem('nc_hub_lang', lang);
-      const d = RIDER_I18N[lang] || RIDER_I18N.bn;
 
+      const isEn = (lang === 'en');
       const setT = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-      setT('rLangDisplay', d.langDisplay);
+
+      setT('rDrawerSub', isEn ? 'Rider Menu & Settings' : 'রাইডার মেনু ও সেটিংস');
+      setT('rDrawerLangLbl', isEn ? 'SELECT LANGUAGE / ভাষা নির্বাচন' : 'ভাষা নির্বাচন / Select Language');
+      setT('rDrawerToolsLbl', isEn ? 'RIDER TOOLS & CASH / টুলস' : 'রাইডার টুলস ও হিসাব');
+      setT('rD-eodTitle', isEn ? 'Cash Deposit Slip & Report' : 'ক্যাশ জমা স্লিপ ও হিসাব');
+      setT('rD-eodDesc', isEn ? 'Deposit receipt for hub owner' : 'মালিককে জমা দেওয়ার নগদ রসিদ');
+      setT('rD-callTitle', isEn ? 'Call Warehouse Owner' : 'ওয়্যারহাউস মালিককে কল');
+      setT('rD-waTitle', isEn ? 'WhatsApp Update to Owner' : 'মালিককে WhatsApp আপডেট');
+      setT('rD-syncTitle', isEn ? 'Refresh & Sync Data' : 'ডাটা রিফ্রেশ ও সিঙ্ক');
+      setT('rD-syncDesc', isEn ? 'Fetch latest assigned parcels' : 'নতুন অর্ডার তালিকা লোড করুন');
+      setT('rD-packTitle', isEn ? 'Warehouse Packaging Hub' : 'ওয়্যারহাউস প্যাকিং হাব');
+
+      const d = RIDER_I18N[lang] || RIDER_I18N.bn;
+      const inp = document.getElementById('manualDeliveryInput');
+      if (inp) inp.placeholder = d.manualPlaceholder;
 
       calculateRiderCash();
       renderRiderTasks();

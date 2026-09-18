@@ -13,24 +13,24 @@
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --surface: #131b2e;
-      --surface-light: #1e293b;
-      --border: #283548;
+      --bg: #0b1120;
+      --surface: #1e293b;
+      --surface-light: #283548;
+      --border: #334155;
       --border-subtle: #1e293b;
       --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --text-muted: #64748b;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
       
-      --primary: #9333ea;
-      --primary-light: #f3e8ff;
-      --gold: #f59e0b;
-      --emerald: #10b981;
-      --rose: #f43f5e;
-      --sky: #38bdf8;
+      --primary: #2563eb;
+      --primary-light: #1e293b;
+      --gold: #d97706;
+      --emerald: #059669;
+      --rose: #e11d48;
+      --sky: #0284c7;
       
-      --shadow-lg: 0 14px 30px -5px rgba(0, 0, 0, 0.45);
-      --shadow-glow: 0 0 25px rgba(147, 51, 234, 0.25);
+      --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.35);
+      --shadow-glow: none;
     }
 
     * {
@@ -411,7 +411,7 @@
     /* Flash Sale & Promo Manager */
     .promo-manager-box {
       background: linear-gradient(135deg, #450a0a, #7f1d1d);
-      border: 1px solid #b91c1c;
+      border: 1px solid #334155;
       border-radius: 16px;
       padding: 18px;
       display: flex;
@@ -423,8 +423,9 @@
     }
 
     .btn-flash-ctl {
-      background: #fef08a;
-      color: #78350f;
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
       border: none;
       padding: 8px 16px;
       border-radius: 12px;
@@ -950,13 +951,25 @@
 <body>
 
   <!-- ==================== 1. OWNER SECURE LOGIN MODAL ==================== -->
+    <!-- ==================== 1. OWNER SECURE LOGIN MODAL ==================== -->
   <div id="pinLockModal">
     <div class="pin-box-card">
+      
+      <!-- Modal Language Switcher -->
+      <div style="display:flex; justify-content:center; gap:8px; margin-bottom:14px;">
+        <button type="button" class="lang-pill-btn active" id="loginBtnLangBn" onclick="setAdminLanguage('bn')" style="padding:6px 14px; font-size:0.8rem;">
+          🇮🇳 বাংলা
+        </button>
+        <button type="button" class="lang-pill-btn" id="loginBtnLangEn" onclick="setAdminLanguage('en')" style="padding:6px 14px; font-size:0.8rem;">
+          🇬🇧 English
+        </button>
+      </div>
+
       <div class="pin-badge-icon">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
-      <h2 style="font-size:1.3rem; font-weight:800; color:#ffffff; letter-spacing:-0.3px;">নিশা ক্রিয়েশনস • মালিক ড্যাশবোর্ড</h2>
-      <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px; margin-bottom:16px;">
+      <h2 id="pinModalTitle" style="font-size:1.3rem; font-weight:800; color:#ffffff; letter-spacing:-0.3px;">নিশা ক্রিয়েশনস • মালিক ড্যাশবোর্ড</h2>
+      <p id="pinModalSub" style="font-size:0.8rem; color:#94a3b8; margin-top:4px; margin-bottom:16px;">
         আপনার পাসওয়ার্ড দিন (নাম বা সংখ্যা উভয়ই ব্যবহার করতে পারবেন)
       </p>
 
@@ -978,69 +991,18 @@
         </div>
 
         <button type="submit" class="btn-pin-unlock" style="width:100%; height:48px; background:linear-gradient(135deg, #059669, #10b981); border:none; color:#fff; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
-          <i class="fa-solid fa-lock-open"></i> ড্যাশবোর্ডে প্রবেশ করুন
+          <i class="fa-solid fa-lock-open"></i> <span id="btnPinUnlockText">ড্যাশবোর্ডে প্রবেশ করুন</span>
         </button>
 
-        <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
-          <button type="button" class="btn-pin-bypass" onclick="bypassPinDirect()" style="background:transparent; border:none; color:#38bdf8; font-size:0.85rem; font-weight:800; cursor:pointer; text-decoration:underline;">
+        <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
+          <button type="button" id="btnPinBypass" onclick="bypassPinDirect()" style="background:none; border:none; color:#38bdf8; font-size:0.85rem; font-weight:800; cursor:pointer; text-decoration:underline;">
             <i class="fa-solid fa-bolt"></i> কোনো পাসওয়ার্ড ছাড়াই সরাসরি প্রবেশ করুন
           </button>
-
-          <button type="button" onclick="resetPasswordToDefault()" style="background:transparent; border:none; color:#64748b; font-size:0.75rem; cursor:pointer; text-decoration:underline;">
+          <button type="button" id="btnPinReset" onclick="resetPinToDefaultFromModal()" style="background:none; border:none; color:#94a3b8; font-size:0.75rem; cursor:pointer; text-decoration:underline;">
             <i class="fa-solid fa-rotate-left"></i> পাসওয়ার্ড ভুলে গেছেন? ডিফল্ট '1234' এ রিসেট করুন
           </button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- ==================== PASSWORD & SECURITY SETTINGS MODAL ==================== -->
-  <div id="passwordSettingsModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
-    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #818cf8; box-shadow:var(--shadow-lg);">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:14px;">
-        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
-          <i class="fa-solid fa-key" style="color:#818cf8;"></i> পাসওয়ার্ড ও নিরাপত্তা সেটিংস
-        </h3>
-        <button type="button" onclick="closePasswordSettingsModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div style="font-size:0.82rem; line-height:1.5; color:#cbd5e1;">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px 12px; border-radius:10px; border:1px solid #1f2937; margin-bottom:10px;">
-          <span>বর্তমান সক্রিয় পাসওয়ার্ড:</span>
-          <strong id="curPassDisplay" style="color:#38bdf8; font-size:1.05rem; font-family:monospace; letter-spacing:1px;">1234</strong>
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px 12px; border-radius:10px; border:1px solid #1f2937; margin-bottom:14px;">
-          <span>লক সিস্টেম স্ট্যাটাস:</span>
-          <span id="lockStatusBadge" style="font-weight:800; font-size:0.75rem; padding:3px 8px; border-radius:8px; background:#065f46; color:#a7f3d0;">সক্রিয় (Active)</span>
-        </div>
-
-        <div style="margin-bottom:12px;">
-          <label style="display:block; font-size:0.78rem; font-weight:700; color:#94a3b8; margin-bottom:6px;">
-            নতুন পাসওয়ার্ড / নাম / পিন লিখুন:
-          </label>
-          <input type="text" id="newOwnerPassInp" class="form-ctrl" placeholder="যেমন: saheb, nisha, 1234, amta99" style="width:100%; font-size:0.95rem; font-weight:700; background:#090d16; border:1.5px solid #4f46e5; border-radius:10px; color:#fff; padding:10px 12px;">
-          <small style="color:#94a3b8; font-size:0.7rem; display:block; margin-top:4px;">
-            * নিজের নাম, দোকানের নাম, কোনো শব্দ বা সংখ্যা যেকোনো কিছু লিখতে পারেন।
-          </small>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
-          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff; justify-content:center; height:42px; font-weight:800;" onclick="saveNewOwnerPassword()">
-            <i class="fa-solid fa-floppy-disk"></i> নতুন পাসওয়ার্ড সেভ করুন
-          </button>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-            <button type="button" class="btn-fast-action" style="background:#334155; color:#cbd5e1; justify-content:center;" onclick="togglePinLockOption()">
-              <i class="fa-solid fa-power-off"></i> লক অন / অফ
-            </button>
-            <button type="button" class="btn-fast-action" style="background:#1e293b; color:#f87171; justify-content:center;" onclick="resetPasswordToDefault()">
-              <i class="fa-solid fa-rotate-left"></i> রিসেট (1234)
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1054,12 +1016,15 @@
             Nisha Creations • Owner Hub
             <i class="fa-solid fa-shield-halved" style="color:var(--emerald); font-size:0.85rem;" title="মালিক মোড সক্রিয়"></i>
           </h1>
-          <p>👑 সম্পূর্ণ গোপনীয় ও সুরক্ষিত ড্যাশবোর্ড • আমতা</p>
+          <p id="admHeaderSub">👑 সম্পূর্ণ গোপনীয় ও সুরক্ষিত ড্যাশবোর্ড • আমতা</p>
         </div>
       </div>
 
-      <!-- 3-Lines Hamburger Menu Trigger -->
-      <div class="header-quick-links">
+      <!-- Quick Language Toggle & 3-Lines Hamburger Menu -->
+      <div class="header-quick-links" style="display:flex; align-items:center; gap:8px;">
+        <button type="button" onclick="toggleAdminLanguageQuick()" style="padding:6px 12px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); border-radius:10px; color:#fff; font-weight:800; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-language"></i> <span id="quickLangDisplay">English</span>
+        </button>
         <button type="button" class="btn-menu-trigger" onclick="toggleAdminNavDrawer()" aria-label="Menu">
           <i class="fa-solid fa-bars"></i>
         </button>
@@ -1085,9 +1050,7 @@
 
       <!-- 1. Language Switcher Block -->
       <div class="drawer-section">
-        <div class="drawer-sec-label">
-          <i class="fa-solid fa-globe"></i> ভাষা নির্বাচন / Select Language
-        </div>
+        <div class="drawer-sec-label" id="admD-langLbl"><i class="fa-solid fa-globe"></i> ভাষা নির্বাচন / Select Language</div>
         <div class="lang-switch-pills">
           <button type="button" class="lang-pill-btn active" id="admBtnLangBn" onclick="setAdminLanguage('bn')">
             🇮🇳 বাংলা
@@ -1100,15 +1063,13 @@
 
       <!-- 2. Portal Links Block -->
       <div class="drawer-section">
-        <div class="drawer-sec-label">
-          <i class="fa-solid fa-compass"></i> পোর্টাল লিঙ্কসমূহ / Navigation
-        </div>
+        <div class="drawer-sec-label" id="admD-navLbl"><i class="fa-solid fa-compass"></i> পোর্টাল লিঙ্কসমূহ / Navigation</div>
         <div class="drawer-links-list">
           <a href="packaging.html" target="_blank" class="drawer-link-item">
             <div class="drawer-link-icon" style="background:#4f46e5; color:#fff;"><i class="fa-solid fa-boxes-packing"></i></div>
             <div>
-              <div class="drawer-link-title">ওয়্যারহাউস ও প্যাকিং হাব</div>
-              <div class="drawer-link-desc">প্যাকিং, বারকোড ও ইনবাউন্ড স্টক</div>
+              <div class="drawer-link-title" id="admD-whTitle">ওয়্যারহাউস ও প্যাকিং হাব</div>
+              <div class="drawer-link-desc" id="admD-whDesc">প্যাকিং, বারকোড ও ইনবাউন্ড স্টক</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
           </a>
@@ -1116,8 +1077,8 @@
           <a href="delivery.html" target="_blank" class="drawer-link-item">
             <div class="drawer-link-icon" style="background:#0284c7; color:#fff;"><i class="fa-solid fa-motorcycle"></i></div>
             <div>
-              <div class="drawer-link-title">ডেলিভারি রাইডার পোর্টাল</div>
-              <div class="drawer-link-desc">ক্যাশ কালেকশন ও ডেলিভারি ট্র্যাকিং</div>
+              <div class="drawer-link-title" id="admD-delTitle">ডেলিভারি রাইডার পোর্টাল</div>
+              <div class="drawer-link-desc" id="admD-delDesc">ক্যাশ কালেকশন ও ডেলিভারি ট্র্যাকিং</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
           </a>
@@ -1125,8 +1086,8 @@
           <a href="index.html" target="_blank" class="drawer-link-item">
             <div class="drawer-link-icon" style="background:#f59e0b; color:#0f172a;"><i class="fa-solid fa-store"></i></div>
             <div>
-              <div class="drawer-link-title">কাস্টমার অনলাইন শপ</div>
-              <div class="drawer-link-desc">শাড়ি ও গহনা বুকিং পেজ</div>
+              <div class="drawer-link-title" id="admD-shopTitle">কাস্টমার অনলাইন শপ</div>
+              <div class="drawer-link-desc" id="admD-shopDesc">শাড়ি ও গহনা বুকিং পেজ</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
           </a>
@@ -1135,23 +1096,21 @@
 
       <!-- 3. Security & Admin Actions -->
       <div class="drawer-section">
-        <div class="drawer-sec-label">
-          <i class="fa-solid fa-shield-halved"></i> নিরাপত্তা ও সেটিংস / Settings
-        </div>
+        <div class="drawer-sec-label" id="admD-secLbl"><i class="fa-solid fa-shield-halved"></i> নিরাপত্তা ও সেটিংস / Settings</div>
         <div class="drawer-links-list">
           <div class="drawer-link-item" style="cursor:pointer;" onclick="closeAdminNavDrawer(); openPasswordSettingsModal();">
             <div class="drawer-link-icon" style="background:#334155; color:#38bdf8;"><i class="fa-solid fa-key"></i></div>
             <div>
-              <div class="drawer-link-title">পাসওয়ার্ড ও লক সেটিংস</div>
-              <div class="drawer-link-desc">পাসওয়ার্ড পরিবর্তন বা লক নিয়ন্ত্রণ</div>
+              <div class="drawer-link-title" id="admD-passTitle">পাসওয়ার্ড ও লক সেটিংস</div>
+              <div class="drawer-link-desc" id="admD-passDesc">পাসওয়ার্ড পরিবর্তন বা লক নিয়ন্ত্রণ</div>
             </div>
           </div>
 
           <div class="drawer-link-item" style="cursor:pointer;" onclick="closeAdminNavDrawer(); lockDashboard();">
             <div class="drawer-link-icon" style="background:#be123c; color:#fff;"><i class="fa-solid fa-lock"></i></div>
             <div>
-              <div class="drawer-link-title">ড্যাশবোর্ড লক করুন</div>
-              <div class="drawer-link-desc">এখনই লগআউট ও পিন লক</div>
+              <div class="drawer-link-title" id="admD-lockTitle">ড্যাশবোর্ড লক করুন</div>
+              <div class="drawer-link-desc" id="admD-lockDesc">এখনই লগআউট ও পিন লক</div>
             </div>
           </div>
         </div>
@@ -1166,47 +1125,47 @@
 
   <div class="container">
 
-    <!-- ==================== 3. CONFIDENTIAL FINANCE & ACCOUNTS ==================== -->
+        <!-- ==================== 3. CONFIDENTIAL FINANCE & ACCOUNTS ==================== -->
     <section class="confidential-finance-banner">
       <div class="confidential-header">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span class="conf-tag"><i class="fa-solid fa-eye-slash"></i> শুধুমাত্র মালিকের জন্য (গোপনীয়)</span>
-          <span style="font-size:0.75rem; color:#e2e8f0; font-weight:600;">• ডেলিভারি পার্টনার এই অংশটি দেখতে পায় না</span>
+          <span class="conf-tag" id="admConfTag"><i class="fa-solid fa-eye-slash"></i> শুধুমাত্র মালিকের জন্য (গোপনীয়)</span>
+          <span id="admConfSub" style="font-size:0.75rem; color:#e2e8f0; font-weight:600;">• ডেলিভারি পার্টনার এই অংশটি দেখতে পায় না</span>
         </div>
 
         <div style="display:flex; gap:8px;">
           <button type="button" class="btn-hdr-pill" onclick="addOwnerDemoOrder()" style="font-size:0.72rem;">
-            <i class="fa-solid fa-vial"></i> ডেমো টেস্ট
+            <i class="fa-solid fa-vial"></i> <span id="admDemoBtn">ডেমো টেস্ট</span>
           </button>
           <button type="button" class="btn-hdr-pill" onclick="exportOwnerBackup()" style="font-size:0.72rem;">
-            <i class="fa-solid fa-download"></i> ব্যাকআপ
+            <i class="fa-solid fa-download"></i> <span id="admBackupBtn">ব্যাকআপ</span>
           </button>
         </div>
       </div>
 
       <div class="finance-metrics-grid">
         <div class="f-metric-card">
-          <div class="f-metric-lbl"><i class="fa-solid fa-coins" style="color:#f59e0b;"></i> মোট বিক্রি (Revenue)</div>
+          <div class="f-metric-lbl" id="admRevTitle"><i class="fa-solid fa-coins" style="color:#f59e0b;"></i> মোট বিক্রি (Revenue)</div>
           <div class="f-metric-val" id="statTotalRevenue" style="color:#10b981;">₹0</div>
-          <div class="f-metric-sub">সফল ও রানিং অর্ডারের মূল্য</div>
+          <div class="f-metric-sub" id="admRevSub">সফল ও রানিং অর্ডারের মূল্য</div>
         </div>
 
         <div class="f-metric-card">
-          <div class="f-metric-lbl"><i class="fa-solid fa-money-bill-wave" style="color:#10b981;"></i> ক্যাশ কালেকশন (COD)</div>
+          <div class="f-metric-lbl" id="admCodTitle"><i class="fa-solid fa-money-bill-wave" style="color:#10b981;"></i> ক্যাশ কালেকশন (COD)</div>
           <div class="f-metric-val" id="statCodTotal">₹0</div>
-          <div class="f-metric-sub">ডেলিভারি বয়ের থেকে প্রাপ্য</div>
+          <div class="f-metric-sub" id="admCodSub">ডেলিভারি বয়ের থেকে প্রাপ্য</div>
         </div>
 
         <div class="f-metric-card">
-          <div class="f-metric-lbl"><i class="fa-solid fa-mobile-screen" style="color:#38bdf8;"></i> অনলাইন পেমেন্ট (UPI)</div>
+          <div class="f-metric-lbl" id="admUpiTitle"><i class="fa-solid fa-mobile-screen" style="color:#38bdf8;"></i> অনলাইন পেমেন্ট (UPI)</div>
           <div class="f-metric-val" id="statUpiTotal">₹0</div>
-          <div class="f-metric-sub">সরাসরি ব্যাংকে জমা</div>
+          <div class="f-metric-sub" id="admUpiSub">সরাসরি ব্যাংকে জমা</div>
         </div>
 
         <div class="f-metric-card">
-          <div class="f-metric-lbl"><i class="fa-solid fa-bell" style="color:#f43f5e;"></i> নতুন পেন্ডিং অর্ডার</div>
+          <div class="f-metric-lbl" id="admPendingTitle"><i class="fa-solid fa-bell" style="color:#f43f5e;"></i> নতুন পেন্ডিং অর্ডার</div>
           <div class="f-metric-val" id="statPendingOrders" style="color:#f43f5e;">0</div>
-          <div class="f-metric-sub">প্যাকিংয়ের অপেক্ষা</div>
+          <div class="f-metric-sub" id="admPendingSub">প্যাকিংয়ের অপেক্ষা</div>
         </div>
       </div>
     </section>
@@ -1214,20 +1173,20 @@
     <!-- Quick Delivery Hub Share Strip -->
     <div class="deliv-share-card">
       <div>
-        <div style="font-size:0.95rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <div id="admDelShareTitle" style="font-size:0.95rem; font-weight:800; display:flex; align-items:center; gap:8px;">
           <i class="fa-solid fa-motorcycle" style="font-size:1.3rem;"></i>
           ডেলিভারি পার্টনার লিঙ্ক (Delivery Hub)
         </div>
-        <div style="font-size:0.76rem; opacity:0.9; margin-top:2px;">
+        <div id="admDelShareDesc" style="font-size:0.76rem; opacity:0.9; margin-top:2px;">
           এই পেজের লিংকটি আপনার ডেলিভারি বয়কে শেয়ার করে দিন। সে শুধু ঠিকানা ও ক্যাশ দেখতে পাবে, আপনার বিক্রি নয়।
         </div>
       </div>
       <div style="display:flex; gap:8px;">
         <button type="button" onclick="copyDeliveryUrl()" class="btn-hdr-pill" style="background:#ffffff; color:#0369a1; font-weight:800;">
-          <i class="fa-regular fa-copy"></i> লিংক কপি করুন
+          <i class="fa-regular fa-copy"></i> <span id="admCopyBtn">লিংক কপি করুন</span>
         </button>
         <button type="button" onclick="shareDeliveryUrlWhatsApp()" class="btn-hdr-pill" style="background:#25d366; color:#ffffff; font-weight:800; border:none;">
-          <i class="fa-brands fa-whatsapp"></i> WhatsApp এ পাঠান
+          <i class="fa-brands fa-whatsapp"></i> <span id="admWaBtn">WhatsApp এ পাঠান</span>
         </button>
       </div>
     </div>
@@ -1235,26 +1194,111 @@
     <!-- Flash Sale & Urgency Offer Controller -->
     <div class="promo-manager-box">
       <div>
-        <div style="font-size:0.95rem; font-weight:800; color:#fef08a; display:flex; align-items:center; gap:8px;">
+        <div id="admFlashTitle" style="font-size:0.95rem; font-weight:800; color:#fef08a; display:flex; align-items:center; gap:8px;">
           <i class="fa-solid fa-fire-flame-curved"></i>
           ওয়েবসাইট ফ্ল্যাশ সেল ও অফার টাইমার কন্ট্রোল
         </div>
-        <div style="font-size:0.76rem; color:#fee2e2; margin-top:2px;">
+        <div id="admFlashDesc" style="font-size:0.76rem; color:#fee2e2; margin-top:2px;">
           বর্তমানে কাস্টমার হোমপেজে ২ ঘণ্টার কাউন্টডাউন টাইমার চলছে। আপনি যখন খুশি রিস্টার্ট করতে পারবেন।
         </div>
       </div>
       <div style="display:flex; gap:8px;">
         <button type="button" class="btn-flash-ctl" onclick="restartFlashSale2Hours()">
-          <i class="fa-solid fa-rotate-right"></i> ২ ঘণ্টার টাইমার রিস্টার্ট করুন
+          <i class="fa-solid fa-rotate-right"></i> <span id="admRestartBtn">২ ঘণ্টার টাইমার রিস্টার্ট করুন</span>
         </button>
-        <button type="button" class="btn-flash-ctl" onclick="promptChangePin()" style="background:#ffffff; color:#0f172a;">
-          <i class="fa-solid fa-key"></i> পিন বদলান
+        <button type="button" class="btn-flash-ctl" onclick="openPasswordSettingsModal()" style="background:#334155; color:#ffffff;">
+          <i class="fa-solid fa-key"></i> <span id="admChangePinBtn">পাসওয়ার্ড সেটিংস</span>
         </button>
-        <button type="button" class="btn-flash-ctl" onclick="togglePinLockOption()" style="background:#38bdf8; color:#0f172a;">
-          <i class="fa-solid fa-shield"></i> পিন লক অন/অফ
+        <button type="button" class="btn-flash-ctl" onclick="lockDashboard()" style="background:#be123c; color:#ffffff;">
+          <i class="fa-solid fa-lock"></i> <span id="admLockNowBtn">ড্যাশবোর্ড লক করুন</span>
         </button>
       </div>
     </div>
+
+    <!-- ==================== 3.1 CUSTOM OFFER BANNER STUDIO ==================== -->
+    <div class="owner-card" style="margin-bottom:20px; border:1.5px solid #d97706; background:#1e293b;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #334155; padding-bottom:10px;">
+        <div>
+          <h3 id="admBannerStudioTitle" style="font-size:1.05rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-bullhorn" style="color:#f59e0b;"></i>
+            কাস্টম অফার ব্যানার স্টুডিও (Custom Offer Banner Studio)
+          </h3>
+          <p id="admBannerStudioSub" style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">
+            আপনার নিজের তৈরি করা ব্যানার আপলোড করুন এবং হোমপেজে কাস্টমারদের আকর্ষণীয় অফার প্রদর্শন করুন।
+          </p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:0.8rem; font-weight:800; color:#38bdf8; background:#0f172a; padding:6px 12px; border-radius:10px; border:1px solid #334155;">
+            <input type="checkbox" id="customBannerActiveToggle" onchange="toggleCustomBannerActive(this.checked)" style="width:16px; height:16px; cursor:pointer;">
+            <span id="admBannerToggleLbl">হোমপেজে ব্যানার চালু রাখুন</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Banner Dimensions Guide Box -->
+      <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:12px; margin-bottom:14px; font-size:0.78rem; line-height:1.5;">
+        <div style="color:#38bdf8; font-weight:800; margin-bottom:4px; font-size:0.82rem;">
+          <i class="fa-solid fa-circle-info"></i> <span id="admBannerGuideTitle">ব্যানারের সাইজ ও অনুপাত নির্দেশিকা (Banner Size Guide):</span>
+        </div>
+        <div id="admBannerGuideText" style="color:#cbd5e1;">
+          • <strong>২:৪ অনুপাত (উল্লম্ব ব্যানার / Vertical 2:4):</strong> ৬০০ × ১২০০ পিক্সেল (বা ৮০০ × ১৬০০ পিক্সেল)<br>
+          • <strong>২:১ অনুপাত (ল্যান্ডস্কেপ ব্যানার / Horizontal 2:1):</strong> ১২০০ × ৬০০ পিক্সেল (বা ৮০০ × ৪০০ পিক্সেল)<br>
+          • <strong>১:১ অনুপাত (স্কয়ার ব্যানার / Square 1:1):</strong> ৮০০ × ৮০০ পিক্সেল<br>
+          <span style="color:#34d399; font-weight:700;">✓ আপনি যেকোনো সাইজ (২:৪ বা ২:১) আপলোড করলেই তা স্বয়ংক্রিয়ভাবে মোবাইলে নিখুঁতভাবে ফিট হয়ে প্রদর্শিত হবে।</span>
+        </div>
+      </div>
+
+      <!-- Banner Inputs -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;" class="form-grid-2">
+        <div>
+          <label class="form-label" id="admLblBannerImg">১. ব্যানার ফটো আপলোড করুন *</label>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label class="btn-hdr-pill" style="background:#2563eb; color:#fff; cursor:pointer; padding:10px 14px; font-size:0.82rem; font-weight:800; justify-content:center; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-image"></i> <span id="admBtnUploadBanner">গ্যালারি থেকে ব্যানার ফটো বাছুন</span>
+              <input type="file" id="customBannerFileInput" accept="image/*" style="display:none;" onchange="handleCustomBannerFileUpload(event)">
+            </label>
+            <input type="text" id="customBannerUrlInp" class="form-ctrl" placeholder="অথবা ছবির অনলাইন লিংক দিন..." oninput="updateCustomBannerPreview()" style="font-size:0.78rem;">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" id="admLblBannerTitle">২. অফার শিরোনাম ও ব্যাজ</label>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <input type="text" id="customBannerBadgeInp" class="form-ctrl" placeholder="অফার ব্যাজ (যেমন: পুজো ধামাকা / LIMITED OFFER)" oninput="updateCustomBannerPreview()" style="font-size:0.78rem;">
+            <input type="text" id="customBannerTitleInp" class="form-ctrl" placeholder="অফার টাইটেল (যেমন: ফ্ল্যাট ৫০% ছাড় + ফ্রি ডেলিভারি)" oninput="updateCustomBannerPreview()" style="font-size:0.78rem;">
+            <input type="text" id="customBannerSubInp" class="form-ctrl" placeholder="ছোট বর্ণনা (যেমন: সকল সিল্ক ও জামদানি শাড়িতে বিশেষ উপহার)" oninput="updateCustomBannerPreview()" style="font-size:0.78rem;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Choice -->
+      <div style="margin-bottom:14px;">
+        <label class="form-label" id="admLblBannerAction">৩. ব্যানারে ক্লিক করলে কাস্টমার কোথায় যাবে?</label>
+        <select id="customBannerActionSel" class="form-ctrl" style="font-size:0.82rem;">
+          <option value="scroll">👗 সরাসরি শাড়ি কালেকশনে নিয়ে যান (Scroll to Sarees)</option>
+          <option value="whatsapp">💬 সরাসরি WhatsApp এ অফার বুকিং (Open WhatsApp Chat)</option>
+        </select>
+      </div>
+
+      <!-- Live Preview Area -->
+      <div style="margin-bottom:14px;">
+        <label class="form-label" style="color:#f59e0b;" id="admLblBannerPrev">লাইভ প্রিভিউ (কাস্টমার হোমপেজে যেমন দেখাবে):</label>
+        <div id="adminBannerLivePreviewBox" style="border:2px dashed #475569; border-radius:16px; overflow:hidden; min-height:120px; background:#090d16; display:flex; align-items:center; justify-content:center; position:relative; text-align:center; padding:10px;">
+          <span style="color:#64748b; font-size:0.8rem;" id="admBannerEmptyPrevTxt">এখনো কোনো ব্যানার আপলোড করা হয়নি</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button type="button" class="btn-fast-action" style="background:#059669; color:#fff;" onclick="saveCustomBanner()">
+          <i class="fa-solid fa-floppy-disk"></i> <span id="admBtnSaveBanner">ব্যানার সেভ করুন ও লাইভ করুন</span>
+        </button>
+        <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff;" onclick="removeCustomBanner()">
+          <i class="fa-solid fa-trash-can"></i> <span id="admBtnDeleteBanner">ব্যানার মুছে দিন</span>
+        </button>
+      </div>
+    </div>
+
 
     <!-- ==================== 4. OWNER NAVIGATION TABS ==================== -->
     <div class="admin-tabs">
@@ -1299,14 +1343,14 @@
       <div class="owner-card" style="margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
           <div>
-            <h3 style="font-size:1.1rem; font-weight:800; color:#ffffff;"><i class="fa-solid fa-warehouse" style="color:#818cf8;"></i> নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস ও ডিসপ্যাচ হাব</h3>
-            <p style="font-size:0.75rem; color:var(--text-sub);">আমতা সেন্ট্রাল ফুলফিলমেন্ট সেন্টার • রুট ট্র্যাকিং ও ইনভেন্টরি বিন কন্ট্রোল</p>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#ffffff;" id="whMainTitle"><i class="fa-solid fa-warehouse" style="color:#818cf8;"></i> নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস ও ডিসপ্যাচ হাব</h3>
+            <p style="font-size:0.75rem; color:var(--text-sub);" id="whMainSub">আমতা সেন্ট্রাল ফুলফিলমেন্ট সেন্টার • রুট ট্র্যাকিং ও ইনভেন্টরি বিন কন্ট্রোল</p>
           </div>
           <div style="display:flex; gap:8px;">
-            <a href="packaging.html" target="_blank" class="btn-fast-action" style="background:#4338ca; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
+            <a href="packaging.html" target="_blank" class="btn-fast-action" id="whOpenPackBtn" style="background:#4338ca; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
               <i class="fa-solid fa-boxes-packing"></i> প্যাকিং স্টেশন খুলুন
             </a>
-            <a href="delivery.html" target="_blank" class="btn-fast-action" style="background:#0369a1; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
+            <a href="delivery.html" target="_blank" class="btn-fast-action" id="whOpenRiderBtn" style="background:#0369a1; color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;">
               <i class="fa-solid fa-motorcycle"></i> রাইডার হাব খুলুন
             </a>
           </div>
@@ -1316,41 +1360,41 @@
         <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; text-align:center;">
           <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:1.3rem; font-weight:800; color:#f59e0b;" id="whCountPlaced">0</div>
-            <div style="font-size:0.68rem; color:var(--text-sub);">⏳ পিকিং বাকি</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);" id="whCountPlacedLbl">⏳ পিকিং বাকি</div>
           </div>
           <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:1.3rem; font-weight:800; color:#818cf8;" id="whCountPacked">0</div>
-            <div style="font-size:0.68rem; color:var(--text-sub);">📦 প্যাকড ও সিল</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);" id="whCountPackedLbl">📦 প্যাকড ও সিল</div>
           </div>
           <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:1.3rem; font-weight:800; color:#38bdf8;" id="whCountOut">0</div>
-            <div style="font-size:0.68rem; color:var(--text-sub);">🚚 পথে আছে</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);" id="whCountOutLbl">🚚 পথে আছে</div>
           </div>
           <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:1.3rem; font-weight:800; color:#10b981;" id="whCountDelivered">0</div>
-            <div style="font-size:0.68rem; color:var(--text-sub);">✅ ডেলিভার্ড</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);" id="whCountDeliveredLbl">✅ ডেলিভার্ড</div>
           </div>
           <div style="background:#090d16; padding:10px 4px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:1.3rem; font-weight:800; color:#f87171;" id="whCountReturned">0</div>
-            <div style="font-size:0.68rem; color:var(--text-sub);">🔄 রিটার্ন/RTO</div>
+            <div style="font-size:0.68rem; color:var(--text-sub);" id="whCountReturnedLbl">🔄 রিটার্ন/RTO</div>
           </div>
         </div>
       </div>
 
       <!-- Return & RTO Quality Check Station -->
       <div class="owner-card" style="margin-bottom:18px; border:1.5px solid #4f46e5;">
-        <h4 style="font-size:0.95rem; font-weight:800; color:#818cf8; margin-bottom:6px;">
+        <h4 style="font-size:0.95rem; font-weight:800; color:#818cf8; margin-bottom:6px;" id="whRtoTitle">
           <i class="fa-solid fa-arrow-rotate-left"></i> রিটার্ন ও আরটিও স্টেশন (RTO Quality Inspection & Restock)
         </h4>
-        <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:10px;">
+        <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:10px;" id="whRtoDesc">
           ডেলিভারি ব্যর্থ হয়ে ফিরে আসা পার্সেল স্ক্যান বা আইডি দিয়ে যাচাই করে অটোমেটিক স্টকে রিস্টোর করুন।
         </p>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <input type="text" id="whReturnOrderIdInp" class="form-ctrl" style="flex:1; min-width:180px;" placeholder="ফেরত পার্সেল আইডি (যেমন: NC-5019)">
-          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff;" onclick="processWarehouseReturn('restock')">
+          <button type="button" class="btn-fast-action" id="whRtoPassBtn" style="background:#059669; color:#fff;" onclick="processWarehouseReturn('restock')">
             <i class="fa-solid fa-check-to-slot"></i> QC Pass -> রিস্টক (+১ স্টক)
           </button>
-          <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff;" onclick="processWarehouseReturn('damaged')">
+          <button type="button" class="btn-fast-action" id="whRtoDmgBtn" style="background:#be123c; color:#fff;" onclick="processWarehouseReturn('damaged')">
             <i class="fa-solid fa-triangle-exclamation"></i> ড্যামেজড হিসেবে নথিভুক্ত
           </button>
         </div>
@@ -1360,12 +1404,12 @@
       <div class="owner-card" style="margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
           <div>
-            <h4 style="font-size:0.95rem; font-weight:800; color:#38bdf8;">
+            <h4 style="font-size:0.95rem; font-weight:800; color:#38bdf8;" id="whDispatchTitle">
               <i class="fa-solid fa-truck-ramp-box"></i> আউটবাউন্ড ডিসপ্যাচ ব্যাগ ও রাইডার হ্যান্ডওভার
             </h4>
-            <div style="font-size:0.75rem; color:var(--text-sub);">আমতা ও সংলগ্ন এলাকার ডেলিভারি রাইডারদের জন্য ব্যাচ ব্যাগ তৈরি ও বরাদ্দ।</div>
+            <div style="font-size:0.75rem; color:var(--text-sub);" id="whDispatchDesc">আমতা ও সংলগ্ন এলাকার ডেলিভারি রাইডারদের জন্য ব্যাচ ব্যাগ তৈরি ও বরাদ্দ।</div>
           </div>
-          <button type="button" class="btn-fast-action" style="background:#312e81; color:#c7d2fe; font-size:0.78rem;" onclick="adminCreateDispatchBagPrompt()">
+          <button type="button" class="btn-fast-action" id="whNewBagBtn" style="background:#312e81; color:#c7d2fe; font-size:0.78rem;" onclick="adminCreateDispatchBagPrompt()">
             <i class="fa-solid fa-plus"></i> নতুন ডিসপ্যাচ ব্যাগ
           </button>
         </div>
@@ -1376,16 +1420,16 @@
       <div class="owner-card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
           <div>
-            <h4 style="font-size:0.95rem; font-weight:800; color:#f59e0b;">
+            <h4 style="font-size:0.95rem; font-weight:800; color:#f59e0b;" id="whBinsTitle">
               <i class="fa-solid fa-table-cells-large"></i> ওয়্যারহাউস স্টোরেজ র‍্যাক ও বিন লোকেশন ইনভেন্টরি
             </h4>
-            <div style="font-size:0.75rem; color:var(--text-sub);">দোকান বা গোডাউনের তাক অনুযায়ী শাড়ি, ব্লাউজ ও গহনার সুবিন্যস্ত হিসাব।</div>
+            <div style="font-size:0.75rem; color:var(--text-sub);" id="whBinsDesc">দোকান বা গোডাউনের তাক অনুযায়ী শাড়ি, ব্লাউজ ও গহনার সুবিন্যস্ত হিসাব।</div>
           </div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn-fast-action" style="background:#4f46e5; color:#fff;" onclick="adminAddRackPrompt()">
+            <button type="button" class="btn-fast-action" id="whAddRackBtn" style="background:#4f46e5; color:#fff;" onclick="adminAddRackPrompt()">
               <i class="fa-solid fa-plus"></i> নতুন র‍্যাক যুক্ত করুন
             </button>
-            <button type="button" class="btn-fast-action" style="background:#0284c7; color:#fff;" onclick="adminOpenRackLabelsModal()">
+            <button type="button" class="btn-fast-action" id="whPrintRackLabelsBtn" style="background:#0284c7; color:#fff;" onclick="adminOpenRackLabelsModal()">
               <i class="fa-solid fa-barcode"></i> বারকোড স্টিকার প্রিন্ট
             </button>
           </div>
@@ -1405,11 +1449,11 @@
     <div id="pane-add" class="tab-pane">
       <div class="owner-card" style="max-width:720px; margin:0 auto;">
         <div style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
-          <h2 style="font-size:1.2rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+          <h2 style="font-size:1.2rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;" id="addStudioTitle">
             <i class="fa-solid fa-camera-retro" style="color:var(--amber);"></i>
             নতুন শাড়ি / পোশাক আপলোড স্টুডিও
           </h2>
-          <p style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">
+          <p style="font-size:0.78rem; color:#94a3b8; margin-top:4px;" id="addStudioDesc">
             📸 একসঙ্গে ৪-৫টি ছবি আপলোড করুন, রেট (দাম) এবং কুর্তি/শাড়ির সঠিক সাইজ নির্ধারণ করে সরাসরি লাইভ করুন।
           </p>
         </div>
@@ -1418,14 +1462,14 @@
           
           <!-- 1. Product Name -->
           <div class="form-group">
-            <label class="form-label">শাড়ির পুরো নাম (Product Title) *</label>
+            <label class="form-label" id="addLblTitle">শাড়ির পুরো নাম (Product Title) *</label>
             <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: সফট জামদানি কাতান শাড়ি (রয়েল ব্লু ও গোল্ডেন পাড়)" required>
           </div>
 
           <!-- 2. Category & Fabric -->
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">ক্যাটাগরি নির্বাচন করুন *</label>
+              <label class="form-label" id="addLblCat">ক্যাটাগরি নির্বাচন করুন *</label>
               <select id="op_cat" class="form-ctrl" onchange="handleCategoryChangeForSizes(this.value)" required>
                 <option value="saree">👗 শাড়ি (Saree)</option>
                 <option value="kurti">👚 কুর্তি ও কুর্তি সেট (Kurti)</option>
@@ -1437,7 +1481,7 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">ফেব্রিক / উপাদান (Fabric)</label>
+              <label class="form-label" id="addLblFabric">ফেব্রিক / উপাদান (Fabric)</label>
               <input type="text" id="op_fabric" class="form-ctrl" placeholder="যেমন: Pure Soft Resham Silk">
             </div>
           </div>
@@ -1445,12 +1489,12 @@
           <!-- 3. Dynamic Size Selector Chips -->
           <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-              <label class="form-label" style="margin-bottom:0; color:#f59e0b;">
+              <label class="form-label" style="margin-bottom:0; color:#f59e0b;" id="addLblSizes">
                 <i class="fa-solid fa-ruler-combined"></i> সাইজ নির্ধারণ করুন (Available Sizes) *:
               </label>
               <span id="selectedSizesCountNotice" style="font-size:0.72rem; color:#34d399; font-weight:800;">১টি সাইজ নির্বাচিত</span>
             </div>
-            <div style="font-size:0.7rem; color:#94a3b8; margin-bottom:8px;">
+            <div style="font-size:0.7rem; color:#94a3b8; margin-bottom:8px;" id="addNoticeSizes">
               যে যে সাইজগুলো আপনার স্টকে আছে সেগুলো টিক চিহ্ন (✓) দিয়ে রাখুন:
             </div>
 
@@ -1462,7 +1506,7 @@
             <!-- Custom Size Input -->
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" id="customSizeAddInput" class="form-ctrl" placeholder="অন্য কোনো সাইজ থাকলে লিখুন..." style="padding:6px 10px; font-size:0.78rem;">
-              <button type="button" class="btn-hdr-pill" onclick="addCustomSizeChip()" style="font-size:0.75rem; background:#334155;">
+              <button type="button" class="btn-hdr-pill" id="addBtnAddCustomSize" onclick="addCustomSizeChip()" style="font-size:0.75rem; background:#334155;">
                 <i class="fa-solid fa-plus"></i> যোগ করুন
               </button>
             </div>
@@ -1471,12 +1515,12 @@
           <!-- 4. Pricing & Rates (রেট / দাম) -->
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">বিক্রি মূল্য / রেট (Sell Price - ₹) *</label>
+              <label class="form-label" id="addLblSellPrice">বিক্রি মূল্য / রেট (Sell Price - ₹) *</label>
               <input type="number" id="op_price" class="form-ctrl" placeholder="428" oninput="calculateDiscountPreview()" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label">আসল দাম (MRP - ₹)</label>
+              <label class="form-label" id="addLblMrp">আসল দাম (MRP - ₹)</label>
               <input type="number" id="op_mrp" class="form-ctrl" placeholder="999" oninput="calculateDiscountPreview()">
             </div>
           </div>
@@ -1488,24 +1532,24 @@
 
           <!-- 5. Initial Stock -->
           <div class="form-group">
-            <label class="form-label">প্রারম্ভিক স্টক সংখ্যা (মোট কত পিস স্টকে আছে) *</label>
+            <label class="form-label" id="addLblStock">প্রারম্ভিক স্টক সংখ্যা (মোট কত পিস স্টকে আছে) *</label>
             <input type="number" id="op_stock" class="form-ctrl" value="30" required>
           </div>
 
           <!-- 6. 5-Photo Simultaneous Gallery Upload (একসঙ্গে ৪ থেকে ৫টি ছবি) -->
           <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-              <label class="form-label" style="margin-bottom:0; color:#38bdf8;">
+              <label class="form-label" style="margin-bottom:0; color:#38bdf8;" id="addLblPhotos">
                 <i class="fa-solid fa-images"></i> শাড়ির ৪-৫টি ফটো একসাথে আপলোড করুন *:
               </label>
               <span id="uploadedPhotosCountBadge" style="font-size:0.72rem; color:#cbd5e1; font-weight:800;">০/৫টি ছবি যোগ হয়েছে</span>
             </div>
-            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:10px;">
+            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:10px;" id="addNoticePhotos">
               ফোনের গ্যালারি থেকে শাড়ির কভার, আঁচল, পাড় এবং ব্লাউজের ছবি একসাথে সিলেক্ট করুন।
             </p>
 
             <label class="btn-hdr-pill" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; border:none; padding:10px 16px; font-size:0.84rem; display:inline-flex; width:100%; justify-content:center; margin-bottom:12px;">
-              <i class="fa-solid fa-camera"></i> গ্যালারি থেকে ৪-৫টি ছবি একসাথে বাছুন (Choose 4-5 Photos)
+              <i class="fa-solid fa-camera"></i> <span id="addBtnChoosePhotos">গ্যালারি থেকে ৪-৫টি ছবি একসাথে বাছুন (Choose 4-5 Photos)</span>
               <input type="file" id="op_multi_files" accept="image/*" multiple style="display:none;" onchange="handleMultipleAdminPhotos(event)">
             </label>
 
@@ -1541,12 +1585,12 @@
 
           <!-- 7. Description -->
           <div class="form-group">
-            <label class="form-label">শাড়ির আকর্ষণীয় বিবরণ (Description)</label>
+            <label class="form-label" id="addLblDesc">শাড়ির আকর্ষণীয় বিবরণ (Description)</label>
             <textarea id="op_desc" class="form-ctrl" rows="3" placeholder="আসল কোয়ালিটি, সফট সুতো এবং প্রিমিয়াম ফিনিশিং..."></textarea>
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-submit-owner" style="font-size:1rem; padding:15px;">
+          <button type="submit" class="btn-submit-owner" id="addBtnSubmit" style="font-size:1rem; padding:15px;">
             <i class="fa-solid fa-cloud-arrow-up"></i>
             শাড়িটি সফলভাবে ওয়েবসাইটে লাইভ করুন 🚀
           </button>
@@ -1585,7 +1629,7 @@
       const modal = document.getElementById('pinLockModal');
       if (modal) modal.style.display = 'none';
       sessionStorage.setItem('nc_owner_unlocked', 'true');
-      localStorage.setItem('nc_owner_unlocked_persist', 'true');
+      
       loadAllOwnerData();
       handleCategoryChangeForSizes('saree');
     }
@@ -1685,7 +1729,7 @@
 
     function lockDashboard() {
       sessionStorage.removeItem('nc_owner_unlocked');
-      localStorage.removeItem('nc_owner_unlocked_persist');
+      
       const inp = document.getElementById('ownerPinInput');
       if (inp) inp.value = '';
       const modal = document.getElementById('pinLockModal');
@@ -2058,30 +2102,473 @@
 
     let currentAdminLang = localStorage.getItem('nc_hub_lang') || 'bn';
 
+    const ADMIN_I18N = {
+      bn: {
+        quickLangBtn: "English",
+        loginTitle: "নিশা ক্রিয়েশনস • মালিক ড্যাশবোর্ড",
+        loginSub: "আপনার পাসওয়ার্ড দিন (নাম বা সংখ্যা উভয়ই ব্যবহার করতে পারবেন)",
+        loginPlaceholder: "পাসওয়ার্ড বা নাম লিখুন (ডিফল্ট: 1234)",
+        loginBtn: "ড্যাশবোর্ডে প্রবেশ করুন",
+        loginBypass: "⚡ কোনো পাসওয়ার্ড ছাড়াই সরাসরি প্রবেশ করুন",
+        loginReset: "🔄 পাসওয়ার্ড ভুলে গেছেন? ডিফল্ট '1234' এ রিসেট করুন",
+        loginErr: "❌ ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন (ডিফল্ট: 1234) অথবা সরাসরি প্রবেশ করুন।",
+        headerTitle: "Nisha Creations • Owner Hub",
+        headerSub: "👑 সম্পূর্ণ গোপনীয় ও সুরক্ষিত ড্যাশবোর্ড • আমতা",
+        drawerTitle: "নিশা ক্রিয়েশনস",
+        drawerSub: "মালিক কন্ট্রোল মেনু ও ভাষা",
+        drawerLangLbl: "ভাষা নির্বাচন / Select Language",
+        drawerNavLbl: "পোর্টাল লিঙ্কসমূহ / Navigation",
+        drawerSecLbl: "নিরাপত্তা ও সেটিংস / Settings",
+        drawerWhTitle: "ওয়্যারহাউস ও প্যাকিং হাব",
+        drawerWhDesc: "প্যাকিং, বারকোড ও ইনবাউন্ড স্টক",
+        drawerDelTitle: "ডেলিভারি রাইডার পোর্টাল",
+        drawerDelDesc: "ক্যাশ কালেকশন ও ডেলিভারি ট্র্যাকিং",
+        drawerShopTitle: "কাস্টমার অনলাইন শপ",
+        drawerShopDesc: "শাড়ি ও গহনা বুকিং পেজ",
+        drawerPassTitle: "পাসওয়ার্ড ও লক সেটিংস",
+        drawerPassDesc: "পাসওয়ার্ড পরিবর্তন বা লক নিয়ন্ত্রণ",
+        drawerLockTitle: "ড্যাশবোর্ড লক করুন",
+        drawerLockDesc: "এখনই লগআউট ও পিন লক",
+        confTag: "শুধুমাত্র মালিকের জন্য (গোপনীয়)",
+        confSub: "• ডেলিভারি পার্টনার এই অংশটি দেখতে পায় না",
+        demoBtn: "ডেমো টেস্ট",
+        backupBtn: "ব্যাকআপ",
+        revTitle: "মোট বিক্রি (Revenue)",
+        revSub: "সফল ও রানিং অর্ডারের মূল্য",
+        codTitle: "ক্যাশ কালেকশন (COD)",
+        codSub: "ডেলিভারি বয়ের থেকে প্রাপ্য",
+        upiTitle: "অনলাইন পেমেন্ট (UPI)",
+        upiSub: "সরাসরি ব্যাংকে জমা",
+        pendingTitle: "নতুন পেন্ডিং অর্ডার",
+        pendingSub: "প্যাকিংয়ের অপেক্ষা",
+        delShareTitle: "ডেলিভারি পার্টনার লিঙ্ক (Delivery Hub)",
+        delShareDesc: "এই পেজের লিংকটি আপনার ডেলিভারি বয়কে শেয়ার করে দিন। সে শুধু ঠিকানা ও ক্যাশ দেখতে পাবে, আপনার বিক্রি নয়।",
+        copyBtn: "লিংক কপি করুন",
+        waBtn: "WhatsApp এ পাঠান",
+        flashTitle: "ওয়েবসাইট ফ্ল্যাশ সেল ও অফার টাইমার কন্ট্রোল",
+        flashDesc: "বর্তমানে কাস্টমার হোমপেজে ২ ঘণ্টার কাউন্টডাউন টাইমার চলছে। আপনি যখন খুশি রিস্টার্ট করতে পারবেন।",
+        restartBtn: "২ ঘণ্টার টাইমার রিস্টার্ট করুন",
+        changePinBtn: "পাসওয়ার্ড সেটিংস",
+        lockNowBtn: "ড্যাশবোর্ড লক করুন",
+        // Banner Studio
+        bannerStudioTitle: "কাস্টম অফার ব্যানার স্টুডিও (Custom Offer Banner Studio)",
+        bannerStudioSub: "আপনার নিজের তৈরি করা ব্যানার আপলোড করুন এবং হোমপেজে কাস্টমারদের আকর্ষণীয় অফার প্রদর্শন করুন।",
+        bannerToggleLbl: "হোমপেজে ব্যানার চালু রাখুন",
+        bannerGuideTitle: "ব্যানারের সাইজ ও অনুপাত নির্দেশিকা (Banner Size Guide):",
+        bannerGuideText: "• <strong>২:৪ অনুপাত (উল্লম্ব ব্যানার / Vertical 2:4):</strong> ৬০০ × ১২০০ পিক্সেল (বা ৮০০ × ১৬০০ পিক্সেল)<br>• <strong>২:১ অনুপাত (ল্যান্ডস্কেপ ব্যানার / Horizontal 2:1):</strong> ১২০০ × ৬০০ পিক্সেল (বা ৮০০ × ৪০০ পিক্সেল)<br>• <strong>১:১ অনুপাত (স্কয়ার ব্যানার / Square 1:1):</strong> ৮০০ × ৮০০ পিক্সেল<br><span style='color:#34d399; font-weight:700;'>✓ আপনি যেকোনো সাইজ (২:৪ বা ২:১) আপলোড করলেই তা স্বয়ংক্রিয়ভাবে মোবাইলে নিখুঁতভাবে ফিট হয়ে প্রদর্শিত হবে।</span>",
+        lblBannerImg: "১. ব্যানার ফটো আপলোড করুন *",
+        btnUploadBanner: "গ্যালারি থেকে ব্যানার ফটো বাছুন",
+        phBannerUrl: "অথবা ছবির অনলাইন লিংক দিন...",
+        lblBannerTitle: "২. অফার শিরোনাম ও ব্যাজ",
+        phBannerBadge: "অফার ব্যাজ (যেমন: পুজো ধামাকা / LIMITED OFFER)",
+        phBannerTitle: "অফার টাইটেল (যেমন: ফ্ল্যাট ৫০% ছাড় + ফ্রি ডেলিভারি)",
+        phBannerSub: "ছোট বর্ণনা (যেমন: সকল সিল্ক ও জামদানি শাড়িতে বিশেষ উপহার)",
+        lblBannerAction: "৩. ব্যানারে ক্লিক করলে কাস্টমার কোথায় যাবে?",
+        lblBannerPrev: "লাইভ প্রিভিউ (কাস্টমার হোমপেজে যেমন দেখাবে):",
+        btnSaveBanner: "ব্যানার সেভ করুন ও লাইভ করুন",
+        btnDeleteBanner: "ব্যানার মুছে দিন",
+        // Tabs
+        tabOrders: "অর্ডার ম্যানেজমেন্ট",
+        tabWarehouse: "ওয়্যারহাউস ও ডিসপ্যাচ",
+        tabStock: "শাড়ির স্টক ও দাম",
+        tabAdd: "নতুন শাড়ি আপলোড",
+        tabReviews: "কাস্টমার রিভিউ",
+        ofAll: "📋 সমস্ত",
+        ofPlaced: "⏳ পিকিং বাকি",
+        ofPacked: "📦 প্যাকিং সম্পন্ন",
+        ofOut: "🚚 পথে আছে",
+        ofDelivered: "✅ ডেলিভারি সম্পন্ন",
+        ofRescheduled: "⚠️ রিসিডিউল",
+        ofReturned: "🔄 রিটার্ন",
+        noOrdersTitle: "কোনো অর্ডার নেই",
+        noOrdersDesc: "কাস্টমার ওয়েবসাইট থেকে অর্ডার করলে সাথে সাথে এখানে আসবে।",
+        orderDateToday: "আজ",
+        payModeUpi: "📲 অনলাইন পেইড (UPI)",
+        payModeCod: "💵 ক্যাশ অন ডেলিভারি (COD)",
+        lblCust: "গ্রাহক:",
+        lblAddress: "ঠিকানা:",
+        lblSize: "সাইজ:",
+        lblQty: "পরিমাণ:",
+        lblColor: "রং:",
+        lblOriginalColor: "মূল রং",
+        lblPc: "টি",
+        pipelineTitle: "লাইভ ডেলিভারি ও প্যাকিং পাইপলাইন:",
+        pipelineActive: "● লাইভ ট্র্যাকিং সক্রিয়",
+        step1: "১. বুকিং প্রাপ্ত",
+        step2Packed: "২. প্যাকিং সম্পন্ন",
+        step2Packing: "২. প্যাকিং চলছে",
+        step3: "৩. ডেলিভারিতে",
+        step4: "৪. ডেলিভার্ড",
+        qrReadyTitle: "পার্সেল কিউআর কোড প্রস্তুত",
+        qrReadySub: "প্যাকেজিং টিম ক্যামেরা দিয়ে স্ক্যান করলেই 'প্যাকিং সম্পন্ন' হবে",
+        printQrBtn: "কিউআর স্টিকার প্রিন্ট",
+        openPackBtn: "প্যাকিং পোর্টালে যান",
+        ownerModeTitle: "মালিক মোড: প্রয়োজনে নিজে স্ট্যাটাস পরিবর্তন করুন",
+        btnStatusNew: "⏳ নতুন বুকিং",
+        btnStatusPacked: "📦 প্যাকিং সম্পন্ন",
+        btnStatusOut: "🚚 ডেলিভারিতে বেরিয়েছে",
+        btnStatusDelivered: "✅ ডেলিভারি সম্পন্ন",
+        btnStatusCancel: "❌ বাতিল",
+        // Warehouse Tab
+        whMainTitle: "নিশা ক্রিয়েশনস সেন্ট্রাল ওয়্যারহাউস ও ডিসপ্যাচ হাব",
+        whMainSub: "আমতা সেন্ট্রাল ফুলফিলমেন্ট সেন্টার • রুট ট্র্যাকিং ও ইনভেন্টরি বিন কন্ট্রোল",
+        whOpenPackBtn: "প্যাকিং স্টেশন খুলুন",
+        whOpenRiderBtn: "রাইডার হাব খুলুন",
+        whCountPlacedLbl: "⏳ পিকিং বাকি",
+        whCountPackedLbl: "📦 প্যাকড ও সিল",
+        whCountOutLbl: "🚚 পথে আছে",
+        whCountDeliveredLbl: "✅ ডেলিভার্ড",
+        whCountReturnedLbl: "🔄 রিটার্ন/RTO",
+        whRtoTitle: "রিটার্ন ও আরটিও স্টেশন (RTO Quality Inspection & Restock)",
+        whRtoDesc: "ডেলিভারি ব্যর্থ হয়ে ফিরে আসা পার্সেল স্ক্যান বা আইডি দিয়ে যাচাই করে অটোমেটিক স্টকে রিস্টোর করুন।",
+        whRtoInpPh: "ফেরত পার্সেল আইডি (যেমন: NC-5019)",
+        whRtoPassBtn: "QC Pass -> রিস্টক (+১ স্টক)",
+        whRtoDmgBtn: "ড্যামেজড হিসেবে নথিভুক্ত",
+        whDispatchTitle: "আউটবাউন্ড ডিসপ্যাচ ব্যাগ ও রাইডার হ্যান্ডওভার",
+        whDispatchDesc: "আমতা ও সংলগ্ন এলাকার ডেলিভারি রাইডারদের জন্য ব্যাচ ব্যাগ তৈরি ও বরাদ্দ।",
+        whNewBagBtn: "+ নতুন ডিসপ্যাচ ব্যাগ",
+        whBinsTitle: "ওয়্যারহাউস স্টোরেজ র‍্যাক ও বিন লোকেশন ইনভেন্টরি",
+        whBinsDesc: "দোকান বা গোডাউনের তাক অনুযায়ী শাড়ি, ব্লাউজ ও গহনার সুবিন্যস্ত হিসাব।",
+        whAddRackBtn: "+ নতুন র‍্যাক যুক্ত করুন",
+        whPrintRackLabelsBtn: "বারকোড স্টিকার প্রিন্ট",
+        // Stock Tab
+        stockFilterPh: "শাড়ির নাম দিয়ে ফিল্টার করুন...",
+        // Add Product Studio Tab
+        addStudioTitle: "নতুন শাড়ি / পোশাক আপলোড স্টুডিও",
+        addStudioDesc: "📸 একসঙ্গে ৪-৫টি ছবি আপলোড করুন, রেট (দাম) এবং কুর্তি/শাড়ির সঠিক সাইজ নির্ধারণ করে সরাসরি লাইভ করুন।",
+        addLblTitle: "শাড়ির পুরো নাম (Product Title) *",
+        addPhTitle: "যেমন: সফট জামদানি কাতান শাড়ি (রয়েল ব্লু ও গোল্ডেন পাড়)",
+        addLblCat: "ক্যাটাগরি নির্বাচন করুন *",
+        addLblFabric: "ফেব্রিক / উপাদান (Fabric)",
+        addPhFabric: "যেমন: Pure Soft Resham Silk",
+        addLblSizes: "সাইজ নির্ধারণ করুন (Available Sizes) *:",
+        addNoticeSizes: "যে যে সাইজগুলো আপনার স্টকে আছে সেগুলো টিক চিহ্ন (✓) দিয়ে রাখুন:",
+        addPhCustomSize: "অন্য কোনো সাইজ থাকলে লিখুন...",
+        addBtnAddCustomSize: "যোগ করুন",
+        addLblSellPrice: "বিক্রি মূল্য / রেট (Sell Price - ₹) *",
+        addLblMrp: "আসল দাম (MRP - ₹)",
+        addLblStock: "প্রারম্ভিক স্টক সংখ্যা (মোট কত পিস স্টকে আছে) *",
+        addLblPhotos: "শাড়ির ৪-৫টি ফটো একসাথে আপলোড করুন *:",
+        addNoticePhotos: "ফোনের গ্যালারি থেকে শাড়ির কভার, আঁচল, পাড় এবং ব্লাউজের ছবি একসাথে সিলেক্ট করুন।",
+        addBtnChoosePhotos: "গ্যালারি থেকে ৪-৫টি ছবি একসাথে বাছুন (Choose 4-5 Photos)",
+        addPhFallbackUrl: "অথবা সরাসরি ছবির অনলাইন লিংক দিতে পারেন...",
+        addLblDesc: "শাড়ির আকর্ষণীয় বিবরণ (Description)",
+        addPhDesc: "আসল কোয়ালিটি, সফট সুতো এবং প্রিমিয়াম ফিনিশিং...",
+        addBtnSubmit: "শাড়িটি সফলভাবে ওয়েবসাইটে লাইভ করুন 🚀"
+      },
+      en: {
+        quickLangBtn: "বাংলা",
+        loginTitle: "Nisha Creations • Owner Dashboard",
+        loginSub: "Enter your password (names or numbers accepted)",
+        loginPlaceholder: "Enter password or name (default: 1234)",
+        loginBtn: "Enter Dashboard",
+        loginBypass: "⚡ Direct Access without Password",
+        loginReset: "🔄 Forgot password? Reset to default '1234'",
+        loginErr: "❌ Incorrect password! Please enter correct password (default: 1234) or bypass directly.",
+        headerTitle: "Nisha Creations • Owner Hub",
+        headerSub: "👑 Confidential & Secure Executive Dashboard • Amta",
+        drawerTitle: "Nisha Creations",
+        drawerSub: "Owner Control Menu & Language",
+        drawerLangLbl: "SELECT LANGUAGE / ভাষা নির্বাচন",
+        drawerNavLbl: "NAVIGATION / পোর্টাল লিঙ্ক",
+        drawerSecLbl: "SECURITY & SETTINGS / সেটিংস",
+        drawerWhTitle: "Warehouse & Packing Hub",
+        drawerWhDesc: "Packing, Barcodes & Inbound Stock",
+        drawerDelTitle: "Delivery Rider Portal",
+        drawerDelDesc: "Cash Collections & Last-Mile",
+        drawerShopTitle: "Customer Online Shop",
+        drawerShopDesc: "Live Saree & Jewellery Store",
+        drawerPassTitle: "Password & Security Settings",
+        drawerPassDesc: "Change Password or Lock Controls",
+        drawerLockTitle: "Lock Dashboard Now",
+        drawerLockDesc: "Logout & Require Password",
+        confTag: "Owner Access Only (Confidential)",
+        confSub: "• Delivery partners cannot view this section",
+        demoBtn: "Demo Order",
+        backupBtn: "Backup",
+        revTitle: "Total Revenue (Sales)",
+        revSub: "Value of active & delivered orders",
+        codTitle: "Cash Collection (COD)",
+        codSub: "Receivable from delivery riders",
+        upiTitle: "Online Payments (UPI)",
+        upiSub: "Direct bank deposits",
+        pendingTitle: "Pending Orders",
+        pendingSub: "Awaiting packaging",
+        delShareTitle: "Delivery Partner Link (Delivery Hub)",
+        delShareDesc: "Share this link with your delivery rider. They will only see customer addresses and COD cash, not your sales.",
+        copyBtn: "Copy Link",
+        waBtn: "Send via WhatsApp",
+        flashTitle: "Website Offer Countdown Timer Control",
+        flashDesc: "The 2-hour offer timer is running on customer shop. Restart anytime.",
+        restartBtn: "Restart 2-Hour Timer",
+        changePinBtn: "Password Settings",
+        lockNowBtn: "Lock Dashboard Now",
+        // Banner Studio
+        bannerStudioTitle: "Custom Offer Banner Studio",
+        bannerStudioSub: "Upload your custom designed banners and showcase irresistible promotional offers to customers on the homepage.",
+        bannerToggleLbl: "Show Banner on Homepage",
+        bannerGuideTitle: "Banner Size & Aspect Ratio Guide:",
+        bannerGuideText: "• <strong>2:4 Ratio (Vertical Banner / Poster):</strong> 600 × 1200 px (or 800 × 1600 px)<br>• <strong>2:1 Ratio (Horizontal Banner):</strong> 1200 × 600 px (or 800 × 400 px)<br>• <strong>1:1 Ratio (Square Banner):</strong> 800 × 800 px<br><span style='color:#34d399; font-weight:700;'>✓ Any uploaded banner size (2:4 or 2:1) is automatically responsive and fits mobile screens.</span>",
+        lblBannerImg: "1. Upload Banner Image *",
+        btnUploadBanner: "Choose Banner from Gallery",
+        phBannerUrl: "Or paste banner image URL directly...",
+        lblBannerTitle: "2. Offer Headline & Badge",
+        phBannerBadge: "Offer Badge (e.g. FESTIVE SALE / LIMITED OFFER)",
+        phBannerTitle: "Offer Title (e.g. Flat 50% Off + Free Delivery)",
+        phBannerSub: "Short Description (e.g. Special gift on all pure silk sarees)",
+        lblBannerAction: "3. Action when customer taps banner:",
+        lblBannerPrev: "Live Preview (As seen on customer homepage):",
+        btnSaveBanner: "Save & Publish Banner",
+        btnDeleteBanner: "Delete Banner",
+        // Tabs
+        tabOrders: "Orders Management",
+        tabWarehouse: "Warehouse & Dispatch",
+        tabStock: "Stock & Pricing",
+        tabAdd: "Add New Product",
+        tabReviews: "Customer Reviews",
+        ofAll: "📋 All",
+        ofPlaced: "⏳ Pending Picking",
+        ofPacked: "📦 Packed",
+        ofOut: "🚚 In Transit",
+        ofDelivered: "✅ Delivered",
+        ofRescheduled: "⚠️ Rescheduled",
+        ofReturned: "🔄 Returned",
+        noOrdersTitle: "No Orders Yet",
+        noOrdersDesc: "Orders placed on customer website will appear here in real-time.",
+        orderDateToday: "Today",
+        payModeUpi: "📲 ONLINE PAID (UPI)",
+        payModeCod: "💵 CASH ON DELIVERY (COD)",
+        lblCust: "Customer:",
+        lblAddress: "Address:",
+        lblSize: "Size:",
+        lblQty: "Qty:",
+        lblColor: "Color:",
+        lblOriginalColor: "Original Color",
+        lblPc: "pc",
+        pipelineTitle: "Live Delivery & Packing Pipeline:",
+        pipelineActive: "● Live Tracking Active",
+        step1: "1. Order Placed",
+        step2Packed: "2. Packing Done",
+        step2Packing: "2. In Packing",
+        step3: "3. Out for Delivery",
+        step4: "4. Delivered",
+        qrReadyTitle: "Parcel QR Code Ready",
+        qrReadySub: "Packaging team scan camera to mark packed",
+        printQrBtn: "Print QR Sticker",
+        openPackBtn: "Open Packing Hub",
+        ownerModeTitle: "Owner Mode: Manually Override Status",
+        btnStatusNew: "⏳ New Order",
+        btnStatusPacked: "📦 Packed",
+        btnStatusOut: "🚚 Out for Delivery",
+        btnStatusDelivered: "✅ Delivered",
+        btnStatusCancel: "❌ Cancel",
+        // Warehouse Tab
+        whMainTitle: "Nisha Central Warehouse & Dispatch Hub",
+        whMainSub: "Amta Central Fulfillment Center • Route Tracking & Bin Control",
+        whOpenPackBtn: "Open Packing Station",
+        whOpenRiderBtn: "Open Rider Hub",
+        whCountPlacedLbl: "⏳ Pending Picking",
+        whCountPackedLbl: "📦 Packed & Sealed",
+        whCountOutLbl: "🚚 In Transit",
+        whCountDeliveredLbl: "✅ Delivered",
+        whCountReturnedLbl: "🔄 Return/RTO",
+        whRtoTitle: "Return & RTO Quality Inspection & Restock",
+        whRtoDesc: "Inspect returned parcels and restore back to active inventory with 1 click.",
+        whRtoInpPh: "Returned Order ID (e.g. NC-5019)",
+        whRtoPassBtn: "QC Pass -> Restock (+1 Stock)",
+        whRtoDmgBtn: "Mark as Damaged",
+        whDispatchTitle: "Outbound Dispatch Bags & Rider Handover",
+        whDispatchDesc: "Batch dispatch bags for Amta and nearby last-mile delivery riders.",
+        whNewBagBtn: "+ New Dispatch Bag",
+        whBinsTitle: "Warehouse Storage Racks & Bin Inventory",
+        whBinsDesc: "Organized inventory breakdown by rack, shelf and bin locations.",
+        whAddRackBtn: "+ Add New Rack",
+        whPrintRackLabelsBtn: "Print Barcode Stickers",
+        // Stock Tab
+        stockFilterPh: "Filter by product title...",
+        // Add Product Studio Tab
+        addStudioTitle: "New Saree & Apparel Upload Studio",
+        addStudioDesc: "📸 Upload 4-5 photos simultaneously, set selling price and sizes to go live instantly.",
+        addLblTitle: "Product Full Title *",
+        addPhTitle: "e.g. Pure Soft Jamdani Katan Saree (Royal Blue & Gold Zari)",
+        addLblCat: "Select Category *",
+        addLblFabric: "Fabric / Material",
+        addPhFabric: "e.g. Pure Soft Resham Silk",
+        addLblSizes: "Select Available Sizes *:",
+        addNoticeSizes: "Check (✓) all sizes available in your stock:",
+        addPhCustomSize: "Write any custom size...",
+        addBtnAddCustomSize: "Add Size",
+        addLblSellPrice: "Selling Price (₹) *",
+        addLblMrp: "Original Price (MRP - ₹)",
+        addLblStock: "Initial Stock Quantity *",
+        addLblPhotos: "Upload 4-5 Product Photos *:",
+        addNoticePhotos: "Select cover, pallu, border and blouse photos from your phone gallery.",
+        addBtnChoosePhotos: "Choose 4-5 Photos from Gallery",
+        addPhFallbackUrl: "Or paste online image URL directly...",
+        addLblDesc: "Product Description",
+        addPhDesc: "Authentic quality, soft feel and premium boutique finish...",
+        addBtnSubmit: "Publish Product to Live Website 🚀"
+      }
+    };
+
+    function toggleAdminLanguageQuick() {
+      const next = (currentAdminLang === 'bn') ? 'en' : 'bn';
+      setAdminLanguage(next);
+    }
+
     function setAdminLanguage(lang) {
       currentAdminLang = lang;
       localStorage.setItem('nc_hub_lang', lang);
 
-      document.querySelectorAll('#adminNavDrawerOverlay .lang-pill-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(lang === 'bn' ? 'admBtnLangBn' : 'admBtnLangEn');
-      if (activeBtn) activeBtn.classList.add('active');
-
-      // Update Tab Labels
+      const d = ADMIN_I18N[lang] || ADMIN_I18N.bn;
+      const isEn = (lang === 'en');
       const setT = (id, text) => { const el = document.getElementById(id); if (el) el.innerHTML = text; };
-      if (lang === 'en') {
-        setT('tabBtnOrders', '<i class="fa-solid fa-boxes-packing"></i> Orders (<span id="countTabOrders">' + ordersList.length + '</span>)');
-        setT('tabBtnWarehouse', '<i class="fa-solid fa-warehouse"></i> Warehouse & Dispatch (<span id="countTabWarehouse">0</span>)');
-        setT('tabBtnStock', '<i class="fa-solid fa-boxes-stacked"></i> Stock & Prices (<span id="countTabStock">0</span>)');
-        setT('tabBtnAdd', '<i class="fa-solid fa-plus-circle"></i> Add New Product');
-        setT('tabBtnReviews', '<i class="fa-solid fa-star"></i> Customer Reviews');
-      } else {
-        setT('tabBtnOrders', '<i class="fa-solid fa-boxes-packing"></i> অর্ডার ম্যানেজমেন্ট (<span id="countTabOrders">' + ordersList.length + '</span>)');
-        setT('tabBtnWarehouse', '<i class="fa-solid fa-warehouse"></i> ওয়্যারহাউস ও ডিসপ্যাচ (<span id="countTabWarehouse">0</span>)');
-        setT('tabBtnStock', '<i class="fa-solid fa-warehouse"></i> শাড়ির স্টক ও দাম (<span id="countTabStock">0</span>)');
-        setT('tabBtnAdd', '<i class="fa-solid fa-plus-circle"></i> নতুন শাড়ি আপলোড');
-        setT('tabBtnReviews', '<i class="fa-solid fa-star"></i> কাস্টমার রিভিউ');
-      }
+      const setAttr = (id, attr, val) => { const el = document.getElementById(id); if (el) el.setAttribute(attr, val); };
+
+      // Update Header Quick Button
+      setT('quickLangDisplay', d.quickLangBtn);
+
+      // Update Login Modal
+      setT('pinModalTitle', d.loginTitle);
+      setT('pinModalSub', d.loginSub);
+      setT('btnPinUnlockText', d.loginBtn);
+      setT('btnPinBypass', `<i class="fa-solid fa-bolt"></i> ${d.loginBypass}`);
+      setT('btnPinReset', `<i class="fa-solid fa-rotate-left"></i> ${d.loginReset}`);
+      const pinInp = document.getElementById('ownerPinInput');
+      if (pinInp) pinInp.placeholder = d.loginPlaceholder;
+
+      // Update Active State on Buttons
+      ['loginBtnLangBn', 'admBtnLangBn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { if (lang === 'bn') el.classList.add('active'); else el.classList.remove('active'); }
+      });
+      ['loginBtnLangEn', 'admBtnLangEn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { if (lang === 'en') el.classList.add('active'); else el.classList.remove('active'); }
+      });
+
+      // Update Header & Drawer
+      setT('admHeaderSub', d.headerSub);
+      setT('admD-langLbl', `<i class="fa-solid fa-globe"></i> ${d.drawerLangLbl}`);
+      setT('admD-navLbl', `<i class="fa-solid fa-compass"></i> ${d.drawerNavLbl}`);
+      setT('admD-secLbl', `<i class="fa-solid fa-shield-halved"></i> ${d.drawerSecLbl}`);
+      setT('admD-whTitle', d.drawerWhTitle);
+      setT('admD-whDesc', d.drawerWhDesc);
+      setT('admD-delTitle', d.drawerDelTitle);
+      setT('admD-delDesc', d.drawerDelDesc);
+      setT('admD-shopTitle', d.drawerShopTitle);
+      setT('admD-shopDesc', d.drawerShopDesc);
+      setT('admD-passTitle', d.drawerPassTitle);
+      setT('admD-passDesc', d.drawerPassDesc);
+      setT('admD-lockTitle', d.drawerLockTitle);
+      setT('admD-lockDesc', d.drawerLockDesc);
+
+      // Update Finance Banner
+      setT('admConfTag', `<i class="fa-solid fa-eye-slash"></i> ${d.confTag}`);
+      setT('admConfSub', d.confSub);
+      setT('admDemoBtn', d.demoBtn);
+      setT('admBackupBtn', d.backupBtn);
+      setT('admRevTitle', `<i class="fa-solid fa-coins" style="color:#f59e0b;"></i> ${d.revTitle}`);
+      setT('admRevSub', d.revSub);
+      setT('admCodTitle', `<i class="fa-solid fa-money-bill-wave" style="color:#10b981;"></i> ${d.codTitle}`);
+      setT('admCodSub', d.codSub);
+      setT('admUpiTitle', `<i class="fa-solid fa-mobile-screen" style="color:#38bdf8;"></i> ${d.upiTitle}`);
+      setT('admUpiSub', d.upiSub);
+      setT('admPendingTitle', `<i class="fa-solid fa-bell" style="color:#f43f5e;"></i> ${d.pendingTitle}`);
+      setT('admPendingSub', d.pendingSub);
+
+      // Update Delivery Share Strip
+      setT('admDelShareTitle', `<i class="fa-solid fa-motorcycle" style="font-size:1.3rem;"></i> ${d.delShareTitle}`);
+      setT('admDelShareDesc', d.delShareDesc);
+      setT('admCopyBtn', d.copyBtn);
+      setT('admWaBtn', d.waBtn);
+
+      // Update Flash Sale Box
+      setT('admFlashTitle', `<i class="fa-solid fa-fire-flame-curved"></i> ${d.flashTitle}`);
+      setT('admFlashDesc', d.flashDesc);
+      setT('admRestartBtn', d.restartBtn);
+      setT('admChangePinBtn', d.changePinBtn);
+      setT('admLockNowBtn', d.lockNowBtn);
+
+      // Update Custom Offer Banner Studio
+      setT('admBannerStudioTitle', `<i class="fa-solid fa-bullhorn" style="color:#f59e0b;"></i> ${d.bannerStudioTitle}`);
+      setT('admBannerStudioSub', d.bannerStudioSub);
+      setT('admBannerToggleLbl', d.bannerToggleLbl);
+      setT('admBannerGuideTitle', d.bannerGuideTitle);
+      setT('admBannerGuideText', d.bannerGuideText);
+      setT('admLblBannerImg', d.lblBannerImg);
+      setT('admBtnUploadBanner', d.btnUploadBanner);
+      setAttr('customBannerUrlInp', 'placeholder', d.phBannerUrl);
+      setT('admLblBannerTitle', d.lblBannerTitle);
+      setAttr('customBannerBadgeInp', 'placeholder', d.phBannerBadge);
+      setAttr('customBannerTitleInp', 'placeholder', d.phBannerTitle);
+      setAttr('customBannerSubInp', 'placeholder', d.phBannerSub);
+      setT('admLblBannerAction', d.lblBannerAction);
+      setT('admLblBannerPrev', d.lblBannerPrev);
+      setT('admBtnSaveBanner', d.btnSaveBanner);
+      setT('admBtnDeleteBanner', d.btnDeleteBanner);
+
+      // Update Tabs
+      setT('tabBtnOrders', `<i class="fa-solid fa-boxes-packing"></i> ${d.tabOrders} (<span id="countTabOrders">${ordersList.length}</span>)`);
+      setT('tabBtnWarehouse', `<i class="fa-solid fa-warehouse"></i> ${d.tabWarehouse} (<span id="countTabWarehouse">0</span>)`);
+      setT('tabBtnStock', `<i class="fa-solid fa-boxes-stacked"></i> ${d.tabStock} (<span id="countTabStock">0</span>)`);
+      setT('tabBtnAdd', `<i class="fa-solid fa-plus-circle"></i> ${d.tabAdd}`);
+      setT('tabBtnReviews', `<i class="fa-solid fa-star"></i> ${d.tabReviews}`);
+
+      // Update Warehouse Tab (Pane-Warehouse)
+      setT('whMainTitle', `<i class="fa-solid fa-warehouse" style="color:#818cf8;"></i> ${d.whMainTitle}`);
+      setT('whMainSub', d.whMainSub);
+      setT('whOpenPackBtn', `<i class="fa-solid fa-boxes-packing"></i> ${d.whOpenPackBtn}`);
+      setT('whOpenRiderBtn', `<i class="fa-solid fa-motorcycle"></i> ${d.whOpenRiderBtn}`);
+      setT('whCountPlacedLbl', d.whCountPlacedLbl);
+      setT('whCountPackedLbl', d.whCountPackedLbl);
+      setT('whCountOutLbl', d.whCountOutLbl);
+      setT('whCountDeliveredLbl', d.whCountDeliveredLbl);
+      setT('whCountReturnedLbl', d.whCountReturnedLbl);
+      setT('whRtoTitle', `<i class="fa-solid fa-arrow-rotate-left"></i> ${d.whRtoTitle}`);
+      setT('whRtoDesc', d.whRtoDesc);
+      setAttr('whReturnOrderIdInp', 'placeholder', d.whRtoInpPh);
+      setT('whRtoPassBtn', `<i class="fa-solid fa-check-to-slot"></i> ${d.whRtoPassBtn}`);
+      setT('whRtoDmgBtn', `<i class="fa-solid fa-triangle-exclamation"></i> ${d.whRtoDmgBtn}`);
+      setT('whDispatchTitle', `<i class="fa-solid fa-truck-ramp-box"></i> ${d.whDispatchTitle}`);
+      setT('whDispatchDesc', d.whDispatchDesc);
+      setT('whNewBagBtn', `<i class="fa-solid fa-plus"></i> ${d.whNewBagBtn}`);
+      setT('whBinsTitle', `<i class="fa-solid fa-table-cells-large"></i> ${d.whBinsTitle}`);
+      setT('whBinsDesc', d.whBinsDesc);
+      setT('whAddRackBtn', `<i class="fa-solid fa-plus"></i> ${d.whAddRackBtn}`);
+      setT('whPrintRackLabelsBtn', `<i class="fa-solid fa-barcode"></i> ${d.whPrintRackLabelsBtn}`);
+
+      // Update Stock Filter Placeholder
+      setAttr('stockFilterInput', 'placeholder', d.stockFilterPh);
+
+      // Update Add Product Studio (Pane-Add)
+      setT('addStudioTitle', `<i class="fa-solid fa-camera-retro" style="color:var(--amber);"></i> ${d.addStudioTitle}`);
+      setT('addStudioDesc', d.addStudioDesc);
+      setT('addLblTitle', d.addLblTitle);
+      setAttr('op_title', 'placeholder', d.addPhTitle);
+      setT('addLblCat', d.addLblCat);
+      setT('addLblFabric', d.addLblFabric);
+      setAttr('op_fabric', 'placeholder', d.addPhFabric);
+      setT('addLblSizes', `<i class="fa-solid fa-ruler-combined"></i> ${d.addLblSizes}`);
+      setT('addNoticeSizes', d.addNoticeSizes);
+      setAttr('customSizeAddInput', 'placeholder', d.addPhCustomSize);
+      setT('addBtnAddCustomSize', `<i class="fa-solid fa-plus"></i> ${d.addBtnAddCustomSize}`);
+      setT('addLblSellPrice', d.addLblSellPrice);
+      setT('addLblMrp', d.addLblMrp);
+      setT('addLblStock', d.addLblStock);
+      setT('addLblPhotos', `<i class="fa-solid fa-images"></i> ${d.addLblPhotos}`);
+      setT('addNoticePhotos', d.addNoticePhotos);
+      setT('addBtnChoosePhotos', d.addBtnChoosePhotos);
+      setAttr('op_img_url_fallback', 'placeholder', d.addPhFallbackUrl);
+      setT('addLblDesc', d.addLblDesc);
+      setAttr('op_desc', 'placeholder', d.addPhDesc);
+      setT('addBtnSubmit', `<i class="fa-solid fa-cloud-arrow-up"></i> ${d.addBtnSubmit}`);
+
+      // Re-render views
       renderFinanceOverview();
+      renderOwnerOrders();
+      renderOwnerStock();
+      try { renderWarehouseOperations(); } catch(e){}
     }
 
     function switchAdminView(tabKey) {
@@ -2114,15 +2601,22 @@
       const container = document.getElementById('ordersContainer');
       if (!container) return;
 
-      // Update Order Filter Counts
-      const setC = (id, c) => { const el = document.getElementById(id); if (el) el.textContent = c; };
-      setC('ofAllCount', ordersList.length);
-      setC('ofPlacedCount', ordersList.filter(o => o.status === 'Order Placed').length);
-      setC('ofPackedCount', ordersList.filter(o => o.status === 'Packed').length);
-      setC('ofOutCount', ordersList.filter(o => o.status === 'Out for Delivery').length);
-      setC('ofDeliveredCount', ordersList.filter(o => o.status === 'Delivered').length);
-      setC('ofRescheduledCount', ordersList.filter(o => o.status === 'Rescheduled').length);
-      setC('ofReturnedCount', ordersList.filter(o => o.status === 'Returned').length);
+      const isEn = (currentAdminLang === 'en');
+      const d = ADMIN_I18N[currentAdminLang] || ADMIN_I18N.bn;
+
+      // Update Order Filter Counts and Labels
+      const setF = (id, count, label) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `${label} (<span id="${id}Count">${count}</span>)`;
+      };
+
+      setF('ofAll', ordersList.length, d.ofAll);
+      setF('ofPlaced', ordersList.filter(o => o.status === 'Order Placed').length, d.ofPlaced);
+      setF('ofPacked', ordersList.filter(o => o.status === 'Packed').length, d.ofPacked);
+      setF('ofOut', ordersList.filter(o => o.status === 'Out for Delivery').length, d.ofOut);
+      setF('ofDelivered', ordersList.filter(o => o.status === 'Delivered').length, d.ofDelivered);
+      setF('ofRescheduled', ordersList.filter(o => o.status === 'Rescheduled').length, d.ofRescheduled);
+      setF('ofReturned', ordersList.filter(o => o.status === 'Returned').length, d.ofReturned);
 
       let listToRender = ordersList;
       if (adminOrderFilter && adminOrderFilter !== 'all') {
@@ -2133,8 +2627,8 @@
         container.innerHTML = `
           <div class="owner-card" style="text-align:center; padding:40px 20px; color:var(--text-sub);">
             <i class="fa-solid fa-inbox" style="font-size:2.5rem; color:#475569; margin-bottom:10px;"></i>
-            <div style="font-size:1rem; font-weight:800; color:#ffffff;">কোনো অর্ডার নেই</div>
-            <div style="font-size:0.75rem; margin-top:4px;">কাস্টমার ওয়েবসাইট থেকে অর্ডার করলে সাথে সাথে এখানে আসবে।</div>
+            <div style="font-size:1rem; font-weight:800; color:#ffffff;">${d.noOrdersTitle}</div>
+            <div style="font-size:0.75rem; margin-top:4px;">${d.noOrdersDesc}</div>
           </div>
         `;
         return;
@@ -2154,7 +2648,7 @@
             <div style="flex:1;">
               <div style="font-size:0.84rem; font-weight:800; color:#fff;">${it.title}</div>
               <div style="font-size:0.72rem; color:#94a3b8;">
-                সাইজ: <strong style="color:#f59e0b;">${it.selectedSize || 'Free Size'}</strong> • পরিমাণ: <strong>${it.qty || 1} টি</strong> • রং: ${it.selectedColor || 'মূল রং'}
+                ${d.lblSize} <strong style="color:#f59e0b;">${it.selectedSize || 'Free Size'}</strong> • ${d.lblQty} <strong>${it.qty || 1} ${d.lblPc}</strong> • ${d.lblColor} ${it.selectedColor || d.lblOriginalColor}
               </div>
             </div>
             <div style="font-weight:800; font-size:0.88rem; color:#34d399;">₹${(it.price || 0) * (it.qty || 1)}</div>
@@ -2168,17 +2662,23 @@
         const qrVerificationUrl = `${currentDomain}packaging.html?scan=${ord.id}`;
         const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrVerificationUrl)}`;
 
+        const orderDateFormatted = ord.createdAt 
+          ? new Date(ord.createdAt).toLocaleString(isEn ? 'en-IN' : 'bn-BD', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : (ord.date || d.orderDateToday);
+
+        const customerDisplayName = ord.customer || ord.name || (isEn ? 'Valued Customer' : 'সম্মানিত গ্রাহক');
+
         const box = document.createElement('div');
         box.className = 'order-box';
         box.innerHTML = `
           <div class="order-header-row">
             <div>
               <span style="font-weight:800; font-size:1rem; color:#f59e0b; font-family:'Plus Jakarta Sans',sans-serif;">Order #${ord.id}</span>
-              <span style="font-size:0.72rem; color:#94a3b8; margin-left:8px;"><i class="fa-regular fa-clock"></i> ${ord.date || 'আজ'}</span>
+              <span style="font-size:0.72rem; color:#94a3b8; margin-left:8px;"><i class="fa-regular fa-clock"></i> ${orderDateFormatted}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:0.72rem; padding:4px 10px; border-radius:8px; background:${ord.paymentMode==='UPI'?'#0284c7':'#d97706'}; color:#fff; font-weight:800;">
-                ${ord.paymentMode === 'UPI' ? '📲 অনলাইন পেইড (UPI)' : '💵 ক্যাশ অন ডেলিভারি (COD)'}
+                ${ord.paymentMode === 'UPI' ? d.payModeUpi : d.payModeCod}
               </span>
               <span style="font-weight:800; font-size:1.15rem; color:#10b981; font-family:'Plus Jakarta Sans',sans-serif;">₹${ord.total}</span>
             </div>
@@ -2186,18 +2686,18 @@
 
           <!-- Customer details -->
           <div style="font-size:0.84rem; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">
-            👤 <strong>${ord.name}</strong> • 📞 <a href="tel:${phoneClean}" style="color:#38bdf8; text-decoration:none; font-weight:800;">${phoneClean}</a><br>
-            📍 <strong>ঠিকানা:</strong> ${ord.address}
+            👤 <strong>${customerDisplayName}</strong> • 📞 <a href="tel:${phoneClean}" style="color:#38bdf8; text-decoration:none; font-weight:800;">${phoneClean}</a><br>
+            📍 <strong>${d.lblAddress}</strong> ${ord.address}
           </div>
 
           <!-- Items list -->
           ${itemsHtml}
 
-          <!-- ================= 4. LIVE SITTING TRACKER (বসে বসে লাইভ ট্র্যাকিং দেখা) ================= -->
+          <!-- ================= 4. LIVE SITTING TRACKER ================= -->
           <div class="live-sitting-tracker">
             <div class="sitting-tracker-title">
-              <span><i class="fa-solid fa-route"></i> লাইভ ডেলিভারি ও প্যাকিং পাইপলাইন:</span>
-              <span style="font-size:0.7rem; color:#34d399;">● লাইভ ট্র্যাকিং সক্রিয়</span>
+              <span><i class="fa-solid fa-route"></i> ${d.pipelineTitle}</span>
+              <span style="font-size:0.7rem; color:#34d399;">${d.pipelineActive}</span>
             </div>
 
             <div class="sitting-stepper-line">
@@ -2206,16 +2706,16 @@
                 <div class="step-circle-icon active">
                   <i class="fa-solid fa-receipt"></i>
                 </div>
-                <div class="step-label-txt active">১. বুকিং প্রাপ্ত</div>
+                <div class="step-label-txt active">${d.step1}</div>
               </div>
 
-              <!-- Step 2: Packaging (QR Code Scanned) -->
+              <!-- Step 2: Packaging -->
               <div class="sitting-step-item">
                 <div class="step-circle-icon ${isPacked || isOut || isDelivered ? 'active' : (isPlaced ? 'pending' : '')}">
                   <i class="fa-solid fa-box-open"></i>
                 </div>
                 <div class="step-label-txt ${isPacked || isOut || isDelivered ? 'active' : ''}">
-                  ২. প্যাকিং ${isPacked || isOut || isDelivered ? 'সম্পন্ন' : 'চলছে'}
+                  ${isPacked || isOut || isDelivered ? d.step2Packed : d.step2Packing}
                 </div>
               </div>
 
@@ -2225,7 +2725,7 @@
                   <i class="fa-solid fa-motorcycle"></i>
                 </div>
                 <div class="step-label-txt ${isOut || isDelivered ? 'active' : ''}">
-                  ৩. ডেলিভারিতে
+                  ${d.step3}
                 </div>
               </div>
 
@@ -2235,7 +2735,7 @@
                   <i class="fa-solid fa-circle-check"></i>
                 </div>
                 <div class="step-label-txt ${isDelivered ? 'active' : ''}">
-                  ৪. ডেলিভার্ড
+                  ${d.step4}
                 </div>
               </div>
             </div>
@@ -2247,20 +2747,20 @@
               <img src="${qrImgSrc}" style="width:60px; height:60px; border-radius:8px; background:#fff; padding:3px; border:1px solid #334155;">
               <div>
                 <div style="font-size:0.8rem; font-weight:800; color:#f59e0b;">
-                  📷 পার্সেল কিউআর কোড প্রস্তুত
+                  📷 ${d.qrReadyTitle}
                 </div>
                 <div style="font-size:0.7rem; color:#94a3b8;">
-                  প্যাকেজিং টিম ক্যামেরা দিয়ে স্ক্যান করলেই 'প্যাকিং সম্পন্ন' হবে
+                  ${d.qrReadySub}
                 </div>
               </div>
             </div>
 
             <div style="display:flex; gap:8px;">
               <button type="button" class="btn-hdr-pill" onclick="printOwnerQrLabel('${ord.id}')" style="background:#f59e0b; color:#0f172a; border:none; font-weight:800;">
-                <i class="fa-solid fa-print"></i> কিউআর স্টিকার প্রিন্ট
+                <i class="fa-solid fa-print"></i> ${d.printQrBtn}
               </button>
               <a href="packaging.html?scan=${ord.id}" target="_blank" class="btn-hdr-pill" style="background:#334155; color:#fff;">
-                <i class="fa-solid fa-box-open"></i> প্যাকিং পোর্টালে যান
+                <i class="fa-solid fa-box-open"></i> ${d.openPackBtn}
               </a>
             </div>
           </div>
@@ -2268,14 +2768,14 @@
           <!-- Manual Status Change Stepper if Admin wants to override -->
           <div style="margin-top:10px; border-top:1px dashed var(--border); padding-top:8px;">
             <div style="font-size:0.72rem; color:#94a3b8; font-weight:700; margin-bottom:6px;">
-              মালিক মোড: প্রয়োজনে নিজে স্ট্যাটাস পরিবর্তন করুন
+              ${d.ownerModeTitle}
             </div>
             <div class="status-stepper-row">
-              <button type="button" class="btn-step ${isPlaced?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Order Placed')">⏳ নতুন বুকিং</button>
-              <button type="button" class="btn-step ${isPacked?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Packed')">📦 প্যাকিং সম্পন্ন</button>
-              <button type="button" class="btn-step ${isOut?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Out for Delivery')">🚚 ডেলিভারিতে বেরিয়েছে</button>
-              <button type="button" class="btn-step ${isDelivered?'active deliv':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Delivered')">✅ ডেলিভারি সম্পন্ন</button>
-              <button type="button" class="btn-step ${isCancelled?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Cancelled')">❌ বাতিল</button>
+              <button type="button" class="btn-step ${isPlaced?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Order Placed')">${d.btnStatusNew}</button>
+              <button type="button" class="btn-step ${isPacked?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Packed')">${d.btnStatusPacked}</button>
+              <button type="button" class="btn-step ${isOut?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Out for Delivery')">${d.btnStatusOut}</button>
+              <button type="button" class="btn-step ${isDelivered?'active deliv':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Delivered')">${d.btnStatusDelivered}</button>
+              <button type="button" class="btn-step ${isCancelled?'active':''}" onclick="setOwnerOrderStatus('${ord.id}', 'Cancelled')">${d.btnStatusCancel}</button>
             </div>
           </div>
         `;
@@ -2300,11 +2800,20 @@
       const grid = document.getElementById('stockGridContainer');
       if (!grid) return;
 
+      const isEn = (currentAdminLang === 'en');
+
       let prods = [];
       try {
         const stored = localStorage.getItem('nc_products');
         if (stored) prods = JSON.parse(stored);
       } catch(e) {}
+
+      if (!prods || prods.length === 0) {
+        try {
+          const custStored = localStorage.getItem('nc_custom_products');
+          if (custStored) prods = JSON.parse(custStored);
+        } catch(e) {}
+      }
 
       if (!prods || prods.length === 0) {
         prods = [
@@ -2320,24 +2829,37 @@
 
       grid.innerHTML = '';
       prods.forEach(p => {
-        const curStock = p.stock !== undefined ? p.stock : 25;
+        const curStock = p.stock !== undefined ? parseInt(p.stock) : (p.inStock !== false ? 25 : 0);
+        const isOutOfStock = (curStock <= 0 || p.inStock === false);
+        const isUrgent = (curStock > 0 && curStock <= 10);
+
         const card = document.createElement('div');
         card.className = 'inv-card';
         card.innerHTML = `
           <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="inv-thumb">
           <div style="flex:1;">
             <div style="font-size:0.85rem; font-weight:800; color:#fff;">${p.title}</div>
-            <div style="font-size:0.7rem; color:#94a3b8;">${p.id} • মূল্য: ₹${p.price}</div>
-            <div style="display:flex; align-items:center; gap:4px; margin-top:6px;">
+            <div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">
+              ${p.id} • ${isEn ? 'Price:' : 'মূল্য:'} <strong style="color:#34d399;">₹${p.price}</strong> • 
+              ${isOutOfStock ? `<span style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-ban"></i> ${isEn ? 'Out of Stock' : 'স্টক শেষ'}</span>` : (isUrgent ? `<span style="color:#ea580c; font-weight:800;"><i class="fa-solid fa-fire"></i> ${isEn ? 'Only ' + curStock + ' left' : 'আর মাত্র ' + curStock + 'টি বাকি'}</span>` : `<span style="color:#10b981; font-weight:700;">${isEn ? 'Stock: ' + curStock : 'স্টক: ' + curStock}</span>`)}
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
               <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', -1)">-</button>
-              <input type="number" class="stock-val-box" id="inpStock_${p.id}" value="${curStock}" onchange="saveOwnerStock('${p.id}', this.value)">
+              <input type="number" class="stock-val-box" id="inpStock_${p.id}" value="${curStock}" min="0" onchange="saveOwnerStock('${p.id}', this.value)" oninput="saveOwnerStock('${p.id}', this.value)">
               <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', 1)">+</button>
               <button type="button" class="btn-qty-ctl" style="width:36px; font-size:0.7rem; background:#334155;" onclick="adjustOwnerStock('${p.id}', 5)">+5</button>
+              <button type="button" class="btn-qty-ctl" style="width:52px; font-size:0.68rem; background:#7f1d1d; color:#fecaca;" onclick="setOwnerStockDirect('${p.id}', 0)">${isEn ? '0 Stock' : '০ স্টক'}</button>
             </div>
           </div>
         `;
         grid.appendChild(card);
       });
+    }
+
+    function setOwnerStockDirect(id, zeroVal) {
+      const inp = document.getElementById(`inpStock_${id}`);
+      if (inp) inp.value = zeroVal;
+      saveOwnerStock(id, zeroVal);
     }
 
     function adjustOwnerStock(id, delta) {
@@ -2349,14 +2871,156 @@
     }
 
     function saveOwnerStock(id, val) {
-      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      const numVal = Math.max(0, parseInt(val) || 0);
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
       const idx = prods.findIndex(p => p.id === id);
       if (idx !== -1) {
-        prods[idx].stock = parseInt(val) || 0;
-        prods[idx].inStock = prods[idx].stock > 0;
+        prods[idx].stock = numVal;
+        prods[idx].inStock = (numVal > 0);
         localStorage.setItem('nc_products', JSON.stringify(prods));
       }
+
+      // Also update nc_custom_products if present
+      try {
+        let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+        const cIdx = cust.findIndex(p => p.id === id);
+        if (cIdx !== -1) {
+          cust[cIdx].stock = numVal;
+          cust[cIdx].inStock = (numVal > 0);
+          localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+        }
+      } catch(e) {}
+
+      renderFinanceOverview();
     }
+
+    
+    // ==========================================
+    // CUSTOM OFFER BANNER STUDIO CONTROLLER
+    // ==========================================
+    let customBannerData = {
+      active: false,
+      img: '',
+      title: '',
+      subtitle: '',
+      badge: '',
+      action: 'scroll'
+    };
+
+    function loadCustomBanner() {
+      try {
+        const stored = localStorage.getItem('nc_custom_banner');
+        if (stored) {
+          customBannerData = JSON.parse(stored);
+        }
+      } catch(e) {}
+
+      const activeTgl = document.getElementById('customBannerActiveToggle');
+      if (activeTgl) activeTgl.checked = !!customBannerData.active;
+
+      const urlInp = document.getElementById('customBannerUrlInp');
+      if (urlInp) urlInp.value = customBannerData.img || '';
+
+      const titleInp = document.getElementById('customBannerTitleInp');
+      if (titleInp) titleInp.value = customBannerData.title || '';
+
+      const subInp = document.getElementById('customBannerSubInp');
+      if (subInp) subInp.value = customBannerData.subtitle || '';
+
+      const badgeInp = document.getElementById('customBannerBadgeInp');
+      if (badgeInp) badgeInp.value = customBannerData.badge || '';
+
+      const actSel = document.getElementById('customBannerActionSel');
+      if (actSel) actSel.value = customBannerData.action || 'scroll';
+
+      updateCustomBannerPreview();
+    }
+
+    function handleCustomBannerFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        customBannerData.img = evt.target.result;
+        const urlInp = document.getElementById('customBannerUrlInp');
+        if (urlInp) urlInp.value = '';
+        updateCustomBannerPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateCustomBannerPreview() {
+      const prevBox = document.getElementById('adminBannerLivePreviewBox');
+      if (!prevBox) return;
+
+      const urlInp = document.getElementById('customBannerUrlInp');
+      if (urlInp && urlInp.value.trim()) {
+        customBannerData.img = urlInp.value.trim();
+      }
+
+      const titleInp = document.getElementById('customBannerTitleInp');
+      if (titleInp) customBannerData.title = titleInp.value.trim();
+
+      const subInp = document.getElementById('customBannerSubInp');
+      if (subInp) customBannerData.subtitle = subInp.value.trim();
+
+      const badgeInp = document.getElementById('customBannerBadgeInp');
+      if (badgeInp) customBannerData.badge = badgeInp.value.trim();
+
+      const actSel = document.getElementById('customBannerActionSel');
+      if (actSel) customBannerData.action = actSel.value;
+
+      if (!customBannerData.img) {
+        prevBox.innerHTML = `<span style="color:#64748b; font-size:0.8rem;">${currentAdminLang === 'en' ? 'No banner uploaded yet' : 'এখনো কোনো ব্যানার আপলোড করা হয়নি'}</span>`;
+        return;
+      }
+
+      prevBox.innerHTML = `
+        <div style="width:100%; border-radius:12px; overflow:hidden; position:relative; background:#0f172a;">
+          <img src="${customBannerData.img}" style="width:100%; max-height:280px; object-fit:cover; display:block;">
+          ${(customBannerData.title || customBannerData.subtitle || customBannerData.badge) ? `
+            <div style="position:absolute; bottom:0; inset-x:0; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.5) 60%, transparent 100%); padding:12px 14px; text-align:left; color:#fff;">
+              ${customBannerData.badge ? `<span style="background:#ea580c; color:#fff; font-size:0.68rem; font-weight:800; padding:2px 6px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-bottom:3px;">${customBannerData.badge}</span>` : ''}
+              <div style="font-weight:800; font-size:1rem; line-height:1.2;">${customBannerData.title || ''}</div>
+              ${customBannerData.subtitle ? `<div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${customBannerData.subtitle}</div>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function toggleCustomBannerActive(val) {
+      customBannerData.active = val;
+      localStorage.setItem('nc_custom_banner', JSON.stringify(customBannerData));
+      alert(val 
+        ? (currentAdminLang === 'en' ? '✅ Custom Offer Banner is now LIVE on customer shop!' : '✅ কাস্টম অফার ব্যানারটি হোমপেজে লাইভ চালু করা হয়েছে!') 
+        : (currentAdminLang === 'en' ? '⚠️ Banner is turned off.' : '⚠️ ব্যানারটি হোমপেজে বন্ধ করা হয়েছে।')
+      );
+    }
+
+    function saveCustomBanner() {
+      const activeTgl = document.getElementById('customBannerActiveToggle');
+      customBannerData.active = activeTgl ? activeTgl.checked : true;
+      if (!customBannerData.img) {
+        alert(currentAdminLang === 'en' ? 'Please upload a banner image first!' : 'অনুগ্রহ করে প্রথমে একটি ব্যানার ফটো আপলোড করুন বা লিংক দিন!');
+        return;
+      }
+      localStorage.setItem('nc_custom_banner', JSON.stringify(customBannerData));
+      alert(currentAdminLang === 'en' ? '🎉 Custom Offer Banner saved and published successfully!' : '🎉 সফল! আপনার কাস্টম অফার ব্যানারটি সফলভাবে সেভ ও লাইভ করা হয়েছে।');
+    }
+
+    function removeCustomBanner() {
+      if (!confirm(currentAdminLang === 'en' ? 'Are you sure you want to delete this banner?' : 'আপনি কি নিশ্চিতভাবে এই ব্যানারটি মুছে ফেলতে চান?')) return;
+      customBannerData = { active: false, img: '', title: '', subtitle: '', badge: '', action: 'scroll' };
+      localStorage.removeItem('nc_custom_banner');
+      loadCustomBanner();
+      alert(currentAdminLang === 'en' ? '🗑️ Banner removed.' : '🗑️ ব্যানারটি মুছে ফেলা হয়েছে।');
+    }
+
 
     // Flash sale
     function restartFlashSale2Hours() {
@@ -2803,197 +3467,32 @@
     function printOwnerQrLabel(orderId) {
       const ord = ordersList.find(o => o.id === orderId);
       if (!ord) return;
-
+      const isEn = (currentAdminLang === 'en');
       const currentDomain = window.location.href.split('admin.html')[0];
       const qrVerificationUrl = `${currentDomain}packaging.html?scan=${ord.id}`;
       const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrVerificationUrl)}`;
 
-      const itemsText = (ord.items || []).map(i => `• ${i.title} (${i.selectedSize || 'Free Size'}) x ${i.qty || 1}`).join('<br>');
+      const itemsText = (ord.items || []).map(i => `• ${i.title} (${isEn ? 'Size:' : 'সাইজ:'} ${i.selectedSize || 'Free Size'}) x ${i.qty || 1}`).join('<br>');
 
-      const labelHtml = `
-<!DOCTYPE html>
+      const orderDateFormatted = ord.createdAt 
+        ? new Date(ord.createdAt).toLocaleString(isEn ? 'en-IN' : 'bn-BD', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+        : (ord.date || (isEn ? 'Today' : 'আজ'));
+
+      const custName = ord.customer || ord.name || (isEn ? 'Valued Customer' : 'সম্মানিত গ্রাহক');
+
+      const labelHtml = `<!DOCTYPE html>
 <html>
 <head>
-  <title>Packaging Shipping Label #${ord.id}</title>
+  <title>Shipping Label #${ord.id}</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 15px; }
+    body { font-family: sans-serif; margin: 0; padding: 15px; background: #ffffff; color: #000000; }
     .label-box { width: 340px; border: 2px dashed #000; padding: 14px; border-radius: 10px; margin: 0 auto; }
-    .brand-hdr { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 6px; }
-    .hub-txt { font-size: 11px; text-align: center; color: #555; margin-top: 2px; }
+    .brand-hdr { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 6px; letter-spacing: 0.5px; }
+    .hub-txt { font-size: 11px; text-align: center; color: #555; margin-top: 2px; text-transform: uppercase; }
     .qr-sec { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; border-bottom: 1px dashed #777; padding-bottom: 10px; }
     .qr-img { width: 120px; height: 120px; }
-    .info { font-size: 12px; line-height: 1.4; }
+    .info { font-size: 12px; line-height: 1.4; margin-top: 4px; }
     .pay-badge { background: #eee; padding: 6px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 8px; border-radius: 6px; }
-  
-    .order-filter-pill {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #94a3b8;
-      padding: 6px 12px;
-      border-radius: 18px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .order-filter-pill.active {
-      background: #4f46e5;
-      color: #ffffff;
-      border-color: #6366f1;
-    }
-
-
-    /* 3-Lines Hamburger Menu Button */
-    .btn-menu-trigger {
-      width: 42px;
-      height: 42px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      border-radius: 12px;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s;
-    }
-    .btn-menu-trigger:active {
-      transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Slide-out Drawer Overlay */
-    .drawer-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      z-index: 99999;
-      display: none;
-      justify-content: flex-end;
-      animation: fadeIn 0.2s ease-out;
-    }
-    .drawer-content {
-      width: 82%;
-      max-width: 320px;
-      height: 100%;
-      background: #0f172a;
-      border-left: 1.5px solid #334155;
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: -8px 0 25px rgba(0,0,0,0.5);
-      animation: slideInRight 0.25s ease-out;
-      overflow-y: auto;
-    }
-    @keyframes slideInRight {
-      from { transform: translateX(100%); }
-      to { transform: translateX(0); }
-    }
-
-    .drawer-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #1e293b;
-      padding-bottom: 14px;
-      margin-bottom: 16px;
-    }
-    .btn-close-drawer {
-      background: #1e293b;
-      border: none;
-      color: #94a3b8;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
-
-    .drawer-section {
-      margin-bottom: 18px;
-    }
-    .drawer-sec-label {
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: #94a3b8;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .lang-switch-pills {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .lang-pill-btn {
-      padding: 10px;
-      border-radius: 12px;
-      border: 1.5px solid #334155;
-      background: #1e293b;
-      color: #cbd5e1;
-      font-weight: 800;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .lang-pill-btn.active {
-      background: #4f46e5;
-      border-color: #6366f1;
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.4);
-    }
-
-    .drawer-links-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .drawer-link-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      text-decoration: none;
-      color: #f8fafc;
-      transition: background 0.2s;
-    }
-    .drawer-link-item:hover, .drawer-link-item:active {
-      background: #334155;
-    }
-    .drawer-link-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-    .drawer-link-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-    }
-    .drawer-link-desc {
-      font-size: 0.68rem;
-      color: #94a3b8;
-    }
-
   </style>
 </head>
 <body>
@@ -3004,22 +3503,52 @@
     <div class="qr-sec">
       <div>
         <div style="font-size:16px; font-weight:bold;">ORDER #${ord.id}</div>
-        <div style="font-size:11px; color:#555;">তারিখ: ${ord.date || 'আজ'}</div>
-        <div style="font-size:12px; margin-top:4px;"><strong>পণ্য:</strong><br>${itemsText}</div>
+        <div style="font-size:11px; color:#555;">${isEn ? 'Date:' : 'তারিখ:'} ${orderDateFormatted}</div>
+        <div style="font-size:12px; margin-top:6px;"><strong>${isEn ? 'Items:' : 'পণ্য:'}</strong><br>${itemsText}</div>
       </div>
       <img src="${qrImgSrc}" class="qr-img" alt="QR Code">
     </div>
 
     <div class="info">
-      <div><strong>গ্রাহক:</strong> ${ord.name} (📞 ${ord.phone})</div>
-      <div><strong>ঠিকানা:</strong> ${ord.address}</div>
+      <div><strong>${isEn ? 'Customer:' : 'গ্রাহক:'}</strong> ${custName} (📞 ${ord.phone})</div>
+      <div style="margin-top:2px;"><strong>${isEn ? 'Address:' : 'ঠিকানা:'}</strong> ${ord.address}</div>
     </div>
 
-    <div class="pay-badge">
-      ${ord.paymentMode === 'UPI' ? '✅ অনলাইন প্রিপেইড (পেইড)' : `💵 CASH ON DELIVERY: ₹${ord.total}`}
+    <div class="pay-badge" style="color:${ord.paymentMode === 'UPI' ? '#0284c7' : '#15803d'};">
+      ${ord.paymentMode === 'UPI' ? (isEn ? '✅ ONLINE PREPAID (PAID)' : '✅ অনলাইন প্রিপেইড (পেইড)') : (isEn ? `💵 CASH ON DELIVERY: ₹${ord.total}` : `💵 ক্যাশ অন ডেলিভারি (COD): ₹${ord.total}`)}
     </div>
   </div>
   <script>window.onload = function(){ window.print(); };<\/script>
+</body>
+</html>`;
+
+      const w = window.open('', '_blank');
+      if (w) {
+        w.document.write(labelHtml);
+        w.document.close();
+      }
+    }
+
+    // Auto-apply selected language and restore session on page load
+    function initAdminDashboard() {
+      setAdminLanguage(currentAdminLang);
+      loadCustomBanner();
+      const isUnlocked = (sessionStorage.getItem('nc_owner_unlocked') === 'true');
+      const isPinDisabled = (localStorage.getItem('nc_pin_disabled') === 'true');
+      if (isUnlocked || isPinDisabled) {
+        bypassPinDirect();
+      } else {
+        const modal = document.getElementById('pinLockModal');
+        if (modal) modal.style.display = 'flex';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initAdminDashboard);
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initAdminDashboard();
+    }
+</script>
+
 
   <!-- ADMIN RACK LABELS & BARCODE MODAL -->
   <div id="adminRackLabelsModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
@@ -3101,74 +3630,4 @@
 
 </script>
 
-  <!-- ADMIN RACK LABELS & BARCODE MODAL -->
-  <div id="adminRackLabelsModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
-    <div class="owner-card" style="max-width:700px; width:100%; border:2px solid #818cf8; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto;">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:14px;">
-        <div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:#fff;">
-            <i class="fa-solid fa-barcode" style="color:#818cf8;"></i> ওয়্যারহাউস র‍্যাক বারকোড ও কিউআর স্টিকার প্রিন্টার
-          </h3>
-          <div style="font-size:0.75rem; color:var(--text-sub);">এই স্টিকারগুলো প্রিন্ট করে আপনার গোডাউনের তাকে বা বক্সে সেঁটে দিন।</div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff;" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> প্রিন্ট
-          </button>
-          <button type="button" onclick="closeAdminRackLabelsModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </div>
-
-      <div id="adminRackStickersContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;"></div>
-    </div>
-  </div>
-
-
-  <!-- ==================== EDIT / DELETE PRODUCT & IMAGE MODAL ==================== -->
-  <div id="editProductImageModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
-    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #38bdf8; box-shadow:var(--shadow-lg);">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:12px;">
-        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
-          <i class="fa-solid fa-image" style="color:#38bdf8;"></i> ভুল ছবি পরিবর্তন বা প্রোডাক্ট ডিলিট
-        </h3>
-        <button type="button" onclick="closeEditImageModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div style="text-align:center; margin-bottom:14px;">
-        <div style="font-weight:800; font-size:0.95rem; color:#f1f5f9;" id="editImageProdTitle">প্রোডাক্টের নাম</div>
-        <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;" id="editImageProdId">#NC-101</div>
-        <div style="margin:12px auto; width:140px; height:140px; border-radius:14px; overflow:hidden; border:2px solid #38bdf8; background:#090d16; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
-          <img id="editImagePreview" src="" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <!-- Replace Image Button -->
-        <label class="btn-fast-action" style="background:#0284c7; color:#fff; justify-content:center; padding:10px; cursor:pointer; font-weight:800;">
-          <i class="fa-solid fa-camera-rotate"></i> গ্যালারি থেকে নতুন সঠিক ছবি বাছুন
-          <input type="file" id="replaceImageFileInput" accept="image/*" style="display:none;" onchange="handleReplaceProductImageFile(event)">
-        </label>
-
-        <!-- Remove Image (Keep placeholder) -->
-        <button type="button" class="btn-fast-action" style="background:#475569; color:#f1f5f9; justify-content:center; padding:10px; font-weight:700;" onclick="removeProductImageOnly()">
-          <i class="fa-solid fa-trash-can"></i> শুধু এই ভুল ছবিটি মুছে দিন
-        </button>
-
-        <!-- Delete Entire Product -->
-        <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff; justify-content:center; padding:10px; font-weight:800;" onclick="confirmDeleteFromModal()">
-          <i class="fa-solid fa-trash"></i> সম্পূর্ণ প্রোডাক্টটি ডিলিট করুন
-        </button>
-
-        <button type="button" class="btn-fast-action" style="background:#1e293b; color:#94a3b8; justify-content:center;" onclick="closeEditImageModal()">
-          বন্ধ করুন
-        </button>
-      </div>
-    </div>
-  </div>
-
-</body>
-</html>
+  

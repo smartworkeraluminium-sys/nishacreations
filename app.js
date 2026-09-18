@@ -529,6 +529,61 @@ function sanitizeBoutiqueRuntime() {
       setLanguage(currentLang === 'bn' ? 'en' : 'bn');
     }
 
+    
+    // ==========================================
+    // CUSTOM OFFER BANNER (SYNCED WITH ADMIN)
+    // ==========================================
+    function renderCustomOfferBanner() {
+      const container = document.getElementById('customOfferBannerContainer');
+      if (!container) return;
+
+      let bannerData = null;
+      try {
+        const stored = localStorage.getItem('nc_custom_banner');
+        if (stored) bannerData = JSON.parse(stored);
+      } catch(e) {}
+
+      if (!bannerData || !bannerData.active || !bannerData.img) {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        return;
+      }
+
+      container.style.display = 'block';
+      container.innerHTML = `
+        <div class="custom-promo-banner-card" onclick="handleCustomBannerAction()" style="cursor:pointer; position:relative; border-radius:16px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.15); background:#1e293b; margin:12px 0;">
+          <img src="${bannerData.img}" alt="${bannerData.title || 'Special Offer'}" style="width:100%; max-height:420px; object-fit:cover; display:block; border-radius:16px;">
+          
+          ${(bannerData.title || bannerData.subtitle) ? `
+            <div style="position:absolute; bottom:0; inset-x:0; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.4) 60%, transparent 100%); padding:16px 14px; color:#fff;">
+              ${bannerData.badge ? `<span style="background:#ea580c; color:#fff; font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:6px; text-transform:uppercase; margin-bottom:4px; display:inline-block;">${bannerData.badge}</span>` : ''}
+              <div style="font-weight:800; font-size:1.1rem; line-height:1.3; text-shadow:0 2px 4px rgba(0,0,0,0.6);">${bannerData.title || ''}</div>
+              ${bannerData.subtitle ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:3px;">${bannerData.subtitle}</div>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function handleCustomBannerAction() {
+      let bannerData = null;
+      try {
+        const stored = localStorage.getItem('nc_custom_banner');
+        if (stored) bannerData = JSON.parse(stored);
+      } catch(e) {}
+
+      if (!bannerData) return;
+      if (bannerData.action === 'whatsapp') {
+        window.open(`https://wa.me/919239413517?text=নমস্কার,%20আমি%20ব্যানারের%20অফারটি%20(${encodeURIComponent(bannerData.title || 'স্পেশাল অফার')})%20বুকিং%20করতে%20চাই।`, '_blank');
+      } else if (bannerData.targetId) {
+        openPdp(bannerData.targetId);
+      } else {
+        const prodSec = document.getElementById('productGridContainer');
+        if (prodSec) prodSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+
     function applyLanguage() {
       const isEn = currentLang === 'en';
 
@@ -1631,44 +1686,41 @@ function adminQuickRestock(idx) {
     const CLOUD_DB_KEY = 'nc_cloud_db_url';
 
     function loadAllProducts() {
-      // 1. Check if Cloud Database URL is configured
-      const cloudUrl = localStorage.getItem(CLOUD_DB_KEY);
-      if (cloudUrl) {
-        const cleanUrl = cloudUrl.replace(/\/$/, '') + '/products.json';
-        fetch(cleanUrl)
-          .then(r => r.json())
-          .then(data => {
-            if (data && typeof data === 'object') {
-              const cloudItems = Object.keys(data).map(k => ({ id: k, ...data[k] }));
-              products = [...cloudItems, ...INITIAL_PRODUCTS];
-            } else {
-              loadLocalCustomProducts();
-            }
-            renderProducts(products);
-          })
-          .catch(err => {
-            console.log('Cloud fetch notice:', err);
-            loadLocalCustomProducts();
-            renderProducts(products);
-          });
-      } else {
-        loadLocalCustomProducts();
-        renderProducts(products);
-      }
-    }
+      // 1. Check if products exist in nc_products (synced with admin)
+      let stored = null;
+      try {
+        stored = localStorage.getItem('nc_products');
+      } catch(e) {}
 
-    function loadLocalCustomProducts() {
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            products = parsed;
+            renderProducts(products);
+            return;
+          }
+        } catch(e) {}
+      }
+
+      // 2. Check local custom products merged with INITIAL_PRODUCTS
       const localCustom = localStorage.getItem('nc_custom_products');
       if (localCustom) {
         try {
           const parsed = JSON.parse(localCustom);
           if (Array.isArray(parsed) && parsed.length > 0) {
             products = [...parsed, ...INITIAL_PRODUCTS];
+            localStorage.setItem('nc_products', JSON.stringify(products));
+            renderProducts(products);
             return;
           }
         } catch(e) {}
       }
+
+      // 3. Fallback to INITIAL_PRODUCTS
       products = [...INITIAL_PRODUCTS];
+      localStorage.setItem('nc_products', JSON.stringify(products));
+      renderProducts(products);
     }
 
     // INITIAL PRODUCTS & CLOUD DATABASE SETUP
@@ -2385,11 +2437,13 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
     
     // Cross-Tab & Cross-Window Instant Live Sync with admin.html
+    window.addEventListener('storage', (e) => { if (e.key === 'nc_products') loadAllProducts(); if (e.key === 'nc_custom_banner') renderCustomOfferBanner(); });
     window.addEventListener('storage', function(e) {
       if (e.key === 'nc_custom_products' || e.key === 'nc_products' || e.key === 'nc_reels' || e.key === 'nc_coupons' || e.key === 'nc_boutique_logo') {
         sanitizeBoutiqueRuntime();
     initBrandLogo();
         loadAllProducts();
+      renderCustomOfferBanner();
     initSaleCountdown();
         renderReels();
       }
@@ -2522,6 +2576,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     initBrandLogo();
     applyLanguage();
     loadAllProducts();
+      renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
       updateCartBadge();
@@ -2895,6 +2950,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     initBrandLogo();
     applyLanguage();
     loadAllProducts();
+      renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
       } else {
@@ -2904,10 +2960,11 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
     function renderProducts(list) {
       const grid = document.getElementById('productGridContainer');
+      if (!grid) return;
       grid.innerHTML = '';
 
-      if (list.length === 0) {
-        grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">কোনো পণ্য পাওয়া যায়নি!</div>`;
+      if (!list || list.length === 0) {
+        grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">${currentLang === 'bn' ? 'কোনো পণ্য পাওয়া যায়নি!' : 'No products found!'}</div>`;
         return;
       }
 
@@ -2915,22 +2972,52 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         const offPct = Math.round(((p.mrp - p.price) / p.mrp) * 100);
         const isWished = wishlist.includes(p.id);
 
+        const curStock = (p.stock !== undefined) ? parseInt(p.stock) : (p.inStock !== false ? 100 : 0);
+        const isOutOfStock = (curStock <= 0 || p.inStock === false);
+        const isUrgent = (curStock > 0 && curStock <= 10);
+
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = `product-card ${isOutOfStock ? 'is-out-of-stock' : ''}`;
         card.onclick = () => openPdp(p.id);
 
         card.innerHTML = `
-          <div class="product-img-wrap">
-            <img src="${p.img}" alt="${p.title}" loading="lazy">
+          <div class="product-img-wrap" style="position:relative;">
+            <img src="${p.img}" alt="${p.title}" loading="lazy" style="${isOutOfStock ? 'filter: grayscale(80%) opacity(0.6);' : ''}">
+            
+            ${isOutOfStock ? `
+              <div class="card-out-of-stock-overlay" style="position:absolute; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(2px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; z-index:2; border-radius:12px;">
+                <i class="fa-solid fa-circle-xmark" style="color:#ef4444; font-size:1.8rem;"></i>
+                <span style="color:#ffffff; font-weight:800; font-size:0.85rem; letter-spacing:0.5px;">${currentLang === 'bn' ? 'স্টক শেষ' : 'OUT OF STOCK'}</span>
+                <span style="color:#cbd5e1; font-size:0.68rem;">${currentLang === 'bn' ? 'শীঘ্রই পুনরায় আসবে' : 'Restocking Soon'}</span>
+              </div>
+            ` : ''}
+
             <button class="wish-btn ${isWished ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${p.id}')">
               <i class="fa-${isWished ? 'solid' : 'regular'} fa-heart"></i>
             </button>
           </div>
+
           <div class="product-info">
             <div>
               <div class="p-cat-tag">${p.category}</div>
               <div class="p-title">${p.title}</div>
             </div>
+
+            ${isUrgent ? `
+              <!-- FIRE URGENCY BADGE (LIMITED STOCK) -->
+              <div class="p-fire-urgency-strip" style="background:linear-gradient(135deg, #ea580c, #dc2626); color:#ffffff; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:6px; margin:4px 0; box-shadow:0 2px 8px rgba(234,88,12,0.35); animation:pulse 2s infinite;">
+                <i class="fa-solid fa-fire" style="color:#fef08a; font-size:0.95rem; animation:fireFlicker 1s infinite alternate;"></i>
+                <span>${currentLang === 'bn' ? `আর মাত্র ${curStock}টি বাকি! তাড়াতাড়ি করুন!` : `Hurry! Only ${curStock} left!`}</span>
+              </div>
+            ` : ''}
+
+            ${isOutOfStock ? `
+              <!-- OUT OF STOCK NOTICE -->
+              <div style="background:#fee2e2; border:1px solid #f87171; color:#991b1b; padding:3px 8px; border-radius:6px; font-size:0.72rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; margin:4px 0;">
+                <i class="fa-solid fa-ban"></i> ${currentLang === 'bn' ? 'স্টক শেষ (Out of Stock)' : 'Out of Stock'}
+              </div>
+            ` : ''}
+
             <div>
               <div class="p-price-row">
                 <span class="p-price">₹${p.price}</span>
@@ -2942,8 +3029,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
               </div>
               <div class="cod-tag">₹${p.price} with COD</div>
               <div class="p-rating-strip">
-                <div class="rating-badge">${p.rating} <i class="fa-solid fa-star"></i></div>
-                <div class="rating-count">(${p.reviews})</div>
+                <div class="rating-badge">${p.rating || 4.8} <i class="fa-solid fa-star"></i></div>
+                <div class="rating-count">(${p.reviews || 120})</div>
               </div>
             </div>
           </div>
@@ -2961,6 +3048,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     initBrandLogo();
     applyLanguage();
     loadAllProducts();
+      renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
         document.querySelectorAll('.cat-item')[0].classList.add('active');
@@ -3539,6 +3627,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     initBrandLogo();
     applyLanguage();
     loadAllProducts();
+      renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
     }
@@ -3760,60 +3849,70 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         }
       }
 
-      // Out of Stock Handling
+            // Out of Stock Handling
       const buyBtn = document.querySelector('.btn-buy-now');
       const addCartBtn = document.querySelector('.btn-add-cart');
-      if (p.inStock === false) {
+      const curStock = (p.stock !== undefined) ? parseInt(p.stock) : (p.inStock !== false ? 100 : 0);
+      const isOutOfStock = (curStock <= 0 || p.inStock === false);
+      const isUrgent = (curStock > 0 && curStock <= 10);
+
+      if (isOutOfStock) {
         if (buyBtn) {
-          buyBtn.innerHTML = '<i class="fa-solid fa-bell"></i> স্টক এলে জানান';
-          buyBtn.onclick = function() {
-            window.open(`https://wa.me/${BOUTIQUE_PHONE}?text=নমস্কার নিশা দিদি, "${p.title}" শাড়িটি স্টক শেষ। এটি পুনরায় স্টকে এলে আমাকে জানাবেন।`, '_blank');
-          };
+          buyBtn.disabled = true;
+          buyBtn.style.background = '#64748b';
+          buyBtn.style.cursor = 'not-allowed';
+          buyBtn.innerHTML = `<i class="fa-solid fa-ban"></i> ${currentLang === 'bn' ? 'স্টক শেষ (Out of Stock)' : 'Out of Stock'}`;
         }
         if (addCartBtn) {
           addCartBtn.disabled = true;
-          addCartBtn.style.opacity = '0.5';
+          addCartBtn.style.opacity = '0.4';
+          addCartBtn.style.cursor = 'not-allowed';
         }
       } else {
         if (buyBtn) {
-          buyBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> এখনই কিনুন';
+          buyBtn.disabled = false;
+          buyBtn.style.background = '';
+          buyBtn.style.cursor = 'pointer';
+          buyBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> ${currentLang === 'bn' ? 'এখনই কিনুন' : 'Buy Now'}`;
           buyBtn.onclick = buyCurrentNow;
         }
         if (addCartBtn) {
           addCartBtn.disabled = false;
           addCartBtn.style.opacity = '1';
+          addCartBtn.style.cursor = 'pointer';
           addCartBtn.onclick = addCurrentToCart;
         }
       }
 
-            // Live Stock Urgency & Out of Stock Notification
+      // Live Stock Urgency & Out of Stock Notification in PDP
       const stockMsgBox = document.getElementById('pdpStockAlertBox') || document.createElement('div');
       stockMsgBox.id = 'pdpStockAlertBox';
-      const curStock = (p.stock !== undefined) ? p.stock : (p.inStock !== false ? 100 : 0);
 
-      if (curStock <= 0 || p.inStock === false) {
+      if (isOutOfStock) {
         stockMsgBox.innerHTML = `
-          <div style="background:#fee2e2; border:1.5px solid #f87171; color:#991b1b; padding:10px 14px; border-radius:10px; font-size:0.82rem; font-weight:800; margin:10px 0; display:flex; align-items:center; gap:8px;">
-            <i class="fa-solid fa-circle-xmark" style="font-size:1.2rem;"></i>
-            <div>
-              <div>${currentLang === 'bn' ? 'দুঃখিত! এই শাড়িটির স্টক সম্পূর্ণ শেষ।' : 'Sorry! This item is currently out of stock.'}</div>
-              <div style="font-size:0.7rem; font-weight:600; opacity:0.9;">${currentLang === 'bn' ? 'পুনরায় স্টক আসার জন্য নিচে প্রি-অর্ডার করতে পারেন।' : 'You can pre-order below when restocked.'}</div>
+          <div style="background:#fee2e2; border:1.5px solid #f87171; color:#991b1b; padding:12px; border-radius:12px; font-size:0.85rem; font-weight:800; margin:10px 0;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-circle-xmark" style="color:#dc2626; font-size:1.3rem;"></i>
+              <div>${currentLang === 'bn' ? 'দুঃখিত! এই শাড়িটির স্টক সম্পূর্ণ শেষ (Out of Stock)।' : 'Sorry! This item is currently out of stock.'}</div>
             </div>
+            <a href="https://wa.me/919239413517?text=নমস্কার%20নিশা%20দিদি,%20"${encodeURIComponent(p.title)}"%20শাড়িটি%20স্টক%20শেষ%20দেখাচ্ছে।%20এটি%20পুনরায়%20কবে%20আসবে?" target="_blank" style="margin-top:8px; display:inline-flex; align-items:center; gap:6px; background:#16a34a; color:#fff; text-decoration:none; padding:8px 12px; border-radius:8px; font-size:0.78rem; font-weight:800;">
+              <i class="fa-brands fa-whatsapp"></i> ${currentLang === 'bn' ? 'স্টক এলে জানান (WhatsApp এ জিজ্ঞাসা করুন)' : 'Ask on WhatsApp for Restock'}
+            </a>
           </div>
         `;
-      } else if (curStock <= 10) {
+      } else if (isUrgent) {
         stockMsgBox.innerHTML = `
-          <div style="background:#fef3c7; border:1.5px solid #f59e0b; color:#92400e; padding:10px 14px; border-radius:10px; font-size:0.82rem; font-weight:800; margin:10px 0; display:flex; align-items:center; gap:8px; animation:pulse 2s infinite;">
-            <i class="fa-solid fa-fire" style="color:#ea580c; font-size:1.3rem;"></i>
+          <div style="background:#fef3c7; border:1.5px solid #f59e0b; color:#92400e; padding:12px; border-radius:12px; font-size:0.85rem; font-weight:800; margin:10px 0; display:flex; align-items:center; gap:10px; animation:pulse 2s infinite;">
+            <i class="fa-solid fa-fire" style="color:#ea580c; font-size:1.6rem; animation:fireFlicker 1s infinite alternate;"></i>
             <div>
               <div>${currentLang === 'bn' ? `তাড়াতাড়ি করুন! স্টকে আর মাত্র <strong>${curStock}</strong> টি শাড়ি অবশিষ্ট আছে!` : `Hurry! Only <strong>${curStock}</strong> items remaining in stock!`}</div>
-              <div style="font-size:0.7rem; font-weight:600; color:#78350f;">${currentLang === 'bn' ? 'দেরি করলে স্টক শেষ হয়ে যেতে পারে।' : 'High demand, order soon!'}</div>
+              <div style="font-size:0.72rem; font-weight:600; color:#78350f; margin-top:2px;">${currentLang === 'bn' ? 'সীমিত স্টক • দেরি করলে অফার শেষ হয়ে যাবে!' : 'High demand, order before it sells out!'}</div>
             </div>
           </div>
         `;
       } else {
         stockMsgBox.innerHTML = `
-          <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:700; margin:8px 0;">
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:8px 12px; border-radius:10px; font-size:0.78rem; font-weight:700; margin:8px 0; display:flex; align-items:center; gap:6px;">
             <i class="fa-solid fa-circle-check"></i> ${currentLang === 'bn' ? `স্টক উপলব্ধ (${curStock} পিস স্টকে রয়েছে)` : `In Stock (${curStock} pieces available)`}
           </div>
         `;
@@ -5358,6 +5457,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     initBrandLogo();
     applyLanguage();
     loadAllProducts();
+      renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
 
