@@ -1,5 +1,5 @@
-// Nisha Creations PWA Service Worker
-const CACHE_NAME = 'nisha-creations-v2026-09-18';
+// Nisha Creations PWA Service Worker v2
+const CACHE_NAME = 'nisha-creations-pwa-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,16 +7,20 @@ const ASSETS_TO_CACHE = [
   './app.js',
   './products.js',
   './logo.png',
-  './icon-192.png',
-  './icon-512.png',
   './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch(err => console.log('Cache addAll error:', err));
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of ASSETS_TO_CACHE) {
+        try {
+          await cache.add(asset);
+        } catch(err) {
+          console.warn('PWA Asset cache skip:', asset);
+        }
+      }
     })
   );
 });
@@ -36,12 +40,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first, fallback to cache for offline support
   event.respondWith(
     fetch(event.request)
-      .then((networkResponse) => {
-        return networkResponse;
-      })
+      .then((networkResponse) => networkResponse)
       .catch(() => caches.match(event.request))
   );
 });
