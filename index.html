@@ -55,10 +55,7 @@
         <button type="button" id="headerUserAuthBtn" onclick="handleHeaderAuthClick()" title="Account Login" style="background:#fdf4ff; border:1.5px solid var(--primary); border-radius:18px; padding:4px 10px; display:flex; align-items:center; gap:5px; font-weight:800; font-size:0.75rem; color:var(--primary); cursor:pointer; box-shadow:0 1px 4px rgba(156,39,176,0.15);">
           <i class="fa-solid fa-user"></i> <span id="headerUserAuthText">লগইন</span>
         </button>
-        <!-- Quick Language Toggle Button (বাংলা / English) -->
-        <button type="button" id="headerLangToggleBtn" onclick="toggleLanguage()" title="Switch Language / ভাষা পরিবর্তন" style="background:#fdf4ff; border:1.5px solid var(--primary); border-radius:18px; padding:4px 9px; display:flex; align-items:center; gap:4px; font-weight:800; font-size:0.75rem; color:var(--primary); cursor:pointer; box-shadow:0 1px 4px rgba(156,39,176,0.15); transition:all 0.2s;">
-          <span id="headerLangFlag">🇮🇳</span> <span id="headerLangText">বাংলা</span>
-        </button>
+        <!-- Language selector removed from header as per user instruction (kept only in menu drawer) -->
         <!-- Cart Shopping Bag -->
         <button class="header-icon-btn" onclick="openCartModal()" title="Shopping Bag" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative;">
           <i class="fa-solid fa-bag-shopping" style="font-size:1.15rem; color:var(--primary);"></i>
@@ -637,25 +634,6 @@
       </div>
     </div>
 
-    <!-- 2B. Customer Profile Dedicated Language Settings Card -->
-    <div class="nc-options-list-card" style="padding:14px 16px; margin-bottom:12px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-        <div style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
-          <span id="t-profileLangTitle">ভাষা নির্বাচন (Select Language)</span>
-        </div>
-      </div>
-      <div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;" id="t-profileLangSub">পছন্দের ভাষায় সম্পূর্ণ অ্যাপটি ব্যবহার করুন:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button type="button" id="btnProfileLangBn" onclick="setLanguage('bn')" style="padding:10px; border-radius:10px; border:2px solid var(--primary); background:#fdf4ff; color:var(--primary); font-weight:800; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;">
-          <i class="fa-solid fa-circle-check" id="checkProfileLangBn"></i> 🇮🇳 বাংলা
-        </button>
-        <button type="button" id="btnProfileLangEn" onclick="setLanguage('en')" style="padding:10px; border-radius:10px; border:1.5px solid #cbd5e1; background:#fff; color:#475569; font-weight:700; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;">
-          <i class="fa-solid fa-circle-check" id="checkProfileLangEn" style="display:none;"></i> 🇬🇧 English
-        </button>
-      </div>
-    </div>
-
     <!-- 3. The Two Iconic Big Action Buttons (Orders & Wishlist) -->
     <div class="nc-action-buttons-grid">
       <!-- Orders Button -->
@@ -1194,7 +1172,38 @@
       <!-- Drawer Body -->
       <div style="padding:16px; flex:1; display:flex; flex-direction:column; gap:12px;">
 
-        <!-- 1. Language Switcher (ভাষা নির্বাচন) - Prominent at the top! -->
+        <!-- 0. Drawer Auth Card (Login / Logout - দু'নম্বর ছবিতে লগ ইন লগ আউট অপশন) -->
+        <div id="drawerAuthBoxLoggedOut" style="background:linear-gradient(135deg, #fdf4ff, #fae8ff); border:1.5px solid #d8b4fe; border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 2px 8px rgba(156,39,176,0.1);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:38px; height:38px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:1.1rem; box-shadow:0 2px 5px rgba(156,39,176,0.15);">
+              <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div>
+              <div style="font-size:0.85rem; font-weight:800; color:#1e293b;" id="drawerAuthGuestTitle">স্বাগতম অতিথি!</div>
+              <div style="font-size:0.7rem; color:#64748b;" id="drawerAuthGuestSub">অর্ডার ট্র্যাক ও ছাড় পেতে</div>
+            </div>
+          </div>
+          <button type="button" onclick="closeMenuDrawer(); openCustomerAuthModal();" style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer; display:flex; align-items:center; gap:5px; box-shadow:0 2px 6px rgba(156,39,176,0.3);">
+            <i class="fa-solid fa-right-to-bracket"></i> <span id="drawerBtnLoginTxt">লগইন</span>
+          </button>
+        </div>
+
+        <div id="drawerAuthBoxLoggedIn" style="display:none; background:linear-gradient(135deg, #ecfdf5, #f0fdf4); border:1.5px solid #bbf7d0; border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 2px 8px rgba(16,185,129,0.1);">
+          <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">
+            <div style="width:38px; height:38px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; flex-shrink:0;" id="drawerUserAvatar">
+              N
+            </div>
+            <div style="overflow:hidden;">
+              <div style="font-size:0.85rem; font-weight:800; color:#065f46; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;" id="drawerUserName">Nisha Ghanti</div>
+              <div style="font-size:0.7rem; color:#047857; font-weight:700;" id="drawerUserPhone">📞 9641405426</div>
+            </div>
+          </div>
+          <button type="button" onclick="customerLogout()" style="background:#fff; color:#dc2626; border:1.5px solid #fca5a5; padding:6px 12px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:4px; flex-shrink:0; box-shadow:0 1px 3px rgba(220,38,38,0.1);">
+            <i class="fa-solid fa-right-from-bracket"></i> <span id="drawerBtnLogoutTxt">লগআউট</span>
+          </button>
+        </div>
+
+        <!-- 1. Language Switcher (ভাষা নির্বাচন - একমাত্র মেনু ড্রয়ারে সংরক্ষিত) -->
         <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; padding:12px;">
           <div style="font-size:0.78rem; font-weight:800; color:#334155; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
             <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
@@ -1293,6 +1302,18 @@
             <div style="font-size:0.68rem; color:#86198f;" id="drawerItemInstallSub">ফোনের হোমস্ক্রিনে সহজে খুলুন</div>
           </div>
           <i class="fa-solid fa-download" style="color:var(--primary); font-size:0.8rem;"></i>
+        </div>
+
+        <!-- 8. Drawer Login / Logout Action Menu Item -->
+        <div id="drawerAuthMenuItem" class="drawer-menu-item" onclick="handleDrawerAuthAction()" style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; cursor:pointer; transition:background 0.15s; margin-top:2px;">
+          <div id="drawerAuthItemIconWrap" style="width:36px; height:36px; border-radius:10px; background:#fdf4ff; color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:1.1rem;">
+            <i id="drawerAuthItemIcon" class="fa-solid fa-right-to-bracket"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:0.82rem; font-weight:800; color:#0f172a;" id="drawerAuthItemTitle">লগইন বা সাইন-আপ</div>
+            <div style="font-size:0.68rem; color:#64748b;" id="drawerAuthItemSub">মোবাইল নম্বর ও ওটিপি দিয়ে প্রবেশ করুন</div>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color:#cbd5e1; font-size:0.75rem;"></i>
         </div>
 
 
@@ -2040,54 +2061,132 @@
   </div>
 
 
-  <!-- ================= CUSTOMER AUTH & GPS LOCATION MODAL ================= -->
+  <!-- ================= CUSTOMER 2-STEP OTP AUTHENTICATION MODAL ================= -->
+  <!-- ================= CUSTOMER 2-STEP OTP AUTHENTICATION MODAL ================= -->
   <div id="customerAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px);">
-    <div style="background:#fff; width:100%; max-width:440px; border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); animation:fadeIn 0.2s ease-out;" onclick="event.stopPropagation()">
-      <div style="padding:16px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+    <div style="background:#fff; width:100%; max-width:420px; border-radius:22px; overflow:hidden; box-shadow:0 12px 35px rgba(0,0,0,0.3); animation:fadeIn 0.2s ease-out;" onclick="event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div style="padding:16px 18px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; display:flex; justify-content:space-between; align-items:center;">
         <div style="font-size:1rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-id-card"></i>
-          <span id="t-authModalTitle">কাস্টমার লগইন ও ঠিকানা</span>
+          <i class="fa-solid fa-shield-halved"></i>
+          <span id="t-authModalTitle">কাস্টমার ওটিপি লগইন</span>
         </div>
-        <button type="button" onclick="closeCustomerAuthModal()" style="background:transparent; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" onclick="closeCustomerAuthModal()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Close"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="customer-auth-body" style="padding:18px;">
-        <div style="margin-bottom:12px;">
-          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblPhone">
+      <!-- STEP 1: Phone Number Input (মোবাইল নম্বর ও ওটিপি রিকোয়েস্ট) -->
+      <div id="otpStepPhoneSection" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:52px; height:52px; border-radius:50%; background:#fdf4ff; color:var(--primary); font-size:1.6rem; display:inline-flex; align-items:center; justify-content:center; margin-bottom:8px; border:2px solid #f0abfc;">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+          </div>
+          <div style="font-size:1rem; font-weight:800; color:#0f172a;" id="t-otpPhoneHeading">মোবাইল নম্বর লিখুন</div>
+          <div style="font-size:0.75rem; color:#64748b; margin-top:4px;" id="t-otpPhoneSub">আপনার ১০ ডিজিটের মোবাইল নম্বরে ৪-সংখ্যার ওটিপি পাঠানো হবে</div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="font-size:0.8rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;" id="t-authLblPhone">
             মোবাইল নম্বর (১০ ডিজিট) *
           </label>
-          <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.95rem; font-weight:700; color:#0f172a;">
-        </div>
-
-        <div style="margin-bottom:12px;">
-          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblName">
-            আপনার পুরো নাম *
-          </label>
-          <input type="text" id="auth_name" placeholder="আপনার নাম লিখুন" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a;">
-        </div>
-
-        <div style="margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <label style="font-size:0.78rem; font-weight:800; color:#334155;" id="t-authLblAddr">
-              ডেলিভারি ঠিকানা ও ল্যান্ডমার্ক *
-            </label>
-            <button type="button" onclick="detectCustomerGpsLocation()" style="background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-size:0.72rem; font-weight:800; padding:4px 8px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:4px;">
-              <i class="fa-solid fa-location-crosshairs"></i> <span id="t-authBtnGps">📍 বর্তমান লোকেশন দিন</span>
-            </button>
+          <div style="display:flex; align-items:center; border:2px solid #cbd5e1; border-radius:12px; overflow:hidden; background:#fff;" id="otpPhoneWrap">
+            <span style="background:#f8fafc; padding:12px 14px; font-weight:800; font-size:0.95rem; color:#475569; border-right:1.5px solid #e2e8f0;">+91</span>
+            <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" style="width:100%; border:none; padding:12px 14px; font-size:1.05rem; font-weight:800; letter-spacing:1px; outline:none; color:#0f172a;">
           </div>
-          <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, রাস্তা, গ্রাম বা এলাকা (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a;"></textarea>
-          <div id="authGpsStatus" style="display:none; font-size:0.72rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:16px;">
-          <button type="button" onclick="saveCustomerAuthProfile()" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.3);">
-            <i class="fa-solid fa-right-to-bracket"></i> <span id="t-authBtnSave">সংরক্ষণ ও লগইন করুন</span>
-          </button>
-          <button type="button" onclick="closeCustomerAuthModal()" style="background:#f1f5f9; color:#475569; border:none; padding:12px 16px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
-            <span id="t-authBtnCancel">বাতিল</span>
-          </button>
+        <button type="button" onclick="sendCustomerOtp()" id="btnSendOtp" style="width:100%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:13px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(147,51,234,0.35);">
+          <i class="fa-solid fa-paper-plane"></i> <span id="t-btnSendOtpText">ওটিপি কোড পাঠান</span>
+        </button>
+
+        <div style="margin-top:14px; text-align:center; font-size:0.72rem; color:#64748b; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <i class="fa-solid fa-lock" style="color:#10b981;"></i> ১০০% নিরাপদ ও কোনো পাসওয়ার্ড মনে রাখার প্রয়োজন নেই
         </div>
       </div>
+
+      <!-- STEP 2: OTP Verification & Profile Info (ওটিপি যাচাই ও প্রোফাইল নিশ্চিতকরণ) -->
+      <div id="otpStepVerifySection" style="display:none; padding:20px;">
+        
+        <!-- Live Alert Notification of OTP (ওটিপি প্রাপ্তি সহজ করার জন্য লাইভ ব্যানার) -->
+        <div id="otpLiveNotificationBanner" style="background:linear-gradient(135deg, #0f172a, #1e293b); color:#fff; border-radius:14px; padding:12px 14px; margin-bottom:14px; border:1.5px solid #6366f1; box-shadow:0 4px 15px rgba(0,0,0,0.25);">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#94a3b8;">
+            <span><i class="fa-solid fa-comment-sms" style="color:#818cf8;"></i> SMS Alert • Nisha Creations</span>
+            <span style="background:#3730a3; color:#c7d2fe; font-size:0.65rem; padding:2px 6px; border-radius:6px;">সবেমাত্র পাঠানো হয়েছে</span>
+          </div>
+          <div style="font-size:0.85rem; font-weight:700; margin-top:6px; color:#f8fafc;">
+            আপনার লগইন ওটিপি কোড: <span id="liveOtpDisplayCode" style="font-size:1.25rem; font-weight:900; color:#fde047; letter-spacing:4px; background:rgba(253,224,71,0.15); padding:2px 8px; border-radius:6px; border:1px dashed #fde047; display:inline-block; margin-left:4px;">1234</span>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-bottom:12px;">
+          <div style="font-size:0.82rem; font-weight:700; color:#475569;">
+            <span id="displaySentToPhone">+91 9641405426</span> নম্বরে ওটিপি পাঠানো হয়েছে
+          </div>
+          <button type="button" onclick="backToPhoneStep()" style="background:none; border:none; color:var(--primary); font-size:0.74rem; font-weight:800; cursor:pointer; margin-top:3px; text-decoration:underline;">
+            ← নম্বর পরিবর্তন করুন
+          </button>
+        </div>
+
+        <!-- 4-Digit OTP Inputs -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px; text-align:center;" id="t-lblEnterOtp">
+            ৪ ডিজিটের ওটিপি লিখুন *
+          </label>
+          <div style="display:flex; justify-content:center; gap:10px;">
+            <input type="tel" id="otp_box_1" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(1)" onkeydown="handleOtpBoxKey(event, 1)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
+            <input type="tel" id="otp_box_2" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(2)" onkeydown="handleOtpBoxKey(event, 2)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
+            <input type="tel" id="otp_box_3" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(3)" onkeydown="handleOtpBoxKey(event, 3)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
+            <input type="tel" id="otp_box_4" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(4)" onkeydown="handleOtpBoxKey(event, 4)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
+          </div>
+          
+          <!-- One Tap Auto-Fill Button -->
+          <div style="text-align:center; margin-top:8px;">
+            <button type="button" onclick="autoFillOtp()" style="background:#fdf4ff; border:1px solid #d8b4fe; color:var(--primary); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:8px; cursor:pointer;">
+              ⚡ <span id="t-btnAutoFillOtp">এক-ক্লিকে ওটিপি বসান</span> (<span id="autoFillOtpVal">1234</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Name & Address -->
+        <div id="otpProfileFields" style="border-top:1px solid #f1f5f9; padding-top:12px; margin-top:10px;">
+          <div style="margin-bottom:10px;">
+            <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblName">
+              আপনার পুরো নাম *
+            </label>
+            <input type="text" id="auth_name" placeholder="যেমন: Nisha Ghanti" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a; outline:none;">
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <label style="font-size:0.78rem; font-weight:800; color:#334155;" id="t-authLblAddr">
+                ডেলিভারি ঠিকানা ও ল্যান্ডমার্ক *
+              </label>
+              <button type="button" onclick="detectCustomerGpsLocation()" style="background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:4px;">
+                <i class="fa-solid fa-location-crosshairs"></i> <span id="t-authBtnGps">📍 বর্তমান GPS লোকেশন</span>
+              </button>
+            </div>
+            <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, এলাকা বা গ্রাম (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a; outline:none;"></textarea>
+            <div id="authGpsStatus" style="display:none; font-size:0.72rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button type="button" onclick="verifyCustomerOtpAndLogin()" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.35);">
+            <i class="fa-solid fa-circle-check"></i> <span id="t-btnVerifyOtpText">ওটিপি যাচাই ও লগইন সম্পন্ন করুন</span>
+          </button>
+          <button type="button" onclick="closeCustomerAuthModal()" style="background:#f1f5f9; color:#475569; border:none; padding:12px 14px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
+            বাতিল
+          </button>
+        </div>
+
+        <div style="margin-top:10px; text-align:center;">
+          <button type="button" id="btnResendOtpTimer" onclick="resendCustomerOtp()" style="background:none; border:none; font-size:0.74rem; color:#64748b; font-weight:700; cursor:pointer;">
+            ওটিপি পাননি? <span style="color:var(--primary); font-weight:800;">পুনরায় ওটিপি পাঠান</span>
+          </button>
+        </div>
+
+      </div>
+
     </div>
   </div>
 

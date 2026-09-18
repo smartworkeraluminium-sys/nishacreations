@@ -4682,6 +4682,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       }
 
       const isLoggedIn = !!(currentCustomer && currentCustomer.phone);
+      updateDrawerActiveStates();
       const isEn = (currentLang === 'en');
 
       const greetEl = document.getElementById('ncGreetingName');
@@ -4703,6 +4704,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         if (guestCard) guestCard.style.display = 'none';
         if (loggedInActions) loggedInActions.style.display = 'flex';
         if (topAuthBtnTxt) topAuthBtnTxt.textContent = isEn ? 'Edit Profile' : 'প্রোফাইল এডিট';
+        const hdrAuth = document.getElementById('headerUserAuthText');
+        if (hdrAuth) hdrAuth.textContent = currentCustomer.name ? currentCustomer.name.split(' ')[0] : (isEn ? 'Account' : 'প্রোফাইল');
       } else {
         if (greetEl) greetEl.textContent = isEn ? 'Hey, Guest!' : 'স্বাগতম অতিথি!';
         if (coinsEl) coinsEl.textContent = '0';
@@ -4713,30 +4716,36 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         if (guestCard) guestCard.style.display = 'block';
         if (loggedInActions) loggedInActions.style.display = 'none';
         if (topAuthBtnTxt) topAuthBtnTxt.textContent = isEn ? 'Login' : 'লগইন';
+        const hdrAuth = document.getElementById('headerUserAuthText');
+        if (hdrAuth) hdrAuth.textContent = isEn ? 'Login' : 'লগইন';
       }
 
       updateWishlistBadgesGlobal();
+    }
+
+    
+    function handleHeaderAuthClick() {
+      if (currentCustomer && currentCustomer.phone) {
+        showScreen('customer-settings');
+      } else {
+        openCustomerAuthModal();
+      }
     }
 
     function openCustomerAuthModal() {
       const modal = document.getElementById('customerAuthModal');
       if (!modal) return;
 
+      const isEn = (currentLang === 'en');
+      const step1 = document.getElementById('otpStepPhoneSection');
+      const step2 = document.getElementById('otpStepVerifySection');
+      if (step1) step1.style.display = 'block';
+      if (step2) step2.style.display = 'none';
+
       const phoneInp = document.getElementById('auth_phone');
-      const nameInp = document.getElementById('auth_name');
-      const addrInp = document.getElementById('auth_addr');
-      const gpsStatus = document.getElementById('authGpsStatus');
-
-      if (gpsStatus) gpsStatus.style.display = 'none';
-
-      if (currentCustomer && currentCustomer.phone) {
-        if (phoneInp) phoneInp.value = currentCustomer.phone || '';
-        if (nameInp) nameInp.value = currentCustomer.name || '';
-        if (addrInp) addrInp.value = currentCustomer.address || '';
-      } else {
-        if (phoneInp) phoneInp.value = '';
-        if (nameInp) nameInp.value = '';
-        if (addrInp) addrInp.value = '';
+      if (phoneInp) {
+        phoneInp.value = (currentCustomer && currentCustomer.phone) ? currentCustomer.phone : '';
+        setTimeout(() => phoneInp.focus(), 150);
       }
 
       modal.style.display = 'flex';
@@ -4745,6 +4754,256 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     function closeCustomerAuthModal() {
       const modal = document.getElementById('customerAuthModal');
       if (modal) modal.style.display = 'none';
+      clearInterval(window.otpResendInterval);
+    }
+
+    function backToPhoneStep() {
+      const step1 = document.getElementById('otpStepPhoneSection');
+      const step2 = document.getElementById('otpStepVerifySection');
+      if (step1) step1.style.display = 'block';
+      if (step2) step2.style.display = 'none';
+      clearInterval(window.otpResendInterval);
+      const phoneInp = document.getElementById('auth_phone');
+      if (phoneInp) setTimeout(() => phoneInp.focus(), 100);
+    }
+
+    function sendCustomerOtp() {
+      const phoneInp = document.getElementById('auth_phone');
+      const rawPhone = phoneInp ? phoneInp.value.replace(/[^0-9]/g, '').trim() : '';
+      const isEn = (currentLang === 'en');
+
+      if (!rawPhone || rawPhone.length !== 10) {
+        alert(isEn ? 'Please enter a valid 10-digit mobile number!' : 'অনুগ্রহ করে সঠিক ১০ ডিজিটের মোবাইল নম্বর দিন (যেমন: 9832100000)!');
+        if (phoneInp) phoneInp.focus();
+        return;
+      }
+
+      // Generate 4-digit OTP code
+      const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+      window.activeOtp = otpCode;
+      window.activeOtpPhone = rawPhone;
+
+      // Switch to Step 2
+      const step1 = document.getElementById('otpStepPhoneSection');
+      const step2 = document.getElementById('otpStepVerifySection');
+      if (step1) step1.style.display = 'none';
+      if (step2) step2.style.display = 'block';
+
+      // Update UI displays for OTP
+      const dispPhone = document.getElementById('displaySentToPhone');
+      if (dispPhone) dispPhone.textContent = '+91 ' + rawPhone;
+
+      const liveOtp = document.getElementById('liveOtpDisplayCode');
+      if (liveOtp) liveOtp.textContent = otpCode;
+
+      const autoVal = document.getElementById('autoFillOtpVal');
+      if (autoVal) autoVal.textContent = otpCode;
+
+      // Clear boxes
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById('otp_box_' + i);
+        if (b) {
+          b.value = '';
+          b.style.borderColor = '#cbd5e1';
+        }
+      }
+
+      // Check for saved profile for this phone number
+      let savedProfiles = {};
+      try {
+        savedProfiles = JSON.parse(localStorage.getItem('nc_all_registered_profiles') || '{}');
+      } catch(e) {}
+
+      const existing = savedProfiles[rawPhone] || (currentCustomer && currentCustomer.phone === rawPhone ? currentCustomer : null);
+      const nameInp = document.getElementById('auth_name');
+      const addrInp = document.getElementById('auth_addr');
+
+      if (existing) {
+        if (nameInp) nameInp.value = existing.name || '';
+        if (addrInp) addrInp.value = existing.address || '';
+      } else {
+        if (nameInp && !nameInp.value) nameInp.value = '';
+        if (addrInp && !addrInp.value) addrInp.value = isEn ? 'Amta, Howrah - 711401' : 'আমতা, হাওড়া - 711401';
+      }
+
+      // Focus first OTP box
+      const b1 = document.getElementById('otp_box_1');
+      if (b1) setTimeout(() => b1.focus(), 150);
+
+      // Start 30s countdown timer
+      startOtpResendTimer();
+
+      // Show instant notification on screen
+      showToast(`💬 ${isEn ? 'Your Login OTP is' : 'নিশা ক্রিয়েশনস লগইন ওটিপি:'} <b style="color:#fde047; font-size:1.15rem; letter-spacing:3px;">${otpCode}</b>`);
+    }
+
+    function handleOtpBoxInput(index) {
+      const b = document.getElementById('otp_box_' + index);
+      if (!b) return;
+      b.value = b.value.replace(/[^0-9]/g, '').slice(-1);
+      if (b.value && index < 4) {
+        const next = document.getElementById('otp_box_' + (index + 1));
+        if (next) next.focus();
+      }
+    }
+
+    function handleOtpBoxKey(e, index) {
+      if (e.key === 'Backspace') {
+        const b = document.getElementById('otp_box_' + index);
+        if (b && !b.value && index > 1) {
+          const prev = document.getElementById('otp_box_' + (index - 1));
+          if (prev) {
+            prev.focus();
+            prev.value = '';
+          }
+        }
+      }
+    }
+
+    function autoFillOtp() {
+      if (!window.activeOtp) return;
+      for (let i = 0; i < 4; i++) {
+        const b = document.getElementById('otp_box_' + (i + 1));
+        if (b) {
+          b.value = window.activeOtp.charAt(i);
+          b.style.borderColor = '#10b981';
+        }
+      }
+      const nameInp = document.getElementById('auth_name');
+      if (nameInp && !nameInp.value) {
+        nameInp.focus();
+      }
+    }
+
+    function startOtpResendTimer() {
+      clearInterval(window.otpResendInterval);
+      let timeLeft = 30;
+      const btn = document.getElementById('btnResendOtpTimer');
+      const isEn = (currentLang === 'en');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = isEn 
+          ? `Resend OTP in <span style="font-weight:800; color:var(--primary);">${timeLeft}s</span>` 
+          : `পুনরায় ওটিপি পাঠান (<span style="font-weight:800; color:var(--primary);">${timeLeft} সেকেন্ড</span> পর)`;
+      }
+      window.otpResendInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(window.otpResendInterval);
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = isEn 
+              ? `Didn't get OTP? <span style="font-weight:800; color:var(--primary); text-decoration:underline;">Resend OTP</span>` 
+              : `ওটিপি পাননি? <span style="font-weight:800; color:var(--primary); text-decoration:underline;">পুনরায় ওটিপি পাঠান</span>`;
+          }
+        } else if (btn) {
+          btn.innerHTML = isEn 
+            ? `Resend OTP in <span style="font-weight:800; color:var(--primary);">${timeLeft}s</span>` 
+            : `পুনরায় ওটিপি পাঠান (<span style="font-weight:800; color:var(--primary);">${timeLeft} সেকেন্ড</span> পর)`;
+        }
+      }, 1000);
+    }
+
+    function resendCustomerOtp() {
+      if (!window.activeOtpPhone) return;
+      const isEn = (currentLang === 'en');
+      const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
+      window.activeOtp = newOtp;
+      
+      const liveOtp = document.getElementById('liveOtpDisplayCode');
+      if (liveOtp) liveOtp.textContent = newOtp;
+      const autoVal = document.getElementById('autoFillOtpVal');
+      if (autoVal) autoVal.textContent = newOtp;
+
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById('otp_box_' + i);
+        if (b) {
+          b.value = '';
+          b.style.borderColor = '#cbd5e1';
+        }
+      }
+      const b1 = document.getElementById('otp_box_1');
+      if (b1) b1.focus();
+
+      startOtpResendTimer();
+      showToast(`💬 ${isEn ? 'New OTP code is' : 'নতুন ওটিপি কোড:'} <b style="color:#fde047; font-size:1.15rem; letter-spacing:3px;">${newOtp}</b>`);
+    }
+
+    function verifyCustomerOtpAndLogin() {
+      const isEn = (currentLang === 'en');
+      let enteredOtp = '';
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById('otp_box_' + i);
+        enteredOtp += (b ? b.value.trim() : '');
+      }
+
+      if (enteredOtp.length !== 4) {
+        alert(isEn ? 'Please enter the complete 4-digit OTP!' : 'অনুগ্রহ করে সম্পূর্ণ ৪ ডিজিটের ওটিপি কোডটি লিখুন!');
+        return;
+      }
+
+      if (enteredOtp !== window.activeOtp) {
+        alert(isEn ? '❌ Incorrect OTP code! Please check the code shown in notification.' : '❌ ভুল ওটিপি কোড! অনুগ্রহ করে নোটিফিকেশনে দেখানো সঠিক ৪ ডিজিটের ওটিপি দিন।');
+        for (let i = 1; i <= 4; i++) {
+          const b = document.getElementById('otp_box_' + i);
+          if (b) {
+            b.value = '';
+            b.style.borderColor = '#ef4444';
+          }
+        }
+        const b1 = document.getElementById('otp_box_1');
+        if (b1) b1.focus();
+        return;
+      }
+
+      // OTP verified successfully!
+      const nameInp = document.getElementById('auth_name');
+      const addrInp = document.getElementById('auth_addr');
+
+      const name = nameInp ? nameInp.value.trim() : '';
+      const addr = addrInp ? addrInp.value.trim() : '';
+
+      if (!name) {
+        alert(isEn ? 'Please enter your full name!' : 'অনুগ্রহ করে আপনার পুরো নাম লিখুন!');
+        if (nameInp) nameInp.focus();
+        return;
+      }
+
+      const phone = window.activeOtpPhone;
+
+      currentCustomer = {
+        id: 'CUST-' + phone.slice(-6),
+        name: name,
+        phone: phone,
+        address: addr || (isEn ? 'Amta, Howrah - 711401' : 'আমতা, হাওড়া - 711401'),
+        coins: (currentCustomer && currentCustomer.coins !== undefined) ? currentCustomer.coins : 50,
+        loggedIn: true,
+        updatedAt: new Date().toISOString()
+      };
+
+      try {
+        localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+        let savedProfiles = JSON.parse(localStorage.getItem('nc_all_registered_profiles') || '{}');
+        savedProfiles[phone] = { name: name, address: addr };
+        localStorage.setItem('nc_all_registered_profiles', JSON.stringify(savedProfiles));
+      } catch(e) {}
+
+      checkoutAddress = { name: name, phone: phone, address: addr };
+
+      closeCustomerAuthModal();
+
+      // Update all UI elements
+      loadCustomerAccountHub();
+      syncCheckoutWithProfile();
+      updateDrawerActiveStates();
+      renderOrders();
+
+      showToast(isEn ? `🎉 Welcome, ${name}! Logged in successfully.` : `🎉 অভিনন্দন, ${name}! ওটিপি সফলভাবে যাচাই হয়েছে এবং আপনি লগইন হয়েছেন।`);
+    }
+
+    function saveCustomerAuthProfile() {
+      // Fallback redirect to OTP verification
+      verifyCustomerOtpAndLogin();
     }
 
     function detectCustomerGpsLocation() {
@@ -4790,56 +5049,17 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       );
     }
 
-    function saveCustomerAuthProfile() {
-      const phoneInp = document.getElementById('auth_phone');
-      const nameInp = document.getElementById('auth_name');
-      const addrInp = document.getElementById('auth_addr');
-
-      const phone = phoneInp ? phoneInp.value.replace(/[^0-9]/g, '') : '';
-      const name = nameInp ? nameInp.value.trim() : '';
-      const addr = addrInp ? addrInp.value.trim() : '';
-
-      if (!phone || phone.length < 10) {
-        alert(currentLang === 'en' ? 'Please enter a valid 10-digit mobile number!' : 'অনুগ্রহ করে সঠিক ১০ ডিজিটের মোবাইল নম্বর দিন!');
-        return;
-      }
-
-      if (!name) {
-        alert(currentLang === 'en' ? 'Please enter your full name!' : 'অনুগ্রহ করে আপনার নাম লিখুন!');
-        return;
-      }
-
-      currentCustomer = {
-        id: 'CUST-' + phone.slice(-6),
-        name,
-        phone,
-        address: addr,
-        coins: (currentCustomer && currentCustomer.coins !== undefined) ? currentCustomer.coins : 50,
-        loggedIn: true,
-        updatedAt: new Date().toISOString()
-      };
-
-      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
-
-      checkoutAddress = { name, phone, address: addr };
-
-      loadCustomerAccountHub();
-      syncCheckoutWithProfile();
-      syncCheckoutWithProfile();
-      closeCustomerAuthModal();
-
-      alert(currentLang === 'en' ? `🎉 Welcome, ${name}! Your account & address are updated.` : `🎉 স্বাগতম, ${name}! আপনার অ্যাকাউন্ট ও ঠিকানা সফলভাবে সংরক্ষিত হয়েছে।`);
-    }
-
     function customerLogout() {
-      if (!confirm(currentLang === 'en' ? 'Are you sure you want to log out?' : 'আপনি কি নিশ্চিতভাবে লগআউট করতে চান?')) return;
+      const isEn = currentLang === 'en';
+      if (!confirm(isEn ? 'Are you sure you want to log out?' : 'আপনি কি নিশ্চিতভাবে লগআউট করতে চান?')) return;
       localStorage.removeItem('nc_customer_profile');
       currentCustomer = null;
       checkoutAddress = { name: '', phone: '', address: '' };
       loadCustomerAccountHub();
       syncCheckoutWithProfile();
-      syncCheckoutWithProfile();
-      alert(currentLang === 'en' ? '🚪 You have been logged out successfully.' : '🚪 আপনি সফলভাবে লগআউট হয়েছেন।');
+      updateDrawerActiveStates();
+      renderOrders();
+      showToast(isEn ? '🚪 You have been logged out successfully.' : '🚪 আপনি সফলভাবে লগআউট হয়েছেন।');
     }
 
     function syncCheckoutWithProfile() {
@@ -5004,31 +5224,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     function loadAndRenderOrdersSafe() {
       let storedOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
       
-      // If no orders exist yet, seed with initial demo order NC-5019 from screenshot
-      if (!storedOrders || storedOrders.length === 0) {
-        storedOrders = [{
-          id: "NC-5019",
-          date: "15/9/2026, 08:05 PM",
-          name: "Saheb Ghanti",
-          phone: "9239413517",
-          address: "Amta Chandni, আমতা, হাওড়া - 711401",
-          items: [{
-            id: "NC-101",
-            title: "Pure Dhakai Jamdani Saree (Traditional Red & Zari Weave)",
-            price: 799,
-            mrp: 1599,
-            selectedSize: "Free Size",
-            qty: 1,
-            img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600"
-          }],
-          total: 799,
-          paymentMode: "COD",
-          status: "Delivered",
-          reviewed: false
-        }];
-        localStorage.setItem('nc_orders', JSON.stringify(storedOrders));
-      }
-      orders = storedOrders;
+      // No hardcoded or fake orders! Clean empty array for new users.
+      orders = Array.isArray(storedOrders) ? storedOrders : [];
       renderOrders();
     }
 
@@ -5039,12 +5236,23 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       const isEn = currentLang === 'en';
 
       const wHead = document.getElementById('t-ordersHeaderTitleTxt');
-      if (wHead) wHead.textContent = isEn ? "MY ORDERS" : "MY ORDERS";
+      if (wHead) wHead.textContent = isEn ? "MY ORDERS" : "আমার অর্ডার";
       const wHelp = document.getElementById('t-ordersHelpTxt');
-      if (wHelp) wHelp.textContent = isEn ? "HELP" : "HELP";
+      if (wHelp) wHelp.textContent = isEn ? "HELP" : "সাহায্য";
 
       let stored = localStorage.getItem('nc_orders');
-      let currentList = filterList || (stored ? JSON.parse(stored) : orders);
+      let allOrders = stored ? JSON.parse(stored) : (orders || []);
+
+      // Filter orders by logged in customer's phone if available
+      let currentList = filterList;
+      if (!currentList) {
+        if (currentCustomer && currentCustomer.phone) {
+          const userPhoneClean = currentCustomer.phone.replace(/[^0-9]/g, '');
+          currentList = allOrders.filter(o => (o.phone || '').replace(/[^0-9]/g, '') === userPhoneClean);
+        } else {
+          currentList = allOrders;
+        }
+      }
 
       if (!currentList || currentList.length === 0) {
         container.innerHTML = `
@@ -5377,61 +5585,6 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderOrders(res);
     }
 
-    // Customer Cloud Account Management
-    function openCustomerAuthModal() {
-      document.getElementById('customerAuthModal').style.display = 'flex';
-      updateCustomerAuthDisplay();
-    }
-
-    function closeCustomerAuthModal() {
-      document.getElementById('customerAuthModal').style.display = 'none';
-    }
-
-    function doCustomerLogin() {
-      const name = document.getElementById('cust_login_name').value.trim();
-      const phone = document.getElementById('cust_login_phone').value.trim();
-      if (!name || !phone) { alert("নাম ও ফোন নম্বর দিন!"); return; }
-
-      currentCustomer = { name: name, phone: phone, coins: 150, address: "আমতা, হাওড়া" };
-      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
-      updateCustomerAuthDisplay();
-      alert(`স্বাগতম, ${name}! আপনার ক্লাউড প্রোফাইল সফলভাবে কানেক্ট হয়েছে।`);
-    }
-
-    function doGoogleFastLogin() {
-      // Instead of hardcoding, open the auth modal for real mobile number & address
-      openCustomerAuthModal();
-    }
-
-    function doCustomerLogout() {
-      currentCustomer = null;
-      localStorage.removeItem('nc_customer_profile');
-      updateCustomerAuthDisplay();
-      alert("লগআউট সম্পন্ন হয়েছে।");
-    }
-
-    function updateCustomerAuthDisplay() {
-      const outView = document.getElementById('authLoggedOutView');
-      const inView = document.getElementById('authLoggedInView');
-      const icon = document.getElementById('userAuthIconBtn');
-
-      if (currentCustomer) {
-        if (outView) outView.style.display = 'none';
-        if (inView) inView.style.display = 'block';
-        if (icon) icon.innerHTML = '<i class="fa-solid fa-circle-user" style="color:var(--primary);"></i>';
-        const u = document.getElementById('authDisplayUser');
-        const p = document.getElementById('authDisplayPhone');
-        const w = document.getElementById('authWalletCoins');
-        if (u) u.textContent = currentCustomer.name;
-        if (p) p.textContent = currentCustomer.phone || currentCustomer.email;
-        if (w) w.textContent = `${currentCustomer.coins || 150} নিশা কয়েন (₹${currentCustomer.coins || 150} ছাড়)`;
-      } else {
-        if (outView) outView.style.display = 'block';
-        if (inView) inView.style.display = 'none';
-        if (icon) icon.innerHTML = '<i class="fa-regular fa-circle-user"></i>';
-      }
-    }
-
     // Refer & Earn Modals
     function openReferModal() { document.getElementById('referModal').style.display = 'flex'; }
     function closeReferModal() { document.getElementById('referModal').style.display = 'none'; }
@@ -5478,6 +5631,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
     function updateDrawerActiveStates() {
       const isBn = currentLang === 'bn';
+      const isEn = (currentLang === 'en');
       const btnBn = document.getElementById('drawerBtnLangBn');
       const btnEn = document.getElementById('drawerBtnLangEn');
       const chkBn = document.getElementById('drawerCheckBn');
@@ -5504,6 +5658,64 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
           if (chkBn) chkBn.style.display = 'none';
         }
       }
+
+      // Handle Drawer Login & Logout Option (দু'নম্বর ছবিতে লগ ইন লগ আউট করার অপশন)
+      const isLoggedIn = !!(currentCustomer && currentCustomer.phone);
+      const boxLoggedOut = document.getElementById('drawerAuthBoxLoggedOut');
+      const boxLoggedIn = document.getElementById('drawerAuthBoxLoggedIn');
+      const uName = document.getElementById('drawerUserName');
+      const uPhone = document.getElementById('drawerUserPhone');
+      const uAvatar = document.getElementById('drawerUserAvatar');
+      const authMenuItem = document.getElementById('drawerAuthMenuItem');
+      const authIconWrap = document.getElementById('drawerAuthItemIconWrap');
+      const authIcon = document.getElementById('drawerAuthItemIcon');
+      const authTitle = document.getElementById('drawerAuthItemTitle');
+      const authSub = document.getElementById('drawerAuthItemSub');
+      const btnLoginTxt = document.getElementById('drawerBtnLoginTxt');
+      const btnLogoutTxt = document.getElementById('drawerBtnLogoutTxt');
+      const guestTitle = document.getElementById('drawerAuthGuestTitle');
+      const guestSub = document.getElementById('drawerAuthGuestSub');
+
+      if (guestTitle) guestTitle.textContent = isEn ? 'Welcome Guest!' : 'স্বাগতম অতিথি!';
+      if (guestSub) guestSub.textContent = isEn ? 'Track orders & get rewards' : 'অর্ডার ট্র্যাক ও ছাড় পেতে';
+      if (btnLoginTxt) btnLoginTxt.textContent = isEn ? 'Login' : 'লগইন';
+      if (btnLogoutTxt) btnLogoutTxt.textContent = isEn ? 'Logout' : 'লগআউট';
+
+      if (isLoggedIn) {
+        if (boxLoggedOut) boxLoggedOut.style.display = 'none';
+        if (boxLoggedIn) boxLoggedIn.style.display = 'flex';
+        if (uName) uName.textContent = currentCustomer.name || (isEn ? 'Valued Customer' : 'সম্মানিত গ্রাহক');
+        if (uPhone) uPhone.textContent = '📞 ' + currentCustomer.phone;
+        if (uAvatar) uAvatar.textContent = (currentCustomer.name || 'N').trim().charAt(0).toUpperCase();
+
+        if (authIconWrap) {
+          authIconWrap.style.background = '#fef2f2';
+          authIconWrap.style.color = '#dc2626';
+        }
+        if (authIcon) authIcon.className = 'fa-solid fa-right-from-bracket';
+        if (authTitle) authTitle.textContent = isEn ? 'Logout' : 'লগআউট';
+        if (authSub) authSub.textContent = isEn ? 'Sign out of this account' : 'অ্যাকাউন্ট থেকে প্রস্থান করুন';
+      } else {
+        if (boxLoggedOut) boxLoggedOut.style.display = 'flex';
+        if (boxLoggedIn) boxLoggedIn.style.display = 'none';
+
+        if (authIconWrap) {
+          authIconWrap.style.background = '#fdf4ff';
+          authIconWrap.style.color = 'var(--primary)';
+        }
+        if (authIcon) authIcon.className = 'fa-solid fa-right-to-bracket';
+        if (authTitle) authTitle.textContent = isEn ? 'Login / Register' : 'লগইন বা রেজিস্টার';
+        if (authSub) authSub.textContent = isEn ? 'Login with mobile OTP' : 'মোবাইল নম্বর ও ওটিপি দিয়ে প্রবেশ করুন';
+      }
+    }
+
+    function handleDrawerAuthAction() {
+      if (currentCustomer && currentCustomer.phone) {
+        customerLogout();
+      } else {
+        closeMenuDrawer();
+        openCustomerAuthModal();
+      }
     }
 
     function triggerPwaInstallPrompt() {
@@ -5518,6 +5730,27 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       } else {
         alert(currentLang === 'en' ? "To install this app, tap your browser's menu (⋮ or Share) and select 'Add to Home Screen'." : "অ্যাপটি ফোনে ইনস্টল করতে ব্রাউজারের থ্রি-ডট (⋮) বা শেয়ার মেনুতে গিয়ে 'Add to Home screen' চাপুন।");
       }
+    }
+
+    
+    // Floating Notification Toast
+    function showToast(msg) {
+      let toast = document.getElementById('ncFloatingToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'ncFloatingToast';
+        toast.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:#f8fafc; padding:12px 20px; border-radius:12px; font-size:0.85rem; font-weight:800; box-shadow:0 8px 25px rgba(0,0,0,0.3); z-index:999999; display:flex; align-items:center; gap:8px; border:1px solid #334155; transition:all 0.3s ease;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = msg;
+      toast.style.display = 'flex';
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        setTimeout(() => { toast.style.display = 'none'; }, 300);
+      }, 3500);
     }
 
     function showScreen(screenId) {
