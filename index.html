@@ -588,13 +588,34 @@
   <!-- ================= 5. NISHA BOUTIQUE / NISHA STYLE ACCOUNT SCREEN (ছবি 1 হুবহু) ================= -->
   <div id="screen-customer-settings" class="screen-view nc-account-container">
     
-    <!-- 1. Top Greeting Header (Hey, Saheb | Help) -->
+    <!-- 1. Top Greeting Header (Dynamic Customer Greeting & Login Button) -->
     <div class="nc-account-top-header">
-      <div class="nc-greeting-title" id="ncGreetingName">Hey, Saheb</div>
-      <a href="tel:9239413517" class="nc-help-pill-btn">
-        <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
-        <span>Help</span>
-      </a>
+      <div>
+        <div class="nc-greeting-title" id="ncGreetingName">Hey, Guest!</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:2px;" id="ncAccountSubtitle">নিশা ক্রিয়েশনস বুটিক শপ</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" id="btnTopAccountAuth" onclick="openCustomerAuthModal()" style="background:#fdf4ff; border:1.5px solid var(--primary); color:var(--primary); font-weight:800; font-size:0.78rem; padding:6px 12px; border-radius:12px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-user"></i> <span id="btnTopAccountAuthTxt">লগইন</span>
+        </button>
+        <a href="tel:9239413517" class="nc-help-pill-btn">
+          <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
+          <span>Help</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 1B. GUEST LOGIN PROMPT BANNER (Only shows when user is not logged in) -->
+    <div id="ncGuestLoginCard" class="nc-options-list-card" style="padding:16px; background:linear-gradient(135deg, #eff6ff, #f0fdf4); border:1.5px solid #93c5fd; margin-bottom:12px; text-align:center;">
+      <div style="font-weight:800; font-size:0.95rem; color:#1e3a8a; margin-bottom:4px;">
+        <i class="fa-solid fa-mobile-screen-button"></i> <span id="t-guestLoginTitle">মোবাইল নম্বর দিয়ে লগইন / সাইন-আপ করুন</span>
+      </div>
+      <p style="font-size:0.75rem; color:#475569; margin-bottom:12px; line-height:1.4;" id="t-guestLoginSub">
+        আপনার নিজস্ব ফোন নম্বর ও ডেলিভারি ঠিকানা যোগ করে অর্ডার ট্র্যাক ও দ্রুত বুকিং করুন।
+      </p>
+      <button type="button" onclick="openCustomerAuthModal()" style="background:var(--primary); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 3px 10px rgba(147,51,234,0.3);">
+        <i class="fa-solid fa-right-to-bracket"></i> <span id="t-btnOpenAuthLogin">লগইন বা রেজিস্টার করুন</span>
+      </button>
     </div>
 
     <!-- 2. SuperCoin / Nisha Coin Balance Card -->
@@ -725,29 +746,29 @@
     </div>
 
     <!-- 7. Delivery Address & Profile Card -->
-    <div class="nc-options-list-card" style="padding:14px 16px;">
+    <div class="nc-options-list-card" style="padding:14px 16px; margin-bottom:14px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
         <div style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
           <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-          <span id="t-ncSavedAddrHeading">আমার স্থায়ী ডেলিভারি ঠিকানা</span>
+          <span id="t-ncSavedAddrHeading">আমার ডেলিভারি প্রোফাইল ও ঠিকানা</span>
         </div>
-        <button type="button" onclick="toggleEditAccountAddress()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:3px 10px; border-radius:12px; font-size:0.72rem; font-weight:700; cursor:pointer;" id="t-ncBtnEditAddr">
-          <i class="fa-solid fa-pen"></i> <span id="t-ncBtnEditAddrTxt">এডিট</span>
+        <button type="button" onclick="openCustomerAuthModal()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:4px 10px; border-radius:12px; font-size:0.72rem; font-weight:800; cursor:pointer;" id="t-ncBtnEditAddr">
+          <i class="fa-solid fa-pen"></i> <span id="t-ncBtnEditAddrTxt">আপডেট করুন</span>
         </button>
       </div>
       <div id="ncDisplayAddressBox">
-        <div style="font-size:0.84rem; font-weight:800; color:#1e293b;" id="ncAccountCustName">Saheb Ghanti</div>
-        <div style="font-size:0.74rem; color:#64748b; line-height:1.35; margin:3px 0;" id="ncAccountCustAddr">Amta Chandni, আমতা, হাওড়া - 711401</div>
-        <div style="font-size:0.76rem; font-weight:700; color:#334155;" id="ncAccountCustPhone">📞 9239413517</div>
+        <div style="font-size:0.88rem; font-weight:800; color:#1e293b;" id="ncAccountCustName">অতিথি গ্রাহক (Guest)</div>
+        <div style="font-size:0.75rem; color:#64748b; line-height:1.4; margin:4px 0;" id="ncAccountCustAddr">ডেলিভারি ঠিকানা সেট করতে লগইন করুন বা আপডেট বাটনে চাপুন।</div>
+        <div style="font-size:0.78rem; font-weight:700; color:#334155;" id="ncAccountCustPhone">📞 লগইন করা নেই</div>
       </div>
 
-      <!-- Inline Address Edit -->
-      <div id="ncEditAddressForm" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #cbd5e1;">
-        <input type="text" id="nc_edit_name" placeholder="আপনার নাম" value="Saheb Ghanti" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <input type="text" id="nc_edit_phone" placeholder="মোবাইল নম্বর" value="9239413517" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-        <textarea id="nc_edit_addr" rows="2" placeholder="আমতার স্থায়ী ঠিকানা" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">Amta Chandni, আমতা, হাওড়া - 711401</textarea>
-        <button type="button" onclick="saveAccountAddressQuick()" style="background:var(--primary); color:#fff; border:none; padding:7px 16px; border-radius:6px; font-size:0.78rem; font-weight:800; cursor:pointer;" id="t-ncBtnSaveAddr">
-          <span id="t-ncBtnSaveAddrTxt">সেভ করুন</span>
+      <!-- Action buttons for logged in customer: Edit Address & Log Out -->
+      <div id="ncLoggedInActions" style="display:none; margin-top:12px; padding-top:10px; border-top:1px dashed #cbd5e1; display:flex; gap:8px;">
+        <button type="button" onclick="openCustomerAuthModal()" style="flex:1; background:#f3e8ff; border:1px solid #d8b4fe; color:#7e22ce; padding:8px 12px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <i class="fa-solid fa-user-pen"></i> <span id="t-btnAccountEditProf">প্রোফাইল এডিট</span>
+        </button>
+        <button type="button" onclick="customerLogout()" style="background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; padding:8px 14px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> <span id="t-btnAccountLogout">লগআউট</span>
         </button>
       </div>
     </div>
@@ -945,21 +966,27 @@
           <!-- Customer Address Card (With Change Button) -->
           <div class="checkout-address-card">
             <div class="address-header-row">
-              <div class="address-user-name" id="displayCustName">Saheb Ghanti</div>
+              <div class="address-user-name" id="displayCustName">অতিথি গ্রাহক (Guest)</div>
               <button type="button" class="btn-change-addr" onclick="toggleAddressEdit()">
-                <i class="fa-solid fa-pen"></i> <span id="btnChangeAddrLabel">Change</span>
+                <i class="fa-solid fa-pen"></i> <span id="btnChangeAddrLabel">ঠিকানা বদলান</span>
               </button>
             </div>
-            <div style="font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:2px;" id="displayCustPhone">📞 9239413517</div>
+            <div style="font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:2px;" id="displayCustPhone">📞 ফোন নম্বর লিখুন</div>
             <div class="address-details-text" id="displayCustAddr">
-              📍 vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401
+              📍 ডেলিভারি ঠিকানা সেট করতে নিচে পূরণ করুন
             </div>
 
             <!-- Inline Address Edit Form -->
             <div id="inlineAddressEditForm" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #cbd5e1;">
-              <input type="text" id="cust_name" placeholder="আপনার নাম" value="Saheb Ghanti" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-              <input type="text" id="cust_phone" placeholder="মোবাইল নম্বর" value="9239413517" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
-              <textarea id="cust_addr" rows="2" placeholder="আমতার স্থায়ী ঠিকানা ও ল্যান্ডমার্ক" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401</textarea>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:0.75rem; font-weight:800; color:#334155;">ডেলিভারি বিবরণ:</span>
+                <button type="button" onclick="detectCheckoutGpsLocation()" style="background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:6px; cursor:pointer;">
+                  <i class="fa-solid fa-location-crosshairs"></i> 📍 GPS লোকেশন
+                </button>
+              </div>
+              <input type="text" id="cust_name" placeholder="আপনার পুরো নাম লিখুন *" value="" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+              <input type="tel" id="cust_phone" maxlength="10" placeholder="১০ ডিজিটের মোবাইল নম্বর *" value="" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;">
+              <textarea id="cust_addr" rows="2" placeholder="আমতা ও সংলগ্ন এলাকার ঠিকানা ও ল্যান্ডমার্ক *" style="width:100%; padding:8px 10px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem;"></textarea>
               <button type="button" onclick="saveAddressInline()" id="t-btnSaveAddrInline" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">
                 ঠিকানা সংরক্ষণ করুন
               </button>
@@ -1833,12 +1860,12 @@
             </div>
             <div>
               <label style="font-size:0.73rem; font-weight:800; color:#334155;">3. একাউন্ট হোল্ডার: *</label>
-              <input type="text" id="ret_bank_holder" placeholder="Saheb Ghanti" style="width:100%; padding:8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; margin-top:3px;">
+              <input type="text" id="ret_bank_holder" placeholder="যেমন: অনন্যা দাস (Account Holder Name)" style="width:100%; padding:8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; margin-top:3px;">
             </div>
           </div>
           <div>
             <label style="font-size:0.73rem; font-weight:800; color:#334155;">4. অথবা PhonePe / Google Pay UPI ID (দ্রুততম রিফান্ড):</label>
-            <input type="text" id="ret_bank_upi" placeholder="যেমন: 9239413517@ybl বা paytm" style="width:100%; padding:8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; margin-top:3px;">
+            <input type="text" id="ret_bank_upi" placeholder="যেমন: 9832000000@upi বা paytm" style="width:100%; padding:8px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.8rem; margin-top:3px;">
           </div>
         </div>
 
@@ -2005,6 +2032,58 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ================= CUSTOMER AUTH & GPS LOCATION MODAL ================= -->
+  <div id="customerAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px);">
+    <div style="background:#fff; width:100%; max-width:440px; border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); animation:fadeIn 0.2s ease-out;" onclick="event.stopPropagation()">
+      <div style="padding:16px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:1rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-id-card"></i>
+          <span id="t-authModalTitle">কাস্টমার লগইন ও ঠিকানা</span>
+        </div>
+        <button type="button" onclick="closeCustomerAuthModal()" style="background:transparent; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="customerAuthForm" onsubmit="event.preventDefault(); saveCustomerAuthProfile();" style="padding:18px;">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblPhone">
+            মোবাইল নম্বর (১০ ডিজিট) *
+          </label>
+          <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.95rem; font-weight:700; color:#0f172a;" required>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblName">
+            আপনার পুরো নাম *
+          </label>
+          <input type="text" id="auth_name" placeholder="আপনার নাম লিখুন" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a;" required>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label style="font-size:0.78rem; font-weight:800; color:#334155;" id="t-authLblAddr">
+              ডেলিভারি ঠিকানা ও ল্যান্ডমার্ক *
+            </label>
+            <button type="button" onclick="detectCustomerGpsLocation()" style="background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-size:0.72rem; font-weight:800; padding:4px 8px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:4px;">
+              <i class="fa-solid fa-location-crosshairs"></i> <span id="t-authBtnGps">📍 বর্তমান লোকেশন দিন</span>
+            </button>
+          </div>
+          <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, রাস্তা, গ্রাম বা এলাকা (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a;" required></textarea>
+          <div id="authGpsStatus" style="display:none; font-size:0.72rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="submit" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.3);">
+            <i class="fa-solid fa-right-to-bracket"></i> <span id="t-authBtnSave">সংরক্ষণ ও লগইন করুন</span>
+          </button>
+          <button type="button" onclick="closeCustomerAuthModal()" style="background:#f1f5f9; color:#475569; border:none; padding:12px 16px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
+            <span id="t-authBtnCancel">বাতিল</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
