@@ -51,6 +51,10 @@
         </div>
       </div>
             <div class="header-icons" style="display:flex; align-items:center; gap:8px;">
+        <!-- User Login / Profile Button -->
+        <button type="button" id="headerUserAuthBtn" onclick="handleHeaderAuthClick()" title="Account Login" style="background:#fdf4ff; border:1.5px solid var(--primary); border-radius:18px; padding:4px 10px; display:flex; align-items:center; gap:5px; font-weight:800; font-size:0.75rem; color:var(--primary); cursor:pointer; box-shadow:0 1px 4px rgba(156,39,176,0.15);">
+          <i class="fa-solid fa-user"></i> <span id="headerUserAuthText">লগইন</span>
+        </button>
         <!-- Quick Language Toggle Button (বাংলা / English) -->
         <button type="button" id="headerLangToggleBtn" onclick="toggleLanguage()" title="Switch Language / ভাষা পরিবর্তন" style="background:#fdf4ff; border:1.5px solid var(--primary); border-radius:18px; padding:4px 9px; display:flex; align-items:center; gap:4px; font-weight:800; font-size:0.75rem; color:var(--primary); cursor:pointer; box-shadow:0 1px 4px rgba(156,39,176,0.15); transition:all 0.2s;">
           <span id="headerLangFlag">🇮🇳</span> <span id="headerLangText">বাংলা</span>
@@ -2047,19 +2051,19 @@
         <button type="button" onclick="closeCustomerAuthModal()" style="background:transparent; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <form id="customerAuthForm" onsubmit="event.preventDefault(); saveCustomerAuthProfile();" style="padding:18px;">
+      <div class="customer-auth-body" style="padding:18px;">
         <div style="margin-bottom:12px;">
           <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblPhone">
             মোবাইল নম্বর (১০ ডিজিট) *
           </label>
-          <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.95rem; font-weight:700; color:#0f172a;" required>
+          <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.95rem; font-weight:700; color:#0f172a;">
         </div>
 
         <div style="margin-bottom:12px;">
           <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblName">
             আপনার পুরো নাম *
           </label>
-          <input type="text" id="auth_name" placeholder="আপনার নাম লিখুন" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a;" required>
+          <input type="text" id="auth_name" placeholder="আপনার নাম লিখুন" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a;">
         </div>
 
         <div style="margin-bottom:12px;">
@@ -2071,19 +2075,19 @@
               <i class="fa-solid fa-location-crosshairs"></i> <span id="t-authBtnGps">📍 বর্তমান লোকেশন দিন</span>
             </button>
           </div>
-          <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, রাস্তা, গ্রাম বা এলাকা (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a;" required></textarea>
+          <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, রাস্তা, গ্রাম বা এলাকা (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" class="form-ctrl" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a;"></textarea>
           <div id="authGpsStatus" style="display:none; font-size:0.72rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
         </div>
 
         <div style="display:flex; gap:10px; margin-top:16px;">
-          <button type="submit" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.3);">
+          <button type="button" onclick="saveCustomerAuthProfile()" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.3);">
             <i class="fa-solid fa-right-to-bracket"></i> <span id="t-authBtnSave">সংরক্ষণ ও লগইন করুন</span>
           </button>
           <button type="button" onclick="closeCustomerAuthModal()" style="background:#f1f5f9; color:#475569; border:none; padding:12px 16px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
             <span id="t-authBtnCancel">বাতিল</span>
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 

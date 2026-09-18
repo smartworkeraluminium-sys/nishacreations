@@ -1654,6 +1654,7 @@ function adminQuickRestock(idx) {
       }
       if (typeof loadCustomerAccountHub === 'function') {
         loadCustomerAccountHub();
+      syncCheckoutWithProfile();
       }
     }
 
@@ -2084,10 +2085,15 @@ function adminQuickRestock(idx) {
     // 6. NISHA 2-STEP CHECKOUT & UPI DISCOUNT WIZARD (ছবি 5 ও 6)
     // =========================================================
     let selectedPaymentMethodVal = "UPI";
+    try {
+      const stored = localStorage.getItem('nc_customer_profile');
+      if (stored) currentCustomer = JSON.parse(stored);
+    } catch(e) {}
+
     let checkoutAddress = {
-      name: "Saheb Ghanti",
-      phone: "9239413517",
-      address: "vogopoti para, Rani hati rod amta chadni vogopoti para, Amta, West Bengal, 711401"
+      name: (currentCustomer && currentCustomer.name) ? currentCustomer.name : "",
+      phone: (currentCustomer && currentCustomer.phone) ? currentCustomer.phone : "",
+      address: (currentCustomer && currentCustomer.address) ? currentCustomer.address : ""
     };
 
     function getEstimatedDeliveryDateString() {
@@ -2579,6 +2585,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
+      syncCheckoutWithProfile();
       updateCartBadge();
       loadAndRenderOrdersSafe();
       updateCustomerAuthDisplay();
@@ -2953,6 +2960,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
+      syncCheckoutWithProfile();
       } else {
         renderProducts(products.filter(p => wishlist.includes(p.id)));
       }
@@ -3051,6 +3059,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
+      syncCheckoutWithProfile();
         document.querySelectorAll('.cat-item')[0].classList.add('active');
       } else if (cat === 'saree') {
         renderProducts(products.filter(p => p.type === 'saree'));
@@ -3630,6 +3639,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
+      syncCheckoutWithProfile();
     }
 
     // Open PDP
@@ -4242,6 +4252,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     }
 
     function openCartModal() {
+      syncCheckoutWithProfile();
       const modal = document.getElementById('cartModal');
       goToCheckoutStep1();
       renderCheckoutStep1();
@@ -4440,6 +4451,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
         currentCustomer.coins = (currentCustomer.coins || 150) + 20;
         localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
         loadCustomerAccountHub();
+      syncCheckoutWithProfile();
       }
 
       alert(currentLang === 'bn' 
@@ -4653,34 +4665,212 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
       localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
       loadCustomerAccountHub();
+      syncCheckoutWithProfile();
       alert(currentLang === 'bn' ? "✅ আপনার প্রোফাইল ও ডেলিভারি ঠিকানা সেভ হয়েছে!" : "✅ Your profile and delivery address have been saved!");
     }
 
+    
+    // ==========================================
+    // DYNAMIC CUSTOMER LOGIN, PROFILE & GPS LOCATION
+    // ==========================================
     function loadCustomerAccountHub() {
-      const stored = localStorage.getItem('nc_customer_profile');
-      if (stored) {
-        try { currentCustomer = JSON.parse(stored); } catch(e) {}
+      try {
+        const stored = localStorage.getItem('nc_customer_profile');
+        currentCustomer = stored ? JSON.parse(stored) : null;
+      } catch(e) {
+        currentCustomer = null;
       }
 
-      const custName = (currentCustomer && currentCustomer.name) ? currentCustomer.name : "Saheb";
-      const custPhone = (currentCustomer && currentCustomer.phone) ? currentCustomer.phone : "9239413517";
-      const custAddr = (currentCustomer && currentCustomer.address) ? currentCustomer.address : "Amta Chandni, আমতা, হাওড়া - 711401";
-      const coins = (currentCustomer && currentCustomer.coins !== undefined) ? currentCustomer.coins : 150;
+      const isLoggedIn = !!(currentCustomer && currentCustomer.phone);
+      const isEn = (currentLang === 'en');
 
       const greetEl = document.getElementById('ncGreetingName');
       const coinsEl = document.getElementById('ncCoinBalanceNum');
       const nameEl = document.getElementById('ncAccountCustName');
       const phoneEl = document.getElementById('ncAccountCustPhone');
       const addrEl = document.getElementById('ncAccountCustAddr');
+      const guestCard = document.getElementById('ncGuestLoginCard');
+      const loggedInActions = document.getElementById('ncLoggedInActions');
+      const topAuthBtnTxt = document.getElementById('btnTopAccountAuthTxt');
 
-      if (greetEl) greetEl.textContent = "Hey, " + custName;
-      if (coinsEl) coinsEl.textContent = coins;
-      if (nameEl) nameEl.textContent = custName;
-      if (phoneEl) phoneEl.textContent = "📞 " + custPhone;
-      if (addrEl) addrEl.textContent = custAddr;
+      if (isLoggedIn) {
+        if (greetEl) greetEl.textContent = `Hey, ${currentCustomer.name || (isEn ? 'Valued Customer' : 'সম্মানিত গ্রাহক')}!`;
+        if (coinsEl) coinsEl.textContent = currentCustomer.coins !== undefined ? currentCustomer.coins : 50;
+        if (nameEl) nameEl.textContent = currentCustomer.name;
+        if (phoneEl) phoneEl.textContent = `📞 ${currentCustomer.phone}`;
+        if (addrEl) addrEl.textContent = `📍 ${currentCustomer.address || (isEn ? 'No address specified' : 'ঠিকানা দেওয়া হয়নি')}`;
+
+        if (guestCard) guestCard.style.display = 'none';
+        if (loggedInActions) loggedInActions.style.display = 'flex';
+        if (topAuthBtnTxt) topAuthBtnTxt.textContent = isEn ? 'Edit Profile' : 'প্রোফাইল এডিট';
+      } else {
+        if (greetEl) greetEl.textContent = isEn ? 'Hey, Guest!' : 'স্বাগতম অতিথি!';
+        if (coinsEl) coinsEl.textContent = '0';
+        if (nameEl) nameEl.textContent = isEn ? 'Guest Customer (Not Logged In)' : 'অতিথি গ্রাহক (লগইন করা নেই)';
+        if (phoneEl) phoneEl.textContent = isEn ? '📞 Please Login' : '📞 লগইন করতে ট্যাপ করুন';
+        if (addrEl) addrEl.textContent = isEn ? 'Login with mobile number to save your delivery address & orders.' : 'আপনার স্থায়ী ডেলিভারি ঠিকানা ও অর্ডার হিস্ট্রি সেভ করতে লগইন করুন।';
+
+        if (guestCard) guestCard.style.display = 'block';
+        if (loggedInActions) loggedInActions.style.display = 'none';
+        if (topAuthBtnTxt) topAuthBtnTxt.textContent = isEn ? 'Login' : 'লগইন';
+      }
 
       updateWishlistBadgesGlobal();
     }
+
+    function openCustomerAuthModal() {
+      const modal = document.getElementById('customerAuthModal');
+      if (!modal) return;
+
+      const phoneInp = document.getElementById('auth_phone');
+      const nameInp = document.getElementById('auth_name');
+      const addrInp = document.getElementById('auth_addr');
+      const gpsStatus = document.getElementById('authGpsStatus');
+
+      if (gpsStatus) gpsStatus.style.display = 'none';
+
+      if (currentCustomer && currentCustomer.phone) {
+        if (phoneInp) phoneInp.value = currentCustomer.phone || '';
+        if (nameInp) nameInp.value = currentCustomer.name || '';
+        if (addrInp) addrInp.value = currentCustomer.address || '';
+      } else {
+        if (phoneInp) phoneInp.value = '';
+        if (nameInp) nameInp.value = '';
+        if (addrInp) addrInp.value = '';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeCustomerAuthModal() {
+      const modal = document.getElementById('customerAuthModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function detectCustomerGpsLocation() {
+      const statusEl = document.getElementById('authGpsStatus');
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.color = '#0284c7';
+        statusEl.textContent = currentLang === 'en' ? '⏳ Detecting GPS Location...' : '⏳ বর্তমান লাইভ GPS লোকেশন নেওয়া হচ্ছে...';
+      }
+
+      if (!navigator.geolocation) {
+        if (statusEl) {
+          statusEl.style.color = '#ef4444';
+          statusEl.textContent = currentLang === 'en' ? '❌ GPS is not supported in this browser' : '❌ ব্রাউজারে GPS সনাক্তকরণ সমর্থিত নয়। দয়া করে লিখে দিন।';
+        }
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude.toFixed(5);
+          const lng = pos.coords.longitude.toFixed(5);
+          const addrInp = document.getElementById('auth_addr');
+          if (addrInp) {
+            const existing = addrInp.value.trim();
+            const gpsString = `[GPS: ${lat}, ${lng}]`;
+            if (!existing.includes('GPS:')) {
+              addrInp.value = existing ? `${existing} (📍 ${gpsString})` : `আমতা, হাওড়া - 711401 (📍 ${gpsString})`;
+            }
+          }
+          if (statusEl) {
+            statusEl.style.color = '#15803d';
+            statusEl.innerHTML = `✓ ${currentLang === 'en' ? 'GPS coordinates captured' : 'লাইভ GPS কো-অর্ডিনেট সফলভাবে নেওয়া হয়েছে'} (${lat}, ${lng})!`;
+          }
+        },
+        err => {
+          if (statusEl) {
+            statusEl.style.color = '#b91c1c';
+            statusEl.textContent = currentLang === 'en' ? '⚠️ Permission denied. Please type address manually.' : '⚠️ লোকেশন পারমিশন পাওয়া যায়নি। ম্যানুয়ালি ঠিকানা লিখে দিন।';
+          }
+        },
+        { timeout: 10000, maximumAge: 60000 }
+      );
+    }
+
+    function saveCustomerAuthProfile() {
+      const phoneInp = document.getElementById('auth_phone');
+      const nameInp = document.getElementById('auth_name');
+      const addrInp = document.getElementById('auth_addr');
+
+      const phone = phoneInp ? phoneInp.value.replace(/[^0-9]/g, '') : '';
+      const name = nameInp ? nameInp.value.trim() : '';
+      const addr = addrInp ? addrInp.value.trim() : '';
+
+      if (!phone || phone.length < 10) {
+        alert(currentLang === 'en' ? 'Please enter a valid 10-digit mobile number!' : 'অনুগ্রহ করে সঠিক ১০ ডিজিটের মোবাইল নম্বর দিন!');
+        return;
+      }
+
+      if (!name) {
+        alert(currentLang === 'en' ? 'Please enter your full name!' : 'অনুগ্রহ করে আপনার নাম লিখুন!');
+        return;
+      }
+
+      currentCustomer = {
+        id: 'CUST-' + phone.slice(-6),
+        name,
+        phone,
+        address: addr,
+        coins: (currentCustomer && currentCustomer.coins !== undefined) ? currentCustomer.coins : 50,
+        loggedIn: true,
+        updatedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+
+      checkoutAddress = { name, phone, address: addr };
+
+      loadCustomerAccountHub();
+      syncCheckoutWithProfile();
+      syncCheckoutWithProfile();
+      closeCustomerAuthModal();
+
+      alert(currentLang === 'en' ? `🎉 Welcome, ${name}! Your account & address are updated.` : `🎉 স্বাগতম, ${name}! আপনার অ্যাকাউন্ট ও ঠিকানা সফলভাবে সংরক্ষিত হয়েছে।`);
+    }
+
+    function customerLogout() {
+      if (!confirm(currentLang === 'en' ? 'Are you sure you want to log out?' : 'আপনি কি নিশ্চিতভাবে লগআউট করতে চান?')) return;
+      localStorage.removeItem('nc_customer_profile');
+      currentCustomer = null;
+      checkoutAddress = { name: '', phone: '', address: '' };
+      loadCustomerAccountHub();
+      syncCheckoutWithProfile();
+      syncCheckoutWithProfile();
+      alert(currentLang === 'en' ? '🚪 You have been logged out successfully.' : '🚪 আপনি সফলভাবে লগআউট হয়েছেন।');
+    }
+
+    function syncCheckoutWithProfile() {
+      const nameEl = document.getElementById('displayCustName');
+      const phoneEl = document.getElementById('displayCustPhone');
+      const addrEl = document.getElementById('displayCustAddr');
+      const inpName = document.getElementById('cust_name');
+      const inpPhone = document.getElementById('cust_phone');
+      const inpAddr = document.getElementById('cust_addr');
+      const editForm = document.getElementById('inlineAddressEditForm');
+
+      if (currentCustomer && currentCustomer.phone) {
+        if (nameEl) nameEl.textContent = currentCustomer.name;
+        if (phoneEl) phoneEl.textContent = '📞 ' + currentCustomer.phone;
+        if (addrEl) addrEl.textContent = '📍 ' + (currentCustomer.address || 'আমতা, হাওড়া');
+        if (inpName) inpName.value = currentCustomer.name;
+        if (inpPhone) inpPhone.value = currentCustomer.phone;
+        if (inpAddr) inpAddr.value = currentCustomer.address || '';
+        if (editForm) editForm.style.display = 'none';
+      } else {
+        if (nameEl) nameEl.textContent = (currentLang === 'en' ? 'Guest Customer (Not Logged In)' : 'অতিথি গ্রাহক (লগইন করা নেই)');
+        if (phoneEl) phoneEl.textContent = (currentLang === 'en' ? '📞 Please Enter Phone' : '📞 নিচে মোবাইল নম্বর পূরণ করুন');
+        if (addrEl) addrEl.textContent = (currentLang === 'en' ? '📍 Enter delivery address below' : '📍 নিচে ডেলিভারি ঠিকানা দিন');
+        if (inpName) inpName.value = '';
+        if (inpPhone) inpPhone.value = '';
+        if (inpAddr) inpAddr.value = '';
+        // Automatically open address edit form for guest so they can easily fill in
+        if (editForm) editForm.style.display = 'block';
+      }
+    }
+
 
     function submitOrder() {
       if (cart.length === 0) { alert("ব্যাগ ফাঁকা!"); return; }
@@ -5060,9 +5250,9 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
                   <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
                   <span>${isEn ? "Delivery Address" : "ডেলিভারি ঠিকানা"}</span>
                 </div>
-                <div class="nisha-addr-name-bold">${ord.name || 'Saheb Ghanti'}</div>
-                <div class="nisha-addr-full-text">${ord.address || 'Amta Chandni, আমতা, হাওড়া - 711401'}</div>
-                <div class="nisha-addr-phone-line">📞 ${ord.phone || '9239413517'}</div>
+                <div class="nisha-addr-name-bold">${ord.customer || ord.name || (currentLang === 'en' ? 'Valued Customer' : 'সম্মানিত গ্রাহক')}</div>
+                <div class="nisha-addr-full-text">${ord.address || ''}</div>
+                <div class="nisha-addr-phone-line">📞 ${ord.phone || ''}</div>
               </div>
 
               <div class="nisha-actions-footer-bar" style="display:flex; gap:10px; padding:10px 14px; background:#ffffff;">
@@ -5146,9 +5336,9 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
                 <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
                 <span>${isEn ? "Delivery Address" : "ডেলিভারি ঠিকানা"}</span>
               </div>
-              <div class="nisha-addr-name-bold">${ord.name || 'Saheb Ghanti'}</div>
-              <div class="nisha-addr-full-text">${ord.address || 'Amta Chandni, আমতা, হাওড়া - 711401'}</div>
-              <div class="nisha-addr-phone-line">📞 ${ord.phone || '9239413517'}</div>
+              <div class="nisha-addr-name-bold">${ord.customer || ord.name || (currentLang === 'en' ? 'Valued Customer' : 'সম্মানিত গ্রাহক')}</div>
+              <div class="nisha-addr-full-text">${ord.address || ''}</div>
+              <div class="nisha-addr-phone-line">📞 ${ord.phone || ''}</div>
             </div>
 
             <!-- Action Buttons Footer with Cancel Order -->
@@ -5209,10 +5399,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     }
 
     function doGoogleFastLogin() {
-      currentCustomer = { name: "Saheb Ghati", phone: "9239413517", email: "sahebghanti669@gmail.com", coins: 200, address: "আমতা চাঁদনী, হাওড়া" };
-      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
-      updateCustomerAuthDisplay();
-      alert("🎉 Google অ্যাকাউন্ট সফলভাবে কানেক্ট হয়েছে!");
+      // Instead of hardcoding, open the auth modal for real mobile number & address
+      openCustomerAuthModal();
     }
 
     function doCustomerLogout() {
@@ -5351,7 +5539,8 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       if (screenId === 'orders') {
         loadAndRenderOrdersSafe();
       }
-      if (screenId === 'customer-settings') { loadCustomerAccountHub(); }
+      if (screenId === 'customer-settings') { loadCustomerAccountHub();
+      syncCheckoutWithProfile(); }
       if (screenId === 'search-results') {
         const cartBadge = document.getElementById('ncResultsCartBadge');
         if (cartBadge) cartBadge.textContent = cart.reduce((s, it) => s + (it.qty || 1), 0);
@@ -5460,6 +5649,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       renderCustomOfferBanner();
     renderReels();
     loadCustomerAccountHub();
+      syncCheckoutWithProfile();
 
       alert("🎉 নতুন প্রোডাক্ট সফলভাবে লাইভ শপে যুক্ত হয়েছে!");
       showScreen('home');
