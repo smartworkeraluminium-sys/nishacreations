@@ -3,22 +3,41 @@
   "short_name": "Nisha Creations",
   "description": "এক্সক্লুসিভ ঢাকাই জামদানি, সিল্ক শাড়ি ও ব্রাইডাল গহনা বুটিক - আমতা, হাওড়া",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#9c27b0",
   "icons": [
     {
-      "src": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=192&auto=format&fit=crop&q=80",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=512&auto=format&fit=crop&q=80",
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
