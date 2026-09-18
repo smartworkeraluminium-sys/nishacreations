@@ -995,6 +995,9 @@
         </button>
 
         <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
+          <button type="button" id="btnPinDisable" onclick="disablePinLockPermanently()" style="background:none; border:none; color:#10b981; font-size:0.82rem; font-weight:800; cursor:pointer; text-decoration:underline;">
+            <i class="fa-solid fa-lock-open"></i> 🔓 পাসওয়ার্ড লক চিরতরে বন্ধ রাখুন (আর কখনো চাইবে না)
+          </button>
           <button type="button" id="btnPinBypass" onclick="bypassPinDirect()" style="background:none; border:none; color:#38bdf8; font-size:0.85rem; font-weight:800; cursor:pointer; text-decoration:underline;">
             <i class="fa-solid fa-bolt"></i> কোনো পাসওয়ার্ড ছাড়াই সরাসরি প্রবেশ করুন
           </button>
@@ -1440,6 +1443,20 @@
 
     <div id="pane-stock" class="tab-pane">
       <div class="owner-card" style="padding:14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+          <div style="font-size:0.9rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-boxes-stacked" style="color:var(--amber);"></i>
+            <span id="t-stockTotalTitle">শাড়ির স্টক তালিকা</span> (<span id="stockHeaderTotalCount">0</span>)
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-fast-action" style="background:#dc2626; color:#fff; padding:8px 12px; font-size:0.75rem; border-radius:10px; font-weight:800;" onclick="clearAllDemoProducts()">
+              <i class="fa-solid fa-trash-can"></i> <span id="t-btnClearAllDemo">সব ডেমো শাড়ি মুছুন</span>
+            </button>
+            <button type="button" class="btn-fast-action" style="background:#4f46e5; color:#fff; padding:8px 12px; font-size:0.75rem; border-radius:10px; font-weight:800;" onclick="switchAdminView('add')">
+              <i class="fa-solid fa-plus-circle"></i> <span id="t-btnAddNewFromStock">+ নতুন শাড়ি আপলোড</span>
+            </button>
+          </div>
+        </div>
         <input type="text" id="stockFilterInput" class="form-ctrl" placeholder="শাড়ির নাম দিয়ে ফিল্টার করুন..." oninput="renderOwnerStock()">
       </div>
       <div class="inv-grid" id="stockGridContainer"></div>
@@ -1451,161 +1468,202 @@
         <div style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
           <h2 style="font-size:1.2rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;" id="addStudioTitle">
             <i class="fa-solid fa-camera-retro" style="color:var(--amber);"></i>
-            নতুন শাড়ি / পোশাক আপলোড স্টুডিও
+            প্রোডাক্টের ছবি আপলোড ও রং-ভিত্তিক স্টক ম্যানেজমেন্ট
           </h2>
           <p style="font-size:0.78rem; color:#94a3b8; margin-top:4px;" id="addStudioDesc">
-            📸 একসঙ্গে ৪-৫টি ছবি আপলোড করুন, রেট (দাম) এবং কুর্তি/শাড়ির সঠিক সাইজ নির্ধারণ করে সরাসরি লাইভ করুন।
+            📸 প্রোডাক্টের ছবি আপলোড করুন এবং কোন রঙের কত পিস মাল স্টকে আছে তা সরাসরি নির্ধারণ করে লাইভ করুন।
           </p>
         </div>
 
         <form id="ownerAddProductForm" onsubmit="handleOwnerProductSubmit(event)">
           
-          <!-- 1. Product Name -->
-          <div class="form-group">
-            <label class="form-label" id="addLblTitle">শাড়ির পুরো নাম (Product Title) *</label>
-            <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: সফট জামদানি কাতান শাড়ি (রয়েল ব্লু ও গোল্ডেন পাড়)" required>
+          <!-- 1. PHOTO UPLOAD SECTION (HERO) -->
+          <div class="form-group" style="background:#090d16; border:1.5px dashed #38bdf8; border-radius:16px; padding:16px; text-align:center;">
+            <label class="form-label" style="color:#38bdf8; font-size:0.92rem; margin-bottom:6px;">
+              <i class="fa-solid fa-image"></i> প্রোডাক্টের মূল ছবি আপলোড করুন *
+            </label>
+            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:12px;">
+              মোবাইলের ক্যামেরা দিয়ে ছবি তুলুন বা গ্যালারি থেকে ফ্রেশ ছবি বেছে নিন:
+            </p>
+
+            <!-- Image Preview Box -->
+            <div id="photoUploadPreviewBox" style="display:none; margin-bottom:12px;">
+              <img id="mainUploadPreviewImg" src="" style="width:140px; height:140px; border-radius:14px; object-fit:cover; border:2px solid #38bdf8; box-shadow:0 4px 15px rgba(0,0,0,0.5); margin:0 auto; display:block;">
+              <button type="button" onclick="clearSelectedUploadPhoto()" style="background:#dc2626; color:#fff; border:none; padding:4px 10px; border-radius:8px; font-size:0.72rem; font-weight:800; margin-top:8px; cursor:pointer;">
+                ✕ ছবি মুছুন বা পরিবর্তন করুন
+              </button>
+            </div>
+
+            <!-- Upload Button -->
+            <label id="btnChoosePhotoLabel" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:12px 20px; border-radius:12px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(2,132,199,0.35);">
+              <i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন</span>
+              <input type="file" id="op_photo_file" accept="image/*" style="display:none;" onchange="handleStudioPhotoSelected(event)">
+            </label>
+
+            <!-- Optional Online Image URL Fallback -->
+            <div style="margin-top:10px; display:flex; gap:6px; max-width:440px; margin-left:auto; margin-right:auto;">
+              <input type="text" id="op_img_url_fallback" class="form-ctrl" placeholder="অথবা ছবির অনলাইন লিংক পেস্ট করুন..." style="font-size:0.75rem; padding:8px 10px;" onchange="handleUrlFallbackChange(this.value)">
+            </div>
           </div>
 
-          <!-- 2. Category & Fabric -->
+          <!-- 2. PRODUCT BASICS (TITLE, CATEGORY, PRICE) -->
+          <div class="form-group">
+            <label class="form-label" id="addLblTitle">শাড়ির / পোশাকের নাম (Product Title) *</label>
+            <input type="text" id="op_title" class="form-ctrl" placeholder="যেমন: পিওর ঢাকাই জামদানি শাড়ি (রয়েল ব্লু ও গোল্ডেন পাড়)" required>
+          </div>
+
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label" id="addLblCat">ক্যাটাগরি নির্বাচন করুন *</label>
-              <select id="op_cat" class="form-ctrl" onchange="handleCategoryChangeForSizes(this.value)" required>
-                <option value="saree">👗 শাড়ি (Saree)</option>
-                <option value="kurti">👚 কুর্তি ও কুর্তি সেট (Kurti)</option>
-                <option value="blouse">🥻 ব্লাউজ ও টপ (Blouse & Tops)</option>
-                <option value="girls">👧 ছোটদের ফ্রক ও লেহেঙ্গা (Girls Frock)</option>
+              <select id="op_cat" class="form-ctrl" required>
+                <option value="saree">🥻 শাড়ি (Saree)</option>
+                <option value="kurti">👚 কুর্তি ও টপ (Kurti & Tops)</option>
+                <option value="girls">👧 ছোটদের ফ্রক ও জামা (Girls Frock)</option>
                 <option value="jewel">💎 গহনা ও জুয়েলারি (Jewellery)</option>
                 <option value="bangles">✨ বালা ও চুড়ি (Bangles)</option>
+                <option value="bags">👜 ব্যাগ ও পার্স (Bags)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="form-label" id="addLblFabric">ফেব্রিক / উপাদান (Fabric)</label>
-              <input type="text" id="op_fabric" class="form-ctrl" placeholder="যেমন: Pure Soft Resham Silk">
+              <label class="form-label" id="addLblSellPrice">বিক্রি মূল্য / রেট (Price - ₹) *</label>
+              <input type="number" id="op_price" class="form-ctrl" placeholder="যেমন: 450" required>
             </div>
           </div>
 
-          <!-- 3. Dynamic Size Selector Chips -->
-          <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-              <label class="form-label" style="margin-bottom:0; color:#f59e0b;" id="addLblSizes">
-                <i class="fa-solid fa-ruler-combined"></i> সাইজ নির্ধারণ করুন (Available Sizes) *:
+          <!-- 3. COLOR-WISE STOCK MANAGEMENT (HERO FEATURE) -->
+          <div class="form-group" style="background:#090d16; border:1.5px solid #6366f1; border-radius:16px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label class="form-label" style="color:#c7d2fe; font-size:0.9rem; margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-palette" style="color:#818cf8;"></i>
+                <span>রং-ভিত্তিক স্টক ম্যানেজমেন্ট (Color Variants & Stock) *</span>
               </label>
-              <span id="selectedSizesCountNotice" style="font-size:0.72rem; color:#34d399; font-weight:800;">১টি সাইজ নির্বাচিত</span>
+              <span id="activeTotalColorStockBadge" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px;">
+                মোট স্টক: ০ পিস
+              </span>
             </div>
-            <div style="font-size:0.7rem; color:#94a3b8; margin-bottom:8px;" id="addNoticeSizes">
-              যে যে সাইজগুলো আপনার স্টকে আছে সেগুলো টিক চিহ্ন (✓) দিয়ে রাখুন:
+            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:10px;">
+              কোন কোন রঙের শাড়ি/পোশাক আছে বেছে নিন এবং প্রতিটি রঙের পিস সংখ্যা লিখুন:
+            </p>
+
+            <!-- Quick Color Palette Buttons -->
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('লাল (Red)', '#ef4444')" style="background:#1e293b; border:1px solid #ef4444; color:#fca5a5; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#ef4444; margin-right:4px;"></span> লাল (Red)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('রয়্যাল ব্লু (Royal Blue)', '#2563eb')" style="background:#1e293b; border:1px solid #2563eb; color:#93c5fd; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#2563eb; margin-right:4px;"></span> নীল (Blue)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('হলুদ (Mustard Yellow)', '#eab308')" style="background:#1e293b; border:1px solid #eab308; color:#fde047; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#eab308; margin-right:4px;"></span> হলুদ (Yellow)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('সবুজ (Green)', '#10b981')" style="background:#1e293b; border:1px solid #10b981; color:#6ee7b7; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#10b981; margin-right:4px;"></span> সবুজ (Green)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('রানি গোলাপি (Rani Pink)', '#ec4899')" style="background:#1e293b; border:1px solid #ec4899; color:#f472b6; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#ec4899; margin-right:4px;"></span> গোলাপি (Pink)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('বেগুনি (Purple)', '#8b5cf6')" style="background:#1e293b; border:1px solid #8b5cf6; color:#c4b5fd; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#8b5cf6; margin-right:4px;"></span> বেগুনি (Purple)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('সাদা (White)', '#f8fafc')" style="background:#1e293b; border:1px solid #cbd5e1; color:#f8fafc; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#f8fafc; margin-right:4px;"></span> সাদা (White)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('কালো (Black)', '#000000')" style="background:#1e293b; border:1px solid #64748b; color:#cbd5e1; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#000; border:1px solid #cbd5e1; margin-right:4px;"></span> কালো (Black)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('কমলা (Orange)', '#f97316')" style="background:#1e293b; border:1px solid #f97316; color:#fdba74; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#f97316; margin-right:4px;"></span> কমলা (Orange)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="addColorVariantPreset('মেরুন (Maroon)', '#831843')" style="background:#1e293b; border:1px solid #9f1239; color:#fda4af; font-size:0.74rem; padding:5px 9px;">
+                <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#831843; margin-right:4px;"></span> মেরুন (Maroon)
+              </button>
             </div>
 
-            <!-- Size Chips Container populated dynamically by JS -->
-            <div class="size-chips-wrapper" id="dynamicSizeChipsContainer">
-              <!-- Rendered dynamically -->
-            </div>
-
-            <!-- Custom Size Input -->
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <input type="text" id="customSizeAddInput" class="form-ctrl" placeholder="অন্য কোনো সাইজ থাকলে লিখুন..." style="padding:6px 10px; font-size:0.78rem;">
-              <button type="button" class="btn-hdr-pill" id="addBtnAddCustomSize" onclick="addCustomSizeChip()" style="font-size:0.75rem; background:#334155;">
+            <!-- Custom Color Adder Input -->
+            <div style="display:flex; gap:6px; margin-bottom:12px;">
+              <input type="text" id="customColorNameInput" class="form-ctrl" placeholder="অন্য কোনো রঙের নাম লিখুন (যেমন: গোল্ডেন বা পেস্তা সবুজ)..." style="font-size:0.8rem; padding:8px 10px;">
+              <button type="button" class="btn-fast-action" style="background:#4f46e5; color:#fff; padding:8px 14px; font-size:0.8rem;" onclick="addCustomColorFromInput()">
                 <i class="fa-solid fa-plus"></i> যোগ করুন
               </button>
             </div>
-          </div>
 
-          <!-- 4. Pricing & Rates (রেট / দাম) -->
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" id="addLblSellPrice">বিক্রি মূল্য / রেট (Sell Price - ₹) *</label>
-              <input type="number" id="op_price" class="form-ctrl" placeholder="428" oninput="calculateDiscountPreview()" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" id="addLblMrp">আসল দাম (MRP - ₹)</label>
-              <input type="number" id="op_mrp" class="form-ctrl" placeholder="999" oninput="calculateDiscountPreview()">
+            <!-- Active Selected Colors Container (রং অনুযায়ী পিস সংখ্যা তালিকা) -->
+            <div id="selectedColorStockList" style="display:flex; flex-direction:column; gap:8px;">
+              <!-- Dynamically populated rows -->
             </div>
           </div>
 
-          <!-- Discount Preview Pill -->
-          <div id="priceDiscountPreviewPill" style="display:none; background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:8px 12px; border-radius:10px; font-size:0.78rem; font-weight:800; margin-bottom:14px;">
-            <!-- Auto calculated -->
-          </div>
-
-          <!-- 5. Initial Stock -->
-          <div class="form-group">
-            <label class="form-label" id="addLblStock">প্রারম্ভিক স্টক সংখ্যা (মোট কত পিস স্টকে আছে) *</label>
-            <input type="number" id="op_stock" class="form-ctrl" value="30" required>
-          </div>
-
-          <!-- 6. 5-Photo Simultaneous Gallery Upload (একসঙ্গে ৪ থেকে ৫টি ছবি) -->
-          <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:14px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-              <label class="form-label" style="margin-bottom:0; color:#38bdf8;" id="addLblPhotos">
-                <i class="fa-solid fa-images"></i> শাড়ির ৪-৫টি ফটো একসাথে আপলোড করুন *:
-              </label>
-              <span id="uploadedPhotosCountBadge" style="font-size:0.72rem; color:#cbd5e1; font-weight:800;">০/৫টি ছবি যোগ হয়েছে</span>
-            </div>
-            <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:10px;" id="addNoticePhotos">
-              ফোনের গ্যালারি থেকে শাড়ির কভার, আঁচল, পাড় এবং ব্লাউজের ছবি একসাথে সিলেক্ট করুন।
-            </p>
-
-            <label class="btn-hdr-pill" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; border:none; padding:10px 16px; font-size:0.84rem; display:inline-flex; width:100%; justify-content:center; margin-bottom:12px;">
-              <i class="fa-solid fa-camera"></i> <span id="addBtnChoosePhotos">গ্যালারি থেকে ৪-৫টি ছবি একসাথে বাছুন (Choose 4-5 Photos)</span>
-              <input type="file" id="op_multi_files" accept="image/*" multiple style="display:none;" onchange="handleMultipleAdminPhotos(event)">
+          <!-- 4. STORAGE RACK / SLOT -->
+          <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:14px;">
+            <label class="form-label" style="font-size:0.82rem; color:#cbd5e1; margin-bottom:4px;">
+              <i class="fa-solid fa-location-dot" style="color:#818cf8;"></i> ওয়্যারহাউস র্যাক বা তাকের অবস্থান (Storage Rack)
             </label>
-
-            <!-- 5 Photo Slots Grid -->
-            <div class="photo-slots-grid" id="photoSlotsGrid">
-              <div class="photo-slot-box" id="slotBox_0">
-                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-                <div class="photo-slot-lbl">ছবি ১ (কভার)</div>
-              </div>
-              <div class="photo-slot-box" id="slotBox_1">
-                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-                <div class="photo-slot-lbl">ছবি ২ (আঁচল)</div>
-              </div>
-              <div class="photo-slot-box" id="slotBox_2">
-                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-                <div class="photo-slot-lbl">ছবি ৩ (পাড় ও কাজ)</div>
-              </div>
-              <div class="photo-slot-box" id="slotBox_3">
-                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-                <div class="photo-slot-lbl">ছবি ৪ (ব্লাউজ পিস)</div>
-              </div>
-              <div class="photo-slot-box" id="slotBox_4">
-                <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-                <div class="photo-slot-lbl">ছবি ৫ (মডেল লুক)</div>
-              </div>
-            </div>
-
-            <!-- Optional Online Image URL input -->
-            <div style="margin-top:6px;">
-              <input type="text" id="op_img_url_fallback" class="form-ctrl" placeholder="অথবা সরাসরি ছবির অনলাইন লিংক দিতে পারেন..." style="font-size:0.75rem; padding:8px 10px;">
-            </div>
+            <input type="text" id="op_bin_custom" class="form-ctrl" placeholder="যেমন: Rack A-01 (শাড়ি তাক) বা Shelf J-02 (চুড়ি বক্স)" style="color:#fde047; font-weight:800; font-size:0.85rem;" value="Rack A-01 (শাড়ি ব্লক)">
           </div>
 
-          <!-- 7. Description -->
-          <div class="form-group">
-            <label class="form-label" id="addLblDesc">শাড়ির আকর্ষণীয় বিবরণ (Description)</label>
-            <textarea id="op_desc" class="form-ctrl" rows="3" placeholder="আসল কোয়ালিটি, সফট সুতো এবং প্রিমিয়াম ফিনিশিং..."></textarea>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" class="btn-submit-owner" id="addBtnSubmit" style="font-size:1rem; padding:15px;">
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="btn-submit-owner" id="addBtnSubmit" style="font-size:1rem; padding:15px; background:linear-gradient(135deg, #059669, #10b981); box-shadow:0 4px 15px rgba(16,185,129,0.35);">
             <i class="fa-solid fa-cloud-arrow-up"></i>
-            শাড়িটি সফলভাবে ওয়েবসাইটে লাইভ করুন 🚀
+            ছবি ও কালার-স্টক সহ প্রোডাক্ট লাইভ করুন 🚀
           </button>
         </form>
       </div>
     </div>
 
     <!-- ==================== TAB D: REVIEWS ==================== -->
-    <div id="pane-reviews" class="tab-pane">
+    <div id="tab-reviews" class="tab-pane">
       <div id="ownerReviewsContainer"></div>
     </div>
 
   </div>
 
-  <script>
+  
+
+  
+  <!-- ================= MODAL: PASSWORD & LOCK SETTINGS ================= -->
+  <div id="passwordSettingsModal" class="adm-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#1e293b; color:#fff; border:1.5px solid #475569; border-radius:20px; max-width:440px; width:100%; padding:22px; box-shadow:0 20px 40px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:16px;">
+        <div style="font-size:1.1rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-key" style="color:#f59e0b;"></i>
+          <span>পাসওয়ার্ড ও লক সেটিংস</span>
+        </div>
+        <button type="button" onclick="closePasswordSettingsModal()" style="background:#334155; border:none; color:#cbd5e1; width:30px; height:30px; border-radius:50%; cursor:pointer; font-weight:800;">✕</button>
+      </div>
+
+      <div style="background:#0b0f19; padding:12px 14px; border-radius:12px; border:1px solid #1f2937; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.82rem; color:#94a3b8;">বর্তমান পাসওয়ার্ড:</span>
+          <span id="curPassDisplay" style="font-size:0.95rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">1234</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; color:#94a3b8;">লক স্ক্রিন স্ট্যাটাস:</span>
+          <span id="lockStatusBadge" style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:6px; background:#065f46; color:#a7f3d0;">সক্রিয় (Active)</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.82rem; font-weight:700; color:#cbd5e1; margin-bottom:6px;">নতুন পাসওয়ার্ড দিন (নাম বা সংখ্যা):</label>
+        <input type="text" id="newOwnerPassInp" class="form-ctrl" placeholder="যেমন: Nisha2026 বা 1234" style="font-size:0.9rem; padding:10px 14px;">
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button type="button" class="btn-fast-action" style="background:#059669; color:#fff; padding:12px; font-weight:800; border-radius:10px; justify-content:center;" onclick="saveNewOwnerPassword()">
+          <i class="fa-solid fa-floppy-disk"></i> নতুন পাসওয়ার্ড সেভ করুন
+        </button>
+        <button type="button" class="btn-fast-action" style="background:#dc2626; color:#fff; padding:10px; font-weight:700; border-radius:10px; justify-content:center;" onclick="togglePinLockOption()">
+          <i class="fa-solid fa-power-off"></i> পাসওয়ার্ড লক অন / অফ করুন
+        </button>
+        <button type="button" class="btn-fast-action" style="background:#334155; color:#cbd5e1; padding:10px; font-weight:700; border-radius:10px; justify-content:center;" onclick="resetPinToDefaultFromModal()">
+          <i class="fa-solid fa-rotate-left"></i> ডিফল্ট '1234' এ রিসেট করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+<script>
     // State
     let ordersList = [];
 
@@ -1626,12 +1684,28 @@
 
     // Direct Bypass (১ ক্লিকে সরাসরি ড্যাশবোর্ডে ঢোকা)
     function bypassPinDirect() {
-      const modal = document.getElementById('pinLockModal');
-      if (modal) modal.style.display = 'none';
-      sessionStorage.setItem('nc_owner_unlocked', 'true');
-      
-      loadAllOwnerData();
-      handleCategoryChangeForSizes('saree');
+      try {
+        const modal = document.getElementById('pinLockModal');
+        if (modal) {
+          modal.style.display = 'none';
+        }
+      } catch(e) {}
+
+      try {
+        sessionStorage.setItem('nc_owner_unlocked', 'true');
+      } catch(e) {}
+
+      try {
+        loadAllOwnerData();
+      } catch(e) {
+        console.error('Error in loadAllOwnerData:', e);
+      }
+
+      try {
+        if (typeof handleCategoryChangeForSizes === 'function') {
+          handleCategoryChangeForSizes('saree');
+        }
+      } catch(e) {}
     }
 
     // Verify Password (Supports Names, Words, Numbers - Case-Insensitive / Trimmed)
@@ -1641,15 +1715,50 @@
       const entered = inp ? inp.value.trim() : '';
       const currentSaved = (localStorage.getItem('nc_owner_pin') || '1234').trim();
 
-      if (entered.toLowerCase() === currentSaved.toLowerCase() || entered === '1234' || entered === '') {
+      // Forgiving and easy: matches saved PIN, or default '1234', or empty, or bypass
+      if (!entered || entered.toLowerCase() === currentSaved.toLowerCase() || entered === '1234') {
         if (errBox) errBox.style.display = 'none';
         bypassPinDirect();
       } else {
         if (errBox) {
           errBox.style.display = 'block';
-          document.getElementById('pinErrorText').textContent = '❌ ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন (ডিফল্ট: 1234) অথবা নিচের লিঙ্কে ক্লিক করে সরাসরি প্রবেশ করুন।';
+          const errTxt = document.getElementById('pinErrorText');
+          if (errTxt) {
+            errTxt.innerHTML = 'ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন (ডিফল্ট: <b>1234</b>) অথবা নিচের <b>"সরাসরি প্রবেশ করুন"</b> বোতামে চাপুন।';
+          }
         }
         if (inp) inp.select();
+      }
+    }
+
+    // Disable PIN Lock Permanently (User can turn it off anytime)
+    function disablePinLockPermanently() {
+      try {
+        localStorage.setItem('nc_pin_disabled', 'true');
+        sessionStorage.setItem('nc_owner_unlocked', 'true');
+        alert('🔓 পাসওয়ার্ড লক সফলভাবে বন্ধ করা হয়েছে! এখন থেকে অ্যাডমিন ড্যাশবোর্ড সরাসরি খুলবে, আর কখনো পাসওয়ার্ড বা পিন চাইবে না।');
+        bypassPinDirect();
+      } catch(e) {
+        bypassPinDirect();
+      }
+    }
+
+    // Reset PIN to Default '1234' from Modal
+    function resetPinToDefaultFromModal() {
+      try {
+        localStorage.setItem('nc_owner_pin', '1234');
+        localStorage.setItem('nc_pin_disabled', 'false');
+        ownerPin = '1234';
+        const inp = document.getElementById('ownerPinInput');
+        if (inp) inp.value = '1234';
+        const errBox = document.getElementById('pinErrorMsg');
+        if (errBox) errBox.style.display = 'none';
+        const disp = document.getElementById('curPassDisplay');
+        if (disp) disp.textContent = '1234';
+        alert('✅ পাসওয়ার্ড সফলভাবে ডিফল্ট "1234" এ রিসেট করা হয়েছে!');
+        bypassPinDirect();
+      } catch(e) {
+        bypassPinDirect();
       }
     }
 
@@ -1705,35 +1814,159 @@
     }
 
     function resetPasswordToDefault() {
-      if (confirm('আপনি কি পাসওয়ার্ডটি রিসেট করে ডিফল্ট "1234" করতে চান?')) {
-        localStorage.setItem('nc_owner_pin', '1234');
-        ownerPin = '1234';
-        const disp = document.getElementById('curPassDisplay');
-        if (disp) disp.textContent = '1234';
-        alert('✅ পাসওয়ার্ড সফলভাবে রিসেট হয়ে ডিফল্ট "1234" করা হয়েছে!');
-        closePasswordSettingsModal();
-      }
+      resetPinToDefaultFromModal();
     }
 
     function togglePinLockOption() {
-      const disabled = localStorage.getItem('nc_pin_disabled') === 'true';
+      const disabled = (localStorage.getItem('nc_pin_disabled') === 'true');
       if (disabled) {
-        localStorage.removeItem('nc_pin_disabled');
-        alert('🔒 পাসওয়ার্ড লক পুনরায় সক্রিয় করা হয়েছে।');
+        localStorage.setItem('nc_pin_disabled', 'false');
+        alert('🔒 পাসওয়ার্ড লক সক্রিয় করা হয়েছে! পৃষ্ঠা রিলোড করলে পাসওয়ার্ড চাইবে।');
       } else {
         localStorage.setItem('nc_pin_disabled', 'true');
-        alert('🔓 পাসওয়ার্ড লক বন্ধ করা হয়েছে! এরপর থেকে পেজ খুললে সরাসরি ড্যাশবোর্ড চলে আসবে।');
+        alert('🔓 পাসওয়ার্ড লক নিষ্ক্রিয় করা হয়েছে! এখন থেকে কোনো পাসওয়ার্ড লাগবে না।');
       }
       openPasswordSettingsModal();
     }
 
     function lockDashboard() {
       sessionStorage.removeItem('nc_owner_unlocked');
-      
-      const inp = document.getElementById('ownerPinInput');
-      if (inp) inp.value = '';
       const modal = document.getElementById('pinLockModal');
       if (modal) modal.style.display = 'flex';
+      const drawer = document.getElementById('adminNavDrawerOverlay');
+      if (drawer) drawer.style.display = 'none';
+    }
+
+    // ==========================================
+    // CUSTOM OFFER BANNER STUDIO IMPLEMENTATION
+    // ==========================================
+    function loadCustomBanner() {
+      try {
+        const stored = localStorage.getItem('nc_custom_banner');
+        if (!stored) return;
+        const b = JSON.parse(stored);
+        const toggle = document.getElementById('customBannerActiveToggle');
+        if (toggle && b.active !== undefined) toggle.checked = b.active;
+        const urlInp = document.getElementById('customBannerUrlInp');
+        if (urlInp && b.img) urlInp.value = b.img;
+        const badgeInp = document.getElementById('customBannerBadgeInp');
+        if (badgeInp && b.badge) badgeInp.value = b.badge;
+        const titleInp = document.getElementById('customBannerTitleInp');
+        if (titleInp && b.title) titleInp.value = b.title;
+        const subInp = document.getElementById('customBannerSubInp');
+        if (subInp && b.subtitle) subInp.value = b.subtitle;
+        const actSel = document.getElementById('customBannerActionSel');
+        if (actSel && b.action) actSel.value = b.action;
+        updateCustomBannerPreview();
+      } catch(e) {
+        console.error('Error loading custom banner:', e);
+      }
+    }
+
+    function toggleCustomBannerActive(checked) {
+      updateCustomBannerPreview();
+    }
+
+    function handleCustomBannerFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const urlInp = document.getElementById('customBannerUrlInp');
+        if (urlInp) urlInp.value = e.target.result;
+        updateCustomBannerPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateCustomBannerPreview() {
+      const box = document.getElementById('adminBannerLivePreviewBox');
+      if (!box) return;
+
+      const urlInp = document.getElementById('customBannerUrlInp');
+      const badgeInp = document.getElementById('customBannerBadgeInp');
+      const titleInp = document.getElementById('customBannerTitleInp');
+      const subInp = document.getElementById('customBannerSubInp');
+      const toggle = document.getElementById('customBannerActiveToggle');
+
+      const img = urlInp ? urlInp.value.trim() : '';
+      const badge = badgeInp ? badgeInp.value.trim() : '';
+      const title = titleInp ? titleInp.value.trim() : '';
+      const sub = subInp ? subInp.value.trim() : '';
+      const active = toggle ? toggle.checked : true;
+
+      if (!img) {
+        box.innerHTML = `<span style="color:#94a3b8; font-size:0.8rem;" id="admBannerEmptyPrevTxt">এখনো কোনো ব্যানার আপলোড করা হয়নি</span>`;
+        return;
+      }
+
+      box.innerHTML = `
+        <div style="position:relative; width:100%; border-radius:14px; overflow:hidden; background:#1e293b;">
+          <img src="${img}" style="width:100%; max-height:220px; object-fit:cover; display:block;">
+          <div style="position:absolute; top:10px; right:10px; background:${active ? '#059669' : '#dc2626'}; color:#fff; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:6px;">
+            ${active ? '● লাইভ সক্রিয়' : '● বন্ধ'}
+          </div>
+          ${(title || sub || badge) ? `
+            <div style="position:absolute; bottom:0; inset-x:0; background:linear-gradient(to top, rgba(15,23,42,0.95), transparent); padding:12px 14px;">
+              ${badge ? `<span style="background:#e11d48; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">${badge}</span>` : ''}
+              ${title ? `<div style="font-size:0.95rem; font-weight:800; color:#fff; margin-top:4px;">${title}</div>` : ''}
+              ${sub ? `<div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${sub}</div>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function saveCustomBanner() {
+      const urlInp = document.getElementById('customBannerUrlInp');
+      const badgeInp = document.getElementById('customBannerBadgeInp');
+      const titleInp = document.getElementById('customBannerTitleInp');
+      const subInp = document.getElementById('customBannerSubInp');
+      const actSel = document.getElementById('customBannerActionSel');
+      const toggle = document.getElementById('customBannerActiveToggle');
+
+      const img = urlInp ? urlInp.value.trim() : '';
+      if (!img) {
+        alert('অনুগ্রহ করে ব্যানার ছবি আপলোড করুন বা ছবির অনলাইন লিংক দিন!');
+        return;
+      }
+
+      const bannerData = {
+        img: img,
+        badge: badgeInp ? badgeInp.value.trim() : '',
+        title: titleInp ? titleInp.value.trim() : '',
+        subtitle: subInp ? subInp.value.trim() : '',
+        action: actSel ? actSel.value : 'shop',
+        active: toggle ? toggle.checked : true,
+        updatedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('nc_custom_banner', JSON.stringify(bannerData));
+      alert('🎉 ব্যানার সফলভাবে সংরক্ষিত ও লাইভ করা হয়েছে! কাস্টমার হোমপেজে এটি দেখা যাবে।');
+      updateCustomBannerPreview();
+    }
+
+    function removeCustomBanner() {
+      if (!confirm('আপনি কি নিশ্চিত যে হোমপেজ ব্যানারটি মুছে ফেলতে চান?')) return;
+      localStorage.removeItem('nc_custom_banner');
+      const urlInp = document.getElementById('customBannerUrlInp');
+      if (urlInp) urlInp.value = '';
+      const badgeInp = document.getElementById('customBannerBadgeInp');
+      if (badgeInp) badgeInp.value = '';
+      const titleInp = document.getElementById('customBannerTitleInp');
+      if (titleInp) titleInp.value = '';
+      const subInp = document.getElementById('customBannerSubInp');
+      if (subInp) subInp.value = '';
+      const toggle = document.getElementById('customBannerActiveToggle');
+      if (toggle) toggle.checked = false;
+      updateCustomBannerPreview();
+      alert('🗑️ ব্যানার সফলভাবে মুছে ফেলা হয়েছে!');
+    }
+
+    function restartFlashSale2Hours() {
+      const newEnd = Date.now() + (2 * 60 * 60 * 1000);
+      localStorage.setItem('nc_flash_sale_end', newEnd.toString());
+      alert('⚡ ২ ঘণ্টার ফ্ল্যাশ সেল কাউন্টডাউন টাইমার সফলভাবে রিস্টার্ট করা হয়েছে!');
     }
 
     function loadAllOwnerData() {
@@ -2801,6 +3034,7 @@
       if (!grid) return;
 
       const isEn = (currentAdminLang === 'en');
+      const isDemoCleared = (localStorage.getItem('nc_demo_cleared') === 'true');
 
       let prods = [];
       try {
@@ -2815,45 +3049,171 @@
         } catch(e) {}
       }
 
-      if (!prods || prods.length === 0) {
-        prods = [
-          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 428, stock: 45, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100' },
-          { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 549, stock: 30, img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=100' },
-          { id: 'NC-103', title: 'Santipuri Tant Cotton Saree', category: 'saree', price: 349, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=100' }
-        ];
+      // Only seed demo if not explicitly cleared by owner
+      if ((!prods || prods.length === 0) && !isDemoCleared) {
+        if (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS) && INITIAL_PRODUCTS.length > 0) {
+          prods = [...INITIAL_PRODUCTS];
+        } else {
+          prods = [
+            { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 799, stock: 45, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200', binLocation: 'র্যাক A-০১ (জামদানি শাড়ি ব্লক)' },
+            { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 950, stock: 30, img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200', binLocation: 'র্যাক A-০২ (সফট সিল্ক তাক)' },
+            { id: 'NC-103', title: 'Santipuri Tant Cotton Saree', category: 'saree', price: 499, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200', binLocation: 'র্যাক B-০১ (তাঁত কটন তাক)' }
+          ];
+        }
+        localStorage.setItem('nc_products', JSON.stringify(prods));
       }
 
-      document.getElementById('countTabStock').textContent = prods.length;
+      const totalCount = prods.length;
+      const countTab = document.getElementById('countTabStock');
+      if (countTab) countTab.textContent = totalCount;
+      const countHdr = document.getElementById('stockHeaderTotalCount');
+      if (countHdr) countHdr.textContent = totalCount;
+
       const q = (document.getElementById('stockFilterInput')?.value || '').toLowerCase();
-      if (q) prods = prods.filter(p => (p.title||'').toLowerCase().includes(q) || (p.id||'').toLowerCase().includes(q));
+      if (q) {
+        prods = prods.filter(p => (p.title||'').toLowerCase().includes(q) || (p.id||'').toLowerCase().includes(q));
+      }
+
+      if (!prods || prods.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:45px 20px; background:#0b0f19; border-radius:18px; border:1.5px dashed #334155;">
+            <i class="fa-solid fa-boxes-stacked" style="font-size:3rem; color:#64748b; margin-bottom:12px;"></i>
+            <h4 style="font-size:1.1rem; font-weight:800; color:#fff;">${isEn ? 'No Products in Stock' : 'কোনো প্রোডাক্ট নেই!'}</h4>
+            <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px; max-width:420px; margin-left:auto; margin-right:auto;">
+              ${isEn ? 'All demo products were removed. Click below to add your real sarees and dresses.' : 'আপনার সমস্ত ডেমো প্রোডাক্ট মুছে ফেলা হয়েছে। নিচে ক্লিক করে আপনার দোকানের আসল শাড়ি ও পোশাকের ছবি দিয়ে প্রোডাক্ট যোগ করুন।'}
+            </p>
+            <button type="button" class="btn-fast-action" style="margin-top:16px; background:#4f46e5; color:#fff; padding:10px 20px; font-weight:800; border-radius:12px;" onclick="switchAdminView('add')">
+              <i class="fa-solid fa-plus-circle"></i> ${isEn ? 'Add New Product' : 'নতুন শাড়ি আপলোড করুন'}
+            </button>
+          </div>
+        `;
+        return;
+      }
 
       grid.innerHTML = '';
       prods.forEach(p => {
         const curStock = p.stock !== undefined ? parseInt(p.stock) : (p.inStock !== false ? 25 : 0);
         const isOutOfStock = (curStock <= 0 || p.inStock === false);
         const isUrgent = (curStock > 0 && curStock <= 10);
+        const bin = p.binLocation || (isEn ? 'Rack Z-01 (General)' : 'র্যাক Z-০১ (সাধারণ তাক)');
+
+        let colorChipsHtml = '';
+        if (p.colors && Array.isArray(p.colors) && p.colors.length > 0) {
+          colorChipsHtml = `
+            <div style="display:flex; flex-wrap:wrap; gap:4px; margin:6px 0;">
+              ${p.colors.map(c => `
+                <span style="font-size:0.72rem; font-weight:800; background:#0b0f19; border:1px solid #334155; color:#cbd5e1; padding:2px 7px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">
+                  <span style="width:7px; height:7px; border-radius:50%; background:${c.code || '#a855f7'};"></span>
+                  ${c.name.split(' ')[0]}: <strong style="color:${(c.qty||0)>0?'#fde047':'#ef4444'};">${c.qty || 0}</strong>
+                </span>
+              `).join('')}
+              <button type="button" onclick="openEditColorStockModal('${p.id}')" style="background:#1e1b4b; border:1px solid #6366f1; color:#c7d2fe; font-size:0.68rem; font-weight:800; padding:2px 6px; border-radius:6px; cursor:pointer;">
+                <i class="fa-solid fa-palette"></i> রঙের স্টক বদলান
+              </button>
+            </div>
+          `;
+        } else {
+          colorChipsHtml = `
+            <div style="margin:6px 0;">
+              <button type="button" onclick="openEditColorStockModal('${p.id}')" style="background:#1e1b4b; border:1px solid #6366f1; color:#c7d2fe; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:6px; cursor:pointer;">
+                <i class="fa-solid fa-palette"></i> + রঙের হিসাব যুক্ত করুন
+              </button>
+            </div>
+          `;
+        }
 
         const card = document.createElement('div');
         card.className = 'inv-card';
         card.innerHTML = `
-          <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="inv-thumb">
+          <div style="position:relative;">
+            <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120'}" class="inv-thumb" style="width:75px; height:75px; border-radius:12px; object-fit:cover; border:1.5px solid #334155;">
+            <button type="button" onclick="openEditImageModal('${p.id}')" title="ছবি এডিট" style="position:absolute; bottom:4px; right:4px; background:rgba(15,23,42,0.85); color:#38bdf8; border:1px solid #38bdf8; width:24px; height:24px; border-radius:50%; font-size:0.7rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+              <i class="fa-solid fa-camera"></i>
+            </button>
+          </div>
           <div style="flex:1;">
-            <div style="font-size:0.85rem; font-weight:800; color:#fff;">${p.title}</div>
-            <div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">
-              ${p.id} • ${isEn ? 'Price:' : 'মূল্য:'} <strong style="color:#34d399;">₹${p.price}</strong> • 
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <div style="font-size:0.9rem; font-weight:800; color:#fff; line-height:1.25;">${p.title}</div>
+              <!-- DIRECT DELETE BUTTON -->
+              <button type="button" onclick="deleteOwnerProduct('${p.id}')" title="${isEn ? 'Delete this product' : 'এই শাড়িটি ডিলিট করুন'}" style="background:#ef4444; color:#fff; border:none; width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(239,68,68,0.3);">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+            
+            <div style="font-size:0.72rem; color:#94a3b8; margin-top:3px;">
+              ${p.id} • ${isEn ? 'Price:' : 'মূল্য:'} <strong style="color:#34d399; font-size:0.82rem;">₹${p.price}</strong> • 
               ${isOutOfStock ? `<span style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-ban"></i> ${isEn ? 'Out of Stock' : 'স্টক শেষ'}</span>` : (isUrgent ? `<span style="color:#ea580c; font-weight:800;"><i class="fa-solid fa-fire"></i> ${isEn ? 'Only ' + curStock + ' left' : 'আর মাত্র ' + curStock + 'টি বাকি'}</span>` : `<span style="color:#10b981; font-weight:700;">${isEn ? 'Stock: ' + curStock : 'স্টক: ' + curStock}</span>`)}
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+
+            <!-- Storage Slot Badge -->
+            <div style="font-size:0.7rem; color:#c7d2fe; background:#1e1b4b; padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; margin-top:4px; border:1px solid #4338ca;">
+              <i class="fa-solid fa-location-dot" style="color:#818cf8;"></i> ${bin}
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px; margin-top:8px; flex-wrap:wrap;">
               <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', -1)">-</button>
               <input type="number" class="stock-val-box" id="inpStock_${p.id}" value="${curStock}" min="0" onchange="saveOwnerStock('${p.id}', this.value)" oninput="saveOwnerStock('${p.id}', this.value)">
               <button type="button" class="btn-qty-ctl" onclick="adjustOwnerStock('${p.id}', 1)">+</button>
               <button type="button" class="btn-qty-ctl" style="width:36px; font-size:0.7rem; background:#334155;" onclick="adjustOwnerStock('${p.id}', 5)">+5</button>
               <button type="button" class="btn-qty-ctl" style="width:52px; font-size:0.68rem; background:#7f1d1d; color:#fecaca;" onclick="setOwnerStockDirect('${p.id}', 0)">${isEn ? '0 Stock' : '০ স্টক'}</button>
+              <button type="button" class="btn-qty-ctl" style="width:34px; font-size:0.75rem; background:#0284c7; color:#fff;" onclick="openEditImageModal('${p.id}')" title="${isEn ? 'Edit photo' : 'ছবি বদলান'}">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
             </div>
           </div>
         `;
         grid.appendChild(card);
       });
+    }
+
+    function deleteOwnerProduct(id) {
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+
+      const p = prods.find(item => item.id === id);
+      const title = p ? p.title : id;
+      const isEn = (currentAdminLang === 'en');
+
+      if (!confirm(isEn ? `Are you sure you want to delete '${title}'?` : `আপনি কি নিশ্চিত যে '${title}' প্রোডাক্টটি মুছে ফেলতে চান?`)) {
+        return;
+      }
+
+      prods = prods.filter(item => item.id !== id);
+      localStorage.setItem('nc_products', JSON.stringify(prods));
+
+      let cust = [];
+      try {
+        cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+        cust = cust.filter(item => item.id !== id);
+        localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+      } catch(e) {}
+
+      localStorage.setItem('nc_demo_cleared', 'true');
+      renderOwnerStock();
+      alert(isEn ? `✓ '${title}' deleted successfully!` : `✓ '${title}' সফলভাবে ডিলিট করা হয়েছে!`);
+    }
+
+    function clearAllDemoProducts() {
+      const isEn = (currentAdminLang === 'en');
+      if (!confirm(isEn 
+        ? 'Are you sure you want to clear all products? Only new products you upload will be kept.' 
+        : 'আপনি কি সমস্ত ডেমো শাড়ি মুছে ফেলতে চান? এটি মুছে দিলে শুধুমাত্র আপনার নিজের তোলা নতুন প্রোডাক্টগুলো থাকবে।')) {
+        return;
+      }
+
+      // Keep only user-added custom products if any
+      let cust = [];
+      try {
+        cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      } catch(e) {}
+
+      localStorage.setItem('nc_products', JSON.stringify(cust));
+      localStorage.setItem('nc_demo_cleared', 'true');
+
+      renderOwnerStock();
+      alert(isEn 
+        ? '✓ All demo products cleared! Inventory is now ready for your own products.' 
+        : '✓ সমস্ত ডেমো শাড়ি সফলভাবে মুছে ফেলা হয়েছে! এখন আপনার ইনভেন্টরি সম্পূর্ণ পরিষ্কার।');
     }
 
     function setOwnerStockDirect(id, zeroVal) {
@@ -2883,198 +3243,116 @@
         prods[idx].inStock = (numVal > 0);
         localStorage.setItem('nc_products', JSON.stringify(prods));
       }
-
-      // Also update nc_custom_products if present
-      try {
-        let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
-        const cIdx = cust.findIndex(p => p.id === id);
-        if (cIdx !== -1) {
-          cust[cIdx].stock = numVal;
-          cust[cIdx].inStock = (numVal > 0);
-          localStorage.setItem('nc_custom_products', JSON.stringify(cust));
-        }
-      } catch(e) {}
-
-      renderFinanceOverview();
-    }
-
-    
-    // ==========================================
-    // CUSTOM OFFER BANNER STUDIO CONTROLLER
-    // ==========================================
-    let customBannerData = {
-      active: false,
-      img: '',
-      title: '',
-      subtitle: '',
-      badge: '',
-      action: 'scroll'
-    };
-
-    function loadCustomBanner() {
-      try {
-        const stored = localStorage.getItem('nc_custom_banner');
-        if (stored) {
-          customBannerData = JSON.parse(stored);
-        }
-      } catch(e) {}
-
-      const activeTgl = document.getElementById('customBannerActiveToggle');
-      if (activeTgl) activeTgl.checked = !!customBannerData.active;
-
-      const urlInp = document.getElementById('customBannerUrlInp');
-      if (urlInp) urlInp.value = customBannerData.img || '';
-
-      const titleInp = document.getElementById('customBannerTitleInp');
-      if (titleInp) titleInp.value = customBannerData.title || '';
-
-      const subInp = document.getElementById('customBannerSubInp');
-      if (subInp) subInp.value = customBannerData.subtitle || '';
-
-      const badgeInp = document.getElementById('customBannerBadgeInp');
-      if (badgeInp) badgeInp.value = customBannerData.badge || '';
-
-      const actSel = document.getElementById('customBannerActionSel');
-      if (actSel) actSel.value = customBannerData.action || 'scroll';
-
-      updateCustomBannerPreview();
-    }
-
-    function handleCustomBannerFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        customBannerData.img = evt.target.result;
-        const urlInp = document.getElementById('customBannerUrlInp');
-        if (urlInp) urlInp.value = '';
-        updateCustomBannerPreview();
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function updateCustomBannerPreview() {
-      const prevBox = document.getElementById('adminBannerLivePreviewBox');
-      if (!prevBox) return;
-
-      const urlInp = document.getElementById('customBannerUrlInp');
-      if (urlInp && urlInp.value.trim()) {
-        customBannerData.img = urlInp.value.trim();
-      }
-
-      const titleInp = document.getElementById('customBannerTitleInp');
-      if (titleInp) customBannerData.title = titleInp.value.trim();
-
-      const subInp = document.getElementById('customBannerSubInp');
-      if (subInp) customBannerData.subtitle = subInp.value.trim();
-
-      const badgeInp = document.getElementById('customBannerBadgeInp');
-      if (badgeInp) customBannerData.badge = badgeInp.value.trim();
-
-      const actSel = document.getElementById('customBannerActionSel');
-      if (actSel) customBannerData.action = actSel.value;
-
-      if (!customBannerData.img) {
-        prevBox.innerHTML = `<span style="color:#64748b; font-size:0.8rem;">${currentAdminLang === 'en' ? 'No banner uploaded yet' : 'এখনো কোনো ব্যানার আপলোড করা হয়নি'}</span>`;
-        return;
-      }
-
-      prevBox.innerHTML = `
-        <div style="width:100%; border-radius:12px; overflow:hidden; position:relative; background:#0f172a;">
-          <img src="${customBannerData.img}" style="width:100%; max-height:280px; object-fit:cover; display:block;">
-          ${(customBannerData.title || customBannerData.subtitle || customBannerData.badge) ? `
-            <div style="position:absolute; bottom:0; inset-x:0; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.5) 60%, transparent 100%); padding:12px 14px; text-align:left; color:#fff;">
-              ${customBannerData.badge ? `<span style="background:#ea580c; color:#fff; font-size:0.68rem; font-weight:800; padding:2px 6px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-bottom:3px;">${customBannerData.badge}</span>` : ''}
-              <div style="font-weight:800; font-size:1rem; line-height:1.2;">${customBannerData.title || ''}</div>
-              ${customBannerData.subtitle ? `<div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${customBannerData.subtitle}</div>` : ''}
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }
-
-    function toggleCustomBannerActive(val) {
-      customBannerData.active = val;
-      localStorage.setItem('nc_custom_banner', JSON.stringify(customBannerData));
-      alert(val 
-        ? (currentAdminLang === 'en' ? '✅ Custom Offer Banner is now LIVE on customer shop!' : '✅ কাস্টম অফার ব্যানারটি হোমপেজে লাইভ চালু করা হয়েছে!') 
-        : (currentAdminLang === 'en' ? '⚠️ Banner is turned off.' : '⚠️ ব্যানারটি হোমপেজে বন্ধ করা হয়েছে।')
-      );
-    }
-
-    function saveCustomBanner() {
-      const activeTgl = document.getElementById('customBannerActiveToggle');
-      customBannerData.active = activeTgl ? activeTgl.checked : true;
-      if (!customBannerData.img) {
-        alert(currentAdminLang === 'en' ? 'Please upload a banner image first!' : 'অনুগ্রহ করে প্রথমে একটি ব্যানার ফটো আপলোড করুন বা লিংক দিন!');
-        return;
-      }
-      localStorage.setItem('nc_custom_banner', JSON.stringify(customBannerData));
-      alert(currentAdminLang === 'en' ? '🎉 Custom Offer Banner saved and published successfully!' : '🎉 সফল! আপনার কাস্টম অফার ব্যানারটি সফলভাবে সেভ ও লাইভ করা হয়েছে।');
-    }
-
-    function removeCustomBanner() {
-      if (!confirm(currentAdminLang === 'en' ? 'Are you sure you want to delete this banner?' : 'আপনি কি নিশ্চিতভাবে এই ব্যানারটি মুছে ফেলতে চান?')) return;
-      customBannerData = { active: false, img: '', title: '', subtitle: '', badge: '', action: 'scroll' };
-      localStorage.removeItem('nc_custom_banner');
-      loadCustomBanner();
-      alert(currentAdminLang === 'en' ? '🗑️ Banner removed.' : '🗑️ ব্যানারটি মুছে ফেলা হয়েছে।');
-    }
-
-
-    // Flash sale
-    function restartFlashSale2Hours() {
-      const end = Date.now() + (2 * 60 * 60 * 1000);
-      localStorage.setItem('nc_flash_sale_end', end);
-      alert('⚡ সফল! হোমপেজের ফ্ল্যাশ সেল টাইমার নতুন করে ২ ঘণ্টার জন্য শুরু হয়েছে।');
-    }
-
-    // Add Product
-    function handleOwnerImageUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const b64 = evt.target.result;
-        document.getElementById('op_img').value = b64;
-        const prev = document.getElementById('op_preview');
-        prev.src = b64;
-        prev.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
     }
 
     function handleOwnerProductSubmit(e) {
-      e.preventDefault();
-      const title = document.getElementById('op_title').value.trim();
-      const cat = document.getElementById('op_cat').value;
-      const fabric = document.getElementById('op_fabric').value.trim() || 'Cotton Silk';
-      const price = parseInt(document.getElementById('op_price').value) || 450;
-      const mrp = parseInt(document.getElementById('op_mrp').value) || (price * 2);
-      const stock = parseInt(document.getElementById('op_stock').value) || 30;
-      const img = document.getElementById('op_img').value.trim();
-      const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
-      const binEl = document.getElementById('op_bin');
-      const binLocation = binEl ? binEl.value : 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
+      if (e) e.preventDefault();
+      const isEn = (currentAdminLang === 'en');
+
+      const titleInp = document.getElementById('op_title');
+      const catInp = document.getElementById('op_cat');
+      const fabricInp = document.getElementById('op_fabric');
+      const priceInp = document.getElementById('op_price');
+      const mrpInp = document.getElementById('op_mrp');
+      const stockInp = document.getElementById('op_stock');
+      const descInp = document.getElementById('op_desc');
+      const binInp = document.getElementById('op_bin_custom');
+      const urlFallbackInp = document.getElementById('op_img_url_fallback');
+
+      const title = titleInp ? titleInp.value.trim() : '';
+      const cat = catInp ? catInp.value : 'saree';
+      const fabric = fabricInp ? fabricInp.value.trim() : 'Premium Quality';
+      const price = parseInt(priceInp ? priceInp.value : 0) || 0;
+      const mrp = parseInt(mrpInp ? mrpInp.value : 0) || (price * 2);
+      const stock = parseInt(stockInp ? stockInp.value : 0) || 10;
+      const desc = descInp ? descInp.value.trim() : 'নিশা ক্রিয়েশনসের প্রিমিয়াম এক্সক্লুসিভ শাড়ি ও পোশাক';
+      const binLocation = (binInp && binInp.value.trim()) ? binInp.value.trim() : 'র্যাক Z-০১ (সাধারণ তাক)';
+
+      if (!title) {
+        alert(isEn ? 'Please enter the product title!' : 'অনুগ্রহ করে শাড়ির নাম লিখুন!');
+        if (titleInp) titleInp.focus();
+        return;
+      }
+
+      if (!price || price <= 0) {
+        alert(isEn ? 'Please enter a valid selling price!' : 'অনুগ্রহ করে সঠিক বিক্রয়মূল্য লিখুন!');
+        if (priceInp) priceInp.focus();
+        return;
+      }
+
+      // Collect images safely from uploadedPhotoList or url fallback
+      let coverImg = '';
+      let allImages = [];
+
+      if (typeof uploadedPhotoList !== 'undefined' && Array.isArray(uploadedPhotoList) && uploadedPhotoList.length > 0) {
+        coverImg = uploadedPhotoList[0];
+        allImages = [...uploadedPhotoList];
+      } else if (urlFallbackInp && urlFallbackInp.value.trim()) {
+        coverImg = urlFallbackInp.value.trim();
+        allImages = [coverImg];
+      } else {
+        if (cat === 'girls') coverImg = 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600';
+        else if (cat === 'jewel' || cat === 'bangles') coverImg = 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=600';
+        else if (cat === 'kurti') coverImg = 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600';
+        else coverImg = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600';
+        allImages = [coverImg];
+      }
+
+      const sizes = (typeof selectedSizes !== 'undefined' && Array.isArray(selectedSizes) && selectedSizes.length > 0)
+        ? [...selectedSizes]
+        : (cat === 'saree' ? ['Free Size (5.5m + Blouse)'] : ['M', 'L', 'XL']);
+
+      const prodId = 'NC-' + Math.floor(100 + Math.random() * 900);
 
       const newProd = {
-        id: 'NC-CUST-' + Date.now().toString().slice(-6),
-        title, category: cat, fabric, price, mrp, stock, inStock: stock > 0, img, desc, binLocation,
+        id: prodId,
+        title: title,
+        category: cat,
+        type: (cat === 'girls' ? 'girls' : (cat === 'jewel' || cat === 'bangles' ? 'jewellery' : 'saree')),
+        fabric: fabric,
+        price: price,
+        mrp: mrp,
+        stock: stock,
+        initialStock: stock,
+        inStock: stock > 0,
+        img: coverImg,
+        images: allImages,
+        sizes: sizes,
+        desc: desc,
+        binLocation: binLocation,
+        rating: 4.8,
+        reviews: 1,
         dateAdded: new Date().toISOString()
       };
 
-      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      // 1. Save to nc_products
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
       prods.unshift(newProd);
       localStorage.setItem('nc_products', JSON.stringify(prods));
 
-      let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+      // 2. Save to nc_custom_products
+      let cust = [];
+      try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
       cust.unshift(newProd);
       localStorage.setItem('nc_custom_products', JSON.stringify(cust));
 
-      alert('🎉 সফল! নতুন শাড়িটি ওয়েবসাইটে যুক্ত হয়ে গেছে।');
-      document.getElementById('ownerAddProductForm').reset();
-      document.getElementById('op_preview').style.display = 'none';
+      // Mark demo cleared so only real products show
+      localStorage.setItem('nc_demo_cleared', 'true');
+
+      // Reset form & photo previews
+      if (typeof uploadedPhotoList !== 'undefined') uploadedPhotoList = [];
+      if (typeof updatePhotoSlotsDisplay === 'function') updatePhotoSlotsDisplay();
+      const form = document.getElementById('ownerAddProductForm');
+      if (form) form.reset();
+
+      alert(isEn 
+        ? `🎉 Success! New product '${title}' (#${prodId}) is now live on the website!` 
+        : `🎉 অভিনন্দন! নতুন শাড়ি '${title}' (#${prodId}) সফলভাবে ওয়েবসাইটে লাইভ হয়েছে।`);
+
+      // Switch view to stock tab
       switchAdminView('stock');
+      renderOwnerStock();
     }
 
     // Reviews
@@ -3274,31 +3552,6 @@
         renderWarehouseOperations();
       }
     }
-
-    function deleteOwnerProduct(prodId) {
-      let prods = [];
-      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
-      
-      const p = prods.find(pr => pr.id === prodId);
-      const title = p ? p.title : prodId;
-
-      if (!confirm(`⚠️ আপনি কি নিশ্চিতভাবে প্রোডাক্টটি ("${title}") সম্পূর্ণ ডিলিট করতে চান?\nডিলিট করলে ওয়েবসাইট ও ওয়্যারহাউস থেকে এটি মুছে যাবে।`)) {
-        return;
-      }
-
-      prods = prods.filter(pr => pr.id !== prodId);
-      localStorage.setItem('nc_products', JSON.stringify(prods));
-
-      let cust = [];
-      try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
-      cust = cust.filter(pr => pr.id !== prodId);
-      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
-
-      alert(`🗑️ প্রোডাক্ট #${prodId} সফলভাবে ডিলিট করা হয়েছে!`);
-      renderOwnerStock();
-      renderWarehouseOperations();
-    }
-
     function confirmDeleteFromModal() {
       if (currentEditingProductId) {
         const id = currentEditingProductId;
@@ -3399,70 +3652,6 @@
         pill.style.display = 'none';
       }
     }
-
-    // Submit Product Handler
-    function handleOwnerProductSubmit(e) {
-      e.preventDefault();
-      const title = document.getElementById('op_title').value.trim();
-      const cat = document.getElementById('op_cat').value;
-      const fabric = document.getElementById('op_fabric').value.trim() || 'Cotton Silk';
-      const price = parseInt(document.getElementById('op_price').value) || 450;
-      const mrp = parseInt(document.getElementById('op_mrp').value) || (price * 2);
-      const stock = parseInt(document.getElementById('op_stock').value) || 30;
-      const desc = document.getElementById('op_desc').value.trim() || 'নিশা ক্রিয়েশনসের প্রিমিয়াম শাড়ি';
-      const binEl = document.getElementById('op_bin');
-      const binLocation = binEl ? binEl.value : 'র‍্যাক Z-01 (সাধারণ ওয়্যারহাউস তাক)';
-
-      // Images
-      let mainImg = '';
-      let subImgs = [];
-
-      if (uploadedPhotoList.length > 0) {
-        mainImg = uploadedPhotoList[0];
-        subImgs = uploadedPhotoList.slice(1);
-      } else {
-        const fallback = document.getElementById('op_img_url_fallback').value.trim();
-        mainImg = fallback || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500';
-      }
-
-      // Sizes
-      const finalSizes = currentSelectedSizes.length > 0 ? currentSelectedSizes : ['Free Size'];
-
-      const newProd = {
-        id: 'NC-PROD-' + Date.now().toString().slice(-6),
-        title: title,
-        category: cat,
-        fabric: fabric,
-        price: price,
-        mrp: mrp,
-        stock: stock,
-        inStock: stock > 0,
-        img: mainImg,
-        subImages: subImgs,
-        availableSizes: finalSizes,
-        effectiveSizeChart: cat === 'kurti' ? 'kurti' : (cat === 'girls' ? 'kids_frock' : 'saree_blouse'),
-        desc: desc,
-        dateAdded: new Date().toISOString()
-      };
-
-      // Save to nc_products
-      let prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
-      prods.unshift(newProd);
-      localStorage.setItem('nc_products', JSON.stringify(prods));
-
-      // Save to nc_custom_products
-      let cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
-      cust.unshift(newProd);
-      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
-
-      alert(`🎉 অভিনন্দন! "${title}" সফলভাবে আপলোড হয়েছে!\n${finalSizes.length}টি সাইজ এবং ${uploadedPhotoList.length || 1}টি ছবি ওয়েবসাইটে লাইভ দেখতে পাবেন।`);
-
-      document.getElementById('ownerAddProductForm').reset();
-      uploadedPhotoList = [];
-      updatePhotoSlotsDisplay();
-      switchAdminView('stock');
-    }
-
     // Print Owner QR Shipping Label
     function printOwnerQrLabel(orderId) {
       const ord = ordersList.find(o => o.id === orderId);
@@ -3530,104 +3719,276 @@
     }
 
     // Auto-apply selected language and restore session on page load
-    function initAdminDashboard() {
-      setAdminLanguage(currentAdminLang);
-      loadCustomBanner();
-      const isUnlocked = (sessionStorage.getItem('nc_owner_unlocked') === 'true');
-      const isPinDisabled = (localStorage.getItem('nc_pin_disabled') === 'true');
-      if (isUnlocked || isPinDisabled) {
-        bypassPinDirect();
+    
+    // ==========================================
+    // PHOTO UPLOAD & COLOR STOCK STUDIO LOGIC
+    // ==========================================
+    let uploadedStudioPhoto = '';
+    let activeColorVariantsList = [
+      { name: 'লাল (Red)', code: '#ef4444', qty: 5 },
+      { name: 'রয়্যাল ব্লু (Royal Blue)', code: '#2563eb', qty: 5 },
+      { name: 'হলুদ (Yellow)', code: '#eab308', qty: 5 }
+    ];
+
+    function handleStudioPhotoSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedStudioPhoto = e.target.result;
+        showPhotoUploadPreview(uploadedStudioPhoto);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleUrlFallbackChange(val) {
+      if (val && val.trim()) {
+        uploadedStudioPhoto = val.trim();
+        showPhotoUploadPreview(uploadedStudioPhoto);
+      }
+    }
+
+    function showPhotoUploadPreview(src) {
+      const box = document.getElementById('photoUploadPreviewBox');
+      const img = document.getElementById('mainUploadPreviewImg');
+      const lbl = document.getElementById('btnChoosePhotoLabel');
+      if (box && img) {
+        img.src = src;
+        box.style.display = 'block';
+        if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera-rotate"></i> <span>অন্য ছবি বাছাই করুন</span>';
+      }
+    }
+
+    function clearSelectedUploadPhoto() {
+      uploadedStudioPhoto = '';
+      const box = document.getElementById('photoUploadPreviewBox');
+      const fileInp = document.getElementById('op_photo_file');
+      const urlInp = document.getElementById('op_img_url_fallback');
+      const lbl = document.getElementById('btnChoosePhotoLabel');
+      if (box) box.style.display = 'none';
+      if (fileInp) fileInp.value = '';
+      if (urlInp) urlInp.value = '';
+      if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন</span>';
+    }
+
+    function addColorVariantPreset(name, code) {
+      const exists = activeColorVariantsList.find(c => c.name.toLowerCase() === name.toLowerCase());
+      if (exists) {
+        exists.qty = (exists.qty || 0) + 2;
       } else {
-        const modal = document.getElementById('pinLockModal');
-        if (modal) modal.style.display = 'flex';
+        activeColorVariantsList.push({ name: name, code: code, qty: 5 });
+      }
+      renderActiveColorStockList();
+    }
+
+    function addCustomColorFromInput() {
+      const inp = document.getElementById('customColorNameInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) return;
+
+      const exists = activeColorVariantsList.find(c => c.name.toLowerCase() === val.toLowerCase());
+      if (!exists) {
+        activeColorVariantsList.push({ name: val, code: '#a855f7', qty: 5 });
+      }
+      if (inp) inp.value = '';
+      renderActiveColorStockList();
+    }
+
+    function removeColorVariant(idx) {
+      if (activeColorVariantsList.length <= 1) {
+        alert('অন্তত একটি রঙের তথ্য রাখা আবশ্যক!');
+        return;
+      }
+      activeColorVariantsList.splice(idx, 1);
+      renderActiveColorStockList();
+    }
+
+    function adjustColorQty(idx, delta) {
+      if (activeColorVariantsList[idx]) {
+        activeColorVariantsList[idx].qty = Math.max(0, (activeColorVariantsList[idx].qty || 0) + delta);
+        renderActiveColorStockList();
+      }
+    }
+
+    function updateColorQtyDirect(idx, val) {
+      if (activeColorVariantsList[idx]) {
+        activeColorVariantsList[idx].qty = Math.max(0, parseInt(val) || 0);
+        updateTotalColorStockBadge();
+      }
+    }
+
+    function updateTotalColorStockBadge() {
+      const badge = document.getElementById('activeTotalColorStockBadge');
+      if (!badge) return;
+      const total = activeColorVariantsList.reduce((acc, c) => acc + (c.qty || 0), 0);
+      badge.textContent = `মোট স্টক: ${total} পিস`;
+    }
+
+    function renderActiveColorStockList() {
+      const container = document.getElementById('selectedColorStockList');
+      if (!container) return;
+
+      container.innerHTML = activeColorVariantsList.map((c, idx) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0b0f19; padding:8px 12px; border-radius:10px; border:1px solid #1f2937;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:${c.code || '#a855f7'}; border:1px solid #cbd5e1; flex-shrink:0;"></span>
+            <span style="font-size:0.85rem; font-weight:800; color:#fff;">${c.name}</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button type="button" onclick="adjustColorQty(${idx}, -1)" style="width:28px; height:28px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">-</button>
+            <input type="number" min="0" value="${c.qty || 0}" oninput="updateColorQtyDirect(${idx}, this.value)" style="width:50px; text-align:center; background:#090d16; border:1.5px solid #4f46e5; color:#fde047; font-weight:800; font-size:0.9rem; border-radius:6px; padding:3px 0; outline:none;">
+            <span style="font-size:0.75rem; color:#94a3b8;">পিস</span>
+            <button type="button" onclick="adjustColorQty(${idx}, 1)" style="width:28px; height:28px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">+</button>
+            <button type="button" onclick="removeColorVariant(${idx})" title="মুছুন" style="background:transparent; border:none; color:#ef4444; font-size:0.9rem; margin-left:6px; cursor:pointer;">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateTotalColorStockBadge();
+    }
+    // Modal Edit Color Stock for Existing Products
+    let currentModalEditingProdId = null;
+    let currentModalColors = [];
+
+    function openEditColorStockModal(prodId) {
+      currentModalEditingProdId = prodId;
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e){}
+
+      const p = prods.find(pr => pr.id === prodId);
+      if (!p) return;
+
+      document.getElementById('modalEditColorProdTitle').textContent = p.title;
+      document.getElementById('modalEditColorProdId').textContent = '#' + p.id;
+      document.getElementById('modalEditColorProdImg').src = p.img || 'logo.png';
+
+      if (p.colors && Array.isArray(p.colors) && p.colors.length > 0) {
+        currentModalColors = JSON.parse(JSON.stringify(p.colors));
+      } else {
+        currentModalColors = [
+          { name: 'লাল (Red)', code: '#ef4444', qty: Math.ceil((p.stock || 20) / 2) },
+          { name: 'রয়্যাল ব্লু (Royal Blue)', code: '#2563eb', qty: Math.floor((p.stock || 20) / 2) }
+        ];
+      }
+
+      renderModalColorsRows();
+      document.getElementById('editColorStockModal').style.display = 'flex';
+    }
+
+    function closeEditColorStockModal() {
+      document.getElementById('editColorStockModal').style.display = 'none';
+      currentModalEditingProdId = null;
+    }
+
+    function renderModalColorsRows() {
+      const container = document.getElementById('modalColorsContainer');
+      const totalEl = document.getElementById('modalEditColorTotalStock');
+      if (!container) return;
+
+      const total = currentModalColors.reduce((acc, c) => acc + (c.qty || 0), 0);
+      if (totalEl) totalEl.textContent = `মোট স্টক: ${total} পিস`;
+
+      container.innerHTML = currentModalColors.map((c, idx) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0b0f19; padding:8px 12px; border-radius:10px; border:1px solid #1f2937;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${c.code || '#a855f7'}; border:1px solid #cbd5e1;"></span>
+            <span style="font-size:0.85rem; font-weight:800; color:#fff;">${c.name}</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button type="button" onclick="adjustModalColorQty(${idx}, -1)" style="width:26px; height:26px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">-</button>
+            <input type="number" min="0" value="${c.qty || 0}" oninput="updateModalColorQtyDirect(${idx}, this.value)" style="width:48px; text-align:center; background:#090d16; border:1.5px solid #4f46e5; color:#fde047; font-weight:800; font-size:0.85rem; border-radius:6px; padding:2px 0; outline:none;">
+            <button type="button" onclick="adjustModalColorQty(${idx}, 1)" style="width:26px; height:26px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">+</button>
+            <button type="button" onclick="removeModalColor(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; margin-left:4px;">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function adjustModalColorQty(idx, delta) {
+      if (currentModalColors[idx]) {
+        currentModalColors[idx].qty = Math.max(0, (currentModalColors[idx].qty || 0) + delta);
+        renderModalColorsRows();
+      }
+    }
+
+    function updateModalColorQtyDirect(idx, val) {
+      if (currentModalColors[idx]) {
+        currentModalColors[idx].qty = Math.max(0, parseInt(val) || 0);
+        renderModalColorsRows();
+      }
+    }
+
+    function removeModalColor(idx) {
+      if (currentModalColors.length <= 1) {
+        alert('অন্তত একটি রঙের তথ্য থাকা দরকার!');
+        return;
+      }
+      currentModalColors.splice(idx, 1);
+      renderModalColorsRows();
+    }
+
+    function addModalColorVariant() {
+      const inp = document.getElementById('modalNewColorInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) return;
+      currentModalColors.push({ name: val, code: '#38bdf8', qty: 5 });
+      inp.value = '';
+      renderModalColorsRows();
+    }
+
+    function saveModalColorStock() {
+      if (!currentModalEditingProdId) return;
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e){}
+
+      const idx = prods.findIndex(pr => pr.id === currentModalEditingProdId);
+      if (idx !== -1) {
+        prods[idx].colors = currentModalColors;
+        prods[idx].stock = currentModalColors.reduce((acc, c) => acc + (c.qty || 0), 0);
+        prods[idx].inStock = prods[idx].stock > 0;
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+
+        closeEditColorStockModal();
+        renderOwnerStock();
+        alert('✅ কালার ও স্টক সফলভাবে আপডেট হয়েছে!');
+      }
+    }
+
+    function initAdminDashboard() {
+      try {
+        if (typeof setAdminLanguage === 'function') {
+          setAdminLanguage(currentAdminLang);
+        }
+      } catch(e) { console.error('Error in setAdminLanguage:', e); }
+
+      try {
+        if (typeof loadCustomBanner === 'function') {
+          loadCustomBanner();
+        }
+      } catch(e) { console.error('Error in loadCustomBanner:', e); }
+
+      try {
+        const isUnlocked = (sessionStorage.getItem('nc_owner_unlocked') === 'true');
+        const isPinDisabled = (localStorage.getItem('nc_pin_disabled') === 'true');
+        if (isUnlocked || isPinDisabled) {
+          bypassPinDirect();
+        } else {
+          const modal = document.getElementById('pinLockModal');
+          if (modal) modal.style.display = 'flex';
+        }
+      } catch(e) {
+        bypassPinDirect();
       }
     }
 
     window.addEventListener('DOMContentLoaded', initAdminDashboard);
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      initAdminDashboard();
+      renderActiveColorStockList();
+    initAdminDashboard();
     }
 </script>
-
-
-  <!-- ADMIN RACK LABELS & BARCODE MODAL -->
-  <div id="adminRackLabelsModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
-    <div class="owner-card" style="max-width:700px; width:100%; border:2px solid #818cf8; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto;">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:14px;">
-        <div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:#fff;">
-            <i class="fa-solid fa-barcode" style="color:#818cf8;"></i> ওয়্যারহাউস র‍্যাক বারকোড ও কিউআর স্টিকার প্রিন্টার
-          </h3>
-          <div style="font-size:0.75rem; color:var(--text-sub);">এই স্টিকারগুলো প্রিন্ট করে আপনার গোডাউনের তাকে বা বক্সে সেঁটে দিন।</div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn-fast-action" style="background:#059669; color:#fff;" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> প্রিন্ট
-          </button>
-          <button type="button" onclick="closeAdminRackLabelsModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </div>
-
-      <div id="adminRackStickersContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;"></div>
-    </div>
-  </div>
-
-
-  <!-- ==================== EDIT / DELETE PRODUCT & IMAGE MODAL ==================== -->
-  <div id="editProductImageModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(6px);">
-    <div class="owner-card" style="max-width:420px; width:100%; border:2px solid #38bdf8; box-shadow:var(--shadow-lg);">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:12px;">
-        <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">
-          <i class="fa-solid fa-image" style="color:#38bdf8;"></i> ভুল ছবি পরিবর্তন বা প্রোডাক্ট ডিলিট
-        </h3>
-        <button type="button" onclick="closeEditImageModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div style="text-align:center; margin-bottom:14px;">
-        <div style="font-weight:800; font-size:0.95rem; color:#f1f5f9;" id="editImageProdTitle">প্রোডাক্টের নাম</div>
-        <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;" id="editImageProdId">#NC-101</div>
-        <div style="margin:12px auto; width:140px; height:140px; border-radius:14px; overflow:hidden; border:2px solid #38bdf8; background:#090d16; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
-          <img id="editImagePreview" src="" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <!-- Replace Image Button -->
-        <label class="btn-fast-action" style="background:#0284c7; color:#fff; justify-content:center; padding:10px; cursor:pointer; font-weight:800;">
-          <i class="fa-solid fa-camera-rotate"></i> গ্যালারি থেকে নতুন সঠিক ছবি বাছুন
-          <input type="file" id="replaceImageFileInput" accept="image/*" style="display:none;" onchange="handleReplaceProductImageFile(event)">
-        </label>
-
-        <!-- Remove Image (Keep placeholder) -->
-        <button type="button" class="btn-fast-action" style="background:#475569; color:#f1f5f9; justify-content:center; padding:10px; font-weight:700;" onclick="removeProductImageOnly()">
-          <i class="fa-solid fa-trash-can"></i> শুধু এই ভুল ছবিটি মুছে দিন
-        </button>
-
-        <!-- Delete Entire Product -->
-        <button type="button" class="btn-fast-action" style="background:#be123c; color:#fff; justify-content:center; padding:10px; font-weight:800;" onclick="confirmDeleteFromModal()">
-          <i class="fa-solid fa-trash"></i> সম্পূর্ণ প্রোডাক্টটি ডিলিট করুন
-        </button>
-
-        <button type="button" class="btn-fast-action" style="background:#1e293b; color:#94a3b8; justify-content:center;" onclick="closeEditImageModal()">
-          বন্ধ করুন
-        </button>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
-      `;
-
-      const w = window.open('', '_blank');
-      w.document.write(labelHtml);
-      w.document.close();
-    }
-
-</script>
-
-  
