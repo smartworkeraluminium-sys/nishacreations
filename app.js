@@ -1,4 +1,3 @@
-
 // =========================================================================
 // RUNTIME BRAND SANITIZER & LOCALSTORAGE MIGRATION
 // =========================================================================
@@ -30,6 +29,18 @@ function sanitizeBoutiqueRuntime() {
     // BILINGUAL (BENGALI & ENGLISH) DICTIONARY
     // ==========================================
     let currentLang = localStorage.getItem('nc_lang') || 'bn';
+let cart = [];
+try {
+  const storedC = localStorage.getItem('nc_cart');
+  cart = storedC ? JSON.parse(storedC) : [];
+} catch(e) { cart = []; }
+
+let wishlist = [];
+try {
+  const storedW = localStorage.getItem('nc_wishlist');
+  wishlist = storedW ? JSON.parse(storedW) : [];
+} catch(e) { wishlist = []; }
+
 
     const I18N = {
       bn: {
@@ -1826,7 +1837,6 @@ function adminQuickRestock(idx) {
     const CLOUD_DB_KEY = 'nc_cloud_db_url';
 
     function loadAllProducts() {
-      // 1. Check if products exist in nc_products (synced with admin)
       let stored = null;
       try {
         stored = localStorage.getItem('nc_products');
@@ -1835,1287 +1845,29 @@ function adminQuickRestock(idx) {
       if (stored !== null) {
         try {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            // Auto-heal missing upiOffer & broken fallback images
+          if (Array.isArray(parsed) && parsed.length > 0) {
             products = parsed.map(p => {
-              if (!p.upiOffer && p.price) {
-                p.upiOffer = Math.round(p.price * 0.95);
-              }
-              if (!p.img || p.img.includes('photo-1611591475837-7f9999557a66')) {
-                if (p.category === 'jewel' || p.category === 'bangles' || p.type === 'jewel' || p.type === 'jewellery') {
-                  p.img = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';
-                }
-              }
+              if (!p.upiOffer && p.price) p.upiOffer = Math.round(p.price * 0.95);
               return p;
             });
-            try { localStorage.setItem('nc_products', JSON.stringify(products)); } catch(e){}
             renderProducts(products);
             return;
           }
         } catch(e) {}
       }
 
-      // 2. If owner cleared demo products, keep clean without re-seeding
-      if (localStorage.getItem('nc_demo_cleared') === 'true') {
-        let cust = [];
-        try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
+      // Check custom products
+      let cust = [];
+      try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
+      if (Array.isArray(cust) && cust.length > 0) {
         products = cust;
-        localStorage.setItem('nc_products', JSON.stringify(products));
-        renderProducts(products);
-        return;
+      } else if (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS) && INITIAL_PRODUCTS.length > 0) {
+        products = [...INITIAL_PRODUCTS];
+      } else {
+        products = [];
       }
-
-      // 3. Fallback to INITIAL_PRODUCTS for first-time visitors
-      products = (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS)) ? [...INITIAL_PRODUCTS] : [];
-      localStorage.setItem('nc_products', JSON.stringify(products));
+      try { localStorage.setItem('nc_products', JSON.stringify(products)); } catch(e) {}
       renderProducts(products);
-    }
-
-    // INITIAL PRODUCTS & CLOUD DATABASE SETUP
-    // ==========================================
-    // INITIAL_PRODUCTS is loaded from products.js
-
-    let products = JSON.parse(localStorage.getItem('nc_products') || JSON.stringify(INITIAL_PRODUCTS));
-    let cart = JSON.parse(localStorage.getItem('nc_cart') || '[]');
-    let wishlist = JSON.parse(localStorage.getItem('nc_wishlist') || '[]');
-    let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
-    let currentCustomer = JSON.parse(localStorage.getItem('nc_customer_profile') || 'null');
-    let currentPdpProduct = null;
-
-    // =========================================================
-    // 1. NISHA URGENCY SALE COUNTDOWN TIMER (ছবি 1)
-    // =========================================================
-    let saleTimerInterval = null;
-
-    function initSaleCountdown() {
-      let saleEndTime = localStorage.getItem('nc_flash_sale_end');
-      const now = Date.now();
-      
-      if (!saleEndTime) {
-        saleEndTime = now + (2 * 60 * 60 * 1000); // 2 Hours
-        localStorage.setItem('nc_flash_sale_end', saleEndTime);
-      } else {
-        saleEndTime = parseInt(saleEndTime, 10);
-      }
-
-      function updateTimer() {
-        const current = Date.now();
-        const diff = saleEndTime - current;
-
-        const timerRow = document.getElementById('saleTimerBoxesRow');
-        const expiredBox = document.getElementById('saleExpiredNoticeBox');
-        const statusLbl = document.getElementById('saleStatusSubtitle');
-
-        if (diff <= 0) {
-          // Offer expired!
-          if (timerRow) timerRow.style.display = 'none';
-          if (expiredBox) expiredBox.style.display = 'flex';
-          if (statusLbl) {
-            statusLbl.innerHTML = '<span style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-circle-exclamation"></i> অফারের সময় শেষ হয়ে গেছে! (Offer Expired)</span>';
-          }
-          return;
-        }
-
-        // Timer active
-        if (timerRow) timerRow.style.display = 'flex';
-        if (expiredBox) expiredBox.style.display = 'none';
-        if (statusLbl && !statusLbl.innerHTML.includes('clock-tick-pulse')) {
-          statusLbl.innerHTML = '<i class="fa-regular fa-clock clock-tick-pulse"></i> <span id="t-flashSaleSub">আমতায় 2 ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>';
-        }
-
-        const h = Math.floor(diff / (1000 * 60 * 60));
-        const m = Math.floor((diff / (1000 * 60)) % 60);
-        const s = Math.floor((diff / 1000) % 60);
-
-        const elH = document.getElementById('timerHours');
-        const elM = document.getElementById('timerMinutes');
-        const elS = document.getElementById('timerSeconds');
-        if (elH) elH.textContent = String(h).padStart(2, '0');
-        if (elM) elM.textContent = String(m).padStart(2, '0');
-        if (elS) elS.textContent = String(s).padStart(2, '0');
-      }
-
-      updateTimer();
-      if (saleTimerInterval) clearInterval(saleTimerInterval);
-      saleTimerInterval = setInterval(updateTimer, 1000);
-    }
-
-    function restartSaleOffer() {
-      const newEndTime = Date.now() + (2 * 60 * 60 * 1000); // Fresh 2 Hours
-      localStorage.setItem('nc_flash_sale_end', newEndTime);
-      const statusLbl = document.getElementById('saleStatusSubtitle');
-      if (statusLbl) {
-        statusLbl.innerHTML = '<i class="fa-regular fa-clock clock-tick-pulse"></i> <span id="t-flashSaleSub">আমতায় 2 ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>';
-      }
-      initSaleCountdown();
-    }
-
-    function filterByUnifiedCat(catKey, element) {
-      document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
-      if (element) element.classList.add('active');
-
-      let filtered = [...products];
-      if (catKey === 'all') {
-        filtered = [...products];
-      } else if (catKey === 'women') {
-        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
-      } else if (catKey === 'girls') {
-        filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
-      } else if (catKey === 'jamdani') {
-        filtered = products.filter(p => p.category === 'jamdani');
-      } else if (catKey === 'silk') {
-        filtered = products.filter(p => p.category === 'silk' || p.category === 'katan');
-      } else if (catKey === 'tant') {
-        filtered = products.filter(p => p.category === 'tant' || p.category === 'phulia');
-      } else if (catKey === 'kurti') {
-        filtered = products.filter(p => p.type === 'kurti' || p.category === 'kurti');
-      } else if (catKey === 'jewel') {
-        filtered = products.filter(p => p.type === 'jewel' || p.type === 'jewellery' || ['jewel', 'jewellery', 'necklace', 'earrings', 'bangles'].includes(p.category));
-      } else if (catKey === 'bangles') {
-        filtered = products.filter(p => p.category === 'bangles' || p.category === 'jewel');
-      }
-
-      renderProducts(filtered);
-    }
-
-    function scrollToProducts() {
-      const el = document.getElementById('productGridContainer');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // =========================================================
-    // 2. NISHA GENDER & COLLECTION BUBBLE FILTER (ছবি 2)
-    // =========================================================
-    let currentGenderFilter = 'all';
-
-    function filterByGender(gender) {
-      currentGenderFilter = gender;
-      document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
-      const activeBubble = document.getElementById(`ucat-${gender}`);
-      if (activeBubble) activeBubble.classList.add('active');
-
-      let filtered = [...products];
-      if (gender === 'women') {
-        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
-      } else if (gender === 'girls') {
-        filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock') || p.title.includes('মেয়েদের'));
-      } else if (gender === 'saree') {
-        filtered = products.filter(p => p.type === 'saree');
-      } else if (gender === 'jewel') {
-        filtered = products.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles', 'bag', 'perfume'].includes(p.category));
-      }
-      
-      renderProducts(filtered);
-    }
-
-    // =========================================================
-    // 3. NISHA SORT BOTTOM SHEET MODAL (ছবি 1)
-    // =========================================================
-    let currentSortOption = 'relevance';
-
-    function openSortModal() {
-      const modal = document.getElementById('sortModal');
-      if (modal) modal.style.display = 'flex';
-    }
-
-    function closeSortModal() {
-      const modal = document.getElementById('sortModal');
-      if (modal) modal.style.display = 'none';
-    }
-
-    function closeSortModalOnOutside(e) {
-      if (e.target.id === 'sortModal') closeSortModal();
-    }
-
-    function applySortOption(sortKey, label) {
-      currentSortOption = sortKey;
-      document.querySelectorAll('.sort-option-row').forEach(r => r.classList.remove('active'));
-      const activeRow = document.getElementById(`sort-opt-${sortKey}`);
-      if (activeRow) activeRow.classList.add('active');
-
-      const lbl = document.getElementById('sortBtnLabel');
-      if (lbl) lbl.textContent = label.split('(')[0].trim();
-
-      let list = [...products];
-      if (currentGenderFilter !== 'all') {
-        if (currentGenderFilter === 'women') list = list.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
-        else if (currentGenderFilter === 'girls') list = list.filter(p => p.type === 'girls' || p.category.includes('frock') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
-        else if (currentGenderFilter === 'saree') list = list.filter(p => p.type === 'saree');
-        else if (currentGenderFilter === 'jewel') list = list.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles', 'bag', 'perfume'].includes(p.category));
-      }
-
-      if (sortKey === 'relevance') {
-        list.sort((a, b) => (b.sold || 0) - (a.sold || 0) || (b.reviews || 0) - (a.reviews || 0));
-      } else if (sortKey === 'new') {
-        list.reverse();
-      } else if (sortKey === 'price-asc') {
-        list.sort((a, b) => a.price - b.price);
-      } else if (sortKey === 'price-desc') {
-        list.sort((a, b) => b.price - a.price);
-      } else if (sortKey === 'rating') {
-        list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      }
-
-      renderProducts(list);
-      closeSortModal();
-    }
-
-    // =========================================================
-    // 4. NISHA 2-COLUMN SPLIT ADVANCED FILTERS (ছবি 3)
-    // =========================================================
-    function openAdvancedFilterModal() {
-      const modal = document.getElementById('advancedFilterModal');
-      if (modal) modal.style.display = 'flex';
-    }
-
-    function closeAdvancedFilterModal() {
-      const modal = document.getElementById('advancedFilterModal');
-      if (modal) modal.style.display = 'none';
-    }
-
-    function closeAdvancedFilterOnOutside(e) {
-      if (e.target.id === 'advancedFilterModal') closeAdvancedFilterModal();
-    }
-
-    function switchFilterTab(tabName) {
-      document.querySelectorAll('.filter-tab-item').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.filter-options-panel').forEach(p => p.style.display = 'none');
-      const activeTab = document.getElementById(`ftab-${tabName}`);
-      const activePanel = document.getElementById(`fpanel-${tabName}`);
-      if (activeTab) activeTab.classList.add('active');
-      if (activePanel) activePanel.style.display = 'block';
-    }
-
-    function updateFilterBadgeCount() {
-      const tabs = ['fabric', 'color', 'price', 'occasion'];
-      let grandTotal = 0;
-      tabs.forEach(tab => {
-        const checked = document.querySelectorAll(`#fpanel-${tab} input[type="checkbox"]:checked`).length;
-        const badge = document.getElementById(`fbadge-${tab}`);
-        if (badge) {
-          if (checked > 0) {
-            badge.textContent = checked;
-            badge.style.display = 'flex';
-          } else {
-            badge.style.display = 'none';
-          }
-        }
-        grandTotal += checked;
-      });
-
-      const countSpan = document.getElementById('fapplyCountSpan');
-      if (countSpan) countSpan.textContent = grandTotal > 0 ? `(${grandTotal})` : '';
-
-      const mainBadge = document.getElementById('activeFilterBadge');
-      if (mainBadge) {
-        if (grandTotal > 0) {
-          mainBadge.textContent = grandTotal;
-          mainBadge.style.display = 'inline-block';
-        } else {
-          mainBadge.style.display = 'none';
-        }
-      }
-    }
-
-    function clearAllAdvancedFilters() {
-      document.querySelectorAll('.filter-options-panel input[type="checkbox"]').forEach(c => c.checked = false);
-      updateFilterBadgeCount();
-      renderProducts(products);
-      closeAdvancedFilterModal();
-    }
-
-    function applyAdvancedFilters() {
-      const checkedFabrics = Array.from(document.querySelectorAll('#fpanel-fabric input:checked')).map(c => c.value);
-      const checkedColors = Array.from(document.querySelectorAll('#fpanel-color input:checked')).map(c => c.value);
-      const checkedPrices = Array.from(document.querySelectorAll('#fpanel-price input:checked')).map(c => c.value);
-      const checkedOccasions = Array.from(document.querySelectorAll('#fpanel-occasion input:checked')).map(c => c.value);
-
-      let filtered = [...products];
-
-      if (checkedFabrics.length > 0) {
-        filtered = filtered.filter(p => {
-          const txt = (p.title + " " + p.desc + " " + p.category).toLowerCase();
-          return checkedFabrics.some(f => {
-            if (f === 'cotton') return txt.includes('cotton') || txt.includes('সুতি') || txt.includes('তাঁত');
-            if (f === 'jamdani') return txt.includes('jamdani') || txt.includes('জামদানি');
-            if (f === 'silk') return txt.includes('silk') || txt.includes('সিল্ক') || txt.includes('কাতান');
-            if (f === 'tant') return txt.includes('tant') || txt.includes('তাঁত');
-            if (f === 'georgette') return txt.includes('georgette') || txt.includes('জর্জেট') || txt.includes('শিফন');
-            if (f === 'organza') return txt.includes('organza') || txt.includes('অরগাঞ্জা');
-            return false;
-          });
-        });
-      }
-
-      if (checkedColors.length > 0) {
-        filtered = filtered.filter(p => {
-          const txt = (p.title + " " + p.desc).toLowerCase();
-          return checkedColors.some(c => {
-            if (c === 'red') return txt.includes('red') || txt.includes('লাল');
-            if (c === 'pink') return txt.includes('pink') || txt.includes('গোলাপী');
-            if (c === 'yellow') return txt.includes('yellow') || txt.includes('হলুদ');
-            if (c === 'blue') return txt.includes('blue') || txt.includes('নীল') || txt.includes('ব্লু');
-            if (c === 'green') return txt.includes('green') || txt.includes('সবুজ');
-            if (c === 'pastel') return txt.includes('pastel') || txt.includes('প্যাস্টেল') || txt.includes('সাদা');
-            return false;
-          });
-        });
-      }
-
-      if (checkedPrices.length > 0) {
-        filtered = filtered.filter(p => {
-          return checkedPrices.some(pr => {
-            if (pr === 'under500') return p.price < 500;
-            if (pr === '500to1000') return p.price >= 500 && p.price <= 1000;
-            if (pr === 'above1000') return p.price > 1000;
-            return false;
-          });
-        });
-      }
-
-      if (checkedOccasions.length > 0) {
-        filtered = filtered.filter(p => {
-          const txt = (p.title + " " + p.desc).toLowerCase();
-          return checkedOccasions.some(o => {
-            if (o === 'wedding') return txt.includes('বিয়ে') || txt.includes('bridal') || txt.includes('রিসেপশন') || p.price >= 800;
-            if (o === 'puja') return txt.includes('পুজো') || txt.includes('উৎসব') || txt.includes('festive');
-            if (o === 'daily') return txt.includes('রোজকার') || txt.includes('সুতি') || p.price < 600;
-            return false;
-          });
-        });
-      }
-
-      renderProducts(filtered);
-      closeAdvancedFilterModal();
-    }
-
-    // =========================================================
-    // 5. SIZE SELECTOR & SMART RETURN CHOICE (ছবি 4)
-    // =========================================================
-    let selectedPdpSize = "Free Size";
-    let selectedReturnChoice = "all"; // 'all' or 'defective'
-
-    function selectPdpSize(sizeVal) {
-      selectedPdpSize = sizeVal;
-      document.querySelectorAll('.size-pill-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.size === sizeVal) btn.classList.add('active');
-      });
-    }
-
-    function selectReturnChoice(choice) {
-      selectedReturnChoice = choice;
-      const cardAll = document.getElementById('returnCardAll');
-      const cardDef = document.getElementById('returnCardDefective');
-      if (cardAll && cardDef) {
-        if (choice === 'all') {
-          cardAll.classList.add('active');
-          cardDef.classList.remove('active');
-        } else {
-          cardDef.classList.add('active');
-          cardAll.classList.remove('active');
-        }
-      }
-
-      if (currentPdpProduct) {
-        const finalPrice = choice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
-        const priceEl = document.getElementById('pdpPrice');
-        if (priceEl) priceEl.textContent = `₹${finalPrice}`;
-        const buyBtn = document.querySelector('.btn-buy-now');
-        if (buyBtn && currentPdpProduct.inStock !== false) {
-          buyBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> এখনই কিনুন (₹${finalPrice})`;
-        }
-      }
-    }
-
-    // =========================================================
-    // 6. NISHA 2-STEP CHECKOUT & UPI DISCOUNT WIZARD (ছবি 5 ও 6)
-    // =========================================================
-    let selectedPaymentMethodVal = "UPI";
-    try {
-      const stored = localStorage.getItem('nc_customer_profile');
-      if (stored) currentCustomer = JSON.parse(stored);
-    } catch(e) {}
-
-    let checkoutAddress = {
-      name: (currentCustomer && currentCustomer.name) ? currentCustomer.name : "",
-      phone: (currentCustomer && currentCustomer.phone) ? currentCustomer.phone : "",
-      address: (currentCustomer && currentCustomer.address) ? currentCustomer.address : ""
-    };
-
-    function getEstimatedDeliveryDateString() {
-      const daysOfWeekBn = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
-      const monthsBn = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-      const now = new Date();
-      const deliveryDate = new Date(now.getTime() + (2 * 24 * 60 * 60 * 1000));
-      const dayName = daysOfWeekBn[deliveryDate.getDay()];
-      const dayNum = deliveryDate.getDate();
-      const monthName = monthsBn[deliveryDate.getMonth()];
-      return `ডেলিভারি: ${dayName}, ${dayNum}ই ${monthName} (2 দিনের মধ্যে)`;
-    }
-
-    function toggleAddressEdit() {
-      const form = document.getElementById('inlineAddressEditForm');
-      const label = document.getElementById('btnChangeAddrLabel');
-      if (form.style.display === 'none' || !form.style.display) {
-        form.style.display = 'block';
-        label.textContent = 'Cancel';
-      } else {
-        form.style.display = 'none';
-        label.textContent = 'Change';
-      }
-    }
-
-    function saveAddressInline() {
-      const name = document.getElementById('cust_name').value.trim();
-      const phone = document.getElementById('cust_phone').value.trim();
-      const addr = document.getElementById('cust_addr').value.trim();
-      if (!name || !phone || !addr) {
-        alert("নাম, ফোন নম্বর ও সম্পূর্ণ ঠিকানা পূরণ করুন!");
-        return;
-      }
-      checkoutAddress.name = name;
-      checkoutAddress.phone = phone;
-      checkoutAddress.address = addr;
-      document.getElementById('displayCustName').textContent = name;
-      document.getElementById('displayCustPhone').textContent = "📞 " + phone;
-      document.getElementById('displayCustAddr').textContent = "📍 " + addr;
-      document.getElementById('inlineAddressEditForm').style.display = 'none';
-      document.getElementById('btnChangeAddrLabel').textContent = 'Change';
-    }
-
-    function renderCheckoutStep1() {
-      const list = document.getElementById('cartItemsList');
-      const countSpan = document.getElementById('cartModalCount');
-      if (countSpan) countSpan.textContent = cart.length;
-      if (!list) return;
-      list.innerHTML = '';
-
-      if (cart.length === 0) {
-        list.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">আপনার ব্যাগ ফাঁকা আছে!</div>`;
-        document.getElementById('billTotalMrp').textContent = '₹0';
-        document.getElementById('billStoreDiscount').textContent = '-₹0';
-        document.getElementById('billStep1Total').textContent = '₹0';
-        return;
-      }
-
-      let totalMrp = 0;
-      let totalPayable = 0;
-      let totalReturnDiscount = 0;
-
-      cart.forEach((item, idx) => {
-        const qty = item.qty || 1;
-        const mrp = (item.mrp || item.price * 1.5) * qty;
-        const price = item.price * qty;
-        const isDefectiveDiscount = item.returnChoice === 'defective';
-        if (isDefectiveDiscount) totalReturnDiscount += (10 * qty);
-
-        totalMrp += mrp;
-        totalPayable += price;
-
-        list.innerHTML += `
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px; background:#fff;">
-            <img src="${item.img}" style="width:55px; height:55px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
-            <div style="flex:1;">
-              <div style="font-size:0.82rem; font-weight:800; color:#0f172a; line-height:1.2;">${item.title}</div>
-              <div style="display:flex; align-items:center; gap:6px; margin:4px 0;">
-                <span style="background:#f1f5f9; color:#475569; font-size:0.68rem; font-weight:800; padding:1px 6px; border-radius:4px;">
-                  সাইজ: ${item.selectedSize || 'Free Size'}
-                </span>
-                ${isDefectiveDiscount ? '<span style="background:#dcfce7; color:#15803d; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px;">Save ₹10 (Defect Only)</span>' : '<span style="background:#f3e8ff; color:#7e22ce; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px;">সব ধরণের রিটার্ন</span>'}
-              </div>
-              <div style="font-size:0.85rem; font-weight:800; color:var(--primary);">
-                ₹${price} <span style="font-size:0.7rem; text-decoration:line-through; color:#94a3b8;">₹${mrp}</span>
-              </div>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-              <button onclick="removeCartItem(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:0.95rem; cursor:pointer;" title="মুছুন"><i class="fa-solid fa-trash-can"></i></button>
-              <div style="display:flex; align-items:center; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc;">
-                <button onclick="changeCartQty(${idx}, -1)" style="border:none; background:transparent; padding:2px 8px; font-weight:800; cursor:pointer;">-</button>
-                <span style="font-size:0.78rem; font-weight:800; padding:0 4px;">${qty}</span>
-                <button onclick="changeCartQty(${idx}, 1)" style="border:none; background:transparent; padding:2px 8px; font-weight:800; cursor:pointer;">+</button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-
-      const storeDiscount = Math.max(0, totalMrp - totalPayable);
-      document.getElementById('billTotalMrp').textContent = `₹${totalMrp}`;
-      document.getElementById('billStoreDiscount').textContent = `-₹${storeDiscount}`;
-      if (totalReturnDiscount > 0) {
-        document.getElementById('billReturnDiscountRow').style.display = 'flex';
-        document.getElementById('billReturnDiscountVal').textContent = `-₹${totalReturnDiscount}`;
-      } else {
-        document.getElementById('billReturnDiscountRow').style.display = 'none';
-      }
-
-      let finalSubtotal = totalPayable;
-      if (appliedCouponDiscount > 0) {
-        finalSubtotal = Math.max(0, finalSubtotal - appliedCouponDiscount);
-      }
-      document.getElementById('billStep1Total').textContent = `₹${finalSubtotal}`;
-      document.getElementById('estimatedDeliveryDateText').textContent = getEstimatedDeliveryDateString();
-    }
-
-    function changeCartQty(idx, delta) {
-      if (!cart[idx]) return;
-      cart[idx].qty = Math.max(1, (cart[idx].qty || 1) + delta);
-      localStorage.setItem('nc_cart', JSON.stringify(cart));
-      renderCheckoutStep1();
-    }
-
-    function goToCheckoutStep2() {
-      if (cart.length === 0) {
-        alert("আপনার ব্যাগ ফাঁকা!");
-        return;
-      }
-      const name = document.getElementById('cust_name').value.trim() || checkoutAddress.name;
-      const phone = document.getElementById('cust_phone').value.trim() || checkoutAddress.phone;
-      const addr = document.getElementById('cust_addr').value.trim() || checkoutAddress.address;
-      if (!name || !phone || !addr) {
-        alert("দয়া করে আপনার নাম, মোবাইল নম্বর ও আমতার ঠিকানা প্রদান করুন!");
-        return;
-      }
-      checkoutAddress.name = name;
-      checkoutAddress.phone = phone;
-      checkoutAddress.address = addr;
-
-      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
-      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
-
-      const codTotal = subtotal;
-      const upiTotal = Math.max(0, subtotal - 38); // Extra ₹38 OFF
-
-      document.getElementById('payCodFinalAmount').textContent = `₹${codTotal}`;
-      document.getElementById('payUpiFinalAmount').textContent = `₹${upiTotal}`;
-      document.getElementById('payUpiStrikedAmount').textContent = `₹${codTotal}`;
-
-      const upiPayUrl = `upi://pay?pa=9239413517@ybl&pn=Nisha%20Creations&am=${upiTotal}&cu=INR&tn=Order%20NishaCreations`;
-      document.getElementById('upiDirectPayLink').href = upiPayUrl;
-
-      selectPaymentMethod('UPI');
-
-      document.getElementById('checkoutStep1View').style.display = 'none';
-      document.getElementById('checkoutStep2View').style.display = 'block';
-      document.getElementById('stepIndicator1').classList.remove('active');
-      document.getElementById('stepIndicator2').classList.add('active');
-    }
-
-    function goToCheckoutStep1() {
-      document.getElementById('checkoutStep2View').style.display = 'none';
-      document.getElementById('checkoutStep1View').style.display = 'block';
-      document.getElementById('stepIndicator2').classList.remove('active');
-      document.getElementById('stepIndicator1').classList.add('active');
-      renderCheckoutStep1();
-    }
-
-    function selectPaymentMethod(mode) {
-      selectedPaymentMethodVal = mode;
-      const upiCard = document.getElementById('payOptCardUpi');
-      const codCard = document.getElementById('payOptCardCod');
-      const upiBox = document.getElementById('upiPaymentActionBox');
-      const savingsBanner = document.getElementById('paymentSavingsBannerText');
-      const confirmBtnLabel = document.getElementById('finalConfirmBtnLabel');
-
-      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
-      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
-
-      if (isSuperCoinsApplied && appliedCoinDiscountRupees > 0) {
-        subtotal = Math.max(0, subtotal - appliedCoinDiscountRupees);
-      }
-
-      if (mode === 'UPI') {
-        upiCard.classList.add('active');
-        codCard.classList.remove('active');
-        upiBox.style.display = 'block';
-        const upiPrice = Math.max(0, subtotal - 38);
-        confirmBtnLabel.textContent = currentLang === 'bn' ? `অর্ডার কনফার্ম করুন (বাকি প্রদেয় ₹${upiPrice})` : `Confirm Order (Pay Remaining ₹${upiPrice})`;
-        savingsBanner.innerHTML = currentLang === 'bn' ? `অনলাইনে পেমেন্ট করে আপনি মোট <strong>₹38 অতিরিক্ত সাশ্রয়</strong> করছেন!` : `You save an extra <strong>₹38</strong> by paying online!`;
-      } else {
-        codCard.classList.add('active');
-        upiCard.classList.remove('active');
-        upiBox.style.display = 'none';
-        confirmBtnLabel.textContent = currentLang === 'bn' ? `অর্ডার কনফার্ম করুন (বাকি প্রদেয় ₹${subtotal})` : `Confirm Order (Pay Remaining ₹${subtotal})`;
-        savingsBanner.innerHTML = currentLang === 'bn' ? `ক্যাশ অন ডেলিভারিতে কোনো অতিরিক্ত ছাড় নেই। অনলাইনে পেমেন্টে ₹38 সাশ্রয় করুন!` : `No extra discount on COD. Save ₹38 by paying online with UPI!`;
-      }
-    }
-
-    function submitFinalOrder() {
-      if (!cart || cart.length === 0) {
-        cart = JSON.parse(localStorage.getItem('nc_cart') || '[]');
-      }
-      if (!cart || cart.length === 0) {
-        alert("আপনার ব্যাগ ফাঁকা! অনুগ্রহ করে শপিং ব্যাগে পণ্য যুক্ত করুন।");
-        return;
-      }
-
-      // 1. Collect Customer Details reliably
-      const nameInput = document.getElementById('cust_name');
-      const phoneInput = document.getElementById('cust_phone');
-      const addrInput = document.getElementById('cust_addr');
-
-      const name = (nameInput && nameInput.value.trim()) || checkoutAddress.name || "গ্রাহক";
-      const phone = (phoneInput && phoneInput.value.trim()) || checkoutAddress.phone || "9239413517";
-      const addr = (addrInput && addrInput.value.trim()) || checkoutAddress.address || "আমতা, হাওড়া - 711401";
-      const payMode = selectedPaymentMethodVal || "UPI";
-      const isGift = document.getElementById('giftWrapCheck') ? document.getElementById('giftWrapCheck').checked : false;
-
-      // Update stored address
-      checkoutAddress.name = name;
-      checkoutAddress.phone = phone;
-      checkoutAddress.address = addr;
-
-      // 2. Calculate Final Amounts with Coins
-      let subtotal = cart.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
-      if (appliedCouponDiscount > 0) subtotal = Math.max(0, subtotal - appliedCouponDiscount);
-      if (isSuperCoinsApplied && appliedCoinDiscountRupees > 0) {
-        subtotal = Math.max(0, subtotal - appliedCoinDiscountRupees);
-      }
-      const isUpiDiscount = (payMode === 'UPI');
-      const finalPrice = isUpiDiscount ? Math.max(0, subtotal - 38) : subtotal;
-
-      // Deduct used coins and award +100 new purchase coins!
-      let currentCoins = getUserSuperCoins();
-      if (isSuperCoinsApplied && appliedCoinsCount > 0) {
-        currentCoins = Math.max(0, currentCoins - appliedCoinsCount);
-      }
-      // Product Purchase Reward: +100 Coins added
-      currentCoins += 100;
-      setUserSuperCoins(currentCoins);
-
-      // 3. Generate Order Record
-      const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
-      const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-      const estDeliveryStr = getEstimatedDeliveryDateString();
-
-      const newOrder = {
-        id: orderId,
-        date: dateStr,
-        name: name,
-        phone: phone,
-        address: addr,
-        items: [...cart],
-        total: finalPrice,
-        paymentMode: payMode,
-        isGift: isGift,
-        estDelivery: estDeliveryStr,
-        status: "Order Placed",
-        reviewed: false
-      };
-
-      // 4. Save to orders list in localStorage
-      let currentOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
-      currentOrders.unshift(newOrder);
-      localStorage.setItem('nc_orders', JSON.stringify(currentOrders));
-      orders = currentOrders;
-
-      // Sync Order to Google Cloud Firestore
-      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
-        CloudSync.saveOrder(newOrder);
-      }
-
-      // 5. Automatic Stock Deduction
-      cart.forEach(cItem => {
-        const p = products.find(prod => prod.id === cItem.id);
-        if (p) {
-          const q = cItem.qty || 1;
-          p.stock = Math.max(0, (p.stock !== undefined ? p.stock : 100) - q);
-          p.sold = (p.sold || 0) + q;
-          if (p.stock <= 0) { p.stock = 0; p.inStock = false; }
-        }
-      });
-      localStorage.setItem('nc_products', JSON.stringify(products));
-
-      // 6. Build Comprehensive WhatsApp Invoice Text (100% complete details)
-      const itemsListText = cart.map((item, idx) => {
-        const q = item.qty || 1;
-        const sz = item.selectedSize || 'Free Size';
-        const retPolicy = (item.returnChoice === 'defective') ? 'Defect Only (₹10 ছাড়)' : 'সব ধরণের রিটার্ন সুবিধা';
-        return `${idx + 1}. ${item.title}\n   • সাইজ: ${sz} | পরিমাণ: ${q} টি\n   • রিটার্ন পলিসি: ${retPolicy}\n   • মূল্য: ₹${item.price * q}`;
-      }).join('\n\n');
-
-      const payDesc = (payMode === 'UPI') ? '📲 অনলাইন পেমেন্ট (UPI / PhonePe / GPay) [₹38 অতিরিক্ত ছাড় প্রাপ্ত]' : '💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)';
-      const giftNote = isGift ? '\n🎁 *উপহার প্যাকেজিং:* হ্যাঁ (স্পেশাল গিফট বক্স ও কার্ড)' : '';
-
-      const fullWaInvoice = 
-`🛍️ *নতুন অর্ডার - নিশা ক্রিয়েশনস (আমতা)*
-━━━━━━━━━━━━━━━━━
-🧾 *অর্ডার আইডি:* #${orderId}
-📅 *তারিখ:* ${dateStr}
-🚚 *ডেলিভারি:* ${estDeliveryStr}
-
-👤 *কাস্টমার ডিটেইলস:*
-• নাম: ${name}
-• মোবাইল নম্বর: ${phone}
-• ডেলিভারি ঠিকানা: ${addr}
-
-👗 *অর্ডারকৃত শাড়ি / পোশাক:*
-${itemsListText}
-
-💳 *পেমেন্ট ও বিলিং:*
-• পেমেন্ট মোড: ${payDesc}${giftNote}
-${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়েন ব্যবহার: ${appliedCoinsCount} কয়েন (-₹${appliedCoinDiscountRupees} ছাড়)\n` : ''}• 🪙 অর্জিত নতুন কয়েন: +100 সুপারকয়েন
-💰 *বাকি প্রদেয় বিল:* ₹${finalPrice} (ফ্রি হোম ডেলিভারি)
-━━━━━━━━━━━━━━━━━
-🙏 *অনুগ্রহ করে অর্ডারটি গ্রহণ করে বুকিং সম্পন্ন করুন।*`;
-
-      const targetBoutiquePhone = "919239413517";
-      const waUrl = "https://api.whatsapp.com/send?phone=" + targetBoutiquePhone + "&text=" + encodeURIComponent(fullWaInvoice);
-
-      // 7. Clear Cart & Close Cart Modal
-      cart = [];
-      localStorage.setItem('nc_cart', JSON.stringify(cart));
-      updateCartBadge();
-      closeCartModal();
-
-      // 8. Update & Show Order Success Modal
-      const idEl = document.getElementById('successOrderId');
-      const totEl = document.getElementById('successOrderTotal');
-      const custEl = document.getElementById('successCustomerDetails');
-      const waLinkEl = document.getElementById('successWhatsAppLink');
-      const succModal = document.getElementById('orderSuccessModal');
-
-      if (idEl) idEl.textContent = `#${orderId}`;
-      if (totEl) totEl.textContent = `₹${finalPrice}`;
-      if (custEl) custEl.textContent = `👤 ${name} • 📞 ${phone} • 📍 ${addr}`;
-      if (waLinkEl) waLinkEl.href = waUrl;
-      if (succModal) succModal.style.display = 'flex';
-
-      // 9. Directly trigger WhatsApp without popup blockers
-      setTimeout(function() {
-        window.location.href = waUrl;
-      }, 500);
-
-      // Re-render orders screen
-      renderOrders();
-    }
-
-    const BOUTIQUE_PHONE = "919239413517"; // Official WhatsApp
-
-    
-    // Cross-Tab & Cross-Window Instant Live Sync with admin.html
-    window.addEventListener('storage', (e) => { if (e.key === 'nc_products') loadAllProducts(); if (e.key === 'nc_custom_banner') renderCustomOfferBanner(); });
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'nc_custom_products' || e.key === 'nc_products' || e.key === 'nc_reels' || e.key === 'nc_coupons' || e.key === 'nc_boutique_logo') {
-        sanitizeBoutiqueRuntime();
-    initBrandLogo();
-        loadAllProducts();
-      renderCustomOfferBanner();
-    initSaleCountdown();
-        renderReels();
-      }
-    });
-
-    
-    // =========================================================
-    // SUPERCOINS SYSTEM (100 COINS = ₹1) & WELCOME GIFT
-    // =========================================================
-    let isSuperCoinsApplied = false;
-    let appliedCoinDiscountRupees = 0;
-    let appliedCoinsCount = 0;
-
-    function getUserSuperCoins() {
-      const stored = localStorage.getItem('nc_supercoins');
-      if (stored !== null && !isNaN(parseInt(stored))) {
-        return parseInt(stored);
-      }
-      return 500; // Guaranteed 500 base coins for every user
-    }
-
-    function setUserSuperCoins(amount) {
-      const clean = Math.max(0, Math.floor(amount));
-      localStorage.setItem('nc_supercoins', clean);
-      updateAllSuperCoinsDisplays();
-    }
-
-    function updateAllSuperCoinsDisplays() {
-      const coins = getUserSuperCoins();
-      const rupeeVal = Math.floor(coins / 100);
-
-      // Account Screen
-      const coinBalEl = document.getElementById('ncCoinBalanceNum');
-      if (coinBalEl) coinBalEl.textContent = coins;
-
-      // Drawer
-      const drawerCoins = document.getElementById('drawerCoinsDisplay');
-      if (drawerCoins) {
-        drawerCoins.textContent = `${coins} (${currentLang === 'en' ? 'Worth ₹' : 'ছাড় ₹'}${rupeeVal})`;
-      }
-
-      // Checkout Card
-      const chkBal = document.getElementById('checkoutCoinBal');
-      const chkRs = document.getElementById('checkoutCoinRupees');
-      if (chkBal) chkBal.textContent = coins;
-      if (chkRs) chkRs.textContent = `₹${rupeeVal}`;
-    }
-
-    function checkAndShowWelcomeGift() {
-      const claimed = localStorage.getItem('nc_welcome_claimed');
-      if (!claimed) {
-        setTimeout(() => {
-          openWelcomeGiftModal();
-        }, 1200);
-      } else {
-        updateAllSuperCoinsDisplays();
-      }
-    }
-
-    function openWelcomeGiftModal() {
-      const modal = document.getElementById('welcomeGiftModal');
-      if (modal) {
-        document.getElementById('giftStateUnopened').style.display = 'block';
-        document.getElementById('giftStateRevealed').style.display = 'none';
-        modal.style.display = 'flex';
-      }
-    }
-
-    function closeWelcomeGiftModal() {
-      const modal = document.getElementById('welcomeGiftModal');
-      if (modal) modal.style.display = 'none';
-      updateAllSuperCoinsDisplays();
-    }
-
-    function revealLuckyWelcomeGift() {
-      // 500 coins base guaranteed + lucky bonus roll
-      const luckyPool = [500, 550, 600, 650, 700, 750, 800, 1000];
-      const wonCoins = luckyPool[Math.floor(Math.random() * luckyPool.length)];
-      const wonRupees = Math.floor(wonCoins / 100);
-
-      document.getElementById('revealedCoinsNum').textContent = wonCoins;
-      const isEn = currentLang === 'en';
-      document.getElementById('revealedRupeeVal').textContent = isEn ?
-        `Worth: ₹${wonRupees} Direct Discount (100 Coins = ₹1)` :
-        `মূল্য: ₹${wonRupees} নগদ ছাড় (100 কয়েন = 1 টাকা)`;
-
-      document.getElementById('giftStateUnopened').style.display = 'none';
-      document.getElementById('giftStateRevealed').style.display = 'block';
-
-      setUserSuperCoins(wonCoins);
-      localStorage.setItem('nc_welcome_claimed', 'true');
-    }
-
-    function toggleSuperCoinsRedeem() {
-      const chk = document.getElementById('useSuperCoinsCheck');
-      const coins = getUserSuperCoins();
-      const maxDiscount = Math.floor(coins / 100);
-
-      if (chk && chk.checked) {
-        if (coins < 100 || maxDiscount <= 0) {
-          alert(currentLang === 'en' ? 'You need at least 100 SuperCoins to redeem discount.' : 'কয়েন ছাড় পাওয়ার জন্য আপনার অন্তত 100 কয়েন প্রয়োজন।');
-          chk.checked = false;
-          isSuperCoinsApplied = false;
-          appliedCoinDiscountRupees = 0;
-          appliedCoinsCount = 0;
-          renderCheckoutStep1();
-          return;
-        }
-        isSuperCoinsApplied = true;
-      } else {
-        isSuperCoinsApplied = false;
-        appliedCoinDiscountRupees = 0;
-        appliedCoinsCount = 0;
-      }
-      renderCheckoutStep1();
-    }
-
-    window.onload = function() {
-
-    // Unregister any stale Service Worker to ensure fresh code always loads
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      }).catch(function() {});
-    }
-
-      sanitizeBoutiqueRuntime();
-    initBrandLogo();
-    applyLanguage();
-    loadAllProducts();
-      renderCustomOfferBanner();
-    renderReels();
-    loadCustomerAccountHub();
-      syncCheckoutWithProfile();
-      updateCartBadge();
-      loadAndRenderOrdersSafe();
-      updateCustomerAuthDisplay();
-    };
-
-
-    // ==========================================
-    // NISHA-STYLE CATEGORIES BROWSER LOGIC
-    // ==========================================
-    let currentCategoryTab = 'saree_kurti';
-
-    
-    function selectCategoryTab(tabKey) {
-      currentCategoryTab = tabKey;
-      document.querySelectorAll('.cat-sidebar-item').forEach(el => el.classList.remove('active'));
-      const sideItem = document.getElementById(`sidebar-${tabKey}`);
-      if (sideItem) sideItem.classList.add('active');
-
-      const content = document.getElementById('catContentArea');
-      if (!content) return;
-
-      const isBn = currentLang === 'bn';
-
-      if (tabKey === 'popular') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "জনপ্রিয় সেরা কালেকশন" : "POPULAR PICKS"}</div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="categoryClick('saree', 'jamdani')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Jamdani">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ঢাকাই জামদানি" : "Dhakai Jamdani"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'silk')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Silk">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সফট সিল্ক" : "Soft Silk"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'tant')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Tant">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "শান্তিপুরী তাঁত" : "Tant Cotton"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Jewellery">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল গহনা" : "Bridal Jewellery"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'earrings')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=200" alt="Earrings">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ঝুমকা দুল" : "Jhumka Earrings"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'bangles')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=200" alt="Bangles">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ডিজাইনার চুড়ি" : "Designer Bangles"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'saree_kurti') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "শাড়ি কালেকশন" : "SAREES"}</div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="categoryClick('saree', 'tant')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Cotton Sarees">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সুতি শাড়ি" : "Cotton Sarees"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'net')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Net Sarees">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "নেট ও জর্জেট" : "Net Sarees"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'budget')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Under 499">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "বাজেট শাড়ি" : "Under 499"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'silk')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Silk Sarees">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সফট সিল্ক" : "Silk Sarees"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'jamdani')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="New Collection">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ঢাকাই জামদানি" : "Jamdani Sarees"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('saree', 'bridal')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Bridal Sarees">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "বউভাত ও ব্রাইডাল" : "Bridal Sarees"}</span>
-            </div>
-          </div>
-
-          <div class="cat-section-header">
-            <span>${isBn ? "কুর্তি কালেকশন" : "Kurtis"}</span>
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'all')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="All Kurtis">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সব কুর্তি" : "All Kurtis"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'anarkali')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200" alt="Anarkali">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "আনারকলি কুর্তি" : "Anarkali Kurtis"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'rayon')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Rayon">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "রেয়ন কুর্তি" : "Rayon Kurtis"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'cotton')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200" alt="Cotton Kurtis">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "কটন কুর্তি" : "Cotton Kurtis"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'straight')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Straight Kurtis">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "স্ট্রেট কুর্তি" : "Straight Kurtis"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('kurti', 'long')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Long Kurtis">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "লং কুর্তি" : "Long Kurtis"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'jewellery') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "গহনা ও অলঙ্কার" : "JEWELLERY & ACCESSORIES"}</div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'all')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="All Jewellery">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সকল গহনা" : "All Jewellery"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200" alt="Jewellery Sets">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "নেকলেস ও চোকার" : "Jewellery Sets"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'earrings')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=200" alt="Earrings">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "কানের দুল ও ঝুমকা" : "Earrings & Jhumka"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'necklace')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Mangalsutras">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "মঙ্গলসূত্র" : "Mangalsutras"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'bangles')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=200" alt="Bangles">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "বালা ও চুড়ি" : "Bangles & Churi"}</span>
-            </div>
-            <div class="cat-subcard" onclick="categoryClick('jewel', 'kamarbandh')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200" alt="Kamarbandh">
-              </div>
-              <span class="cat-subcard-label">${isBn ? "কোমরবন্ধ ও টিকলি" : "Kamarbandh"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'bags') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "লেডিস ব্যাগ ও পার্স" : "BAGS & PURSES"}</div>
-          <div style="background:#fff1f2; border:1px dashed #f43f5e; color:#9f1239; padding:10px; border-radius:10px; font-size:0.75rem; margin-bottom:12px; line-height:1.4;">
-            <i class="fa-solid fa-sparkles"></i> <strong>${isBn ? "নতুন কালেকশন আসছে!" : "Coming Soon!"}</strong><br>
-            ${isBn ? "আমতার মা-বোনেদের জন্য এক্সক্লুসিভ লেডিস ব্যাগ, ক্লাচ ও স্লিং ব্যাগ শীঘ্রই স্টকে আসছে। প্রি-অর্ডার করতে ক্লিক করুন।" : "Exclusive ladies handbags and clutches launching soon! Click below to pre-order."}
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "লেডিস হ্যান্ডব্যাগ" : "Ladies Handbags"}', '${isBn ? "হ্যান্ডব্যাগ কালেকশন শীঘ্রই আসছে!" : "Handbags launching soon!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200" alt="Handbags">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "হ্যান্ডব্যাগ" : "Handbags"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "স্লিং ব্যাগ" : "Sling Bags"}', '${isBn ? "ট্রেন্ডি স্লিং ব্যাগ কালেকশন শীঘ্রই আসছে!" : "Sling bags launching soon!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200" alt="Sling Bags">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "স্লিং ব্যাগ" : "Sling Bags"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ব্রাইডাল বটুয়া" : "Bridal Potli"}', '${isBn ? "বিয়ে স্পেশাল ব্রাইডাল বটুয়া কালেকশন!" : "Bridal potli batua collection!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=200" alt="Bridal Potli">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল বটুয়া" : "Bridal Potli"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "পার্টি ক্লাচ" : "Party Clutches"}', '${isBn ? "পার্টি শাড়ির সাথে ম্যাচিং ক্লাচ!" : "Party clutches collection!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=200" alt="Clutches">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "পার্টি ক্লাচ" : "Party Clutches"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'perfume') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "লেডিস পারফিউম ও সেন্ট" : "BEAUTY & PERFUMES"}</div>
-          <div style="background:#f5f3ff; border:1px dashed #8b5cf6; color:#5b21b6; padding:10px; border-radius:10px; font-size:0.75rem; margin-bottom:12px; line-height:1.4;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> <strong>${isBn ? "মিষ্টি সুবাসিত কালেকশন!" : "Sweet Fragrance Collection!"}</strong><br>
-            ${isBn ? "লং-লাস্টিং লেডিস পারফিউম ও খাঁটি সুগন্ধি আতর শীঘ্রই স্টকে আসছে। প্রি-অর্ডার করতে ক্লিক করুন।" : "Long-lasting perfumes and pure attar launching soon! Click below to pre-order."}
-          </div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ফ্লোরাল সেন্ট" : "Floral Perfumes"}', '${isBn ? "গোলাপ ও জুঁইয়ের মিষ্টি ফ্লোরাল সেন্ট!" : "Sweet floral perfume collection!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200" alt="Floral Perfume">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ফ্লোরাল সেন্ট" : "Floral Scent"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "খাঁটি সুগন্ধি আতর" : "Royal Attar"}', '${isBn ? "অ্যালকোহল-মুক্ত খাঁটি মিষ্টি আরবি আতর!" : "Alcohol-free pure royal attar!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200" alt="Royal Attar">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "খাঁটি আতর" : "Royal Attar"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "বডি মিস্ট" : "Body Mist"}', '${isBn ? "গরমে সারাদিন ফ্রেশ থাকতে রিফ্রেশিং বডি মিস্ট!" : "Refreshing daily body mist!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?w=200" alt="Body Mist">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "বডি মিস্ট" : "Body Mist"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ব্রাইডাল সেন্ট বক্স" : "Bridal Scent Box"}', '${isBn ? "নতুন কনে বা প্রিয়জনের জন্য লাক্সারি সুগন্ধি সেট!" : "Luxury bridal fragrance gift box!"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=200" alt="Scent Gift Box">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ব্রাইডাল সেন্ট বক্স" : "Scent Gift Box"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'western') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "ওয়েস্টার্ন পোশাক" : "WOMEN WESTERN"}</div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ওয়েস্টার্ন টপস" : "Western Tops"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=200" alt="Topwear">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "টপস ও টিউনিক" : "Tops & Tunics"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "ড্রেস ও গাউন" : "Dresses & Gowns"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200" alt="Dresses">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "ড্রেস ও গাউন" : "Dresses & Gowns"}</span>
-            </div>
-          </div>
-        `;
-      } else if (tabKey === 'lingerie') {
-        content.innerHTML = `
-          <div class="cat-banner-title">${isBn ? "নাইটওয়্যার ও স্লিপওয়্যার" : "LINGERIE & SLEEPWEAR"}</div>
-          <div class="cat-subgrid">
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "নাইট স্যুট" : "Nightsuits"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200" alt="Nightsuits">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "সুতি নাইট স্যুট" : "Nightsuits"}</span>
-            </div>
-            <div class="cat-subcard" onclick="openComingSoonModal('${isBn ? "স্যাতিন নাইট ড্রেস" : "Satin Robes"}')">
-              <div class="cat-subcard-img-wrap">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200" alt="Nightdress">
-                <div class="cat-badge-cs">${isBn ? "শীঘ্রই" : "Soon"}</div>
-              </div>
-              <span class="cat-subcard-label">${isBn ? "স্যাতিন নাইট ড্রেস" : "Satin Robes"}</span>
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    function categoryClick(type, catKey) {
-      showScreen('home');
-      if (type === 'saree') {
-        if (catKey === 'all') {
-          renderProducts(products.filter(p => p.type === 'saree'));
-        } else if (catKey === 'budget') {
-          renderProducts(products.filter(p => p.type === 'saree' && p.price <= 500));
-        } else {
-          const list = products.filter(p => p.category === catKey || (p.desc && p.desc.toLowerCase().includes(catKey)) || (p.title && p.title.toLowerCase().includes(catKey)));
-          renderProducts(list.length > 0 ? list : products.filter(p => p.type === 'saree'));
-        }
-      } else if (type === 'jewel') {
-        if (catKey === 'all') {
-          renderProducts(products.filter(p => p.type === 'jewel'));
-        } else {
-          const list = products.filter(p => p.category === catKey || (p.title && p.title.toLowerCase().includes(catKey)));
-          renderProducts(list.length > 0 ? list : products.filter(p => p.type === 'jewel'));
-        }
-      } else if (type === 'kurti') {
-        const list = products.filter(p => p.category === 'kurti' || p.type === 'kurti' || p.title.toLowerCase().includes('kurti'));
-        if (list.length > 0) {
-          renderProducts(list);
-        } else {
-          openComingSoonModal('কুর্তি ও কুর্তা সেট', 'নতুন কুর্তি ও কুর্তা সেট কালেকশন শীঘ্রই স্টকে আসছে!');
-        }
-      } else {
-        const list = products.filter(p => p.category === catKey || p.type === type);
-        renderProducts(list.length > 0 ? list : products);
-      }
-
-      // Smooth scroll to catalog
-      const el = document.getElementById('productsSectionTitle');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function openComingSoonModal(title, msg) {
-      const tEl = document.getElementById('comingSoonTitle');
-      if (tEl) tEl.textContent = title || 'লেডিস স্পেশাল কালেকশন';
-      const mEl = document.getElementById('comingSoonMsg');
-      if (mEl) mEl.textContent = msg || 'এই এক্সক্লুসিভ কালেকশনটি খুব শীঘ্রই আমাদের স্টকে লাইভ আসছে!';
-      const waBtn = document.getElementById('comingSoonWhatsAppBtn');
-      if (waBtn) {
-        const waMsg = 'নমস্কার নিশা দিদি, আমি নিশা ক্রিয়েশনসের ' + (title || 'লেডিস কালেকশন') + ' সম্পর্কে জানতে চাই এবং প্রি-অর্ডার করতে চাই।';
-        waBtn.href = `https://wa.me/917001460341?text=${encodeURIComponent(waMsg)}`;
-      }
-      const modal = document.getElementById('comingSoonModal');
-      if (modal) modal.style.display = 'flex';
-    }
-
-    function closeComingSoonModal() {
-      document.getElementById('comingSoonModal').style.display = 'none';
-    }
-
-    function filterWishlistProducts() {
-      showScreen('home');
-      if (wishlist.length === 0) {
-        alert("আপনার উইশলিস্টে কোনো প্রোডাক্ট সেভ করা নেই! প্রোডাক্টের ওপর হার্ট আইকন চাপুন।");
-        sanitizeBoutiqueRuntime();
-    initBrandLogo();
-    applyLanguage();
-    loadAllProducts();
-      renderCustomOfferBanner();
-    renderReels();
-    loadCustomerAccountHub();
-      syncCheckoutWithProfile();
-      } else {
-        renderProducts(products.filter(p => wishlist.includes(p.id)));
-      }
     }
 
     function renderProducts(list) {
@@ -3124,8 +1876,18 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       grid.innerHTML = '';
 
       if (!list || list.length === 0) {
-        grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">${currentLang === 'bn' ? 'কোনো পণ্য পাওয়া যায়নি!' : 'No products found!'}</div>`;
-        return;
+        if (products && products.length > 0) {
+          grid.innerHTML = `
+            <div style="grid-column:span 2; text-align:center; padding:20px 10px; background:#f8fafc; border-radius:14px; border:1px dashed #cbd5e1; margin-bottom:14px;">
+              <div style="font-size:0.9rem; font-weight:800; color:#0f172a;">${currentLang === 'bn' ? '✨ এই ক্যাটাগরিতে নতুন স্টক দ্রুত আসছে!' : '✨ New stock arriving soon for this category!'}</div>
+              <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">${currentLang === 'bn' ? 'আমাদের অন্যান্য জনপ্রিয় শাড়ি ও কুর্তি কালেকশন দেখুন:' : 'Check out our other popular collections below:'}</div>
+            </div>
+          `;
+          list = products; // Render all available products so user can keep shopping!
+        } else {
+          grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">${currentLang === 'bn' ? 'কোনো পণ্য পাওয়া যায়নি!' : 'No products found!'}</div>`;
+          return;
+        }
       }
 
       list.forEach(p => {
@@ -3199,7 +1961,39 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       });
     }
 
-    function filterByCategory(cat) {
+    function filterByUnifiedCat(catKey, element) {
+  document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
+  if (element && element.classList) element.classList.add('active');
+  const targetBubble = document.getElementById('ucat-' + catKey);
+  if (targetBubble && targetBubble.classList) targetBubble.classList.add('active');
+
+  let filtered = [...products];
+  if (catKey === 'all') {
+    filtered = [...products];
+  } else if (catKey === 'women') {
+    filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !(p.category || '').includes('frock'));
+  } else if (catKey === 'girls') {
+    filtered = products.filter(p => p.type === 'girls' || (p.category || '').includes('frock') || (p.category || '').includes('girl') || (p.title || '').includes('ফ্রক') || (p.title || '').toLowerCase().includes('frock'));
+  } else if (catKey === 'jamdani') {
+    filtered = products.filter(p => p.category === 'jamdani' || (p.title || '').includes('জামদানি'));
+  } else if (catKey === 'silk') {
+    filtered = products.filter(p => p.category === 'silk' || p.category === 'katan' || (p.title || '').includes('সিল্ক'));
+  } else if (catKey === 'tant') {
+    filtered = products.filter(p => p.category === 'tant' || p.category === 'phulia' || (p.title || '').includes('তাঁত'));
+  } else if (catKey === 'kurti') {
+    filtered = products.filter(p => p.type === 'kurti' || p.category === 'kurti' || (p.title || '').includes('কুর্তি') || (p.title || '').includes('গাউন'));
+  } else if (catKey === 'jewel') {
+    filtered = products.filter(p => p.type === 'jewel' || p.type === 'jewellery' || ['jewel', 'jewellery', 'necklace', 'choker'].includes(p.category) || (p.title || '').includes('গহনা') || (p.title || '').includes('চোকার'));
+  } else if (catKey === 'bangles') {
+    filtered = products.filter(p => p.category === 'bangles' || (p.title || '').includes('চুড়ি') || (p.title || '').includes('বালা'));
+  } else {
+    filtered = products.filter(p => p.category === catKey || p.type === catKey);
+  }
+
+  renderProducts(filtered);
+}
+
+function filterByCategory(cat) {
       document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
       const targetBubble = document.getElementById(`ucat-${cat}`);
       if (targetBubble) targetBubble.classList.add('active');
@@ -3975,7 +2769,23 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       showScreen(previousScreenBeforePdp || 'home');
     }
 
-    function openPdp(id) {
+    let selectedReturnOption = 'all';
+
+function selectReturnChoice(type) {
+  selectedReturnOption = type;
+  const cardAll = document.getElementById('returnCardAll');
+  const cardDef = document.getElementById('returnCardDefective');
+  if (cardAll) {
+    if (type === 'all') cardAll.classList.add('active');
+    else cardAll.classList.remove('active');
+  }
+  if (cardDef) {
+    if (type === 'defective' || type === 'wrong') cardDef.classList.add('active');
+    else cardDef.classList.remove('active');
+  }
+}
+
+function openPdp(id) {
       // Record current active screen before navigating to PDP
       const curActive = document.querySelector('.screen-view.active');
       if (curActive && curActive.id && curActive.id !== 'screen-pdp') {
@@ -6451,74 +5261,52 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
 
 // ==========================================
-// SMART APP SERVICES HANDLERS (ফিচার ২০১-৩০০)
+
 // ==========================================
-function openCustomerLiveShop() {
-  const modal = document.getElementById('modalLiveShopping');
-  if (modal) modal.style.display = 'flex';
-}
-
-function openCustomerTryAtHome() {
-  const modal = document.getElementById('modalTryAtHome');
-  if (modal) modal.style.display = 'flex';
-}
-
-function openCustomerRentals() {
-  alert('🥻 ব্রাইডাল শাড়ি রেন্টাল (২২১):\nবিয়ের ভারী বেনারসি ও লেহেঙ্গা ৩ বা ৫ দিনের ভাড়ার বুকিং শীঘ্রই শুরু হচ্ছে!');
-}
-
-function openCustomerBridalStudio() {
-  alert('👰 ব্রাইডাল স্টুডিও ও ট্রুসো প্ল্যানার (২৫১):\nবিয়ের হলুদ, মেহেন্দি, বিয়ে ও বউভাতের সম্পূর্ণ শাড়ির ম্যাচিং প্যাকেজ প্রস্তুত আছে!');
-}
-
-function triggerBanglaVoiceSearch() {
+// CLEAN DIRECT VOICE SEARCH (Zero Alerts!)
+// ==========================================
+function triggerDirectVoiceSearch() {
+  const searchInput = document.getElementById('searchInput') || document.getElementById('ncSearchInput');
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('🎤 ভয়েস সার্চ (২৩১):\nআপনার ব্রাউজারে স্পিচ রিকগনিশন সক্রিয় নেই। অনুগ্রহ করে সার্চ বারে টাইপ করুন।');
+    if (typeof openBoutiqueSearch === 'function') openBoutiqueSearch();
     return;
   }
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'bn-IN';
-  recognition.onstart = function() {
-    alert('🎙️ শুনছি... মুখে বলুন (যেমন: "জামদানি শাড়ি" বা "কুর্তি")');
-  };
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    alert(`✓ আপনি বলেছেন: "${transcript}"\nএখন শাড়ি খোঁজা হচ্ছে...`);
-    const searchInput = document.getElementById('globalSearchInput');
-    if (searchInput) {
-      searchInput.value = transcript;
-      if (typeof handleGlobalSearch === 'function') handleGlobalSearch(transcript);
-    }
-  };
-  recognition.onerror = function() {
-    alert('ভয়েস শনাক্ত করা যায়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন।');
-  };
   try {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'bn-IN';
+    
+    if (searchInput) {
+      searchInput.placeholder = '🎙️ শুনছি... বলুন...';
+    }
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      if (searchInput) {
+        searchInput.value = transcript;
+        searchInput.placeholder = 'শাড়ির নাম, জামদানি বা গহনা খুঁজুন...';
+      }
+      if (typeof executeBoutiqueSearch === 'function') {
+        executeBoutiqueSearch(transcript);
+      } else if (typeof handleGlobalSearch === 'function') {
+        handleGlobalSearch(transcript);
+      }
+    };
+
+    recognition.onerror = function() {
+      if (searchInput) {
+        searchInput.placeholder = 'শাড়ির নাম, জামদানি বা গহনা খুঁজুন...';
+      }
+    };
+
+    recognition.onend = function() {
+      if (searchInput) {
+        searchInput.placeholder = 'শাড়ির নাম, জামদানি বা গহনা খুঁজুন...';
+      }
+    };
+
     recognition.start();
   } catch(e) {
-    alert('🎤 ভয়েস সার্চ প্রস্তুত!');
-  }
-}
-
-function openDailyRewardsModal() {
-  alert('🎁 ডেইলি রিওয়ার্ড ও কয়েন (২৬১):\nঅভিনন্দন! আজকের ডেইলি চেক-ইন বোনাস +১০ কয়েন আপনার অ্যাকাউন্টে জমা হয়েছে!');
-}
-
-function openCustomerVipClub() {
-  alert('👑 নিশা ক্রিয়েশনস ভিআইপি ক্লাব (২৬৩):\nআপনি বর্তমানে সিলভার মেম্বার! আর মাত্র ২টি অর্ডার করলেই পাবেন ফ্রি এক্সপ্রেস শিপিং ও গোল্ড প্রিভিলেজ!');
-}
-
-function closeCustomerModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) modal.style.display = 'none';
-}
-
-function buyCurrentLiveProduct() {
-  closeCustomerModal('modalLiveShopping');
-  if (typeof openPdp === 'function' && typeof products !== 'undefined' && products.length > 0) {
-    openPdp(products[0].id);
-  } else {
-    alert('লাইভ প্রোডাক্ট অর্ডারের জন্য কার্টে যোগ হয়েছে!');
+    if (typeof openBoutiqueSearch === 'function') openBoutiqueSearch();
   }
 }

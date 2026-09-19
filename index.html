@@ -105,7 +105,9 @@
       <div class="search-input-box" onclick="openBoutiqueSearch()" style="cursor:pointer;">
         <i class="fa-solid fa-magnifying-glass" style="color:var(--primary);"></i>
         <input type="text" id="searchInput" placeholder="শাড়ির নাম, জামদানি বা গহনা খুঁজুন..." readonly onclick="openBoutiqueSearch()" style="cursor:pointer;">
-        <i class="fa-solid fa-camera" style="color:#94a3b8;"></i>
+        <button type="button" onclick="event.stopPropagation(); triggerDirectVoiceSearch()" style="background:transparent; border:none; color:var(--primary); font-size:1.05rem; cursor:pointer; padding:2px 6px;" title="মুখে বলে খুঁজুন">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -180,100 +182,8 @@
     </div>
 
     
-    <!-- =========================================================================
-         মোবাইল অ্যাপ-আইকন লঞ্চপ্যাড (Mobile App Services Launchpad)
-         মার্জিত ও মিনিমালিস্ট স্টাইল (বেশি চড়া রঙ নয়, পেশাদার ও পরিষ্কার অ্যাপ লুক)
-         ========================================================================= -->
-    <div class="mobile-app-launchpad" style="margin:12px 14px 16px 14px; background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:14px 10px; box-shadow:0 4px 14px rgba(15,23,42,0.04);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:0 4px;">
-        <span style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-shapes" style="color:var(--primary); font-size:0.9rem;"></i>
-          <span>স্মার্ট অ্যাপ সার্ভিসেস (Smart App Hub)</span>
-        </span>
-        <span style="font-size:0.7rem; color:#64748b; font-weight:700;">বাংলা ও English</span>
-      </div>
-
-      <!-- 4x2 Grid of Rounded App Cards -->
-      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; text-align:center;">
-        
-        <!-- 1. Live Commerce -->
-        <div onclick="openCustomerLiveShop()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#fef2f2; border:1px solid #fecaca; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(239,68,68,0.12); position:relative;">
-            <i class="fa-solid fa-video"></i>
-            <span style="position:absolute; top:-3px; right:-3px; background:#ef4444; color:#fff; font-size:0.55rem; font-weight:800; padding:1px 4px; border-radius:6px;">LIVE</span>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">লাইভ শপ</span>
-          <span style="font-size:0.58rem; color:#64748b;">Live Stream</span>
-        </div>
-
-        <!-- 2. Try at Home -->
-        <div onclick="openCustomerTryAtHome()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#eff6ff; border:1px solid #bfdbfe; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(37,99,235,0.12);">
-            <i class="fa-solid fa-shirt"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ট্রাই হোম</span>
-          <span style="font-size:0.58rem; color:#64748b;">Try at Home</span>
-        </div>
-
-        <!-- 3. Saree Rentals -->
-        <div onclick="openCustomerRentals()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#fdf4ff; border:1px solid #f5d0fe; color:#9333ea; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(147,51,234,0.12);">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">শাড়ি রেন্টাল</span>
-          <span style="font-size:0.58rem; color:#64748b;">Rentals</span>
-        </div>
-
-        <!-- 4. Bridal Studio -->
-        <div onclick="openCustomerBridalStudio()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#fff1f2; border:1px solid #fecdd3; color:#e11d48; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(225,29,72,0.12);">
-            <i class="fa-solid fa-gem"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ব্রাইডাল হাব</span>
-          <span style="font-size:0.58rem; color:#64748b;">Bridal Hub</span>
-        </div>
-
-        <!-- 5. Voice Search -->
-        <div onclick="triggerBanglaVoiceSearch()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#fff7ed; border:1px solid #fed7aa; color:#ea580c; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(234,88,12,0.12);">
-            <i class="fa-solid fa-microphone-lines"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ভয়েস সার্চ</span>
-          <span style="font-size:0.58rem; color:#64748b;">Voice AI</span>
-        </div>
-
-        <!-- 6. Daily Rewards -->
-        <div onclick="openDailyRewardsModal()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#fefce8; border:1px solid #fef08a; color:#ca8a04; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(202,138,4,0.12);">
-            <i class="fa-solid fa-coins"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ডেইলি কয়েন</span>
-          <span style="font-size:0.58rem; color:#64748b;">Rewards</span>
-        </div>
-
-        <!-- 7. Live Order Tracking -->
-        <div onclick="showScreen('orders')" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(22,163,74,0.12);">
-            <i class="fa-solid fa-truck-fast"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">লাইভ ট্র্যাক</span>
-          <span style="font-size:0.58rem; color:#64748b;">Track Order</span>
-        </div>
-
-        <!-- 8. VIP Club -->
-        <div onclick="openCustomerVipClub()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
-          <div style="width:48px; height:48px; border-radius:14px; background:#f8fafc; border:1px solid #cbd5e1; color:#475569; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(71,85,105,0.12);">
-            <i class="fa-solid fa-crown"></i>
-          </div>
-          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ভিআইপি ক্লাব</span>
-          <span style="font-size:0.58rem; color:#64748b;">VIP Club</span>
-        </div>
-
-      </div>
-    </div>
-
     <!-- 2. Urgency 2-Hour Flash Sale Countdown Banner (ঘড়ির টিকটিক ও অফার শেষ স্ট্যাটাস সহ) -->
-    <div class="urgency-countdown-banner" id="flashSaleBannerContainer">
+    <div class="urgency-countdown-banner" id="flashSaleBannerContainer" style="display:none !important;">
       <div class="countdown-top-row">
         <div class="countdown-title">
           <i class="fa-solid fa-fire-flame-curved" style="color:#fef08a;"></i>
@@ -326,7 +236,7 @@
 
 
     <!-- Refer & Earn Strip -->
-    <div class="refer-strip" onclick="openReferModal()">
+    <div class="refer-strip" onclick="openReferModal()" style="display:none !important;">
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:1.4rem;">🎁</span>
         <div>
@@ -2762,5 +2672,6 @@
     </div>
   </div>
 
-</body>
+
+  </body>
 </html>
