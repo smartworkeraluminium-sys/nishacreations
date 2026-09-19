@@ -50,6 +50,37 @@ function sanitizeBoutiqueRuntime() {
         navWishlist: "উইশলিস্ট",
         navOrders: "অর্ডার",
         navAccount: "অ্যাকাউন্ট",
+                // OTP Modal & Auth
+        authModalTitle: "কাস্টমার ওটিপি লগইন",
+        otpPhoneHeading: "মোবাইল নম্বর লিখুন",
+        otpPhoneSub: "আপনার ১০ ডিজিটের মোবাইল নম্বরে ৪-সংখ্যার ওটিপি পাঠানো হবে",
+        authLblPhone: "মোবাইল নম্বর (১০ ডিজিট) *",
+        authPhonePlaceholder: "যেমন: 9832100000",
+        btnSendOtpText: "ওটিপি কোড পাঠান",
+        otpSecurityNotice: "১০০% নিরাপদ ও কোনো পাসওয়ার্ড মনে রাখার প্রয়োজন নেই",
+        otpSmsAlertTitle: "SMS Alert • Nisha Creations",
+        otpSmsTime: "সবেমাত্র পাঠানো হয়েছে",
+        otpLiveOtpLabel: "আপনার লগইন ওটিপি কোড:",
+        otpSentToTextPre: "নম্বরে ওটিপি পাঠানো হয়েছে:",
+        btnChangePhone: "← নম্বর পরিবর্তন করুন",
+        lblEnterOtp: "৪ ডিজিটের ওটিপি লিখুন *",
+        btnAutoFillOtp: "এক-ক্লিকে ওটিপি বসান",
+        authLblName: "আপনার পুরো নাম *",
+        authNamePlaceholder: "যেমন: Nisha Ghanti",
+        authLblAddr: "ডেলিভারি ঠিকানা ও ল্যান্ডমার্ক *",
+        authBtnGps: "📍 বর্তমান GPS লোকেশন",
+        authAddrPlaceholder: "বাড়ি নং, এলাকা বা গ্রাম (যেমন: আমতা চাঁদনী, হাওড়া - 711401)",
+        btnVerifyOtpText: "ওটিপি যাচাই ও লগইন সম্পন্ন করুন",
+        btnCancelAuth: "বাতিল",
+        drawerLangTitle: "অ্যাপের ভাষা (App Language)",
+        drawerGuestTitle: "স্বাগতম অতিথি!",
+        drawerGuestSub: "অর্ডার ট্র্যাক ও ছাড় পেতে",
+        drawerBtnLogin: "লগইন",
+        drawerBtnLogout: "লগআউট",
+        drawerAuthItemTitleLogin: "লগইন বা রেজিস্টার",
+        drawerAuthItemSubLogin: "মোবাইল নম্বর ও ওটিপি দিয়ে প্রবেশ করুন",
+        drawerAuthItemTitleLogout: "লগআউট",
+        drawerAuthItemSubLogout: "অ্যাকাউন্ট থেকে প্রস্থান করুন",
         // Unified Categories
         uCatAll: "সব কালেকশন",
         uCatWomen: "👩 Women",
@@ -291,6 +322,37 @@ function sanitizeBoutiqueRuntime() {
         navWishlist: "Wishlist",
         navOrders: "Orders",
         navAccount: "Account",
+                // OTP Modal & Auth
+        authModalTitle: "Customer OTP Login",
+        otpPhoneHeading: "Enter Mobile Number",
+        otpPhoneSub: "A 4-digit OTP will be sent to your 10-digit mobile number",
+        authLblPhone: "Mobile Number (10 Digits) *",
+        authPhonePlaceholder: "e.g. 9832100000",
+        btnSendOtpText: "Send OTP Code",
+        otpSecurityNotice: "100% Secure & No Password Needed",
+        otpSmsAlertTitle: "SMS Alert • Nisha Creations",
+        otpSmsTime: "Just sent",
+        otpLiveOtpLabel: "Your Login OTP Code:",
+        otpSentToTextPre: "OTP sent to:",
+        btnChangePhone: "← Change Number",
+        lblEnterOtp: "Enter 4-Digit OTP *",
+        btnAutoFillOtp: "Auto-Fill OTP",
+        authLblName: "Your Full Name *",
+        authNamePlaceholder: "e.g. Nisha Ghanti",
+        authLblAddr: "Delivery Address & Landmark *",
+        authBtnGps: "📍 Current GPS Location",
+        authAddrPlaceholder: "House No, Area or Village (e.g. Amta Chandni, Howrah - 711401)",
+        btnVerifyOtpText: "Verify OTP & Complete Login",
+        btnCancelAuth: "Cancel",
+        drawerLangTitle: "App Language",
+        drawerGuestTitle: "Welcome Guest!",
+        drawerGuestSub: "Track orders & get rewards",
+        drawerBtnLogin: "Login",
+        drawerBtnLogout: "Logout",
+        drawerAuthItemTitleLogin: "Login / Register",
+        drawerAuthItemSubLogin: "Sign in with mobile number & OTP",
+        drawerAuthItemTitleLogout: "Logout",
+        drawerAuthItemSubLogout: "Sign out of this account",
         // Unified Categories
         uCatAll: "All Collections",
         uCatWomen: "👩 Women",
@@ -1020,6 +1082,70 @@ function sanitizeBoutiqueRuntime() {
       if (typeof renderProducts === 'function' && Array.isArray(products)) {
         renderProducts(products);
       }
+      
+      // ==========================================
+      // BILINGUAL UPDATES FOR OTP MODAL & DRAWER
+      // ==========================================
+      const amt = document.getElementById('t-authModalTitle');
+      if (amt) amt.textContent = t('authModalTitle');
+      const oph = document.getElementById('t-otpPhoneHeading');
+      if (oph) oph.textContent = t('otpPhoneHeading');
+      const ops = document.getElementById('t-otpPhoneSub');
+      if (ops) ops.textContent = t('otpPhoneSub');
+      const alp = document.getElementById('t-authLblPhone');
+      if (alp) alp.textContent = t('authLblPhone');
+      const apInp = document.getElementById('auth_phone');
+      if (apInp) apInp.placeholder = t('authPhonePlaceholder');
+      const bsot = document.getElementById('t-btnSendOtpText');
+      if (bsot) bsot.textContent = t('btnSendOtpText');
+      const osn = document.getElementById('t-otpSecurityNotice');
+      if (osn) osn.textContent = t('otpSecurityNotice');
+
+      const osat = document.getElementById('t-otpSmsAlertTitle');
+      if (osat) osat.textContent = t('otpSmsAlertTitle');
+      const ost = document.getElementById('t-otpSmsTime');
+      if (ost) ost.textContent = t('otpSmsTime');
+      const lol = document.getElementById('t-otpLiveOtpLabel');
+      if (lol) lol.textContent = t('otpLiveOtpLabel');
+      const ostp = document.getElementById('t-otpSentToTextPre');
+      if (ostp) ostp.textContent = t('otpSentToTextPre');
+      const bcp = document.getElementById('t-btnChangePhone');
+      if (bcp) bcp.textContent = t('btnChangePhone');
+
+      const leo = document.getElementById('t-lblEnterOtp');
+      if (leo) leo.textContent = t('lblEnterOtp');
+      const bafo = document.getElementById('t-btnAutoFillOtp');
+      if (bafo) bafo.textContent = t('btnAutoFillOtp');
+
+      const aln = document.getElementById('t-authLblName');
+      if (aln) aln.textContent = t('authLblName');
+      const anInp = document.getElementById('auth_name');
+      if (anInp) anInp.placeholder = t('authNamePlaceholder');
+      const ala = document.getElementById('t-authLblAddr');
+      if (ala) ala.textContent = t('authLblAddr');
+      const abg = document.getElementById('t-authBtnGps');
+      if (abg) abg.textContent = t('authBtnGps');
+      const aaInp = document.getElementById('auth_addr');
+      if (aaInp) aaInp.placeholder = t('authAddrPlaceholder');
+
+      const bvot = document.getElementById('t-btnVerifyOtpText');
+      if (bvot) bvot.textContent = t('btnVerifyOtpText');
+      const bca = document.getElementById('t-btnCancelAuth');
+      if (bca) bca.textContent = t('btnCancelAuth');
+
+      const dlt = document.getElementById('drawerLangTitle');
+      if (dlt) dlt.textContent = t('drawerLangTitle');
+
+      const headerAuthTxt = document.getElementById('headerUserAuthText');
+      if (headerAuthTxt) {
+        headerAuthTxt.textContent = (currentCustomer && currentCustomer.phone)
+          ? (currentCustomer.name ? currentCustomer.name.split(' ')[0] : (isEn ? 'Account' : 'প্রোফাইল'))
+          : (isEn ? 'Login' : 'লগইন');
+      }
+
+      // Update drawer login/logout state and language buttons
+      updateDrawerActiveStates();
+
       const resScreen = document.getElementById('screen-search-results');
       if (typeof renderBoutiqueSearchResults === 'function' && resScreen && resScreen.classList && typeof resScreen.classList.contains === 'function' && resScreen.classList.contains('active')) {
         executeBoutiqueSearch(currentSearchQuery);
@@ -1259,6 +1385,19 @@ function sanitizeBoutiqueRuntime() {
 
       renderAdminDashboardLive();
       renderProducts(products);
+
+      // Realtime Cloud Firestore Sync for Products & Banner
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.syncProducts((liveProds) => {
+          if (liveProds && liveProds.length > 0) {
+            products = liveProds;
+            renderProducts(products);
+          }
+        });
+        CloudSync.syncBanner(() => {
+          renderCustomOfferBanner();
+        });
+      }
     }
 
         // ADMIN TOP NAVIGATION TABS CONTROLLER
@@ -1693,33 +1832,41 @@ function adminQuickRestock(idx) {
         stored = localStorage.getItem('nc_products');
       } catch(e) {}
 
-      if (stored) {
+      if (stored !== null) {
         try {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            products = parsed;
+          if (Array.isArray(parsed)) {
+            // Auto-heal missing upiOffer & broken fallback images
+            products = parsed.map(p => {
+              if (!p.upiOffer && p.price) {
+                p.upiOffer = Math.round(p.price * 0.95);
+              }
+              if (!p.img || p.img.includes('photo-1611591475837-7f9999557a66')) {
+                if (p.category === 'jewel' || p.category === 'bangles' || p.type === 'jewel' || p.type === 'jewellery') {
+                  p.img = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';
+                }
+              }
+              return p;
+            });
+            try { localStorage.setItem('nc_products', JSON.stringify(products)); } catch(e){}
             renderProducts(products);
             return;
           }
         } catch(e) {}
       }
 
-      // 2. Check local custom products merged with INITIAL_PRODUCTS
-      const localCustom = localStorage.getItem('nc_custom_products');
-      if (localCustom) {
-        try {
-          const parsed = JSON.parse(localCustom);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            products = [...parsed, ...INITIAL_PRODUCTS];
-            localStorage.setItem('nc_products', JSON.stringify(products));
-            renderProducts(products);
-            return;
-          }
-        } catch(e) {}
+      // 2. If owner cleared demo products, keep clean without re-seeding
+      if (localStorage.getItem('nc_demo_cleared') === 'true') {
+        let cust = [];
+        try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
+        products = cust;
+        localStorage.setItem('nc_products', JSON.stringify(products));
+        renderProducts(products);
+        return;
       }
 
-      // 3. Fallback to INITIAL_PRODUCTS
-      products = [...INITIAL_PRODUCTS];
+      // 3. Fallback to INITIAL_PRODUCTS for first-time visitors
+      products = (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS)) ? [...INITIAL_PRODUCTS] : [];
       localStorage.setItem('nc_products', JSON.stringify(products));
       renderProducts(products);
     }
@@ -1811,7 +1958,7 @@ function adminQuickRestock(idx) {
       if (catKey === 'all') {
         filtered = [...products];
       } else if (catKey === 'women') {
-        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
       } else if (catKey === 'girls') {
         filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
       } else if (catKey === 'jamdani') {
@@ -1823,7 +1970,7 @@ function adminQuickRestock(idx) {
       } else if (catKey === 'kurti') {
         filtered = products.filter(p => p.type === 'kurti' || p.category === 'kurti');
       } else if (catKey === 'jewel') {
-        filtered = products.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles'].includes(p.category));
+        filtered = products.filter(p => p.type === 'jewel' || p.type === 'jewellery' || ['jewel', 'jewellery', 'necklace', 'earrings', 'bangles'].includes(p.category));
       } else if (catKey === 'bangles') {
         filtered = products.filter(p => p.category === 'bangles' || p.category === 'jewel');
       }
@@ -1849,7 +1996,7 @@ function adminQuickRestock(idx) {
 
       let filtered = [...products];
       if (gender === 'women') {
-        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+        filtered = products.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
       } else if (gender === 'girls') {
         filtered = products.filter(p => p.type === 'girls' || p.category.includes('frock') || p.category.includes('girl') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock') || p.title.includes('মেয়েদের'));
       } else if (gender === 'saree') {
@@ -1891,7 +2038,7 @@ function adminQuickRestock(idx) {
 
       let list = [...products];
       if (currentGenderFilter !== 'all') {
-        if (currentGenderFilter === 'women') list = list.filter(p => p.type !== 'girls' && p.type !== 'jewel' && !p.category.includes('frock'));
+        if (currentGenderFilter === 'women') list = list.filter(p => p.type !== 'girls' && p.type !== 'jewel' && p.type !== 'jewellery' && p.category !== 'jewel' && p.category !== 'bangles' && !p.category.includes('frock'));
         else if (currentGenderFilter === 'girls') list = list.filter(p => p.type === 'girls' || p.category.includes('frock') || p.title.includes('ফ্রক') || p.title.toLowerCase().includes('frock'));
         else if (currentGenderFilter === 'saree') list = list.filter(p => p.type === 'saree');
         else if (currentGenderFilter === 'jewel') list = list.filter(p => p.type === 'jewel' || ['necklace', 'earrings', 'bangles', 'bag', 'perfume'].includes(p.category));
@@ -2362,6 +2509,11 @@ function adminQuickRestock(idx) {
       currentOrders.unshift(newOrder);
       localStorage.setItem('nc_orders', JSON.stringify(currentOrders));
       orders = currentOrders;
+
+      // Sync Order to Google Cloud Firestore
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.saveOrder(newOrder);
+      }
 
       // 5. Automatic Stock Deduction
       cart.forEach(cItem => {
@@ -2990,7 +3142,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
         card.innerHTML = `
           <div class="product-img-wrap" style="position:relative;">
-            <img src="${p.img}" alt="${p.title}" loading="lazy" style="${isOutOfStock ? 'filter: grayscale(80%) opacity(0.6);' : ''}">
+            <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600'}" alt="${p.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';" style="${isOutOfStock ? 'filter: grayscale(80%) opacity(0.6);' : ''}">
             
             ${isOutOfStock ? `
               <div class="card-out-of-stock-overlay" style="position:absolute; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(2px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; z-index:2; border-radius:12px;">
@@ -3033,7 +3185,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
                 <span class="p-off">${offPct}% off</span>
               </div>
               <div class="upi-badge">
-                <i class="fa-solid fa-tag"></i> <span>₹${p.upiOffer} with UPI</span>
+                <i class="fa-solid fa-tag"></i> <span>₹${p.upiOffer || Math.round((p.price || 0) * 0.95)} with UPI</span>
               </div>
               <div class="cod-tag">₹${p.price} with COD</div>
               <div class="p-rating-strip">
@@ -3840,7 +3992,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       document.getElementById('pdpMrp').textContent = `₹${p.mrp}`;
       const offPct = Math.round(((p.mrp - p.price) / p.mrp) * 100);
       document.getElementById('pdpDiscount').textContent = `${offPct}% off`;
-      document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${p.upiOffer}`;
+      document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${p.upiOffer || Math.round((p.price || 0) * 0.95)}`
 
       // Multi-Images Thumbnails Strip
       const subStrip = document.getElementById('pdpSubImagesStrip');

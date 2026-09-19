@@ -665,6 +665,10 @@
     }
 
   </style>
+  <!-- Google Firebase Cloud Firestore (Nisha Creations) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js?v=20260919_v1"></script>
 </head>
 <body>
 
@@ -1191,6 +1195,9 @@
       if (!confirm(promptMsg)) return;
 
       riderOrders[idx].status = 'Delivered';
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.updateOrderStatus(ord.id, 'Delivered', { deliveredDate: riderOrders[idx].deliveredDate, paymentReceived: true });
+      }
       riderOrders[idx].deliveredDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
 
       localStorage.setItem('nc_orders', JSON.stringify(riderOrders));

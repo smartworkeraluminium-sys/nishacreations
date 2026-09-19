@@ -947,6 +947,10 @@
     }
 
   </style>
+  <!-- Google Firebase Cloud Firestore (Nisha Creations) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js?v=20260919_v1"></script>
 </head>
 <body>
 
@@ -1487,17 +1491,23 @@
             </p>
 
             <!-- Image Preview Box -->
-            <div id="photoUploadPreviewBox" style="display:none; margin-bottom:12px;">
-              <img id="mainUploadPreviewImg" src="" style="width:140px; height:140px; border-radius:14px; object-fit:cover; border:2px solid #38bdf8; box-shadow:0 4px 15px rgba(0,0,0,0.5); margin:0 auto; display:block;">
-              <button type="button" onclick="clearSelectedUploadPhoto()" style="background:#dc2626; color:#fff; border:none; padding:4px 10px; border-radius:8px; font-size:0.72rem; font-weight:800; margin-top:8px; cursor:pointer;">
-                ✕ ছবি মুছুন বা পরিবর্তন করুন
-              </button>
+            <div id="photoUploadPreviewBox" style="display:none; margin-bottom:14px; background:#0b0f19; border:1px solid #1f2937; border-radius:16px; padding:12px;">
+              <div id="uploadSuccessBadge" style="background:#065f46; color:#a7f3d0; font-size:0.78rem; font-weight:800; padding:4px 12px; border-radius:8px; display:inline-block; margin-bottom:10px;">
+                <i class="fa-solid fa-circle-check"></i> আপনার গ্যালারির ছবি সফলভাবে প্রস্তুত হয়েছে (এটিই ওয়েবসাইটে লাইভ হবে)
+              </div>
+              <img id="mainUploadPreviewImg" src="" style="width:150px; height:150px; border-radius:14px; object-fit:cover; border:2px solid #38bdf8; box-shadow:0 6px 20px rgba(0,0,0,0.5); margin:0 auto; display:block;">
+              <div id="multiUploadThumbnailsStrip" style="display:flex; justify-content:center; gap:8px; margin-top:10px; flex-wrap:wrap;"></div>
+              <div style="margin-top:10px;">
+                <button type="button" onclick="clearSelectedUploadPhoto()" style="background:#dc2626; color:#fff; border:none; padding:6px 14px; border-radius:8px; font-size:0.75rem; font-weight:800; cursor:pointer;">
+                  <i class="fa-solid fa-trash-can"></i> ছবি পরিবর্তন করুন / মুছুন
+                </button>
+              </div>
             </div>
 
             <!-- Upload Button -->
-            <label id="btnChoosePhotoLabel" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:12px 20px; border-radius:12px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(2,132,199,0.35);">
-              <i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন</span>
-              <input type="file" id="op_photo_file" accept="image/*" style="display:none;" onchange="handleStudioPhotoSelected(event)">
+            <label id="btnChoosePhotoLabel" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:13px 22px; border-radius:14px; font-size:0.92rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(2,132,199,0.35);">
+              <i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন (১ বা একাধিক)</span>
+              <input type="file" id="op_photo_file" accept="image/*" multiple style="display:none;" onchange="handleStudioPhotoSelected(event)">
             </label>
 
             <!-- Optional Online Image URL Fallback -->
@@ -1663,9 +1673,42 @@
   </div>
 
 
+
+  <!-- ================= MODAL: EDIT PRODUCT IMAGE ================= -->
+  <div id="editProductImageModal" class="adm-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#1e293b; color:#fff; border:1.5px solid #475569; border-radius:20px; max-width:440px; width:100%; padding:22px; box-shadow:0 20px 40px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:16px;">
+        <div style="font-size:1.1rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-camera" style="color:#38bdf8;"></i>
+          <span>প্রোডাক্টের ছবি পরিবর্তন করুন</span>
+        </div>
+        <button type="button" onclick="closeEditImageModal()" style="background:#334155; border:none; color:#cbd5e1; width:30px; height:30px; border-radius:50%; cursor:pointer; font-weight:800;">✕</button>
+      </div>
+
+      <div style="text-align:center; margin-bottom:16px;">
+        <img id="editImagePreview" src="" style="width:140px; height:140px; border-radius:14px; object-fit:cover; border:2px solid #38bdf8; margin:0 auto; display:block;">
+        <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-top:8px;" id="editImageProdTitle">Product Title</div>
+        <div style="font-size:0.75rem; color:#94a3b8;" id="editImageProdId">#NC-101</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <label style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:12px; border-radius:10px; font-weight:800; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fa-solid fa-image"></i> গ্যালারি থেকে নতুন ছবি বেছে নিন
+          <input type="file" id="replaceImageFileInput" accept="image/*" style="display:none;" onchange="handleReplaceProductImageFile(event)">
+        </label>
+        <button type="button" class="btn-fast-action" style="background:#334155; color:#cbd5e1; padding:10px; font-weight:700; border-radius:10px; justify-content:center;" onclick="closeEditImageModal()">
+          বাতিল
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 <script>
     // State
     let ordersList = [];
+    let uploadedStudioPhoto = '';
+    let uploadedPhotoList = [];
 
     // Password & PIN Management (Allows Names, Text, and Numbers)
     let ownerPin = localStorage.getItem('nc_owner_pin') || '1234';
@@ -1942,6 +1985,10 @@
       };
 
       localStorage.setItem('nc_custom_banner', JSON.stringify(bannerData));
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.saveBanner(bannerData);
+      }
+
       alert('🎉 ব্যানার সফলভাবে সংরক্ষিত ও লাইভ করা হয়েছে! কাস্টমার হোমপেজে এটি দেখা যাবে।');
       updateCustomBannerPreview();
     }
@@ -1960,6 +2007,10 @@
       const toggle = document.getElementById('customBannerActiveToggle');
       if (toggle) toggle.checked = false;
       updateCustomBannerPreview();
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.removeBanner();
+      }
+
       alert('🗑️ ব্যানার সফলভাবে মুছে ফেলা হয়েছে!');
     }
 
@@ -2254,6 +2305,10 @@
           }
         });
         localStorage.setItem('nc_products', JSON.stringify(prods));
+
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.deleteProduct(prodId);
+      }
         localStorage.setItem('nc_orders', JSON.stringify(ordersList));
 
         alert(`✅ পার্সেল #${ord.id} এর কোয়ালিটি চেক সফল! পণ্য ইনভেন্টরিতে রিস্টক (+১) করা হয়েছে।`);
@@ -3189,6 +3244,10 @@
       } catch(e) {}
 
       localStorage.setItem('nc_demo_cleared', 'true');
+
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.saveProduct(newProd);
+      }
       renderOwnerStock();
       alert(isEn ? `✓ '${title}' deleted successfully!` : `✓ '${title}' সফলভাবে ডিলিট করা হয়েছে!`);
     }
@@ -3264,12 +3323,12 @@
       const fabric = fabricInp ? fabricInp.value.trim() : 'Premium Quality';
       const price = parseInt(priceInp ? priceInp.value : 0) || 0;
       const mrp = parseInt(mrpInp ? mrpInp.value : 0) || (price * 2);
-      const stock = parseInt(stockInp ? stockInp.value : 0) || 10;
-      const desc = descInp ? descInp.value.trim() : 'নিশা ক্রিয়েশনসের প্রিমিয়াম এক্সক্লুসিভ শাড়ি ও পোশাক';
+      let stock = parseInt(stockInp ? stockInp.value : 0) || 10;
+      const desc = descInp ? descInp.value.trim() : 'নিশা ক্রিয়েশনসের প্রিমিয়াম এক্সক্লুসিভ কালেকশন';
       const binLocation = (binInp && binInp.value.trim()) ? binInp.value.trim() : 'র্যাক Z-০১ (সাধারণ তাক)';
 
       if (!title) {
-        alert(isEn ? 'Please enter the product title!' : 'অনুগ্রহ করে শাড়ির নাম লিখুন!');
+        alert(isEn ? 'Please enter the product title!' : 'অনুগ্রহ করে প্রোডাক্টের নাম লিখুন!');
         if (titleInp) titleInp.focus();
         return;
       }
@@ -3280,43 +3339,57 @@
         return;
       }
 
-      // Collect images safely from uploadedPhotoList or url fallback
+      // Priority 1: User's uploaded gallery photo (uploadedStudioPhoto / uploadedPhotoList)
       let coverImg = '';
       let allImages = [];
 
-      if (typeof uploadedPhotoList !== 'undefined' && Array.isArray(uploadedPhotoList) && uploadedPhotoList.length > 0) {
+      if (uploadedStudioPhoto) {
+        coverImg = uploadedStudioPhoto;
+        allImages = (uploadedPhotoList && uploadedPhotoList.length > 0) ? [...uploadedPhotoList] : [coverImg];
+      } else if (uploadedPhotoList && uploadedPhotoList.length > 0) {
         coverImg = uploadedPhotoList[0];
         allImages = [...uploadedPhotoList];
       } else if (urlFallbackInp && urlFallbackInp.value.trim()) {
         coverImg = urlFallbackInp.value.trim();
         allImages = [coverImg];
       } else {
+        // Fallback default ONLY if user gave absolutely no image
         if (cat === 'girls') coverImg = 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600';
-        else if (cat === 'jewel' || cat === 'bangles') coverImg = 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=600';
+        else if (cat === 'jewel' || cat === 'bangles') coverImg = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';
         else if (cat === 'kurti') coverImg = 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600';
         else coverImg = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600';
         allImages = [coverImg];
       }
 
+      // Calculate total stock from active color variants if available
+      if (typeof activeColorVariantsList !== 'undefined' && Array.isArray(activeColorVariantsList) && activeColorVariantsList.length > 0) {
+        const variantTotal = activeColorVariantsList.reduce((sum, c) => sum + (parseInt(c.qty) || 0), 0);
+        if (variantTotal > 0) stock = variantTotal;
+      }
+
       const sizes = (typeof selectedSizes !== 'undefined' && Array.isArray(selectedSizes) && selectedSizes.length > 0)
         ? [...selectedSizes]
-        : (cat === 'saree' ? ['Free Size (5.5m + Blouse)'] : ['M', 'L', 'XL']);
+        : (cat === 'saree' ? ['Free Size (5.5m + Blouse)'] : ['Free Size', 'M', 'L', 'XL']);
 
       const prodId = 'NC-' + Math.floor(100 + Math.random() * 900);
+      const upiOfferPrice = Math.round(price * 0.95);
+      const prodType = (cat === 'girls' ? 'girls' : (cat === 'jewel' || cat === 'bangles' ? 'jewel' : (cat === 'kurti' ? 'kurti' : 'saree')));
 
       const newProd = {
         id: prodId,
         title: title,
         category: cat,
-        type: (cat === 'girls' ? 'girls' : (cat === 'jewel' || cat === 'bangles' ? 'jewellery' : 'saree')),
+        type: prodType,
         fabric: fabric,
         price: price,
         mrp: mrp,
+        upiOffer: upiOfferPrice,
         stock: stock,
         initialStock: stock,
         inStock: stock > 0,
         img: coverImg,
         images: allImages,
+        colors: (typeof activeColorVariantsList !== 'undefined' && Array.isArray(activeColorVariantsList)) ? [...activeColorVariantsList] : [],
         sizes: sizes,
         desc: desc,
         binLocation: binLocation,
@@ -3328,34 +3401,43 @@
       // 1. Save to nc_products
       let prods = [];
       try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+      prods = prods.filter(p => p.id !== prodId);
       prods.unshift(newProd);
-      localStorage.setItem('nc_products', JSON.stringify(prods));
+
+      try {
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+      } catch(err) {
+        console.warn('Storage quota safeguard triggered', err);
+        newProd.images = [newProd.img];
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+      }
 
       // 2. Save to nc_custom_products
       let cust = [];
       try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
+      cust = cust.filter(p => p.id !== prodId);
       cust.unshift(newProd);
-      localStorage.setItem('nc_custom_products', JSON.stringify(cust));
 
-      // Mark demo cleared so only real products show
+      try {
+        localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+      } catch(err) {}
+
       localStorage.setItem('nc_demo_cleared', 'true');
 
-      // Reset form & photo previews
-      if (typeof uploadedPhotoList !== 'undefined') uploadedPhotoList = [];
-      if (typeof updatePhotoSlotsDisplay === 'function') updatePhotoSlotsDisplay();
+      // Clear studio photos and reset form
+      clearSelectedUploadPhoto();
       const form = document.getElementById('ownerAddProductForm');
       if (form) form.reset();
 
       alert(isEn 
-        ? `🎉 Success! New product '${title}' (#${prodId}) is now live on the website!` 
-        : `🎉 অভিনন্দন! নতুন শাড়ি '${title}' (#${prodId}) সফলভাবে ওয়েবসাইটে লাইভ হয়েছে।`);
+        ? `🎉 Success! New product '${title}' (#${prodId}) is now live on the store!`
+        : `🎉 অভিনন্দন! নতুন প্রোডাক্ট '${title}' (#${prodId}) সফলভাবে গ্যালারির ছবি সহ ওয়েবসাইটে লাইভ হয়েছে!`);
 
-      // Switch view to stock tab
-      switchAdminView('stock');
       renderOwnerStock();
+      renderWarehouseOperations();
+      switchAdminView('stock');
     }
 
-    // Reviews
     function renderOwnerReviews() {
       const container = document.getElementById('ownerReviewsContainer');
       if (!container) return;
@@ -3420,63 +3502,6 @@
       a.click();
     }
   
-    // =========================================================
-    // MULTI-PHOTO GALLERY (4-5 PHOTOS AT ONCE) & DYNAMIC SIZING
-    // =========================================================
-    let uploadedPhotoList = []; // Stores Base64 of up to 5 photos
-
-    function handleMultipleAdminPhotos(e) {
-      const files = Array.from(e.target.files).slice(0, 5);
-      if (!files || files.length === 0) return;
-
-      uploadedPhotoList = [];
-      let loadedCount = 0;
-
-      files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          uploadedPhotoList.push(evt.target.result);
-          loadedCount++;
-          if (loadedCount === files.length) {
-            updatePhotoSlotsDisplay();
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function updatePhotoSlotsDisplay() {
-      const slotNames = ['ছবি ১ (কভার)', 'ছবি ২ (আঁচল)', 'ছবি ৩ (পাড় ও কাজ)', 'ছবি ৪ (ব্লাউজ পিস)', 'ছবি ৫ (মডেল লুক)'];
-      const countBadge = document.getElementById('uploadedPhotosCountBadge');
-      if (countBadge) countBadge.textContent = `${uploadedPhotoList.length}/৫টি ছবি যোগ হয়েছে`;
-
-      for (let i = 0; i < 5; i++) {
-        const box = document.getElementById(`slotBox_${i}`);
-        if (!box) continue;
-
-        if (uploadedPhotoList[i]) {
-          box.className = 'photo-slot-box has-img';
-          box.innerHTML = `
-            <img src="${uploadedPhotoList[i]}" alt="Slot ${i+1}">
-            <button type="button" class="btn-remove-slot" onclick="removePhotoSlot(${i}, event)">✕</button>
-          `;
-        } else {
-          box.className = 'photo-slot-box';
-          box.innerHTML = `
-            <i class="fa-solid fa-image" style="color:#64748b; font-size:1.4rem; margin-bottom:4px;"></i>
-            <div class="photo-slot-lbl">${slotNames[i]}</div>
-          `;
-        }
-      }
-    }
-
-    function removePhotoSlot(idx, event) {
-      if (event) event.stopPropagation();
-      uploadedPhotoList.splice(idx, 1);
-      updatePhotoSlotsDisplay();
-    }
-
-    
     // =========================================================
     // EDIT / DELETE PRODUCT & IMAGE MANAGEMENT
     // =========================================================
@@ -3585,7 +3610,7 @@
       if (!container) return;
 
       const preset = CATEGORY_SIZE_PRESETS[catKey] || ['Free Size'];
-      currentSelectedSizes = [...preset]; // By default select all sizes in preset
+      currentSelectedSizes = [...preset];
 
       container.innerHTML = '';
       preset.forEach(sz => {
@@ -3620,44 +3645,48 @@
       if (!currentSelectedSizes.includes(val)) {
         currentSelectedSizes.push(val);
         const container = document.getElementById('dynamicSizeChipsContainer');
-        const id = 'sz_chk_' + val.replace(/[^a-zA-Z0-9]/g, '_');
-        container.innerHTML += `
-          <label class="size-chip-lbl active" id="lbl_${id}">
-            <input type="checkbox" id="${id}" value="${val}" checked onchange="toggleSizeChip(this)">
-            <span>${val}</span>
-          </label>
-        `;
+        if (container) {
+          const id = 'sz_chk_' + val.replace(/[^a-zA-Z0-9]/g, '_');
+          container.innerHTML += `
+            <label class="size-chip-lbl active" id="lbl_${id}">
+              <input type="checkbox" id="${id}" value="${val}" checked onchange="toggleSizeChip(this)">
+              <span>${val}</span>
+            </label>
+          `;
+        }
+        if (inp) inp.value = '';
         updateSelectedSizesNotice();
       }
-      inp.value = '';
     }
 
     function updateSelectedSizesNotice() {
-      const el = document.getElementById('selectedSizesCountNotice');
-      if (el) el.textContent = `${currentSelectedSizes.length}টি সাইজ নির্বাচিত`;
+      const notice = document.getElementById('selectedSizesCountNotice');
+      if (notice) {
+        notice.textContent = `${currentSelectedSizes.length}টি সাইজ অন্তর্ভুক্ত`;
+      }
     }
 
     function calculateDiscountPreview() {
-      const p = parseInt(document.getElementById('op_price').value) || 0;
-      const m = parseInt(document.getElementById('op_mrp').value) || 0;
+      const price = parseInt(document.getElementById('op_price')?.value) || 0;
+      const mrp = parseInt(document.getElementById('op_mrp')?.value) || 0;
       const pill = document.getElementById('priceDiscountPreviewPill');
       if (!pill) return;
 
-      if (p > 0 && m > p) {
-        const offPct = Math.round(((m - p) / m) * 100);
-        const saveRs = m - p;
-        pill.innerHTML = `💰 গ্রাহক ছাড় পাবেন: <strong>${offPct}% OFF</strong> (সাশ্রয়: ₹${saveRs}) • লাভজনক রেট!`;
-        pill.style.display = 'block';
+      if (price > 0 && mrp > price) {
+        const off = Math.round(((mrp - price) / mrp) * 100);
+        pill.innerHTML = `ফ্ল্যাট ${off}% ছাড়`;
+        pill.style.display = 'inline-block';
       } else {
         pill.style.display = 'none';
       }
     }
+
     // Print Owner QR Shipping Label
     function printOwnerQrLabel(orderId) {
       const ord = ordersList.find(o => o.id === orderId);
       if (!ord) return;
       const isEn = (currentAdminLang === 'en');
-      const currentDomain = window.location.href.split('admin.html')[0];
+      const currentDomain = window.location.origin + window.location.pathname.replace('admin.html', '');
       const qrVerificationUrl = `${currentDomain}packaging.html?scan=${ord.id}`;
       const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrVerificationUrl)}`;
 
@@ -3718,50 +3747,109 @@
       }
     }
 
-    // Auto-apply selected language and restore session on page load
+    // ==========================================
+    // IMAGE COMPRESSION & STUDIO PHOTO UPLOAD
+    // ==========================================
     
-    // ==========================================
-    // PHOTO UPLOAD & COLOR STOCK STUDIO LOGIC
-    // ==========================================
-    let uploadedStudioPhoto = '';
-    let activeColorVariantsList = [
-      { name: 'লাল (Red)', code: '#ef4444', qty: 5 },
-      { name: 'রয়্যাল ব্লু (Royal Blue)', code: '#2563eb', qty: 5 },
-      { name: 'হলুদ (Yellow)', code: '#eab308', qty: 5 }
-    ];
 
-    function handleStudioPhotoSelected(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
+    function compressImageFile(file, maxWidth = 800, maxHeight = 800, quality = 0.82) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onerror = () => resolve(null);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = () => resolve(null);
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedStudioPhoto = e.target.result;
-        showPhotoUploadPreview(uploadedStudioPhoto);
-      };
-      reader.readAsDataURL(file);
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            try {
+              const compressed = canvas.toDataURL('image/jpeg', quality);
+              resolve(compressed);
+            } catch(err) {
+              resolve(e.target.result);
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleStudioPhotoSelected(event) {
+      const files = event.target.files ? Array.from(event.target.files).slice(0, 5) : [];
+      if (!files || files.length === 0) return;
+
+      const lbl = document.getElementById('btnChoosePhotoLabel');
+      if (lbl) lbl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>ছবি প্রসেস হচ্ছে...</span>';
+
+      const compressedList = [];
+      for (let i = 0; i < files.length; i++) {
+        const comp = await compressImageFile(files[i]);
+        if (comp) compressedList.push(comp);
+      }
+
+      if (compressedList.length > 0) {
+        uploadedStudioPhoto = compressedList[0];
+        uploadedPhotoList = [...compressedList];
+        showPhotoUploadPreview(compressedList);
+      }
+
+      if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera-rotate"></i> <span>অন্য ছবি বাছাই করুন</span>';
     }
 
     function handleUrlFallbackChange(val) {
       if (val && val.trim()) {
         uploadedStudioPhoto = val.trim();
-        showPhotoUploadPreview(uploadedStudioPhoto);
+        uploadedPhotoList = [val.trim()];
+        showPhotoUploadPreview([val.trim()]);
       }
     }
 
-    function showPhotoUploadPreview(src) {
+    function showPhotoUploadPreview(imgs) {
       const box = document.getElementById('photoUploadPreviewBox');
       const img = document.getElementById('mainUploadPreviewImg');
-      const lbl = document.getElementById('btnChoosePhotoLabel');
-      if (box && img) {
-        img.src = src;
-        box.style.display = 'block';
-        if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera-rotate"></i> <span>অন্য ছবি বাছাই করুন</span>';
+      const strip = document.getElementById('multiUploadThumbnailsStrip');
+      const badge = document.getElementById('uploadSuccessBadge');
+
+      const imgList = Array.isArray(imgs) ? imgs : [imgs];
+      if (!imgList || imgList.length === 0) return;
+
+      if (img) img.src = imgList[0];
+      if (strip) {
+        strip.innerHTML = imgList.map((src, i) => `
+          <img src="${src}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:${i===0?'2px solid #38bdf8':'1px solid #475569'};">
+        `).join('');
       }
+
+      if (badge) {
+        badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${imgList.length}টি ছবি সফলভাবে প্রস্তুত (আপনার ছবিই লাইভ হবে)`;
+      }
+
+      if (box) box.style.display = 'block';
     }
 
     function clearSelectedUploadPhoto() {
       uploadedStudioPhoto = '';
+      uploadedPhotoList = [];
       const box = document.getElementById('photoUploadPreviewBox');
       const fileInp = document.getElementById('op_photo_file');
       const urlInp = document.getElementById('op_img_url_fallback');
@@ -3769,8 +3857,98 @@
       if (box) box.style.display = 'none';
       if (fileInp) fileInp.value = '';
       if (urlInp) urlInp.value = '';
-      if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন</span>';
+      if (lbl) lbl.innerHTML = '<i class="fa-solid fa-camera"></i> <span>গ্যালারি / ক্যামেরা থেকে ছবি বাছুন (১ বা একাধিক)</span>';
     }
+
+    async function handleReplaceProductImageFile(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file || !currentEditingProductId) return;
+
+      const comp = await compressImageFile(file);
+      if (!comp) return;
+
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(err) {}
+
+      const idx = prods.findIndex(p => p.id === currentEditingProductId);
+      if (idx !== -1) {
+        prods[idx].img = comp;
+        if (prods[idx].images && prods[idx].images.length > 0) {
+          prods[idx].images[0] = comp;
+        } else {
+          prods[idx].images = [comp];
+        }
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+
+        let cust = [];
+        try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(err) {}
+        const cIdx = cust.findIndex(p => p.id === currentEditingProductId);
+        if (cIdx !== -1) {
+          cust[cIdx].img = comp;
+          if (cust[cIdx].images && cust[cIdx].images.length > 0) cust[cIdx].images[0] = comp;
+          else cust[cIdx].images = [comp];
+          localStorage.setItem('nc_custom_products', JSON.stringify(cust));
+        }
+
+        const prevImg = document.getElementById('editImagePreview');
+        if (prevImg) prevImg.src = comp;
+
+        alert('✅ প্রোডাক্টের ছবি সফলভাবে পরিবর্তন করা হয়েছে!');
+        renderOwnerStock();
+        renderWarehouseOperations();
+      }
+    }
+
+    function openEditImageModal(prodId) {
+      currentEditingProductId = prodId;
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+      const p = prods.find(pr => pr.id === prodId);
+      if (!p) {
+        alert('প্রোডাক্ট পাওয়া যায়নি!');
+        return;
+      }
+      const tEl = document.getElementById('editImageProdTitle');
+      if (tEl) tEl.textContent = p.title;
+      const iEl = document.getElementById('editImageProdId');
+      if (iEl) iEl.textContent = '#' + p.id;
+      const pEl = document.getElementById('editImagePreview');
+      if (pEl) pEl.src = p.img || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';
+      const m = document.getElementById('editProductImageModal');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeEditImageModal() {
+      const m = document.getElementById('editProductImageModal');
+      if (m) m.style.display = 'none';
+      currentEditingProductId = null;
+    }
+
+    function removeProductImageOnly() {
+      if (!currentEditingProductId) return;
+      if (!confirm('আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটির ছবি মুছে ডিফল্ট ছবি করতে চান?')) return;
+      let prods = [];
+      try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+      const idx = prods.findIndex(p => p.id === currentEditingProductId);
+      if (idx !== -1) {
+        prods[idx].img = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600';
+        prods[idx].images = [prods[idx].img];
+        localStorage.setItem('nc_products', JSON.stringify(prods));
+        alert('✅ ছবিটি সফলভাবে রিসেট করা হয়েছে!');
+        closeEditImageModal();
+        renderOwnerStock();
+        renderWarehouseOperations();
+      }
+    }
+
+    // ==========================================
+    // COLOR VARIANTS & STOCK MANAGEMENT
+    // ==========================================
+    let activeColorVariantsList = [
+      { name: 'লাল (Red)', code: '#ef4444', qty: 5 },
+      { name: 'রয়্যাল ব্লু (Royal Blue)', code: '#2563eb', qty: 5 },
+      { name: 'হলুদ (Mustard Yellow)', code: '#eab308', qty: 5 }
+    ];
 
     function addColorVariantPreset(name, code) {
       const exists = activeColorVariantsList.find(c => c.name.toLowerCase() === name.toLowerCase());
@@ -3797,7 +3975,7 @@
 
     function removeColorVariant(idx) {
       if (activeColorVariantsList.length <= 1) {
-        alert('অন্তত একটি রঙের তথ্য রাখা আবশ্যক!');
+        alert('অন্তত একটি রঙের ভ্যারিয়েন্ট থাকা আবশ্যক!');
         return;
       }
       activeColorVariantsList.splice(idx, 1);
@@ -3819,10 +3997,9 @@
     }
 
     function updateTotalColorStockBadge() {
-      const badge = document.getElementById('activeTotalColorStockBadge');
-      if (!badge) return;
       const total = activeColorVariantsList.reduce((acc, c) => acc + (c.qty || 0), 0);
-      badge.textContent = `মোট স্টক: ${total} পিস`;
+      const badge = document.getElementById('activeTotalColorStockBadge');
+      if (badge) badge.textContent = `মোট স্টক: ${total} পিস`;
     }
 
     function renderActiveColorStockList() {
@@ -3837,17 +4014,17 @@
           </div>
 
           <div style="display:flex; align-items:center; gap:6px;">
-            <button type="button" onclick="adjustColorQty(${idx}, -1)" style="width:28px; height:28px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">-</button>
-            <input type="number" min="0" value="${c.qty || 0}" oninput="updateColorQtyDirect(${idx}, this.value)" style="width:50px; text-align:center; background:#090d16; border:1.5px solid #4f46e5; color:#fde047; font-weight:800; font-size:0.9rem; border-radius:6px; padding:3px 0; outline:none;">
-            <span style="font-size:0.75rem; color:#94a3b8;">পিস</span>
-            <button type="button" onclick="adjustColorQty(${idx}, 1)" style="width:28px; height:28px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">+</button>
-            <button type="button" onclick="removeColorVariant(${idx})" title="মুছুন" style="background:transparent; border:none; color:#ef4444; font-size:0.9rem; margin-left:6px; cursor:pointer;">✕</button>
+            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, -1)">-</button>
+            <input type="number" min="0" value="${c.qty || 0}" style="width:50px; text-align:center; background:#1e293b; border:1px solid #475569; color:#fde047; font-weight:800; border-radius:6px; padding:4px; font-size:0.85rem;" onchange="updateColorQtyDirect(${idx}, this.value)">
+            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, 1)">+</button>
+            <button type="button" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:4px 6px;" onclick="removeColorVariant(${idx})">✕</button>
           </div>
         </div>
       `).join('');
 
       updateTotalColorStockBadge();
     }
+
     // Modal Edit Color Stock for Existing Products
     let currentModalEditingProdId = null;
     let currentModalColors = [];
@@ -3857,19 +4034,21 @@
       let prods = [];
       try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e){}
 
-      const p = prods.find(pr => pr.id === prodId);
-      if (!p) return;
+      const p = prods.find(item => item.id === prodId);
+      if (!p) {
+        alert('প্রোডাক্ট পাওয়া যায়নি!');
+        return;
+      }
 
       document.getElementById('modalEditColorProdTitle').textContent = p.title;
       document.getElementById('modalEditColorProdId').textContent = '#' + p.id;
-      document.getElementById('modalEditColorProdImg').src = p.img || 'logo.png';
+      document.getElementById('modalEditColorProdImg').src = p.img || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';
 
       if (p.colors && Array.isArray(p.colors) && p.colors.length > 0) {
         currentModalColors = JSON.parse(JSON.stringify(p.colors));
       } else {
         currentModalColors = [
-          { name: 'লাল (Red)', code: '#ef4444', qty: Math.ceil((p.stock || 20) / 2) },
-          { name: 'রয়্যাল ব্লু (Royal Blue)', code: '#2563eb', qty: Math.floor((p.stock || 20) / 2) }
+          { name: 'স্ট্যান্ডার্ড কালার (Standard)', code: '#a855f7', qty: p.stock || 10 }
         ];
       }
 
@@ -3880,28 +4059,28 @@
     function closeEditColorStockModal() {
       document.getElementById('editColorStockModal').style.display = 'none';
       currentModalEditingProdId = null;
+      currentModalColors = [];
     }
 
     function renderModalColorsRows() {
       const container = document.getElementById('modalColorsContainer');
-      const totalEl = document.getElementById('modalEditColorTotalStock');
       if (!container) return;
 
       const total = currentModalColors.reduce((acc, c) => acc + (c.qty || 0), 0);
-      if (totalEl) totalEl.textContent = `মোট স্টক: ${total} পিস`;
+      document.getElementById('modalEditColorTotalStock').textContent = `মোট স্টক: ${total} পিস`;
 
       container.innerHTML = currentModalColors.map((c, idx) => `
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0b0f19; padding:8px 12px; border-radius:10px; border:1px solid #1f2937;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${c.code || '#a855f7'}; border:1px solid #cbd5e1;"></span>
+            <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:${c.code || '#a855f7'}; border:1px solid #cbd5e1; flex-shrink:0;"></span>
             <span style="font-size:0.85rem; font-weight:800; color:#fff;">${c.name}</span>
           </div>
 
           <div style="display:flex; align-items:center; gap:6px;">
-            <button type="button" onclick="adjustModalColorQty(${idx}, -1)" style="width:26px; height:26px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">-</button>
-            <input type="number" min="0" value="${c.qty || 0}" oninput="updateModalColorQtyDirect(${idx}, this.value)" style="width:48px; text-align:center; background:#090d16; border:1.5px solid #4f46e5; color:#fde047; font-weight:800; font-size:0.85rem; border-radius:6px; padding:2px 0; outline:none;">
-            <button type="button" onclick="adjustModalColorQty(${idx}, 1)" style="width:26px; height:26px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #334155; font-weight:800; cursor:pointer;">+</button>
-            <button type="button" onclick="removeModalColor(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; margin-left:4px;">✕</button>
+            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustModalColorQty(${idx}, -1)">-</button>
+            <input type="number" min="0" value="${c.qty || 0}" style="width:50px; text-align:center; background:#1e293b; border:1px solid #475569; color:#fde047; font-weight:800; border-radius:6px; padding:4px; font-size:0.85rem;" onchange="updateModalColorQtyDirect(${idx}, this.value)">
+            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustModalColorQty(${idx}, 1)">+</button>
+            <button type="button" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:4px 6px;" onclick="removeModalColor(${idx})">✕</button>
           </div>
         </div>
       `).join('');
@@ -3923,7 +4102,7 @@
 
     function removeModalColor(idx) {
       if (currentModalColors.length <= 1) {
-        alert('অন্তত একটি রঙের তথ্য থাকা দরকার!');
+        alert('অন্তত একটি কালার স্টক থাকা আবশ্যক!');
         return;
       }
       currentModalColors.splice(idx, 1);
@@ -3934,29 +4113,40 @@
       const inp = document.getElementById('modalNewColorInput');
       const val = inp ? inp.value.trim() : '';
       if (!val) return;
-      currentModalColors.push({ name: val, code: '#38bdf8', qty: 5 });
-      inp.value = '';
+
+      currentModalColors.push({ name: val, code: '#a855f7', qty: 5 });
+      if (inp) inp.value = '';
       renderModalColorsRows();
     }
 
     function saveModalColorStock() {
       if (!currentModalEditingProdId) return;
+
       let prods = [];
       try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e){}
 
-      const idx = prods.findIndex(pr => pr.id === currentModalEditingProdId);
+      const idx = prods.findIndex(p => p.id === currentModalEditingProdId);
       if (idx !== -1) {
-        prods[idx].colors = currentModalColors;
-        prods[idx].stock = currentModalColors.reduce((acc, c) => acc + (c.qty || 0), 0);
-        prods[idx].inStock = prods[idx].stock > 0;
+        prods[idx].colors = JSON.parse(JSON.stringify(currentModalColors));
+        const total = currentModalColors.reduce((acc, c) => acc + (c.qty || 0), 0);
+        prods[idx].stock = total;
+        prods[idx].inStock = total > 0;
         localStorage.setItem('nc_products', JSON.stringify(prods));
 
+        if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+          CloudSync.saveProduct(prods[idx]);
+        }
+
+        alert(`🎉 প্রোডাক্ট #${currentModalEditingProdId}-এর কালার-ভিত্তিক স্টক সফলভাবে আপডেট করা হয়েছে!`);
         closeEditColorStockModal();
         renderOwnerStock();
-        alert('✅ কালার ও স্টক সফলভাবে আপডেট হয়েছে!');
+        renderWarehouseOperations();
       }
     }
 
+    // ==========================================
+    // ADMIN DASHBOARD INITIALIZATION
+    // ==========================================
     function initAdminDashboard() {
       try {
         if (typeof setAdminLanguage === 'function') {
@@ -3971,9 +4161,30 @@
       } catch(e) { console.error('Error in loadCustomBanner:', e); }
 
       try {
+        if (typeof renderActiveColorStockList === 'function') {
+          renderActiveColorStockList();
+        }
+      } catch(e) {}
+
+      try {
         const isUnlocked = (sessionStorage.getItem('nc_owner_unlocked') === 'true');
         const isPinDisabled = (localStorage.getItem('nc_pin_disabled') === 'true');
-        if (isUnlocked || isPinDisabled) {
+        // Start Cloud Firestore Realtime Sync
+      try {
+        if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+          CloudSync.syncOrders((liveOrders) => {
+            ordersList = liveOrders;
+            renderFinanceOverview();
+            renderOwnerOrders();
+          });
+          CloudSync.syncProducts((liveProducts) => {
+            renderOwnerStock();
+            renderWarehouseOperations();
+          });
+        }
+      } catch(e) {}
+
+      if (isUnlocked || isPinDisabled) {
           bypassPinDirect();
         } else {
           const modal = document.getElementById('pinLockModal');
@@ -3986,9 +4197,9 @@
 
     window.addEventListener('DOMContentLoaded', initAdminDashboard);
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      renderActiveColorStockList();
-    initAdminDashboard();
+      initAdminDashboard();
     }
+
 </script>
 </body>
 </html>
