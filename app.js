@@ -4146,7 +4146,7 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       const cvSection = document.getElementById('pdpColorSection');
       const cvBadge = document.getElementById('pdpSelectedColorNameBadge');
 
-      const variants = p.colorVariants && p.colorVariants.length > 0 ? p.colorVariants : [
+      const variants = (p.colorVariants && p.colorVariants.length > 0) ? p.colorVariants : [
         { img: p.img, colorName: 'মূল কালার' },
         ...(p.subImages || []).map((img, idx) => ({ img, colorName: `কালার ${idx + 2}` }))
       ];
@@ -4154,16 +4154,21 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
       if (cvStrip && variants.length > 1) {
         cvStrip.innerHTML = '';
         variants.forEach((v, idx) => {
-          const isActive = idx === 0 ? 'border:2px solid var(--primary); box-shadow:0 0 6px rgba(156,39,176,0.4);' : 'border:1.5px solid #cbd5e1;';
+          const isAct = (idx === 0);
+          const vImg = v.img || p.img;
+          const vName = v.colorName || v.name || `কালার ${idx + 1}`;
           cvStrip.innerHTML += `
-            <div onclick="selectPdpColorVariant('${v.img}', '${v.colorName}', this)" style="display:flex; flex-direction:column; align-items:center; cursor:pointer; flex-shrink:0;">
-              <img src="${v.img}" style="width:54px; height:54px; border-radius:8px; object-fit:cover; ${isActive}">
-              <span style="font-size:0.65rem; font-weight:700; color:#334155; margin-top:3px; max-width:58px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${v.colorName}</span>
+            <div class="pdp-color-card ${isAct ? 'active' : ''}" 
+                 onclick="selectPdpColorVariant('${vImg}', '${vName}', this)" 
+                 style="display:flex; flex-direction:column; align-items:center; cursor:pointer; flex-shrink:0; width:58px; height:82px; border-radius:10px; border:${isAct ? '2px solid #0f172a' : '1.5px solid #cbd5e1'}; overflow:hidden; box-shadow:${isAct ? '0 2px 8px rgba(0,0,0,0.18)' : 'none'}; background:#ffffff; transition:all 0.2s;">
+              <img src="${vImg}" alt="${vName}" style="width:100%; height:100%; object-fit:cover; display:block;">
             </div>
           `;
         });
-        if (cvBadge) cvBadge.textContent = variants[0].colorName;
-        selectedPdpColor = variants[0].colorName;
+        const firstColorName = variants[0].colorName || variants[0].name || 'Chiku';
+        if (cvBadge) cvBadge.textContent = firstColorName;
+        selectedPdpColor = firstColorName;
+        selectedPdpColorImg = variants[0].img || p.img;
         if (cvSection) cvSection.style.display = 'block';
       } else if (cvSection) {
         cvSection.style.display = 'none';
@@ -6185,23 +6190,21 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
     function selectPdpColorVariant(imgSrc, colorName, el) {
       selectedPdpColor = colorName;
       selectedPdpColorImg = imgSrc;
-      document.getElementById('pdpMainImg').src = imgSrc;
+      const mainImg = document.getElementById('pdpMainImg');
+      if (mainImg) mainImg.src = imgSrc;
       const cvBadge = document.getElementById('pdpSelectedColorNameBadge');
       if (cvBadge) cvBadge.textContent = colorName;
       
       const strip = document.getElementById('pdpColorVariantsStrip');
       if (strip) {
-        strip.querySelectorAll('img').forEach(im => {
-          im.style.border = '1.5px solid #cbd5e1';
-          im.style.boxShadow = 'none';
+        strip.querySelectorAll('.pdp-color-card').forEach(card => {
+          card.style.border = '1.5px solid #cbd5e1';
+          card.style.boxShadow = 'none';
         });
       }
       if (el) {
-        const im = el.querySelector('img');
-        if (im) {
-          im.style.border = '2px solid var(--primary)';
-          im.style.boxShadow = '0 0 8px rgba(156,39,176,0.4)';
-        }
+        el.style.border = '2px solid #0f172a';
+        el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
       }
     }
 
@@ -6445,3 +6448,77 @@ ${isSuperCoinsApplied && appliedCoinsCount > 0 ? `• 🪙 সুপারকয়
 
 
     // ADMIN ORDERS FILTER CONTROLLER
+
+
+// ==========================================
+// SMART APP SERVICES HANDLERS (ফিচার ২০১-৩০০)
+// ==========================================
+function openCustomerLiveShop() {
+  const modal = document.getElementById('modalLiveShopping');
+  if (modal) modal.style.display = 'flex';
+}
+
+function openCustomerTryAtHome() {
+  const modal = document.getElementById('modalTryAtHome');
+  if (modal) modal.style.display = 'flex';
+}
+
+function openCustomerRentals() {
+  alert('🥻 ব্রাইডাল শাড়ি রেন্টাল (২২১):\nবিয়ের ভারী বেনারসি ও লেহেঙ্গা ৩ বা ৫ দিনের ভাড়ার বুকিং শীঘ্রই শুরু হচ্ছে!');
+}
+
+function openCustomerBridalStudio() {
+  alert('👰 ব্রাইডাল স্টুডিও ও ট্রুসো প্ল্যানার (২৫১):\nবিয়ের হলুদ, মেহেন্দি, বিয়ে ও বউভাতের সম্পূর্ণ শাড়ির ম্যাচিং প্যাকেজ প্রস্তুত আছে!');
+}
+
+function triggerBanglaVoiceSearch() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('🎤 ভয়েস সার্চ (২৩১):\nআপনার ব্রাউজারে স্পিচ রিকগনিশন সক্রিয় নেই। অনুগ্রহ করে সার্চ বারে টাইপ করুন।');
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'bn-IN';
+  recognition.onstart = function() {
+    alert('🎙️ শুনছি... মুখে বলুন (যেমন: "জামদানি শাড়ি" বা "কুর্তি")');
+  };
+  recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    alert(`✓ আপনি বলেছেন: "${transcript}"\nএখন শাড়ি খোঁজা হচ্ছে...`);
+    const searchInput = document.getElementById('globalSearchInput');
+    if (searchInput) {
+      searchInput.value = transcript;
+      if (typeof handleGlobalSearch === 'function') handleGlobalSearch(transcript);
+    }
+  };
+  recognition.onerror = function() {
+    alert('ভয়েস শনাক্ত করা যায়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন।');
+  };
+  try {
+    recognition.start();
+  } catch(e) {
+    alert('🎤 ভয়েস সার্চ প্রস্তুত!');
+  }
+}
+
+function openDailyRewardsModal() {
+  alert('🎁 ডেইলি রিওয়ার্ড ও কয়েন (২৬১):\nঅভিনন্দন! আজকের ডেইলি চেক-ইন বোনাস +১০ কয়েন আপনার অ্যাকাউন্টে জমা হয়েছে!');
+}
+
+function openCustomerVipClub() {
+  alert('👑 নিশা ক্রিয়েশনস ভিআইপি ক্লাব (২৬৩):\nআপনি বর্তমানে সিলভার মেম্বার! আর মাত্র ২টি অর্ডার করলেই পাবেন ফ্রি এক্সপ্রেস শিপিং ও গোল্ড প্রিভিলেজ!');
+}
+
+function closeCustomerModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.style.display = 'none';
+}
+
+function buyCurrentLiveProduct() {
+  closeCustomerModal('modalLiveShopping');
+  if (typeof openPdp === 'function' && typeof products !== 'undefined' && products.length > 0) {
+    openPdp(products[0].id);
+  } else {
+    alert('লাইভ প্রোডাক্ট অর্ডারের জন্য কার্টে যোগ হয়েছে!');
+  }
+}

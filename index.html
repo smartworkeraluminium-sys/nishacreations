@@ -179,6 +179,99 @@
       </div>
     </div>
 
+    
+    <!-- =========================================================================
+         মোবাইল অ্যাপ-আইকন লঞ্চপ্যাড (Mobile App Services Launchpad)
+         মার্জিত ও মিনিমালিস্ট স্টাইল (বেশি চড়া রঙ নয়, পেশাদার ও পরিষ্কার অ্যাপ লুক)
+         ========================================================================= -->
+    <div class="mobile-app-launchpad" style="margin:12px 14px 16px 14px; background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:14px 10px; box-shadow:0 4px 14px rgba(15,23,42,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:0 4px;">
+        <span style="font-size:0.85rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-shapes" style="color:var(--primary); font-size:0.9rem;"></i>
+          <span>স্মার্ট অ্যাপ সার্ভিসেস (Smart App Hub)</span>
+        </span>
+        <span style="font-size:0.7rem; color:#64748b; font-weight:700;">বাংলা ও English</span>
+      </div>
+
+      <!-- 4x2 Grid of Rounded App Cards -->
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; text-align:center;">
+        
+        <!-- 1. Live Commerce -->
+        <div onclick="openCustomerLiveShop()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#fef2f2; border:1px solid #fecaca; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(239,68,68,0.12); position:relative;">
+            <i class="fa-solid fa-video"></i>
+            <span style="position:absolute; top:-3px; right:-3px; background:#ef4444; color:#fff; font-size:0.55rem; font-weight:800; padding:1px 4px; border-radius:6px;">LIVE</span>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">লাইভ শপ</span>
+          <span style="font-size:0.58rem; color:#64748b;">Live Stream</span>
+        </div>
+
+        <!-- 2. Try at Home -->
+        <div onclick="openCustomerTryAtHome()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#eff6ff; border:1px solid #bfdbfe; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(37,99,235,0.12);">
+            <i class="fa-solid fa-shirt"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ট্রাই হোম</span>
+          <span style="font-size:0.58rem; color:#64748b;">Try at Home</span>
+        </div>
+
+        <!-- 3. Saree Rentals -->
+        <div onclick="openCustomerRentals()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#fdf4ff; border:1px solid #f5d0fe; color:#9333ea; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(147,51,234,0.12);">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">শাড়ি রেন্টাল</span>
+          <span style="font-size:0.58rem; color:#64748b;">Rentals</span>
+        </div>
+
+        <!-- 4. Bridal Studio -->
+        <div onclick="openCustomerBridalStudio()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#fff1f2; border:1px solid #fecdd3; color:#e11d48; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(225,29,72,0.12);">
+            <i class="fa-solid fa-gem"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ব্রাইডাল হাব</span>
+          <span style="font-size:0.58rem; color:#64748b;">Bridal Hub</span>
+        </div>
+
+        <!-- 5. Voice Search -->
+        <div onclick="triggerBanglaVoiceSearch()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#fff7ed; border:1px solid #fed7aa; color:#ea580c; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(234,88,12,0.12);">
+            <i class="fa-solid fa-microphone-lines"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ভয়েস সার্চ</span>
+          <span style="font-size:0.58rem; color:#64748b;">Voice AI</span>
+        </div>
+
+        <!-- 6. Daily Rewards -->
+        <div onclick="openDailyRewardsModal()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#fefce8; border:1px solid #fef08a; color:#ca8a04; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(202,138,4,0.12);">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ডেইলি কয়েন</span>
+          <span style="font-size:0.58rem; color:#64748b;">Rewards</span>
+        </div>
+
+        <!-- 7. Live Order Tracking -->
+        <div onclick="showScreen('orders')" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(22,163,74,0.12);">
+            <i class="fa-solid fa-truck-fast"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">লাইভ ট্র্যাক</span>
+          <span style="font-size:0.58rem; color:#64748b;">Track Order</span>
+        </div>
+
+        <!-- 8. VIP Club -->
+        <div onclick="openCustomerVipClub()" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; margin-top:4px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#f8fafc; border:1px solid #cbd5e1; color:#475569; display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin-bottom:4px; box-shadow:0 2px 6px rgba(71,85,105,0.12);">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <span style="font-size:0.72rem; font-weight:800; color:#1e293b; line-height:1.2;">ভিআইপি ক্লাব</span>
+          <span style="font-size:0.58rem; color:#64748b;">VIP Club</span>
+        </div>
+
+      </div>
+    </div>
+
     <!-- 2. Urgency 2-Hour Flash Sale Countdown Banner (ঘড়ির টিকটিক ও অফার শেষ স্ট্যাটাস সহ) -->
     <div class="urgency-countdown-banner" id="flashSaleBannerContainer">
       <div class="countdown-top-row">
@@ -453,19 +546,29 @@
         </button>
       </div>
 
-      <!-- Color Variants Selection (কালার ভেরিয়েন্ট) -->
-      <div class="pdp-color-section" id="pdpColorSection" style="margin:10px 0;">
-        <div class="pdp-section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-weight:700; font-size:0.82rem; color:#0f172a;" id="t-pdpSelectColorLbl">
-            🎨 কালার ভেরিয়েন্ট (Select Color):
-          </span>
-          <span id="pdpSelectedColorNameBadge" style="font-size:0.72rem; font-weight:800; color:var(--primary); background:#fdf4ff; border:1px solid #f0abfc; padding:2px 8px; border-radius:12px;">
-            মূল কালার
-          </span>
+      <!-- Color Variants Selection (ফটো সহ কালার ভ্যারিয়েন্ট) -->
+      <div class="pdp-color-section" id="pdpColorSection" style="margin:14px 0 10px 0;">
+        <div class="pdp-section-header" style="display:flex; align-items:baseline; gap:6px; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:0.88rem; color:#0f172a;" id="t-pdpSelectColorLbl">Selected Color:</span>
+          <span id="pdpSelectedColorNameBadge" style="font-size:0.92rem; font-weight:800; color:#0f172a;">মূল কালার</span>
         </div>
-        <div class="color-variants-strip" id="pdpColorVariantsStrip" style="display:flex; gap:8px; overflow-x:auto; padding:4px 0;">
+        <div class="color-variants-strip" id="pdpColorVariantsStrip" style="display:flex; gap:10px; overflow-x:auto; padding:4px 0; scrollbar-width:none;">
+          <!-- Dynamically populated vertical photo cards -->
+        </div>
+      </div>
+
+      <!-- 4. Size Selection (সাইজ ও সাইজ চার্ট) -->
+      <div class="pdp-size-section" style="margin:12px 0;">
+        <div class="pdp-section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:0.88rem; color:#0f172a;" id="t-pdpSelectSizeLbl">Select Size</span>
+          <button type="button" id="btnPdpSizeGuide" onclick="openSizeGuideModal()" style="background:none; border:none; color:#2563eb; font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:none; padding:2px 4px;">
+            Size Chart
+          </button>
+        </div>
+        <div class="size-btn-group" id="pdpSizeBtnGroup">
           <!-- Populated by JavaScript -->
         </div>
+        <div id="pdpCustomSizeNote" style="display:none; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:6px 10px; margin-top:8px; font-size:0.72rem; color:#475569;"></div>
       </div>
       <!-- 4. Size Selection (Nisha Creations Image 4) -->
       <div class="pdp-size-section">
@@ -563,19 +666,18 @@
     </div>
 
     <!-- Sticky Bottom Buy Bar -->
-    <div class="pdp-sticky-bar">
-      <button class="btn-wa-direct" onclick="orderCurrentOnWhatsApp()" title="Direct WhatsApp Order">
+    <div class="pdp-sticky-bar" style="position:fixed; bottom:0; left:0; right:0; height:62px; background:#ffffff; border-top:1px solid #e2e8f0; display:flex; align-items:center; padding:0 14px; gap:10px; z-index:100; box-shadow:0 -4px 14px rgba(0,0,0,0.06);">
+      <button class="btn-wa-direct" onclick="orderCurrentOnWhatsApp()" title="Direct WhatsApp Order" style="width:44px; height:44px; background:#25d366; color:#fff; border-radius:10px; border:none; font-size:1.3rem; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
         <i class="fa-brands fa-whatsapp"></i>
       </button>
-      <button class="btn-add-cart" onclick="addCurrentToCart()" id="btnPdpAddCart">
-        <i class="fa-solid fa-cart-plus"></i> <span id="t-btnPdpAddCart">কার্টে রাখুন</span>
+      <button class="btn-add-cart" onclick="addCurrentToCart()" id="btnPdpAddCart" style="flex:1; height:46px; border:1.5px solid #cbd5e1; background:#ffffff; color:#0f172a; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+        <i class="fa-solid fa-cart-shopping"></i> <span id="t-btnPdpAddCart">কার্টে যোগ করুন</span>
       </button>
-      <button class="btn-buy-now" onclick="buyCurrentNow()" id="btnPdpBuyNow">
+      <button class="btn-buy-now" onclick="buyCurrentNow()" id="btnPdpBuyNow" style="flex:1.2; height:46px; background:#ffc200; color:#111827; border:none; border-radius:10px; font-weight:800; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(255,194,0,0.35);">
         <i class="fa-solid fa-bolt"></i> <span id="t-btnPdpBuyNow">এখনই কিনুন</span>
       </button>
     </div>
   </div>
-
   <!-- ================= 5. MY ORDERS & LIVE TRACKING (Like Nisha Creations Image 23 & 24) ================= -->
   <div id="screen-orders" class="screen-view nisha-orders-container" style="padding:12px 14px 75px 14px; max-width:540px; margin:0 auto;">
     <!-- Nisha Creations Style Top Header (ছবি 1 ও 2) -->
@@ -1549,133 +1651,6 @@
     </div>
   </div>
 
-
-  <!-- ================= SIZE GUIDE MODAL (সাইজ চার্ট ও মাপের নির্দেশিকা) ================= -->
-  <div id="sizeGuideModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); z-index:9999; align-items:center; justify-content:center; padding:12px;">
-    <div style="background:#ffffff; border-radius:16px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 25px -5px rgba(0,0,0,0.25); display:flex; flex-direction:column;">
-            <!-- Modal Header -->
-      <div style="padding:16px 18px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; display:flex; justify-content:space-between; align-items:center;">
-        <div style="font-size:1rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span id="t-authModalTitle">কাস্টমার ওটিপি লগইন</span>
-        </div>
-        <button type="button" onclick="closeCustomerAuthModal()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Close"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <!-- STEP 1: Phone Number Input (মোবাইল নম্বর ও ওটিপি রিকোয়েস্ট) -->
-      <div id="otpStepPhoneSection" style="padding:20px;">
-        <div style="text-align:center; margin-bottom:16px;">
-          <div style="width:52px; height:52px; border-radius:50%; background:#fdf4ff; color:var(--primary); font-size:1.6rem; display:inline-flex; align-items:center; justify-content:center; margin-bottom:8px; border:2px solid #f0abfc;">
-            <i class="fa-solid fa-mobile-screen-button"></i>
-          </div>
-          <div style="font-size:1rem; font-weight:800; color:#0f172a;" id="t-otpPhoneHeading">মোবাইল নম্বর লিখুন</div>
-          <div style="font-size:0.75rem; color:#64748b; margin-top:4px;" id="t-otpPhoneSub">আপনার ১০ ডিজিটের মোবাইল নম্বরে ৪-সংখ্যার ওটিপি পাঠানো হবে</div>
-        </div>
-
-        <div style="margin-bottom:16px;">
-          <label style="font-size:0.8rem; font-weight:800; color:#334155; display:block; margin-bottom:6px;" id="t-authLblPhone">
-            মোবাইল নম্বর (১০ ডিজিট) *
-          </label>
-          <div style="display:flex; align-items:center; border:2px solid #cbd5e1; border-radius:12px; overflow:hidden; background:#fff;" id="otpPhoneWrap">
-            <span style="background:#f8fafc; padding:12px 14px; font-weight:800; font-size:0.95rem; color:#475569; border-right:1.5px solid #e2e8f0;">+91</span>
-            <input type="tel" id="auth_phone" maxlength="10" placeholder="যেমন: 9832100000" style="width:100%; border:none; padding:12px 14px; font-size:1.05rem; font-weight:800; letter-spacing:1px; outline:none; color:#0f172a;">
-          </div>
-        </div>
-
-        <button type="button" onclick="sendCustomerOtp()" id="btnSendOtp" style="width:100%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:13px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(147,51,234,0.35);">
-          <i class="fa-solid fa-paper-plane"></i> <span id="t-btnSendOtpText">ওটিপি কোড পাঠান</span>
-        </button>
-
-        <div style="margin-top:14px; text-align:center; font-size:0.72rem; color:#64748b; display:flex; align-items:center; justify-content:center; gap:6px;">
-          <i class="fa-solid fa-lock" style="color:#10b981;"></i> <span id="t-otpSecurityNotice">১০০% নিরাপদ ও কোনো পাসওয়ার্ড মনে রাখার প্রয়োজন নেই</span>
-        </div>
-      </div>
-
-      <!-- STEP 2: OTP Verification & Profile Info (ওটিপি যাচাই ও প্রোফাইল নিশ্চিতকরণ) -->
-      <div id="otpStepVerifySection" style="display:none; padding:20px;">
-        
-        <!-- Live Alert Notification of OTP (ওটিপি প্রাপ্তি সহজ করার জন্য লাইভ ব্যানার) -->
-        <div id="otpLiveNotificationBanner" style="background:linear-gradient(135deg, #0f172a, #1e293b); color:#fff; border-radius:14px; padding:12px 14px; margin-bottom:14px; border:1.5px solid #6366f1; box-shadow:0 4px 15px rgba(0,0,0,0.25);">
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#94a3b8;">
-            <span><i class="fa-solid fa-comment-sms" style="color:#818cf8;"></i> <span id="t-otpSmsAlertTitle">SMS Alert • Nisha Creations</span></span>
-            <span id="t-otpSmsTime" style="background:#3730a3; color:#c7d2fe; font-size:0.65rem; padding:2px 6px; border-radius:6px;">সবেমাত্র পাঠানো হয়েছে</span>
-          </div>
-          <div style="font-size:0.85rem; font-weight:700; margin-top:6px; color:#f8fafc;">
-            <span id="t-otpLiveOtpLabel">আপনার লগইন ওটিপি কোড:</span> <span id="liveOtpDisplayCode" style="font-size:1.25rem; font-weight:900; color:#fde047; letter-spacing:4px; background:rgba(253,224,71,0.15); padding:2px 8px; border-radius:6px; border:1px dashed #fde047; display:inline-block; margin-left:4px;">1234</span>
-          </div>
-        </div>
-
-        <div style="text-align:center; margin-bottom:12px;">
-          <div style="font-size:0.82rem; font-weight:700; color:#475569;">
-            <span id="t-otpSentToTextPre">নম্বরে ওটিপি পাঠানো হয়েছে:</span> <span id="displaySentToPhone" style="color:var(--primary); font-weight:800;">+91 9641405426</span>
-          </div>
-          <button type="button" onclick="backToPhoneStep()" style="background:none; border:none; color:var(--primary); font-size:0.74rem; font-weight:800; cursor:pointer; margin-top:3px; text-decoration:underline;" id="t-btnChangePhone">
-            ← নম্বর পরিবর্তন করুন
-          </button>
-        </div>
-
-        <!-- 4-Digit OTP Inputs -->
-        <div style="margin-bottom:14px;">
-          <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:6px; text-align:center;" id="t-lblEnterOtp">
-            ৪ ডিজিটের ওটিপি লিখুন *
-          </label>
-          <div style="display:flex; justify-content:center; gap:10px;">
-            <input type="tel" id="otp_box_1" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(1)" onkeydown="handleOtpBoxKey(event, 1)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
-            <input type="tel" id="otp_box_2" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(2)" onkeydown="handleOtpBoxKey(event, 2)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
-            <input type="tel" id="otp_box_3" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(3)" onkeydown="handleOtpBoxKey(event, 3)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
-            <input type="tel" id="otp_box_4" maxlength="1" class="otp-box" oninput="handleOtpBoxInput(4)" onkeydown="handleOtpBoxKey(event, 4)" style="width:48px; height:50px; text-align:center; font-size:1.4rem; font-weight:900; border:2px solid #cbd5e1; border-radius:12px; outline:none; color:#0f172a; background:#f8fafc;">
-          </div>
-          
-          <!-- One Tap Auto-Fill Button -->
-          <div style="text-align:center; margin-top:8px;">
-            <button type="button" onclick="autoFillOtp()" style="background:#fdf4ff; border:1px solid #d8b4fe; color:var(--primary); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:8px; cursor:pointer;">
-              ⚡ <span id="t-btnAutoFillOtp">এক-ক্লিকে ওটিপি বসান</span> (<span id="autoFillOtpVal">1234</span>)
-            </button>
-          </div>
-        </div>
-
-        <!-- Name & Address -->
-        <div id="otpProfileFields" style="border-top:1px solid #f1f5f9; padding-top:12px; margin-top:10px;">
-          <div style="margin-bottom:10px;">
-            <label style="font-size:0.78rem; font-weight:800; color:#334155; display:block; margin-bottom:4px;" id="t-authLblName">
-              আপনার পুরো নাম *
-            </label>
-            <input type="text" id="auth_name" placeholder="যেমন: Nisha Ghanti" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.9rem; font-weight:700; color:#0f172a; outline:none;">
-          </div>
-
-          <div style="margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <label style="font-size:0.78rem; font-weight:800; color:#334155;" id="t-authLblAddr">
-                ডেলিভারি ঠিকানা ও ল্যান্ডমার্ক *
-              </label>
-              <button type="button" onclick="detectCustomerGpsLocation()" style="background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:4px;">
-                <i class="fa-solid fa-location-crosshairs"></i> <span id="t-authBtnGps">📍 বর্তমান GPS লোকেশন</span>
-              </button>
-            </div>
-            <textarea id="auth_addr" rows="2" placeholder="বাড়ি নং, এলাকা বা গ্রাম (যেমন: আমতা চাঁদনী, হাওড়া - 711401)" style="width:100%; padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#0f172a; outline:none;"></textarea>
-            <div id="authGpsStatus" style="display:none; font-size:0.72rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap:8px; margin-top:14px;">
-          <button type="button" onclick="verifyCustomerOtpAndLogin()" style="flex:1; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(147,51,234,0.35);">
-            <i class="fa-solid fa-circle-check"></i> <span id="t-btnVerifyOtpText">ওটিপি যাচাই ও লগইন সম্পন্ন করুন</span>
-          </button>
-          <button type="button" onclick="closeCustomerAuthModal()" style="background:#f1f5f9; color:#475569; border:none; padding:12px 14px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;" id="t-btnCancelAuth">
-            বাতিল
-          </button>
-        </div>
-
-        <div style="margin-top:10px; text-align:center;">
-          <button type="button" id="btnResendOtpTimer" onclick="resendCustomerOtp()" style="background:none; border:none; font-size:0.74rem; color:#64748b; font-weight:700; cursor:pointer;">
-            ওটিপি পাননি? <span style="color:var(--primary); font-weight:800;">পুনরায় ওটিপি পাঠান</span>
-          </button>
-        </div></div>
-
-      </div>
-
-    </div>
-  </div>
 
   <!-- ================= 8. REFER & EARN MODAL ================= -->
   <div id="referModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:220; align-items:center; justify-content:center; padding:16px;">
@@ -2729,6 +2704,61 @@
 
       </div>
 
+    </div>
+  </div>
+
+
+  <!-- MODAL: LIVE STREAMING SHOPPING (ফিচার ২০১) -->
+  <div id="modalLiveShopping" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:12px;">
+    <div style="background:#0f172a; border:1px solid #334155; border-radius:18px; width:100%; max-width:400px; color:#fff; overflow:hidden;">
+      <div style="padding:12px 16px; background:linear-gradient(135deg, #dc2626, #b91c1c); display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-weight:800; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
+          <div style="width:8px; height:8px; border-radius:50%; background:#fff; animation:pulse 1s infinite;"></div>
+          <span>নিশা ক্রিয়েশনস • লাইভ স্টুডিও (২০১)</span>
+        </div>
+        <button type="button" onclick="closeCustomerModal('modalLiveShopping')" style="background:transparent; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">✕</button>
+      </div>
+      <div style="position:relative; width:100%; height:260px; background:#000;">
+        <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80" style="width:100%; height:100%; object-fit:cover;">
+        <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:4px 8px; border-radius:8px; font-size:0.75rem; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-eye" style="color:#ef4444;"></i> ৩৪৮ জন দেখছেন
+        </div>
+        <!-- On-screen Buy Card -->
+        <div style="position:absolute; bottom:10px; left:10px; right:10px; background:rgba(15,23,42,0.9); border:1px solid #38bdf8; border-radius:12px; padding:10px; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-size:0.78rem; font-weight:800; color:#fff;">পিওর ঢাকাই জামদানি</div>
+            <div style="font-size:0.75rem; color:#fde047; font-weight:800;">লাইভ অফার: ₹৭৯৯ <span style="font-size:0.65rem; color:#94a3b8; text-decoration:line-through;">₹২৪৯৯</span></div>
+          </div>
+          <button type="button" onclick="buyCurrentLiveProduct()" style="background:#ffc200; color:#0f172a; border:none; padding:6px 12px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer;">
+            এখনই কিনুন
+          </button>
+        </div>
+      </div>
+      <div style="padding:12px 16px; font-size:0.78rem; color:#94a3b8; display:flex; justify-content:space-between;">
+        <span>🔥 মাত্র ২টি বাকি আছে!</span>
+        <span style="color:#34d399;">✓ ক্যাশ অন ডেলিভারি প্রযোজ্য</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TRY AT HOME (ফিচার ২১২) -->
+  <div id="modalTryAtHome" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:12px;">
+    <div style="background:#ffffff; border-radius:18px; width:100%; max-width:380px; padding:20px; text-align:center; color:#0f172a;">
+      <div style="width:52px; height:52px; border-radius:50%; background:#eff6ff; color:#2563eb; font-size:1.5rem; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px;">
+        <i class="fa-solid fa-shirt"></i>
+      </div>
+      <h3 style="margin:0 0 6px 0; font-size:1.1rem; font-weight:800;">ট্রাই-অ্যাট-হোম (Try at Home)</h3>
+      <p style="font-size:0.8rem; color:#64748b; line-height:1.5; margin-bottom:16px;">
+        আপনার বাড়িতে ৩টি পছন্দের শাড়ি পৌঁছে দেওয়া হবে। নিজে পরে দেখে ১টি পছন্দ করে রাখুন, বাকি ২টি সাথে সাথে ডেলিভারি বয়কে ফেরত দিন!
+      </p>
+      <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:10px; font-size:0.75rem; color:#334155; margin-bottom:16px; text-align:left;">
+        ✓ কোনো অগ্রিম টাকা লাগবে না<br>
+        ✓ ট্রায়ালের সময়: ১০ মিনিট<br>
+        ✓ সম্পূর্ণ ফ্রি ডেলিভারি ও পিকআপ (আমতা ও সংলগ্ন এলাকা)
+      </div>
+      <button type="button" onclick="closeCustomerModal('modalTryAtHome')" style="width:100%; background:#0f172a; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:800; cursor:pointer;">
+        পছন্দের শাড়ি বাছুন
+      </button>
     </div>
   </div>
 

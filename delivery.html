@@ -802,6 +802,23 @@
         <span>ক্যাশ অন ডেলিভারির (COD) সফল পার্সেলের নগদ হিসাব।</span>
       </div>
 
+      <!-- 126 & 149. Weather Alert & CIH Cash Vault Limit -->
+      <div style="margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">
+        <div style="background:rgba(234,179,8,0.15); border:1px solid #eab308; border-radius:12px; padding:10px 14px; font-size:0.8rem; color:#fde047; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-cloud-bolt" style="font-size:1.1rem;"></i>
+          <span><strong>১২৬. আবহাওয়া রুট অ্যালার্ট:</strong> আজ আমতা ও উদয়নারায়ণপুর এলাকায় হালকা বৃষ্টি হতে পারে। সমস্ত পার্সেল ওয়াটারপ্রুফ ব্যাগে রাখুন।</span>
+        </div>
+        <div style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; border-radius:12px; padding:10px 14px; font-size:0.8rem; color:#7dd3fc; display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-vault" style="font-size:1.1rem;"></i>
+            <span><strong>১৪৯. Cash-in-Hand ভল্ট লিমিট:</strong> সর্বোচ্চ ₹২০,০০০ (বর্তমানে সংগৃহীত: <span id="vaultCurrentCash">₹0</span>)</span>
+          </div>
+          <button type="button" class="btn-pack-pill" style="background:#0284c7; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;" onclick="openEodSlipModal()">
+            ক্যাশ ডিপোজিট
+          </button>
+        </div>
+      </div>
+
       <div class="rider-stats-grid">
         <div class="r-stat-box">
           <div class="r-stat-val" id="riderPendingCount" style="color:#f59e0b;">0</div>
@@ -821,10 +838,16 @@
     <!-- Sub Navigation -->
     <div class="delivery-tabs-row">
       <button type="button" class="d-tab-btn active" id="tabDeliveries" onclick="switchRiderMode('tasks')">
-        <i class="fa-solid fa-route"></i> ডেলিভারি রান-শীট
+        <i class="fa-solid fa-route"></i> ডেলিভারি রান-শীট (৮১)
+      </button>
+      <button type="button" class="d-tab-btn" id="tabReversePickup" onclick="switchRiderMode('returns')">
+        <i class="fa-solid fa-rotate-left"></i> রিভার্স পিকআপ (৮৯)
+      </button>
+      <button type="button" class="d-tab-btn" id="tabIncentives" onclick="switchRiderMode('performance')">
+        <i class="fa-solid fa-trophy"></i> ইনসেন্টিভ ও পারফরম্যান্স (১০০)
       </button>
       <button type="button" class="d-tab-btn" id="tabEod" onclick="openEodSlipModal()">
-        <i class="fa-solid fa-file-invoice-dollar"></i> দিনের শেষে ক্যাশ জমা
+        <i class="fa-solid fa-file-invoice-dollar"></i> ক্যাশ জমা (৯৩)
       </button>
     </div>
 
@@ -1383,6 +1406,18 @@
             ${itemsHtml}
           </div>
 
+          <!-- 83. Navigation & 85. Dynamic UPI QR -->
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <button type="button" style="flex:1; background:#0b0f19; border:1px solid #0284c7; color:#38bdf8; border-radius:10px; padding:9px; font-size:0.8rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openRiderMapNavigation('${(ord.address||"আমতা, হাওড়া").replace(/'/g, "")}')">
+              <i class="fa-solid fa-diamond-turn-right"></i> ৮৩. লাইভ ম্যাপ
+            </button>
+            ${isCod && !isDelivered ? `
+              <button type="button" style="flex:1; background:#0b0f19; border:1px solid #eab308; color:#fde047; border-radius:10px; padding:9px; font-size:0.8rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openRiderUpiQrModal('${ord.id}', ${ord.total})">
+                <i class="fa-solid fa-qrcode"></i> ৮৫. UPI QR কোড
+              </button>
+            ` : ""}
+          </div>
+
           <!-- Actions -->
           ${!isDelivered ? `
             <div class="delivery-actions-bar">
@@ -1441,6 +1476,86 @@
 রাইডার দ্বারা প্রস্তুত ও ভেরিফাইড।`);
       window.open(`https://wa.me/919239413517?text=${text}`, '_blank');
     }
-  </script>
+  
+    // ==========================================
+    // SWITCH RIDER MODES (৮১, ৮৯, ১০০)
+    // ==========================================
+    function switchRiderMode(mode) {
+      document.querySelectorAll('.d-tab-btn').forEach(b => b.classList.remove('active'));
+      const tasksSec = document.querySelector('.delivery-scanner-card');
+      const filterRow = document.querySelector('.rider-filter-row');
+      const tasksCont = document.getElementById('riderTasksContainer');
+      const paneRet = document.getElementById('paneRiderReturns');
+      const panePerf = document.getElementById('paneRiderPerformance');
+
+      if (mode === 'tasks') {
+        document.getElementById('tabDeliveries')?.classList.add('active');
+        if (tasksSec) tasksSec.style.display = 'block';
+        if (filterRow) filterRow.style.display = 'flex';
+        if (tasksCont) tasksCont.style.display = 'flex';
+        if (paneRet) paneRet.style.display = 'none';
+        if (panePerf) panePerf.style.display = 'none';
+      } else if (mode === 'returns') {
+        document.getElementById('tabReversePickup')?.classList.add('active');
+        if (tasksSec) tasksSec.style.display = 'none';
+        if (filterRow) filterRow.style.display = 'none';
+        if (tasksCont) tasksCont.style.display = 'none';
+        if (paneRet) paneRet.style.display = 'block';
+        if (panePerf) panePerf.style.display = 'none';
+      } else if (mode === 'performance') {
+        document.getElementById('tabIncentives')?.classList.add('active');
+        if (tasksSec) tasksSec.style.display = 'none';
+        if (filterRow) filterRow.style.display = 'none';
+        if (tasksCont) tasksCont.style.display = 'none';
+        if (paneRet) paneRet.style.display = 'none';
+        if (panePerf) panePerf.style.display = 'block';
+        updateRiderPerformanceStats();
+      }
+    }
+
+    function updateRiderPerformanceStats() {
+      const deliveredCount = riderOrders.filter(o => o.status === 'Delivered').length;
+      const incentive = deliveredCount * 35 + (deliveredCount >= 10 ? 150 : 0);
+      const elCnt = document.getElementById('perfDeliveredCount');
+      const elInc = document.getElementById('perfIncentiveTotal');
+      if (elCnt) elCnt.textContent = deliveredCount;
+      if (elInc) elInc.textContent = `₹${incentive}`;
+    }
+
+    // ==========================================
+    // MAP NAVIGATION & INSTANT UPI QR (৮৩ & ৮৫)
+    // ==========================================
+    function openRiderMapNavigation(address) {
+      const query = encodeURIComponent(address || 'Amta, Howrah, West Bengal');
+      window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+    }
+
+    function openRiderUpiQrModal(orderId, amount) {
+      const modal = document.createElement('div');
+      modal.className = 'rider-modal-overlay';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div style="background:#0f172a; border:2px solid #38bdf8; border-radius:18px; padding:20px; max-width:320px; width:90%; text-align:center; color:#fff;">
+          <h3 style="margin:0 0 8px 0; color:#38bdf8;">৮৫. ডিজিটাল UPI QR কোড</h3>
+          <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:14px;">অর্ডার #${orderId} এর জন্য সরাসরি পেমেন্ট কিউআর</p>
+          <div style="background:#fff; padding:12px; border-radius:12px; display:inline-block; margin-bottom:12px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('upi://pay?pa=sahebghanti669@okaxis&pn=NishaCreations&am=' + amount + '&cu=INR')}" style="width:160px; height:160px; display:block;">
+          </div>
+          <div style="font-size:1.2rem; font-weight:800; color:#fde047; margin-bottom:14px;">প্রদেয়: ₹${amount}</div>
+          <p style="font-size:0.72rem; color:#34d399; margin-bottom:14px;">Google Pay, PhonePe, Paytm দিয়ে স্ক্যান করুন</p>
+          <button type="button" style="background:#0284c7; color:#fff; border:none; border-radius:10px; padding:10px 20px; font-weight:800; cursor:pointer;" onclick="this.closest('.rider-modal-overlay').remove()">
+            বন্ধ করুন
+          </button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function completeReversePickup() {
+      alert('✓ রিভার্স পিকআপ সফলভাবে সম্পন্ন হয়েছে! কাপড়টি সিল করা ব্যাগে রাখুন।');
+      switchRiderMode('tasks');
+    }
+
+</script>
 </body>
 </html>
