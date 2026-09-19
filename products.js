@@ -5,7 +5,7 @@
 
 const INITIAL_PRODUCTS = [
       {
-        id: "NC-101",
+        id: "NC-101", binLocation: "র‍্যাক A-01 (জামদানি শাড়ি ব্লক)",
         title: "Pure Dhakai Jamdani Saree (Traditional Red & Zari Weave)",
         category: "jamdani",
         type: "saree",
@@ -22,7 +22,7 @@ const INITIAL_PRODUCTS = [
         desc: "খাঁটি সুতির নরম জমিন, আভিজাত্যপূর্ণ ঢাকাই নকশা এবং জরির আঁচল। বিয়ে বা পুজোর জন্য সেরা পছন্দ। সাথে ব্লাউজ পিস রয়েছে।"
       },
       {
-        id: "NC-102",
+        id: "NC-102", binLocation: "র‍্যাক A-02 (সফট সিল্ক ও কাতান জোন)",
         title: "Soft Silk Katan Saree with Rich Golden Pallu (Royal Blue)",
         category: "silk",
         type: "saree",
@@ -39,7 +39,7 @@ const INITIAL_PRODUCTS = [
         desc: "রয়্যাল ব্লু প্রিমিয়াম সফট সিল্ক। শরীরে খুব সুন্দরভাবে বসে এবং পরতে অত্যন্ত আরামদায়ক। বিশেষ পার্টি ও রিসেপশন লুক।"
       },
       {
-        id: "NC-103",
+        id: "NC-103", binLocation: "র‍্যাক B-01 (শান্তিপুরী তাঁত কটন)",
         title: "Bengal Handloom Tant Cotton Saree (Pastel Floral Border)",
         category: "tant",
         type: "saree",
@@ -56,7 +56,7 @@ const INITIAL_PRODUCTS = [
         desc: "শান্তিপুরী 100% পিওর সুতি তাঁত শাড়ি। গরমে ও রোজকার ব্যবহারে অত্যন্ত হালকা এবং টেকসই। সুন্দর কন্ট্রাস্ট পাড়।"
       },
       {
-        id: "NC-104",
+        id: "NC-104", binLocation: "শেলফ J-01 (গোল্ড প্লেটেড ব্রাইডাল জুয়েলারি)",
         title: "Traditional Bengali Gold-Plated Bridal Jewellery Choker Set",
         category: "necklace",
         type: "jewel",
@@ -73,7 +73,7 @@ const INITIAL_PRODUCTS = [
         desc: "1 গ্রাম গোল্ড প্লেটেড রানি নেকলেস ও ম্যাচিং ঝুমকো দুল। খাঁটি সোনার মতো ফিনিশ এবং দীর্ঘদিন রঙ অপরিবর্তিত থাকে।"
       },
       {
-        id: "NC-105",
+        id: "NC-105", binLocation: "শেলফ J-01 (গোল্ড প্লেটেড ব্রাইডাল জুয়েলারি)",
         title: "Antique Silver-Oxidised Choker with Hanging Pearls Set",
         category: "necklace",
         type: "jewel",
@@ -90,7 +90,7 @@ const INITIAL_PRODUCTS = [
         desc: "তাঁত বা বাটিক শাড়ির সাথে পরার জন্য সেরা ট্রেন্ডি অক্সিডাইজড সেট। সাথে মানানসই কানের দুল রয়েছে।"
       },
       {
-        id: "NC-106",
+        id: "NC-106", binLocation: "শেলফ J-02 (ডিজাইনার বালা ও চুড়ি ড্রয়ার)",
         title: "Designer Handcrafted Gold-Plated Churi / Bangles (Pair of 2)",
         category: "bangles",
         type: "jewel",
@@ -107,7 +107,7 @@ const INITIAL_PRODUCTS = [
         desc: "হাতে পরার প্রিমিয়াম ডিজাইনার বালা (2 পিস সেট)। সাইজ: 2.4, 2.6 এবং 2.8 উপলব্ধ। জল বা সাবানে সহজে রঙ নষ্ট হয় না।"
       },
       {
-        id: "NC-107",
+        id: "NC-107", binLocation: "র‍্যাক A-02 (সফট সিল্ক ও কাতান জোন)",
         title: "Semi-Katan Party Saree with Heavy Embroidered Border (Emerald Green)",
         category: "silk",
         type: "saree",
@@ -124,7 +124,7 @@ const INITIAL_PRODUCTS = [
         desc: "পান্না সবুজ রঙের চোখজুড়ানো কাতান শাড়ি। বড় বর্ডার ও জমকালো কুঁচি ডিজাইন।"
       },
       {
-        id: "NC-108",
+        id: "NC-108", binLocation: "শেলফ J-03 (ঝুমকো ও কানের দুল ড্রয়ার)",
         title: "Royal Kundan Floral Drop Earrings / Jhumka with Red Stones",
         category: "earrings",
         type: "jewel",
@@ -141,7 +141,7 @@ const INITIAL_PRODUCTS = [
         desc: "কুন্দন কারুকাজ ও লাল পাথরের ঝুমকো। ওজনে হালকা এবং কানে পরলে কোনো ব্যথা হয় না।"
       },
       {
-        id: "NC-109",
+        id: "NC-109", binLocation: "র‍্যাক C-01 (কুর্তি ও সালোয়ার হ্যাঙ্গার)",
         title: "Designer Embroidered Anarkali Kurti with Dupatta (Pastel Pink)",
         category: "kurti",
         type: "kurti",
@@ -158,7 +158,7 @@ const INITIAL_PRODUCTS = [
         desc: "আকর্ষণীয় জরি ও সুতোর নিখুঁত কাজ করা পার্টি ওয়্যার আনারকলি কুর্তি ও ওড়না সেট। প্রিমিয়াম নরম রেয়ন ফেব্রিক।"
       },
       {
-        id: "NC-110",
+        id: "NC-110", binLocation: "বিন F-01 (ছোটদের ফ্রক ও বেবি লেহেঙ্গা)",
         title: "Little Princess Butterfly Net Party Frock (Baby Pink)",
         category: "princess_frock",
         type: "girls",
@@ -175,7 +175,7 @@ const INITIAL_PRODUCTS = [
         desc: "ছোট রাজকন্যাদের জন্য আরামদায়ক নরম সুতির আস্তরণ সহ বাটারফ্লাই পার্টি ফ্রক। জন্মদিন ও উৎসবের সেরা পোশাক।"
       },
       {
-        id: "NC-111",
+        id: "NC-111", binLocation: "বিন F-01 (ছোটদের ফ্রক ও বেবি লেহেঙ্গা)",
         title: "Kids Ethnic Floral Baby Lehenga Choli Set (Yellow & Maroon)",
         category: "baby_lehenga",
         type: "girls",
@@ -192,3 +192,83 @@ const INITIAL_PRODUCTS = [
         desc: "পুজো ও বিয়ের অনুষ্ঠানের জন্য আকর্ষণীয় বেবি লেহেঙ্গা-চোলি ও ওড়না সেট। ত্বকবান্ধব ও নরম কাপড়।"
       }
     ];
+
+// =========================================================================
+// DEFAULT DYNAMIC HOME BANNERS (Flipkart / Amazon স্টাইল স্বয়ংক্রিয় স্লাইডার)
+// অ্যাডমিন প্যানেল থেকে যখন ইচ্ছা নতুন ব্যানার যোগ, এডিট বা ডিলিট করা যাবে।
+// =========================================================================
+const DEFAULT_BANNERS = [
+  {
+    id: "banner-1",
+    title: "শারদীয়া উৎসব মেগা অফার",
+    subtitle: "খাঁটি ঢাকাই জামদানি শাড়িতে 40% - 60% ছাড়!",
+    badge: "🔥 ফেস্টিভ্যাল ধামাকা",
+    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #701a75, #9333ea, #db2777)",
+    targetCategory: "jamdani",
+    active: true
+  },
+  {
+    id: "banner-2",
+    title: "রয়েল সফট সিল্ক ও বেনারসি",
+    subtitle: "জরি বর্ডার ও প্রিমিয়াম ডিজাইনার আঁচল কালেকশন",
+    badge: "✨ প্রিমিয়াম কোয়ালিটি",
+    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #831843, #be185d, #f43f5e)",
+    targetCategory: "silk",
+    active: true
+  },
+  {
+    id: "banner-3",
+    title: "শান্তিপুরী ও ফুলিয়া সুতি তাঁত",
+    subtitle: "দৈনন্দিন ও উৎসবের সেরা আরামদায়ক হ্যান্ডলুম",
+    badge: "🌿 100% খাঁটি সুতি",
+    image: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #065f46, #059669, #10b981)",
+    targetCategory: "tant",
+    active: true
+  },
+  {
+    id: "banner-4",
+    title: "ট্রেন্ডি কুর্তি ও লং গাউন",
+    subtitle: "মাত্র ₹499 থেকে শুরু • আধুনিক ফিটিং ও প্রিমিয়াম ফ্যাব্রিক",
+    badge: "⚡ বেস্টসেলার",
+    image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8)",
+    targetCategory: "kurti",
+    active: true
+  },
+  {
+    id: "banner-5",
+    title: "ব্রাইডাল জুয়েলারি ও চোকার সেট",
+    subtitle: "কুন্দন নেকলেস ও গোল্ড প্লেটেড নিখুঁত বালা কালেকশন",
+    badge: "💎 রয়্যাল ফিনিশিং",
+    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #78350f, #b45309, #f59e0b)",
+    targetCategory: "jewel",
+    active: true
+  },
+  {
+    id: "banner-6",
+    title: "কিউট বেবি ফ্রক ও উৎসব সেট",
+    subtitle: "ছোট্ট সোনাদের জন্য আরামদায়ক কালারফুল ডিজাইনার ফ্রক",
+    badge: "👧 স্পেশাল কিডস কালেকশন",
+    image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600&auto=format&fit=crop&q=80",
+    bgGradient: "linear-gradient(135deg, #581c87, #7c3aed, #ec4899)",
+    targetCategory: "girls",
+    active: true
+  }
+];
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { INITIAL_PRODUCTS, DEFAULT_BANNERS };
+}
+
+if (typeof window !== 'undefined') {
+  window.INITIAL_PRODUCTS = INITIAL_PRODUCTS;
+  window.DEFAULT_BANNERS = DEFAULT_BANNERS;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.INITIAL_PRODUCTS = INITIAL_PRODUCTS;
+  globalThis.DEFAULT_BANNERS = DEFAULT_BANNERS;
+}

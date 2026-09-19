@@ -29,7 +29,7 @@ function sanitizeBoutiqueRuntime() {
     // BILINGUAL (BENGALI & ENGLISH) DICTIONARY
     // ==========================================
     let currentLang = localStorage.getItem('nc_lang') || 'bn';
-let cart = [];
+var cart = [];
 try {
   const storedC = localStorage.getItem('nc_cart');
   cart = storedC ? JSON.parse(storedC) : [];
@@ -5309,4 +5309,758 @@ function triggerDirectVoiceSearch() {
   } catch(e) {
     if (typeof openBoutiqueSearch === 'function') openBoutiqueSearch();
   }
+}
+
+
+// =========================================================================
+// 🌟 1. DYNAMIC AUTO-SLIDING BANNER CAROUSEL SYSTEM (Flipkart / Amazon স্টাইল)
+// পরপর স্বয়ংক্রিয়ভাবে নিজে থেকেই স্লাইড হবে, ডটস ইন্ডিকেটর ও সোয়াইপ সহ
+// মালিক অ্যাডমিন প্যানেল থেকে যখন ইচ্ছা নতুন ব্যানার বানাতে বা বদলাতে পারবেন।
+// =========================================================================
+var currentBannerIndex = 0;
+let bannerAutoSlideTimer = null;
+let touchStartX = 0;
+let touchEndX = 0;
+
+function loadAndRenderBanners() {
+  const track = document.getElementById('bannerCarouselTrack');
+  const dotsContainer = document.getElementById('bannerCarouselDots');
+  if (!track || !dotsContainer) return;
+
+  let bannerList = [];
+  try {
+    const stored = localStorage.getItem('nc_banners');
+    if (stored) {
+      bannerList = JSON.parse(stored);
+    }
+  } catch(e) {}
+
+  if (!Array.isArray(bannerList) || bannerList.length === 0) {
+    if (typeof DEFAULT_BANNERS !== 'undefined' && Array.isArray(DEFAULT_BANNERS)) {
+      bannerList = DEFAULT_BANNERS;
+    } else {
+      bannerList = [
+        {
+          id: "banner-1",
+          title: "শারদীয়া উৎসব মেগা অফার",
+          subtitle: "খাঁটি ঢাকাই জামদানি শাড়িতে 40% - 60% ছাড়!",
+          badge: "🔥 ফেস্টিভ্যাল ধামাকা",
+          image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #701a75, #9333ea, #db2777)",
+          targetCategory: "jamdani",
+          active: true
+        },
+        {
+          id: "banner-2",
+          title: "রয়েল সফট সিল্ক ও বেনারসি",
+          subtitle: "জরি বর্ডার ও প্রিমিয়াম ডিজাইনার আঁচল কালেকশন",
+          badge: "✨ প্রিমিয়াম কোয়ালিটি",
+          image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #831843, #be185d, #f43f5e)",
+          targetCategory: "silk",
+          active: true
+        },
+        {
+          id: "banner-3",
+          title: "শান্তিপুরী ও ফুলিয়া সুতি তাঁত",
+          subtitle: "দৈনন্দিন ও উৎসবের সেরা আরামদায়ক হ্যান্ডলুম",
+          badge: "🌿 100% খাঁটি সুতি",
+          image: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #065f46, #059669, #10b981)",
+          targetCategory: "tant",
+          active: true
+        },
+        {
+          id: "banner-4",
+          title: "ট্রেন্ডি কুর্তি ও লং গাউন",
+          subtitle: "মাত্র ₹499 থেকে শুরু • আধুনিক ফিটিং ও ফ্যাব্রিক",
+          badge: "⚡ বেস্টসেলার",
+          image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8)",
+          targetCategory: "kurti",
+          active: true
+        },
+        {
+          id: "banner-5",
+          title: "ব্রাইডাল জুয়েলারি ও চোকার সেট",
+          subtitle: "কুন্দন নেকলেস ও গোল্ড প্লেটেড নিখুঁত বালা কালেকশন",
+          badge: "💎 রয়্যাল ফিনিশিং",
+          image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #78350f, #b45309, #f59e0b)",
+          targetCategory: "jewel",
+          active: true
+        },
+        {
+          id: "banner-6",
+          title: "কিউট বেবি ফ্রক ও উৎসব সেট",
+          subtitle: "ছোট্ট সোনাদের জন্য আকর্ষণীয় কালারফুল ফ্রক",
+          badge: "👧 স্পেশাল কিডস কালেকশন",
+          image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600&auto=format&fit=crop&q=80",
+          bgGradient: "linear-gradient(135deg, #581c87, #7c3aed, #ec4899)",
+          targetCategory: "girls",
+          active: true
+        }
+      ];
+      localStorage.setItem('nc_banners', JSON.stringify(bannerList));
+    }
+  }
+
+  const activeBanners = bannerList.filter(b => b.active !== false);
+  if (activeBanners.length === 0) {
+    const w = document.getElementById('homeBannerCarouselWrapper'); if (w) w.style.display = 'none';
+    return;
+  }
+  const w = document.getElementById('homeBannerCarouselWrapper'); if (w) w.style.display = 'block';
+
+  track.innerHTML = '';
+  dotsContainer.innerHTML = '';
+
+  activeBanners.forEach((b, idx) => {
+    const slide = document.createElement('div');
+    slide.className = 'banner-carousel-slide';
+    slide.style.background = b.bgGradient || 'linear-gradient(135deg, #701a75, #9333ea, #db2777)';
+    slide.onclick = () => onBannerClick(b.targetCategory);
+
+    slide.innerHTML = `
+      <div class="banner-slide-content">
+        <div class="banner-badge-tag">${b.badge || '✨ স্পেশাল অফার'}</div>
+        <div class="banner-main-title">${b.title || 'নিশা ক্রিয়েশনস বুটিক'}</div>
+        <div class="banner-sub-text">${b.subtitle || 'আমতায় সহজ রিটার্ন ও হোম ডেলিভারি'}</div>
+        <div class="banner-cta-btn">
+          <span>কালেকশন দেখুন</span> <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
+        </div>
+      </div>
+      <div class="banner-slide-image-wrap">
+        <img class="banner-slide-img" src="${b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80'}" alt="${b.title || 'Banner'}">
+      </div>
+    `;
+    track.appendChild(slide);
+
+    const dot = document.createElement('div');
+    dot.className = 'carousel-dot' + (idx === 0 ? ' active' : '');
+    dot.onclick = (e) => {
+      e.stopPropagation();
+      goToBannerSlide(idx);
+    };
+    dotsContainer.appendChild(dot);
+  });
+
+  currentBannerIndex = 0;
+  track.style.transform = 'translateX(0%)';
+
+  // Attach touch swipe support
+  const viewport = document.getElementById('bannerCarouselViewport');
+  if (viewport) {
+    viewport.ontouchstart = (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      pauseBannerAutoSlide();
+    };
+    viewport.ontouchend = (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleBannerSwipe();
+      startBannerAutoSlide();
+    };
+    viewport.onmouseenter = pauseBannerAutoSlide;
+    viewport.onmouseleave = startBannerAutoSlide;
+  }
+
+  startBannerAutoSlide();
+}
+
+function handleBannerSwipe() {
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 40) {
+    if (diff > 0) nextBannerSlide();
+    else prevBannerSlide();
+  }
+}
+
+function goToBannerSlide(idx) {
+  const track = document.getElementById('bannerCarouselTrack');
+  const dots = document.querySelectorAll('#bannerCarouselDots .carousel-dot');
+  if (!track || dots.length === 0) return;
+
+  const total = dots.length;
+  currentBannerIndex = (idx + total) % total;
+
+  track.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
+
+  dots.forEach((d, i) => {
+    d.classList.toggle('active', i === currentBannerIndex);
+  });
+
+  startBannerAutoSlide(); // Reset interval
+}
+
+function nextBannerSlide() {
+  goToBannerSlide(currentBannerIndex + 1);
+}
+
+function prevBannerSlide() {
+  goToBannerSlide(currentBannerIndex - 1);
+}
+
+function startBannerAutoSlide() {
+  pauseBannerAutoSlide();
+  const dots = document.querySelectorAll('#bannerCarouselDots .carousel-dot');
+  if (dots.length > 1) {
+    bannerAutoSlideTimer = setInterval(nextBannerSlide, 3500);
+  }
+}
+
+function pauseBannerAutoSlide() {
+  if (bannerAutoSlideTimer) {
+    clearInterval(bannerAutoSlideTimer);
+    bannerAutoSlideTimer = null;
+  }
+}
+
+function onBannerClick(targetCategory) {
+  if (targetCategory && targetCategory !== 'all') {
+    filterByUnifiedCat(targetCategory);
+  } else {
+    filterByUnifiedCat('all');
+  }
+  scrollToProducts();
+}
+
+function scrollToProducts() {
+  const el = document.getElementById('productGridContainer') || document.querySelector('.filter-bar');
+  if (el) {
+    if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+
+// =========================================================================
+// 🌟 2. SORT MODAL (relevance, new, price-asc, price-desc, rating)
+// =========================================================================
+function openSortModal() {
+  const modal = document.getElementById('sortModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
+}
+
+function closeSortModal() {
+  const modal = document.getElementById('sortModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  }
+}
+
+function closeSortModalOnOutside(e) {
+  if (e && e.target && e.target.id === 'sortModal') {
+    closeSortModal();
+  }
+}
+
+function applySortOption(sortType, label) {
+  document.querySelectorAll('.sort-option-row').forEach(row => row.classList.remove('active'));
+  const row = document.getElementById(`sort-opt-${sortType}`);
+  if (row) row.classList.add('active');
+
+  const lbl = document.getElementById('sortBtnLabel');
+  if (lbl && label) lbl.textContent = label.split('(')[0].trim();
+
+  closeSortModal();
+
+  let sorted = [...products];
+  if (sortType === 'price-asc') {
+    sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+  } else if (sortType === 'price-desc') {
+    sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+  } else if (sortType === 'rating') {
+    sorted.sort((a, b) => (b.rating || 4.5) - (a.rating || 4.5));
+  } else if (sortType === 'new') {
+    sorted.sort((a, b) => (b.id || '').localeCompare(a.id || ''));
+  } else {
+    // relevance: natural catalog order
+    sorted = [...products];
+  }
+  renderProducts(sorted);
+}
+
+
+// =========================================================================
+// 🌟 3. GENDER & ADVANCED FILTERS
+// =========================================================================
+function filterByGender(gender) {
+  if (gender === 'women') {
+    filterByUnifiedCat('women');
+  } else if (gender === 'girls') {
+    filterByUnifiedCat('girls');
+  }
+  scrollToProducts();
+}
+
+function openAdvancedFilterModal() {
+  const modal = document.getElementById('advancedFilterModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
+}
+
+function closeAdvancedFilterModal() {
+  const modal = document.getElementById('advancedFilterModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  }
+}
+
+function closeAdvancedFilterOnOutside(e) {
+  if (e && e.target && e.target.id === 'advancedFilterModal') {
+    closeAdvancedFilterModal();
+  }
+}
+
+function switchFilterTab(tabKey) {
+  document.querySelectorAll('.filter-tab-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.filter-options-panel').forEach(p => p.style.display = 'none');
+
+  const tab = document.getElementById(`ftab-${tabKey}`);
+  const panel = document.getElementById(`fpanel-${tabKey}`);
+  if (tab) tab.classList.add('active');
+  if (panel) panel.style.display = 'block';
+}
+
+function updateFilterBadgeCount() {
+  const tabs = ['fabric', 'color', 'price', 'occasion'];
+  let grandTotal = 0;
+
+  tabs.forEach(t => {
+    const panel = document.getElementById(`fpanel-${t}`);
+    const badge = document.getElementById(`fbadge-${t}`);
+    if (panel && badge) {
+      const checkedCount = panel.querySelectorAll('input[type="checkbox"]:checked').length;
+      if (checkedCount > 0) {
+        badge.textContent = checkedCount;
+        badge.style.display = 'inline-block';
+        grandTotal += checkedCount;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  });
+
+  const activeBadge = document.getElementById('activeFilterBadge');
+  if (activeBadge) {
+    if (grandTotal > 0) {
+      activeBadge.textContent = grandTotal;
+      activeBadge.style.display = 'inline-block';
+    } else {
+      activeBadge.style.display = 'none';
+    }
+  }
+}
+
+function clearAllAdvancedFilters() {
+  document.querySelectorAll('.filter-options-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+  updateFilterBadgeCount();
+  renderProducts(products);
+  closeAdvancedFilterModal();
+}
+
+function applyAdvancedFilters() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.filter-options-panel input[type="checkbox"]:checked'));
+  if (checkedBoxes.length === 0) {
+    renderProducts(products);
+    closeAdvancedFilterModal();
+    return;
+  }
+
+  const selectedValues = checkedBoxes.map(cb => cb.value.toLowerCase());
+
+  const filtered = products.filter(p => {
+    const text = (p.title + ' ' + (p.category || '') + ' ' + (p.desc || '') + ' ' + (p.material || '') + ' ' + (p.color || '')).toLowerCase();
+    return selectedValues.some(val => text.includes(val));
+  });
+
+  renderProducts(filtered);
+  closeAdvancedFilterModal();
+  scrollToProducts();
+}
+
+
+// =========================================================================
+// 🌟 4. CATEGORIES SCREEN SIDEBAR & CARDS (selectCategoryTab)
+// =========================================================================
+function selectCategoryTab(tabKey) {
+  document.querySelectorAll('.cat-sidebar-item').forEach(el => el.classList.remove('active'));
+  const btn = document.getElementById(`sidebar-${tabKey}`);
+  if (btn) btn.classList.add('active');
+
+  const contentArea = document.getElementById('catContentArea');
+  if (!contentArea) return;
+
+  const subcats = {
+    popular: [
+      { name: "ঢাকাই জামদানি", cat: "jamdani", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&auto=format&fit=crop&q=70" },
+      { name: "সফট সিল্ক ও কাতান", cat: "silk", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=300&auto=format&fit=crop&q=70" },
+      { name: "ট্রেন্ডি কুর্তি ও গাউন", cat: "kurti", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300&auto=format&fit=crop&q=70" },
+      { name: "বাচ্চাদের ফ্রক", cat: "girls", img: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=300&auto=format&fit=crop&q=70" },
+      { name: "ব্রাইডাল জুয়েলারি", cat: "jewel", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=70" }
+    ],
+    saree_kurti: [
+      { name: "খাঁটি ঢাকাই জামদানি", cat: "jamdani", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&auto=format&fit=crop&q=70" },
+      { name: "সফট সিল্ক শাড়ি", cat: "silk", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=300&auto=format&fit=crop&q=70" },
+      { name: "শান্তিপুরী সুতি তাঁত", cat: "tant", img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=300&auto=format&fit=crop&q=70" },
+      { name: "ডিজাইনার কুর্তি সেট", cat: "kurti", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300&auto=format&fit=crop&q=70" }
+    ],
+    jewellery: [
+      { name: "চোকার ও নেকলেস সেট", cat: "jewel", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=70" },
+      { name: "গোল্ড প্লেটেড বালা ও চুড়ি", cat: "bangles", img: "https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=300&auto=format&fit=crop&q=70" }
+    ],
+    bags: [
+      { name: "বুটিক হ্যান্ডব্যাগ ও ক্লাচ", cat: "all", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&auto=format&fit=crop&q=70" }
+    ],
+    perfume: [
+      { name: "রয়েল আতর ও বডি মিস্ট", cat: "all", img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=300&auto=format&fit=crop&q=70" }
+    ]
+  };
+
+  const currentList = subcats[tabKey] || subcats.popular;
+  let html = `
+    <div style="padding:14px;">
+      <h3 style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:12px;">কালেকশন বাছুন</h3>
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;">
+  `;
+  currentList.forEach(item => {
+    html += `
+      <div onclick="showScreen('home'); filterByUnifiedCat('${item.cat}');" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.04); text-align:center;">
+        <img src="${item.img}" style="width:100%; height:110px; object-fit:cover;">
+        <div style="padding:8px 6px; font-size:0.78rem; font-weight:700; color:#0f172a;">${item.name}</div>
+      </div>
+    `;
+  });
+  html += `</div></div>`;
+  contentArea.innerHTML = html;
+}
+
+
+// =========================================================================
+// 🌟 5. CHECKOUT FLOW, PAYMENT & ORDER SUBMISSION
+// =========================================================================
+var selectedPayMethod = 'UPI';
+
+function renderCheckoutStep1() {
+  const countSpan = document.getElementById('cartModalCount');
+  const list = document.getElementById('cartStep1ItemsList') || document.getElementById('cartItemsList');
+  const billTotal = document.getElementById('billStep1Total');
+  const billProdTotal = document.getElementById('billStep1ProdTotal');
+
+  if (countSpan) countSpan.textContent = cart.length;
+
+  if (list) {
+    if (cart.length === 0) {
+      list.innerHTML = `
+        <div style="text-align:center; padding:30px 10px; color:#94a3b8; font-size:0.85rem;">
+          <i class="fa-solid fa-bag-shopping" style="font-size:2.2rem; margin-bottom:10px; color:#cbd5e1;"></i>
+          <div style="font-weight:700;">আপনার শপিং ব্যাগ ফাঁকা!</div>
+          <div style="font-size:0.75rem; margin-top:4px;">হোমপেজ থেকে শাড়ি বা পোশাক ব্যাগে যোগ করুন</div>
+        </div>
+      `;
+    } else {
+      let html = '';
+      cart.forEach((item, idx) => {
+        html += `
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #f1f5f9;">
+            <img src="${item.img || ''}" style="width:52px; height:60px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;">
+            <div style="flex:1;">
+              <div style="font-size:0.82rem; font-weight:700; color:#0f172a; line-height:1.3;">${item.title || ''}</div>
+              <div style="font-size:0.72rem; color:#64748b; margin-top:2px;">সাইজ: <strong>${item.size || 'Free Size'}</strong> • কালার: <strong>${item.color || 'ডিফল্ট'}</strong></div>
+              <div style="font-size:0.85rem; font-weight:800; color:var(--primary); margin-top:3px;">₹${item.price || 0}</div>
+            </div>
+            <button onclick="removeCartItem(${idx})" style="background:#fee2e2; color:#ef4444; border:none; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <i class="fa-solid fa-trash-can" style="font-size:0.8rem;"></i>
+            </button>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    }
+  }
+
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  if (billProdTotal) billProdTotal.textContent = `₹${total}`;
+  if (billTotal) billTotal.textContent = `₹${total}`;
+}
+
+function goToCheckoutStep1() {
+  const step1 = document.getElementById('checkoutStep1View');
+  const step2 = document.getElementById('checkoutStep2View');
+  const ind1 = document.getElementById('stepIndicator1');
+  const ind2 = document.getElementById('stepIndicator2');
+
+  if (step1) step1.style.display = 'block';
+  if (step2) step2.style.display = 'none';
+  if (ind1) ind1.classList.add('active');
+  if (ind2) ind2.classList.remove('active');
+
+  renderCheckoutStep1();
+}
+
+function goToCheckoutStep2() {
+  if (cart.length === 0) {
+    alert("আপনার শপিং ব্যাগ ফাঁকা! আগে প্রোডাক্ট যোগ করুন।");
+    return;
+  }
+
+  const nameEl = document.getElementById('cust_name');
+  const phoneEl = document.getElementById('cust_phone');
+  const addrEl = document.getElementById('cust_address');
+  const pinEl = document.getElementById('cust_pincode');
+
+  const nameVal = nameEl ? nameEl.value.trim() : '';
+  const phoneVal = phoneEl ? phoneEl.value.trim() : '';
+  const addrVal = addrEl ? addrEl.value.trim() : '';
+  const pinVal = pinEl ? pinEl.value.trim() : '711401';
+
+  if (!nameVal || !phoneVal || !addrVal) {
+    const savedName = localStorage.getItem('nc_cust_name');
+    const savedPhone = localStorage.getItem('nc_cust_phone');
+    const savedAddr = localStorage.getItem('nc_cust_addr');
+    if (!savedName || !savedPhone || !savedAddr) {
+      alert("দয়া করে আপনার নাম, মোবাইল নম্বর এবং ডেলিভারি ঠিকানা পূরণ করুন!");
+      const form = document.getElementById('inlineAddressEditForm');
+      if (form) form.style.display = 'block';
+      return;
+    }
+  }
+
+  const dName = document.getElementById('displayCustName');
+  const dPhone = document.getElementById('displayCustPhone');
+  const dAddr = document.getElementById('displayCustAddr');
+  if (dName && nameVal) dName.textContent = nameVal;
+  if (dPhone && phoneVal) dPhone.textContent = '📞 ' + phoneVal;
+  if (dAddr && addrVal) dAddr.textContent = '📍 ' + addrVal + (pinVal ? ' - ' + pinVal : '');
+
+  if (nameVal) localStorage.setItem('nc_cust_name', nameVal);
+  if (phoneVal) localStorage.setItem('nc_cust_phone', phoneVal);
+  if (addrVal) localStorage.setItem('nc_cust_addr', addrVal);
+  if (pinVal) localStorage.setItem('nc_cust_pincode', pinVal);
+
+  const step1 = document.getElementById('checkoutStep1View');
+  const step2 = document.getElementById('checkoutStep2View');
+  const ind1 = document.getElementById('stepIndicator1');
+  const ind2 = document.getElementById('stepIndicator2');
+
+  if (step1) step1.style.display = 'none';
+  if (step2) step2.style.display = 'block';
+  if (ind1) ind1.classList.remove('active');
+  if (ind2) ind2.classList.add('active');
+
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const upiTotal = Math.max(0, total - 38);
+
+  const payCodAmount = document.getElementById('payCodFinalAmount');
+  const payUpiAmount = document.getElementById('payUpiFinalAmount');
+
+  if (payCodAmount) payCodAmount.textContent = `₹${total}`;
+  if (payUpiAmount) payUpiAmount.textContent = `₹${upiTotal}`;
+
+  selectPaymentMethod(selectedPayMethod);
+}
+
+function selectPaymentMethod(method) {
+  selectedPayMethod = method;
+  const cardUpi = document.getElementById('payOptCardUpi');
+  const cardCod = document.getElementById('payOptCardCod');
+  const savingsBanner = document.getElementById('paymentSavingsBannerText');
+  const confirmBtnLbl = document.getElementById('finalConfirmBtnLabel');
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const upiTotal = Math.max(0, total - 38);
+
+  if (method === 'UPI') {
+    if (cardUpi) cardUpi.classList.add('active');
+    if (cardCod) cardCod.classList.remove('active');
+    if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'flex';
+    if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${upiTotal})`;
+  } else {
+    if (cardCod) cardCod.classList.add('active');
+    if (cardUpi) cardUpi.classList.remove('active');
+    if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'none';
+    if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${total} COD)`;
+  }
+}
+
+function toggleAddressEdit() {
+  const form = document.getElementById('inlineAddressEditForm');
+  if (form) {
+    form.style.display = (form.style.display === 'none' || !form.style.display) ? 'block' : 'none';
+  }
+}
+
+function saveAddressInline() {
+  const nameEl = document.getElementById('cust_name');
+  const phoneEl = document.getElementById('cust_phone');
+  const addrEl = document.getElementById('cust_address');
+  const pinEl = document.getElementById('cust_pincode');
+
+  const nameVal = nameEl ? nameEl.value.trim() : '';
+  const phoneVal = phoneEl ? phoneEl.value.trim() : '';
+  const addrVal = addrEl ? addrEl.value.trim() : '';
+  const pinVal = pinEl ? pinEl.value.trim() : '711401';
+
+  if (!nameVal || !phoneVal || !addrVal) {
+    alert("অনুগ্রহ করে নাম, মোবাইল নম্বর এবং ঠিকানা পূরণ করুন!");
+    return;
+  }
+
+  const dName = document.getElementById('displayCustName');
+  const dPhone = document.getElementById('displayCustPhone');
+  const dAddr = document.getElementById('displayCustAddr');
+
+  if (dName) dName.textContent = nameVal;
+  if (dPhone) dPhone.textContent = '📞 ' + phoneVal;
+  if (dAddr) dAddr.textContent = '📍 ' + addrVal + (pinVal ? ' - ' + pinVal : '');
+
+  localStorage.setItem('nc_cust_name', nameVal);
+  localStorage.setItem('nc_cust_phone', phoneVal);
+  localStorage.setItem('nc_cust_addr', addrVal);
+  localStorage.setItem('nc_cust_pincode', pinVal);
+
+  const form = document.getElementById('inlineAddressEditForm');
+  if (form) form.style.display = 'none';
+}
+
+function detectCheckoutGpsLocation() {
+  const addrEl = document.getElementById('cust_address');
+  const pinEl = document.getElementById('cust_pincode');
+  if (addrEl) addrEl.value = 'আমতা চাঁদনী ভগবতীর মোড়, রাণাপাড়া, আমতা';
+  if (pinEl) pinEl.value = '711401';
+  alert("📍 আমতা লোকেশন স্বয়ংক্রিয়ভাবে সেট করা হয়েছে!");
+}
+
+function submitFinalOrder() {
+  if (cart.length === 0) {
+    alert("আপনার শপিং ব্যাগ ফাঁকা!");
+    return;
+  }
+
+  const name = localStorage.getItem('nc_cust_name') || document.getElementById('cust_name')?.value?.trim() || 'সম্মানীয় গ্রাহক';
+  const phone = localStorage.getItem('nc_cust_phone') || document.getElementById('cust_phone')?.value?.trim() || '9239413517';
+  const addr = localStorage.getItem('nc_cust_addr') || document.getElementById('cust_address')?.value?.trim() || 'আমতা, হাওড়া';
+  const pin = localStorage.getItem('nc_cust_pincode') || document.getElementById('cust_pincode')?.value?.trim() || '711401';
+
+  const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const finalTotal = selectedPayMethod === 'UPI' ? Math.max(0, total - 38) : total;
+  const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+  const newOrder = {
+    id: orderId,
+    date: dateStr,
+    name: name,
+    customerName: name,
+    phone: phone,
+    customerPhone: phone,
+    address: `${addr}, আমতা - ${pin}`,
+    pincode: pin,
+    items: [...cart],
+    total: finalTotal,
+    totalAmount: finalTotal,
+    savings: selectedPayMethod === 'UPI' ? 38 : 0,
+    paymentMode: selectedPayMethod,
+    paymentMethod: selectedPayMethod,
+    status: 'Ordered',
+    warehouseStatus: 'Pending Packing',
+    binLocation: cart[0]?.binLocation || 'র‍্যাক A-01 (বুটিক জোন)'
+  };
+
+  let orders = [];
+  try {
+    orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
+  } catch(e) { orders = []; }
+  orders.unshift(newOrder);
+  localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+  // Clear cart
+  cart = [];
+  localStorage.setItem('nc_cart', JSON.stringify(cart));
+  updateCartBadges();
+
+  closeCartModal();
+
+  // Populate Order Success Modal
+  const successModal = document.getElementById('orderSuccessModal');
+  const sId = document.getElementById('successOrderId');
+  const sTot = document.getElementById('successOrderTotal');
+  const sCust = document.getElementById('successCustomerDetails');
+  const sWa = document.getElementById('successWhatsAppLink');
+
+  if (sId) sId.textContent = '#' + orderId;
+  if (sTot) sTot.textContent = '₹' + finalTotal + (selectedPayMethod === 'UPI' ? ' (UPI অনলাইন)' : ' (ক্যাশ অন ডেলিভারি)');
+  if (sCust) sCust.textContent = `গ্রাহক: ${name} • 📞 ${phone} • 📍 ${addr}`;
+
+  if (sWa) {
+    const waText = encodeURIComponent(`নমস্কার নিশা ক্রিয়েশনস, আমি একটি নতুন অর্ডার করেছি:
+অর্ডার আইডি: #${orderId}
+মোট প্রদেয় বিল: ₹${finalTotal} (${selectedPayMethod})
+নাম: ${name}
+ফোন: ${phone}
+ঠিকানা: ${addr} - ${pin}
+
+দয়া করে অর্ডারটি কনফার্ম করুন।`);
+    sWa.href = `https://wa.me/919239413517?text=${waText}`;
+  }
+
+  if (successModal) successModal.style.display = 'flex';
+}
+
+function updateCartBadges() {
+  const count = cart.length;
+  const badges = [
+    document.getElementById('navCartBadge'),
+    document.getElementById('bottomCartBadge'),
+    document.getElementById('catCartCountBadge'),
+    document.getElementById('cartModalCount'),
+    document.getElementById('pdpCartBadge')
+  ];
+  badges.forEach(b => {
+    if (b) {
+      b.textContent = count;
+      b.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+  });
+}
+
+function buyCurrentLiveProduct() {
+  const liveProduct = products[0] || { id: 'NC-101', title: 'লাইভ স্পেশাল ঢাকাই জামদানি', price: 799, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&q=75' };
+  cart.push(liveProduct);
+  localStorage.setItem('nc_cart', JSON.stringify(cart));
+  updateCartBadges();
+  closeCustomerModal('modalLiveShopping');
+  openCartModal();
+}
+
+function revealLuckyWelcomeGift() {
+  alert("🎉 অভিনন্দন! আপনি 100 টি ওয়েলকাম কয়েন (₹1 ক্যাশ ছাড়) পেয়েছেন!");
+  closeWelcomeGiftModal();
+}
+
+function closeWelcomeGiftModal() {
+  const m = document.getElementById('welcomeGiftModal');
+  if (m) m.style.display = 'none';
+}
+
+function closeCustomerModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+// Auto-run on DOM load
+if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', () => {
+    sanitizeBoutiqueRuntime();
+    initBrandLogo();
+    applyLanguage();
+    loadAllProducts();
+    loadAndRenderBanners();
+    updateCartBadges();
+  });
 }

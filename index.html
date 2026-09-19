@@ -182,69 +182,15 @@
     </div>
 
     
-    <!-- 2. Urgency 2-Hour Flash Sale Countdown Banner (ঘড়ির টিকটিক ও অফার শেষ স্ট্যাটাস সহ) -->
-    <div class="urgency-countdown-banner" id="flashSaleBannerContainer" style="display:none !important;">
-      <div class="countdown-top-row">
-        <div class="countdown-title">
-          <i class="fa-solid fa-fire-flame-curved" style="color:#fef08a;"></i>
-          <span id="t-flashSaleTitle">FLASH SALE • স্পেশাল 2 ঘণ্টার মেগা অফার</span>
-        </div>
-        <span class="countdown-discount-badge" id="t-flashSaleBadge">UPTO 70% ছাড়</span>
-      </div>
-
-      <div style="font-size:0.76rem; color:#fdf4ff; margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px;" id="saleStatusSubtitle">
-        <i class="fa-regular fa-clock clock-tick-pulse"></i>
-        <span id="t-flashSaleSub">আমতায় 2 ঘণ্টায় ফ্রি ডেলিভারি • অফার শেষ হতে বাকি:</span>
-      </div>
-      
-      <!-- Live Realtime 2-Hour Timer Boxes Row -->
-      <div class="timer-boxes-row" id="saleTimerBoxesRow">
-        <div class="timer-box">
-          <div class="timer-box-num" id="timerHours">01</div>
-          <div class="timer-box-lbl" id="t-timerHoursLbl">ঘণ্টা</div>
-        </div>
-        <span class="timer-colon">:</span>
-        <div class="timer-box">
-          <div class="timer-box-num" id="timerMinutes">59</div>
-          <div class="timer-box-lbl" id="t-timerMinsLbl">মিনিট</div>
-        </div>
-        <span class="timer-colon">:</span>
-        <div class="timer-box">
-          <div class="timer-box-num" id="timerSeconds">45</div>
-          <div class="timer-box-lbl" id="t-timerSecsLbl">সেকেন্ড</div>
-        </div>
-        <div style="margin-left:auto;">
-          <button type="button" onclick="scrollToProducts()" style="background:#fef08a; color:#78350f; border:none; padding:7px 14px; border-radius:20px; font-size:0.75rem; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:flex; align-items:center; gap:4px;">
-            <span id="t-btnFlashOrder">অর্ডার করুন</span> <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
-          </button>
+    <!-- 🌟 Auto-Sliding Dynamic Banner Carousel (নিশা ক্রিয়েশনস প্রিমিয়াম অটো-স্লাইডার ব্যানার) -->
+    <div class="home-banner-carousel-wrap" id="homeBannerCarouselWrapper">
+      <div class="banner-carousel-viewport" id="bannerCarouselViewport">
+        <div class="banner-carousel-track" id="bannerCarouselTrack">
+          <!-- Dynamically populated via app.js -->
         </div>
       </div>
-
-      <!-- Offer Expired Notice (সময় শেষ হলে দেখাবে) -->
-      <div id="saleExpiredNoticeBox" style="display:none; background:rgba(0,0,0,0.45); border:1px solid #fca5a5; border-radius:10px; padding:10px 12px; margin-top:6px; align-items:center; justify-content:space-between;">
-        <div style="font-size:0.78rem; font-weight:800; color:#fee2e2; display:flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-hourglass-end" style="color:#f87171; font-size:1.1rem;"></i>
-          <span>এই অফারের সময় শেষ হয়ে গেছে!</span>
-        </div>
-        <button type="button" onclick="restartSaleOffer()" style="background:#fef08a; color:#78350f; border:none; padding:5px 12px; border-radius:14px; font-size:0.72rem; font-weight:800; cursor:pointer;">
-          <i class="fa-solid fa-rotate-right"></i> রিস্টার্ট করুন
-        </button>
-      </div>
-    </div>
-    <!-- 👑 Custom Owner Offer Banner (অ্যাডমিনের নিজস্ব ব্যানার অফার বক্স) -->
-    <div id="customOfferBannerContainer" style="display:none; margin:10px 12px;"></div>
-
-
-    <!-- Refer & Earn Strip -->
-    <div class="refer-strip" onclick="openReferModal()" style="display:none !important;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span style="font-size:1.4rem;">🎁</span>
-        <div>
-          <div style="font-size:0.8rem; font-weight:800; color:#92400e;" id="t-referTitle">রেফার করুন ও পান ₹50 ছাড়!</div>
-          <div style="font-size:0.68rem; color:#b45309;" id="t-referSub">বান্ধবীদের সাথে শেয়ার করলে আপনি ও বান্ধবী দুজনেই ছাড় পাবেন!</div>
-        </div>
-      </div>
-      <i class="fa-solid fa-chevron-right" style="color:#d97706; font-size:0.8rem;"></i>
+      <!-- Dots Indicator (ডটস ইন্ডিকেটর • • • • •) -->
+      <div class="banner-carousel-dots" id="bannerCarouselDots"></div>
     </div>
 
     <!-- Filter & Sort Strip -->

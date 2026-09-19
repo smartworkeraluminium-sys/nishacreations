@@ -951,6 +951,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20260919_v1"></script>
+  <script src="products.js?v=20260919_v2"></script>
 </head>
 <body>
 
@@ -1325,6 +1326,9 @@
       <button type="button" class="adm-tab-btn" id="tabBtnAdd" onclick="switchAdminView('add')">
         <i class="fa-solid fa-plus-circle"></i> নতুন প্রোডাক্ট আপলোড
       </button>
+      <button type="button" class="adm-tab-btn" id="tabBtnBanners" onclick="switchAdminView('banners')">
+        <i class="fa-solid fa-images"></i> ব্যানার স্লাইডার (<span id="countTabBanners">0</span>)
+      </button>
       <button type="button" class="adm-tab-btn" id="tabBtnPromotions" onclick="switchAdminView('promotions')">
         <i class="fa-solid fa-tags"></i> কুপন ও অফার
       </button>
@@ -1681,6 +1685,136 @@
 
     <!-- ==================== TAB D: REVIEWS ==================== -->
     
+    <!-- ==================== TAB: BANNER SLIDER MANAGER (নিশা ক্রিয়েশনস প্রিমিয়াম অটো ব্যানার) ==================== -->
+    <div id="pane-banners" class="tab-pane">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:1.25rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-images" style="color:#c084fc;"></i> হোম ব্যানার স্লাইডার কন্ট্রোল
+          </h2>
+          <p style="font-size:0.8rem; color:#94a3b8; margin-top:3px;">
+            হোমপেজে স্বয়ংক্রিয়ভাবে স্লাইড হওয়া ব্যানার পরিচালনা করুন। যখন ইচ্ছা নতুন ব্যানার তৈরি, অফার টেক্সট পরিবর্তন ও ডিলিট করুন।
+          </p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-fast-action" style="background:#a855f7;" onclick="openAddBannerForm()">
+            <i class="fa-solid fa-plus"></i> নতুন ব্যানার বানান
+          </button>
+          <button type="button" class="btn-fast-action" style="background:#475569;" onclick="resetAdminBannersToDefault()">
+            <i class="fa-solid fa-rotate-left"></i> ডিফল্ট ব্যানার ফেরত আনুন
+          </button>
+        </div>
+      </div>
+
+      <!-- 2-Column Banner Management Grid -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+        
+        <!-- Column 1: Active Banners List -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-layer-group" style="color:#38bdf8;"></i> সক্রিয় ব্যানারের তালিকা
+            </div>
+            <span id="activeBannersCountBadge" style="background:#3b82f6; color:#fff; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px;">0 টি সক্রিয়</span>
+          </div>
+
+          <div id="adminBannersListContainer" style="display:flex; flex-direction:column; gap:12px; max-height:650px; overflow-y:auto; padding-right:4px;">
+            <!-- Rendered by renderAdminBanners() -->
+          </div>
+        </div>
+
+        <!-- Column 2: Add / Edit Banner Form & Live Preview -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px;">
+          <div style="font-size:0.95rem; font-weight:800; color:#f8fafc; margin-bottom:14px; display:flex; align-items:center; gap:8px;" id="bannerFormTitle">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color:#ec4899;"></i> নতুন ব্যানার তৈরি করুন
+          </div>
+
+          <input type="hidden" id="editBannerId" value="">
+
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">ব্যানার শিরোনাম (Title) *</label>
+              <input type="text" id="bannerInpTitle" placeholder="যেমন: শারদীয়া উৎসব মেগা অফার" oninput="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem;">
+            </div>
+
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">ব্যাজ / হাইলাইট ট্যাগ (Badge) *</label>
+              <input type="text" id="bannerInpBadge" placeholder="যেমন: 🔥 ফেস্টিভ্যাল ধামাকা" oninput="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem;">
+            </div>
+
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">অফার বিবরণ / সাবটাইটেল (Subtitle) *</label>
+              <input type="text" id="bannerInpSubtitle" placeholder="যেমন: খাঁটি ঢাকাই জামদানিতে 40% - 60% ছাড়!" oninput="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem;">
+            </div>
+
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">টার্গেট কালেকশন (ক্লিক করলে কি ফিল্টার হবে)</label>
+              <select id="bannerInpCategory" onchange="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem;">
+                <option value="all">🌟 সব কালেকশন</option>
+                <option value="jamdani">🥻 ঢাকাই জামদানি</option>
+                <option value="silk">✨ সফট সিল্ক / কাতান</option>
+                <option value="tant">🌿 সুতি তাঁত শাড়ি</option>
+                <option value="kurti">👗 কুর্তি ও গাউন</option>
+                <option value="jewel">💎 ব্রাইডাল গহনা ও নেকলেস</option>
+                <option value="bangles">✨ বালা ও চুড়ি</option>
+                <option value="girls">👧 বাচ্চার ফ্রক ও ড্রেস</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">ব্যাকগ্রাউন্ড কালার থিম (Gradients)</label>
+              <select id="bannerInpGradient" onchange="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem;">
+                <option value="linear-gradient(135deg, #701a75, #9333ea, #db2777)">🟣 ফেস্টিভ পার্পল ও ম্যাজেন্টা (Festive Purple)</option>
+                <option value="linear-gradient(135deg, #831843, #be185d, #f43f5e)">🔴 রয়্যাল রুবি ও ক্রিমসন রেড (Ruby Red)</option>
+                <option value="linear-gradient(135deg, #065f46, #059669, #10b981)">🟢 এমারেল্ড গ্রিন ও মিন্ট (Emerald Green)</option>
+                <option value="linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8)">🔵 রয়্যাল ওশান ব্লু (Ocean Blue)</option>
+                <option value="linear-gradient(135deg, #78350f, #b45309, #f59e0b)">🟡 গোল্ডেন অ্যাম্বার ও ব্রোঞ্জ (Golden Amber)</option>
+                <option value="linear-gradient(135deg, #0f172a, #1e293b, #334155)">⚫ লাক্সারি মিডনাইট স্লেট (Midnight Dark)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.78rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:4px;">ব্যানারের মডেল / শাড়ির ছবি</label>
+              <input type="text" id="bannerInpImage" placeholder="ছবির অনলাইন লিংক পেস্ট করুন" oninput="updateAdminBannerPreview()" style="width:100%; padding:9px 12px; background:#0f172a; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:0.85rem; margin-bottom:6px;">
+              <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:6px;">অথবা মোবাইল গ্যালারি থেকে ছবি আপলোড করুন:</div>
+              <input type="file" id="bannerFileInput" accept="image/*" onchange="handleBannerFileUpload(this)" style="font-size:0.75rem; color:#cbd5e1;">
+            </div>
+
+            <!-- Real-time Mobile Preview -->
+            <div style="margin-top:8px;">
+              <div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">
+                📱 লাইভ মোবাইল প্রিভিউ (হোমপেজে যেমন দেখাবে):
+              </div>
+              <div id="adminBannerPreviewBox" style="border-radius:16px; padding:14px 16px; min-height:150px; display:flex; align-items:center; justify-content:space-between; position:relative; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.3); background:linear-gradient(135deg, #701a75, #9333ea, #db2777);">
+                <div style="flex:1; max-width:62%; z-index:2;">
+                  <span id="prevBadge" style="display:inline-block; background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.4); color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:20px; margin-bottom:4px;">🔥 ফেস্টিভ্যাল ধামাকা</span>
+                  <div id="prevTitle" style="font-size:1rem; font-weight:900; color:#fff; line-height:1.25; text-shadow:0 1px 3px rgba(0,0,0,0.3);">শারদীয়া উৎসব মেগা অফার</div>
+                  <div id="prevSubtitle" style="font-size:0.72rem; color:#fef08a; margin-top:4px; font-weight:600;">খাঁটি ঢাকাই জামদানিতে 40% - 60% ছাড়!</div>
+                  <div style="display:inline-flex; align-items:center; gap:4px; background:#fff; color:#0f172a; font-size:0.68rem; font-weight:800; padding:4px 10px; border-radius:20px; margin-top:6px;">
+                    কালেকশন দেখুন <i class="fa-solid fa-chevron-right" style="font-size:0.6rem;"></i>
+                  </div>
+                </div>
+                <div style="width:90px; height:110px; z-index:2; flex-shrink:0;">
+                  <img id="prevImg" src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80" style="width:100%; height:100%; object-fit:cover; border-radius:10px; border:2px solid rgba(255,255,255,0.4); box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button type="button" class="btn-fast-action" style="flex:1; background:#10b981; justify-content:center;" onclick="saveAdminBanner()">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="btnSaveBannerText">ব্যানার সেভ করুন</span>
+              </button>
+              <button type="button" class="btn-fast-action" style="background:#475569; justify-content:center;" onclick="openAddBannerForm()">
+                <i class="fa-solid fa-xmark"></i> বাতিল
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- ==================== TAB E: PROMOTIONS & PRICING ENGINE (ফিচার ৩১-৪০) ==================== -->
     <div id="pane-promotions" class="tab-pane">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
@@ -2020,7 +2154,314 @@
 
 
 <script>
-    // State
+    
+    // =========================================================================
+    // 🖼️ BANNER SLIDER MANAGEMENT SYSTEM
+    // মালিক যখন ইচ্ছা নতুন ব্যানার তৈরি করতে পারবেন, এডিট বা ডিলিট করতে পারবেন
+    // =========================================================================
+    let adminBanners = [];
+
+    function loadAdminBanners() {
+      try {
+        const stored = localStorage.getItem('nc_banners');
+        if (stored) {
+          adminBanners = JSON.parse(stored);
+        }
+      } catch(e) {}
+
+      if (!Array.isArray(adminBanners) || adminBanners.length === 0) {
+        if (typeof DEFAULT_BANNERS !== 'undefined' && Array.isArray(DEFAULT_BANNERS)) {
+          adminBanners = JSON.parse(JSON.stringify(DEFAULT_BANNERS));
+        } else {
+          adminBanners = [
+            {
+              id: "banner-1",
+              title: "শারদীয়া উৎসব মেগা অফার",
+              subtitle: "খাঁটি ঢাকাই জামদানি শাড়িতে 40% - 60% ছাড়!",
+              badge: "🔥 ফেস্টিভ্যাল ধামাকা",
+              image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #701a75, #9333ea, #db2777)",
+              targetCategory: "jamdani",
+              active: true
+            },
+            {
+              id: "banner-2",
+              title: "রয়েল সফট সিল্ক ও বেনারসি",
+              subtitle: "জরি বর্ডার ও প্রিমিয়াম ডিজাইনার আঁচল কালেকশন",
+              badge: "✨ প্রিমিয়াম কোয়ালিটি",
+              image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #831843, #be185d, #f43f5e)",
+              targetCategory: "silk",
+              active: true
+            },
+            {
+              id: "banner-3",
+              title: "শান্তিপুরী ও ফুলিয়া সুতি তাঁত",
+              subtitle: "দৈনন্দিন ও উৎসবের সেরা আরামদায়ক হ্যান্ডলুম",
+              badge: "🌿 100% খাঁটি সুতি",
+              image: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #065f46, #059669, #10b981)",
+              targetCategory: "tant",
+              active: true
+            },
+            {
+              id: "banner-4",
+              title: "ট্রেন্ডি কুর্তি ও লং গাউন",
+              subtitle: "মাত্র ₹499 থেকে শুরু • আধুনিক ফিটিং ও ফ্যাব্রিক",
+              badge: "⚡ বেস্টসেলার",
+              image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8)",
+              targetCategory: "kurti",
+              active: true
+            },
+            {
+              id: "banner-5",
+              title: "ব্রাইডাল জুয়েলারি ও চোকার সেট",
+              subtitle: "কুন্দন নেকলেস ও গোল্ড প্লেটেড নিখুঁত বালা কালেকশন",
+              badge: "💎 রয়্যাল ফিনিশিং",
+              image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #78350f, #b45309, #f59e0b)",
+              targetCategory: "jewel",
+              active: true
+            },
+            {
+              id: "banner-6",
+              title: "কিউট বেবি ফ্রক ও উৎসব সেট",
+              subtitle: "ছোট্ট সোনাদের জন্য আকর্ষণীয় কালারফুল ফ্রক",
+              badge: "👧 স্পেশাল কিডস কালেকশন",
+              image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600&auto=format&fit=crop&q=80",
+              bgGradient: "linear-gradient(135deg, #581c87, #7c3aed, #ec4899)",
+              targetCategory: "girls",
+              active: true
+            }
+          ];
+          localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+        }
+      }
+
+      updateBannerBadgesCount();
+    }
+
+    function updateBannerBadgesCount() {
+      const activeCount = adminBanners.filter(b => b.active !== false).length;
+      const cTab = document.getElementById('countTabBanners');
+      const cBadge = document.getElementById('activeBannersCountBadge');
+      if (cTab) cTab.textContent = activeCount;
+      if (cBadge) cBadge.textContent = `${activeCount} টি সক্রিয়`;
+    }
+
+    function renderAdminBanners() {
+      loadAdminBanners();
+      const container = document.getElementById('adminBannersListContainer');
+      if (!container) return;
+
+      if (adminBanners.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px; color:#94a3b8; font-size:0.85rem;">
+            কোনো ব্যানার নেই! নতুন ব্যানার তৈরি করতে ডানপাশের ফর্ম পূরণ করুন।
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      adminBanners.forEach((b, idx) => {
+        const isActive = b.active !== false;
+        html += `
+          <div style="background:#0f172a; border:1px solid ${isActive ? '#3b82f6' : 'var(--border)'}; border-radius:12px; padding:12px; display:flex; gap:12px; align-items:center;">
+            <div style="width:70px; height:80px; flex-shrink:0; border-radius:8px; overflow:hidden; position:relative; background:${b.bgGradient || '#1e1b4b'}; display:flex; align-items:center; justify-content:center;">
+              <img src="${b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80'}" style="width:100%; height:100%; object-fit:cover;">
+              <span style="position:absolute; top:2px; left:2px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.6rem; padding:1px 5px; border-radius:4px; font-weight:bold;">#${idx + 1}</span>
+            </div>
+
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                <span style="background:rgba(255,255,255,0.1); color:#fef08a; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700;">${b.badge || 'অফার'}</span>
+                <span style="font-size:0.72rem; color:#94a3b8;">→ ${b.targetCategory || 'all'}</span>
+              </div>
+              <div style="font-size:0.88rem; font-weight:800; color:#f8fafc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${b.title}</div>
+              <div style="font-size:0.75rem; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">${b.subtitle}</div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+              <div style="display:flex; gap:4px;">
+                <button type="button" onclick="moveAdminBanner('${b.id}', -1)" title="উপরে নিন" style="background:#1e293b; color:#cbd5e1; border:1px solid var(--border); width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:0.75rem;">⬆</button>
+                <button type="button" onclick="moveAdminBanner('${b.id}', 1)" title="নিচে নিন" style="background:#1e293b; color:#cbd5e1; border:1px solid var(--border); width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:0.75rem;">⬇</button>
+                <button type="button" onclick="editAdminBanner('${b.id}')" title="এডিট" style="background:#3b82f6; color:#fff; border:none; width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:0.75rem;"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" onclick="deleteAdminBanner('${b.id}')" title="ডিলিট" style="background:#ef4444; color:#fff; border:none; width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button>
+              </div>
+              <button type="button" onclick="toggleAdminBannerActive('${b.id}')" style="background:${isActive ? '#059669' : '#475569'}; color:#fff; border:none; padding:3px 8px; border-radius:12px; font-size:0.68rem; font-weight:800; cursor:pointer;">
+                ${isActive ? '✓ চালু (Active)' : '✕ বন্ধ (Inactive)'}
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      updateBannerBadgesCount();
+    }
+
+    function openAddBannerForm() {
+      document.getElementById('editBannerId').value = '';
+      document.getElementById('bannerFormTitle').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color:#ec4899;"></i> নতুন ব্যানার তৈরি করুন';
+      document.getElementById('btnSaveBannerText').textContent = 'ব্যানার সেভ করুন';
+
+      document.getElementById('bannerInpTitle').value = 'শারদীয়া উৎসব মেগা অফার';
+      document.getElementById('bannerInpBadge').value = '🔥 ফেস্টিভ্যাল ধামাকা';
+      document.getElementById('bannerInpSubtitle').value = 'খাঁটি ঢাকাই জামদানিতে 40% - 60% ছাড়!';
+      document.getElementById('bannerInpImage').value = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80';
+      document.getElementById('bannerInpCategory').value = 'jamdani';
+      document.getElementById('bannerInpGradient').value = 'linear-gradient(135deg, #701a75, #9333ea, #db2777)';
+
+      updateAdminBannerPreview();
+    }
+
+    function editAdminBanner(id) {
+      const b = adminBanners.find(item => item.id === id);
+      if (!b) return;
+
+      document.getElementById('editBannerId').value = b.id;
+      document.getElementById('bannerFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color:#38bdf8;"></i> ব্যানার এডিট করুন';
+      document.getElementById('btnSaveBannerText').textContent = 'পরিবর্তন সেভ করুন';
+
+      document.getElementById('bannerInpTitle').value = b.title || '';
+      document.getElementById('bannerInpBadge').value = b.badge || '';
+      document.getElementById('bannerInpSubtitle').value = b.subtitle || '';
+      document.getElementById('bannerInpImage').value = b.image || '';
+      document.getElementById('bannerInpCategory').value = b.targetCategory || 'all';
+      document.getElementById('bannerInpGradient').value = b.bgGradient || 'linear-gradient(135deg, #701a75, #9333ea, #db2777)';
+
+      updateAdminBannerPreview();
+
+      // Scroll form into view
+      document.getElementById('bannerFormTitle')?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function saveAdminBanner() {
+      const editId = document.getElementById('editBannerId').value.trim();
+      const title = document.getElementById('bannerInpTitle').value.trim();
+      const badge = document.getElementById('bannerInpBadge').value.trim();
+      const subtitle = document.getElementById('bannerInpSubtitle').value.trim();
+      const image = document.getElementById('bannerInpImage').value.trim();
+      const targetCategory = document.getElementById('bannerInpCategory').value;
+      const bgGradient = document.getElementById('bannerInpGradient').value;
+
+      if (!title || !subtitle) {
+        alert("অনুগ্রহ করে ব্যানারের শিরোনাম ও অফার বিবরণ লিখুন!");
+        return;
+      }
+
+      const defaultImg = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80';
+
+      if (editId) {
+        // Update existing
+        const idx = adminBanners.findIndex(b => b.id === editId);
+        if (idx !== -1) {
+          adminBanners[idx].title = title;
+          adminBanners[idx].badge = badge || 'স্পেশাল অফার';
+          adminBanners[idx].subtitle = subtitle;
+          adminBanners[idx].image = image || defaultImg;
+          adminBanners[idx].targetCategory = targetCategory;
+          adminBanners[idx].bgGradient = bgGradient;
+        }
+      } else {
+        // Create new
+        const newBanner = {
+          id: 'banner-' + Date.now(),
+          title: title,
+          badge: badge || 'স্পেশাল অফার',
+          subtitle: subtitle,
+          image: image || defaultImg,
+          targetCategory: targetCategory,
+          bgGradient: bgGradient,
+          active: true
+        };
+        adminBanners.unshift(newBanner);
+      }
+
+      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      renderAdminBanners();
+      openAddBannerForm();
+      alert("🎉 ব্যানার সফলভাবে সেভ করা হয়েছে এবং লাইভ শপে আপডেট হয়েছে!");
+    }
+
+    function deleteAdminBanner(id) {
+      if (!confirm("আপনি কি নিশ্চিত এই ব্যানারটি ডিলিট করতে চান?")) return;
+      adminBanners = adminBanners.filter(b => b.id !== id);
+      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      renderAdminBanners();
+    }
+
+    function toggleAdminBannerActive(id) {
+      const b = adminBanners.find(item => item.id === id);
+      if (!b) return;
+      b.active = (b.active === false);
+      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      renderAdminBanners();
+    }
+
+    function moveAdminBanner(id, dir) {
+      const idx = adminBanners.findIndex(b => b.id === id);
+      if (idx === -1) return;
+      const targetIdx = idx + dir;
+      if (targetIdx < 0 || targetIdx >= adminBanners.length) return;
+
+      const temp = adminBanners[idx];
+      adminBanners[idx] = adminBanners[targetIdx];
+      adminBanners[targetIdx] = temp;
+
+      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      renderAdminBanners();
+    }
+
+    function resetAdminBannersToDefault() {
+      if (!confirm("ডিফল্ট ৬টি কালারফুল ব্যানার রিসেট করতে চান?")) return;
+      if (typeof DEFAULT_BANNERS !== 'undefined' && Array.isArray(DEFAULT_BANNERS)) {
+        adminBanners = JSON.parse(JSON.stringify(DEFAULT_BANNERS));
+      } else {
+        adminBanners = [];
+      }
+      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      renderAdminBanners();
+      openAddBannerForm();
+      alert("ডিফল্ট ব্যানার সফলভাবে রিস্টোর হয়েছে!");
+    }
+
+    function updateAdminBannerPreview() {
+      const title = document.getElementById('bannerInpTitle')?.value || 'শারদীয়া উৎসব মেগা অফার';
+      const badge = document.getElementById('bannerInpBadge')?.value || '🔥 ফেস্টিভ্যাল ধামাকা';
+      const subtitle = document.getElementById('bannerInpSubtitle')?.value || 'খাঁটি ঢাকাই জামদানিতে 40% - 60% ছাড়!';
+      const image = document.getElementById('bannerInpImage')?.value || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80';
+      const gradient = document.getElementById('bannerInpGradient')?.value || 'linear-gradient(135deg, #701a75, #9333ea, #db2777)';
+
+      const box = document.getElementById('adminBannerPreviewBox');
+      const pTitle = document.getElementById('prevTitle');
+      const pBadge = document.getElementById('prevBadge');
+      const pSub = document.getElementById('prevSubtitle');
+      const pImg = document.getElementById('prevImg');
+
+      if (box) box.style.background = gradient;
+      if (pTitle) pTitle.textContent = title;
+      if (pBadge) pBadge.textContent = badge;
+      if (pSub) pSub.textContent = subtitle;
+      if (pImg) pImg.src = image;
+    }
+
+    function handleBannerFileUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgUrl = e.target.result;
+          document.getElementById('bannerInpImage').value = imgUrl;
+          updateAdminBannerPreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+// State
     let ordersList = [];
     let uploadedStudioPhoto = '';
     let uploadedPhotoList = [];
@@ -3181,7 +3622,10 @@
       const pane = document.getElementById(`pane-${tabKey}`);
       if (pane) pane.classList.add('active');
 
-      if (tabKey === 'orders') {
+      if (tabKey === 'banners') {
+        document.getElementById('tabBtnBanners')?.classList.add('active');
+        renderAdminBanners();
+      } else if (tabKey === 'orders') {
         document.getElementById('tabBtnOrders')?.classList.add('active');
         renderOwnerOrders();
       } else if (tabKey === 'warehouse') {
