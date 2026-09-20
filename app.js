@@ -1788,6 +1788,16 @@ function adminQuickRestock(idx) {
       let orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
       orders = orders.map(o => o.id === id ? { ...o, status: newStatus } : o);
       localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+  // Sync order to Google Cloud Firestore
+  if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+    try {
+      CloudSync.saveOrder(newOrder);
+      console.log('☁️ Order dispatched to Cloud Firestore successfully!');
+    } catch(e) {
+      console.warn('Notice during cloud order dispatch:', e);
+    }
+  }
       alert("✅ অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
       renderCustomerAccountOrders();
     }
@@ -6166,6 +6176,33 @@ function bootNishaApp() {
   try { loadAllProducts(); } catch(e) { console.warn('Products load:', e); }
   try { loadAndRenderBanners(); } catch(e) { console.warn('Banners load:', e); }
   try { updateCartBadges(); } catch(e) { console.warn('Cart badges:', e); }
+
+  // Continuous Realtime Cloud Firestore Sync for Customer Phones
+  let fbRetries = 0;
+  const startCloudSyncInterval = setInterval(() => {
+    fbRetries++;
+    if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+      clearInterval(startCloudSyncInterval);
+      console.log('☁️ Attaching Realtime Cloud Firestore Listeners on Customer Phone...');
+      
+      CloudSync.syncProducts((liveProds) => {
+        if (Array.isArray(liveProds) && liveProds.length > 0) {
+          console.log('☁️ Live products received from Firestore:', liveProds.length);
+          products = liveProds;
+          try {
+            localStorage.setItem('nc_products', JSON.stringify(liveProds));
+            localStorage.setItem('nc_demo_cleared', 'true');
+          } catch(e) {}
+          renderProducts(products);
+        }
+      });
+
+      CloudSync.syncBanner(() => {
+        if (typeof loadAndRenderBanners === 'function') loadAndRenderBanners();
+      });
+    }
+    if (fbRetries > 20) clearInterval(startCloudSyncInterval);
+  }, 500);
 }
 
 if (typeof document !== 'undefined') {
