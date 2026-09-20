@@ -1344,7 +1344,7 @@
 <span style="font-size:1.4rem;">🪙</span>
 <div>
 <div id="t-coinRedeemTitle" style="font-size:0.82rem; font-weight:800; color:#92400e;">সুপারকয়েন ব্যবহার করুন (Redeem Coins)</div>
-<div id="t-coinRedeemSub" style="font-size:0.68rem; color:#b45309;">100 কয়েন = 1 টাকা ছাড় • আপনার কয়েন: <strong id="checkoutCoinBal">500</strong> (<span id="checkoutCoinRupees">₹5</span> ছাড়)</div>
+<div id="t-coinRedeemSub" style="font-size:0.72rem; color:#b45309; margin-top:2px;">১০০ কয়েন = ₹১ নগদ ছাড় • আপনার ব্যালেন্স: <strong id="checkoutCoinBal" style="font-size:0.85rem; color:#92400e;">1000</strong> কয়েন (<span id="checkoutCoinRupees" style="font-weight:800; color:#15803d;">₹10 ছাড় প্রযোজ্য</span>)</div>
 </div>
 </div>
 <label style="display:flex; align-items:center; cursor:pointer; gap:6px;">
@@ -1356,12 +1356,7 @@
               ✓ <span id="coinAppliedText">500 কয়েন সফলভাবে প্রয়োগ হয়েছে (-₹5 নগদ ছাড়)!</span>
 </div>
 </div>
-<!-- Coupon Code Box -->
-<div style="display:flex; gap:8px; margin-bottom:12px;">
-<input id="couponInput" placeholder="কুপন কোড (যেমন: PUJA50)" style="flex:1; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.8rem; text-transform:uppercase;" type="text"/>
-<button id="t-btnApplyCoupon" onclick="applyCouponCode()" style="background:#7e22ce; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer;" type="button">প্রয়োগ</button>
-</div>
-<div id="couponAppliedMsg" style="display:none; font-size:0.75rem; color:#16a34a; font-weight:700; margin-bottom:10px;"></div>
+<!-- Promo code system removed in favor of pure 100-Coins=₹1 discount -->
 <!-- Gift Wrap Option -->
 <label style="display:flex; align-items:center; gap:8px; background:#fff; padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.78rem; font-weight:700; color:#7e22ce; margin-bottom:12px; cursor:pointer;">
 <input id="giftWrapCheck" type="checkbox"/>
@@ -1458,17 +1453,19 @@
   </div>
 </div>
 <!-- Option 2: Cash on Delivery (COD) -->
-<div class="payment-option-card" id="payOptCardCod" onclick="selectPaymentMethod('COD')">
+<div class="payment-option-card" id="payOptCardCod" onclick="selectPaymentMethod('COD')" style="cursor:pointer; transition:all 0.2s ease;">
 <div class="payment-card-left">
-<div class="payment-radio-dot"></div>
+<div class="payment-radio-dot" id="codRadioDot"></div>
 <div>
-<div id="t-cartCodTitle" style="font-size:0.88rem; font-weight:800; color:#0f172a;">ক্যাশ অন ডেলিভারি (COD)</div>
-<div id="t-cartCodSub" style="font-size:0.72rem; color:#64748b; margin-top:2px;">পণ্য হাতে পাওয়ার পর নগদে টাকা দিন</div>
+<div id="t-cartCodTitle" style="font-size:0.92rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
+  <span>💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)</span>
+</div>
+<div id="t-cartCodSub" style="font-size:0.74rem; color:#64748b; margin-top:2px;">পার্সেল হাতে পেয়ে ডেলিভারি বয়কে নগদ টাকা দিন</div>
 </div>
 </div>
 <div style="text-align:right;">
-<div id="payCodFinalAmount" style="font-size:1.05rem; font-weight:800; color:#0f172a;">₹466</div>
-<div id="t-cartCodNoDiscount" style="font-size:0.65rem; color:#ef4444; font-weight:700;">(কোনো অতিরিক্ত ছাড় নেই)</div>
+<div id="payCodFinalAmount" style="font-size:1.1rem; font-weight:800; color:#0f172a;">₹0</div>
+<div id="t-cartCodNoDiscount" style="font-size:0.68rem; color:#64748b; font-weight:600;">(কোনো অনলাইন ছাড় নেই)</div>
 </div>
 </div>
 <!-- Savings Guarantee Banner -->
@@ -1478,7 +1475,7 @@
 </div>
 <!-- Final Order Confirmation Button -->
 <button onclick="submitFinalOrder()" style="width:100%; background:linear-gradient(135deg, #16a34a, #15803d); color:#fff; border:none; padding:14px; border-radius:12px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 4px 14px rgba(22,163,74,0.35); display:flex; align-items:center; justify-content:center; gap:8px;" type="button">
-<i class="fa-solid fa-circle-check"></i> <span id="finalConfirmBtnLabel">অর্ডার কনফার্ম করুন (Pay ₹428)</span>
+<i class="fa-solid fa-circle-check"></i> <span id="finalConfirmBtnLabel">অর্ডার কনফার্ম করুন</span>
 </button>
 </div>
 </div>

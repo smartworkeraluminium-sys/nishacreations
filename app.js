@@ -3588,17 +3588,31 @@ function selectPdpSize(sz) {
       orders = orders.map(o => o.id === currentDelivOrderId ? { ...o, reviewed: true, reviewData: newReview } : o);
       localStorage.setItem('nc_orders', JSON.stringify(orders));
 
-      // 3. Add 20 Nisha Coins as Reward
-      if (currentCustomer) {
-        currentCustomer.coins = (currentCustomer.coins || 150) + 20;
-        localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
-        loadCustomerAccountHub();
-      syncCheckoutWithProfile();
+      // 3. Reward Coins for Review (100 to 1,000 Coins)
+      // - Rating only: 100 Coins
+      // - Rating + comment: 500 Coins
+      // - Rating + comment + photo: 1,000 Coins!
+      let rewardCoins = 100;
+      if (currentDelivReviewPhoto && currentDelivReviewPhoto.length > 50) {
+        rewardCoins = 1000;
+      } else if (comment && comment.length >= 5) {
+        rewardCoins = 500;
       }
 
+      if (currentCustomer) {
+        currentCustomer.coins = (currentCustomer.coins || 1000) + rewardCoins;
+        localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+        loadCustomerAccountHub();
+        syncCheckoutWithProfile();
+      }
+      let curCoins = parseInt(localStorage.getItem('nc_super_coins') || '1000');
+      curCoins += rewardCoins;
+      localStorage.setItem('nc_super_coins', String(curCoins));
+      updateAllSuperCoinsDisplays();
+
       alert(currentLang === 'bn' 
-        ? `🎉 অনেক ধন্যবাদ! আপনার ${currentDelivStar}-স্টার রিভিউ এবং ছবি সফলভাবে জমা হয়েছে। নিশা ক্রিয়েশনসের পক্ষ থেকে আপনার অ্যাকাউন্টে 20টি কয়েন যোগ হয়েছে!` 
-        : `🎉 Thank you! Your review and photo have been submitted. 20 Coins added!`);
+        ? `🎉 অনেক ধন্যবাদ! আপনার মূল্যবান রিভিউ সফলভাবে জমা হয়েছে।\n🎁 নিশা ক্রিয়েশনসের পক্ষ থেকে আপনি ${rewardCoins} নিশা কয়েন (নগদ ₹${Math.floor(rewardCoins/100)} ছাড় সমতুল্য) রিওয়ার্ড পেলেন!` 
+        : `🎉 Thank you! Your review has been submitted. You earned ${rewardCoins} Coins (worth ₹${Math.floor(rewardCoins/100)})!`);
 
       closeDeliveryReviewModal();
       orders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
@@ -6042,17 +6056,19 @@ function goToCheckoutStep2() {
   if (ind1) ind1.classList.remove('active');
   if (ind2) ind2.classList.add('active');
 
-  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
-  const upiTotal = Math.max(0, total - 38);
+  const rawSubtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const payableBase = Math.max(0, rawSubtotal - (appliedCoinDiscountRupees || 0));
+  const codTotal = payableBase;
+  const upiTotal = Math.max(0, payableBase - 38);
 
   const payCodAmount = document.getElementById('payCodFinalAmount');
   const payUpiAmount = document.getElementById('payUpiFinalAmount');
   const payUpiStriked = document.getElementById('payUpiStrikedAmount');
   const upiLink = document.getElementById('upiDirectPayLink');
 
-  if (payCodAmount) payCodAmount.textContent = `₹${total}`;
+  if (payCodAmount) payCodAmount.textContent = `₹${codTotal}`;
   if (payUpiAmount) payUpiAmount.textContent = `₹${upiTotal}`;
-  if (payUpiStriked) payUpiStriked.textContent = `₹${total}`;
+  if (payUpiStriked) payUpiStriked.textContent = `₹${codTotal}`;
     const officialUpiId = localStorage.getItem('nc_official_upi_id') || '9239413517-1@naviaxis';
   const payeeName = 'Nisha Singh';
   if (upiLink) {
@@ -6129,8 +6145,14 @@ function submitFinalOrder() {
   const pin = localStorage.getItem('nc_cust_pincode') || document.getElementById('cust_pincode')?.value?.trim() || '711401';
 
   const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
-  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
-  const finalTotal = selectedPayMethod === 'UPI' ? Math.max(0, total - 38) : total;
+  const rawSubtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const payableBase = Math.max(0, rawSubtotal - (appliedCoinDiscountRupees || 0));
+
+  const isUpi = (selectedPayMethod === 'UPI');
+  const finalTotal = isUpi ? Math.max(0, payableBase - 38) : payableBase;
+  const onlineSavings = isUpi ? 38 : 0;
+  const totalSavings = onlineSavings + (appliedCoinDiscountRupees || 0);
+
   const dateStr = new Date().toLocaleDateString('bn-IN') + ", " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
   const newOrder = {
@@ -6147,13 +6169,28 @@ function submitFinalOrder() {
     items: [...cart],
     total: finalTotal,
     totalAmount: finalTotal,
-    savings: selectedPayMethod === 'UPI' ? 38 : 0,
-    paymentMode: selectedPayMethod,
-    paymentMethod: selectedPayMethod,
+    rawSubtotal: rawSubtotal,
+    coinsUsed: appliedCoinsCount || 0,
+    coinDiscount: appliedCoinDiscountRupees || 0,
+    savings: totalSavings,
+    paymentMode: isUpi ? 'UPI' : 'COD',
+    paymentMethod: isUpi ? 'অনলাইন UPI' : 'ক্যাশ অন ডেলিভারি (Cash on Delivery)',
     status: 'Order Placed',
     warehouseStatus: 'Pending Packing',
     binLocation: cart[0]?.binLocation || 'র‍্যাক A-01 (বুটিক জোন)'
   };
+
+  // Deduct coins if used
+  if (appliedCoinsCount > 0) {
+    if (currentCustomer) {
+      currentCustomer.coins = Math.max(0, (currentCustomer.coins || 1000) - appliedCoinsCount);
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+    }
+    let curCoins = parseInt(localStorage.getItem('nc_super_coins') || '1000');
+    curCoins = Math.max(0, curCoins - appliedCoinsCount);
+    localStorage.setItem('nc_super_coins', String(curCoins));
+    updateAllSuperCoinsDisplays();
+  }
 
   let orders = [];
   try {
@@ -6344,20 +6381,161 @@ bootNishaApp();
 
 
 
-// SuperCoins Redeem Toggle Function
+// =========================================================================
+// COIN SYSTEM (১০০ কয়েনে ১ টাকা) & REWARD LOGIC
+// =========================================================================
+var appliedCoinDiscountRupees = 0;
+var appliedCoinsCount = 0;
+var selectedPayMethod = 'UPI'; // 'UPI' or 'COD'
+
+function getAvailableUserCoins() {
+  if (currentCustomer && currentCustomer.coins !== undefined) {
+    return parseInt(currentCustomer.coins) || 0;
+  }
+  const stored = localStorage.getItem('nc_super_coins');
+  if (!stored) {
+    localStorage.setItem('nc_super_coins', '1000'); // Welcome gift of 1000 coins (₹10 value)
+    return 1000;
+  }
+  return parseInt(stored) || 0;
+}
+
+function updateAllSuperCoinsDisplays() {
+  const coins = getAvailableUserCoins();
+  const dCoins = document.querySelectorAll('#checkoutCoinBal, #drawerCoinsDisplay, #ncCoinBalanceNum');
+  dCoins.forEach(el => { if (el) el.textContent = coins; });
+
+  const maxRs = Math.floor(coins / 100);
+  const rDisp = document.getElementById('checkoutCoinRupees');
+  if (rDisp) rDisp.textContent = `₹${maxRs} ছাড় প্রযোজ্য`;
+}
+
 function toggleSuperCoinsRedeem() {
   const chk = document.getElementById('useSuperCoinsCheck');
   const isChecked = chk ? chk.checked : false;
+
+  const userCoins = getAvailableUserCoins();
+  const cartSubtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+
+  // Calculate cart allowed coins based on product limits
+  let cartMaxAllowedCoins = 0;
+  cart.forEach(item => {
+    const itemMax = (item.maxCoins !== undefined && item.maxCoins !== null) ? parseInt(item.maxCoins) : 2000;
+    cartMaxAllowedCoins += itemMax * (item.qty || 1);
+  });
+  if (cartMaxAllowedCoins <= 0) cartMaxAllowedCoins = 2000;
+
+  // Max coins eligible: minimum of user balance and cart allowed limit
+  const eligibleCoins = Math.min(userCoins, cartMaxAllowedCoins);
+
+  // 100 Coins = 1 Rupee
+  let maxDiscountRupees = Math.floor(eligibleCoins / 100);
+
+  // Safe cap: cannot exceed 50% of bill or total cart price
+  const cap50 = Math.floor(cartSubtotal * 0.5);
+  if (maxDiscountRupees > cap50) maxDiscountRupees = cap50;
+
+  const coinsToDeduct = maxDiscountRupees * 100;
+
+  if (isChecked && maxDiscountRupees > 0) {
+    appliedCoinDiscountRupees = maxDiscountRupees;
+    appliedCoinsCount = coinsToDeduct;
+  } else {
+    appliedCoinDiscountRupees = 0;
+    appliedCoinsCount = 0;
+    if (chk) chk.checked = false;
+  }
+
+  // Update UI in Step 1
   const statusMsg = document.getElementById('coinAppliedStatusMsg');
-  const coinRow = document.getElementById('billCoinDiscountRow');
-  const coinVal = document.getElementById('billCoinDiscountVal');
-  if (statusMsg) statusMsg.style.display = isChecked ? 'block' : 'none';
-  if (coinRow) coinRow.style.display = isChecked ? 'flex' : 'none';
-  if (coinVal) coinVal.textContent = '-₹5';
-  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
-  const finalTotal = isChecked ? Math.max(0, total - 5) : total;
+  const coinText = document.getElementById('coinAppliedText');
+  const billCoinRow = document.getElementById('billCoinDiscountRow');
+  const billCoinVal = document.getElementById('billCoinDiscountVal');
   const billTotal = document.getElementById('billStep1Total');
-  if (billTotal) billTotal.textContent = '₹' + finalTotal;
+
+  if (statusMsg) statusMsg.style.display = (appliedCoinDiscountRupees > 0) ? 'block' : 'none';
+  if (coinText) coinText.textContent = `${appliedCoinsCount} কয়েন সফলভাবে প্রয়োগ হয়েছে (-₹${appliedCoinDiscountRupees} নগদ ছাড়)!`;
+  if (billCoinRow) billCoinRow.style.display = (appliedCoinDiscountRupees > 0) ? 'flex' : 'none';
+  if (billCoinVal) billCoinVal.textContent = `-₹${appliedCoinDiscountRupees}`;
+
+  const finalStep1 = Math.max(0, cartSubtotal - appliedCoinDiscountRupees);
+  if (billTotal) billTotal.textContent = '₹' + finalStep1;
+}
+
+// Payment Selection Logic (COD vs UPI)
+function selectPaymentMethod(method) {
+  selectedPayMethod = method;
+  const cardUpi = document.getElementById('payOptCardUpi');
+  const cardCod = document.getElementById('payOptCardCod');
+  const upiBox = document.getElementById('upiPaymentActionBox');
+  const savingsBanner = document.getElementById('paymentSavingsBannerText');
+  const savingsContainer = savingsBanner ? savingsBanner.parentElement : null;
+  const confirmBtnLbl = document.getElementById('finalConfirmBtnLabel');
+
+  const rawSubtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const payableBase = Math.max(0, rawSubtotal - (appliedCoinDiscountRupees || 0));
+  const codTotal = payableBase;
+  const upiTotal = Math.max(0, payableBase - 38);
+
+  const payCodAmount = document.getElementById('payCodFinalAmount');
+  const payUpiAmount = document.getElementById('payUpiFinalAmount');
+  const payUpiStriked = document.getElementById('payUpiStrikedAmount');
+
+  if (payCodAmount) payCodAmount.textContent = `₹${codTotal}`;
+  if (payUpiAmount) payUpiAmount.textContent = `₹${upiTotal}`;
+  if (payUpiStriked) payUpiStriked.textContent = `₹${codTotal}`;
+
+  if (method === 'COD') {
+    selectedPayMethod = 'COD';
+    if (cardCod) {
+      cardCod.classList.add('active');
+      cardCod.style.border = '2px solid #16a34a';
+      cardCod.style.background = '#f0fdf4';
+      cardCod.style.boxShadow = '0 4px 12px rgba(22,163,74,0.15)';
+    }
+    if (cardUpi) {
+      cardUpi.classList.remove('active');
+      cardUpi.style.border = '1.5px solid #cbd5e1';
+      cardUpi.style.background = '#fff';
+      cardUpi.style.boxShadow = 'none';
+    }
+    if (upiBox) upiBox.style.display = 'none';
+
+    if (savingsContainer) {
+      savingsContainer.style.background = '#f8fafc';
+      savingsContainer.style.border = '1px solid #cbd5e1';
+      savingsContainer.style.color = '#334155';
+      savingsBanner.innerHTML = `📦 <strong>ক্যাশ অন ডেলিভারি (COD):</strong> পার্সেল হাতে পাওয়ার পর ডেলিভারি বয়কে ঠিক <strong>₹${codTotal}</strong> নগদ দেবেন।`;
+    }
+    if (confirmBtnLbl) {
+      confirmBtnLbl.innerHTML = `অর্ডার কনফার্ম করুন (ক্যাশ অন ডেলিভারি - ₹${codTotal})`;
+    }
+  } else {
+    selectedPayMethod = 'UPI';
+    if (cardUpi) {
+      cardUpi.classList.add('active');
+      cardUpi.style.border = '2px solid #7e22ce';
+      cardUpi.style.background = '#faf5ff';
+      cardUpi.style.boxShadow = '0 4px 12px rgba(126,34,206,0.15)';
+    }
+    if (cardCod) {
+      cardCod.classList.remove('active');
+      cardCod.style.border = '1.5px solid #cbd5e1';
+      cardCod.style.background = '#fff';
+      cardCod.style.boxShadow = 'none';
+    }
+    if (upiBox) upiBox.style.display = 'block';
+
+    if (savingsContainer) {
+      savingsContainer.style.background = '#f0fdf4';
+      savingsContainer.style.border = '1px solid #bbf7d0';
+      savingsContainer.style.color = '#15803d';
+      savingsBanner.innerHTML = `⚡ অনলাইনে পেমেন্ট করে আপনি মোট <strong>₹38 অতিরিক্ত সাশ্রয়</strong> করছেন!`;
+    }
+    if (confirmBtnLbl) {
+      confirmBtnLbl.innerHTML = `অর্ডার কনফার্ম করুন (Pay ₹${upiTotal} via UPI)`;
+    }
+  }
 }
 
 function updateAllSuperCoinsDisplays() {

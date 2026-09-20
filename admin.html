@@ -1534,6 +1534,141 @@
             </div>
           </div>
 
+          
+          <!-- 3.5. SIZE & AGE-WISE PRICING & MRP STUDIO (মহিলাদের পোশাক ও বাচ্চাদের বয়স অনুযায়ী রেট) -->
+          <div class="form-group" style="background:#090d16; border:1.5px solid #a855f7; border-radius:16px; padding:16px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <label class="form-label" style="color:#d8b4fe; font-size:0.95rem; margin-bottom:0; display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-ruler-combined" style="color:#c084fc;"></i>
+                <span>সাইজ ও বয়স অনুযায়ী রেট এবং এমআরপি (Size & Age-Wise Pricing & MRP) *</span>
+              </label>
+              <span id="activeTotalSizeVariantsBadge" style="background:#7e22ce; color:#fff; font-size:0.75rem; font-weight:800; padding:4px 12px; border-radius:12px;">
+                ০টি সাইজ কনফিগার করা হয়েছে
+              </span>
+            </div>
+            
+            <p style="font-size:0.75rem; color:#cbd5e1; margin-bottom:12px;">
+              মহিলাদের পোশাকের বিভিন্ন সাইজ (XS-34 থেকে 5XL-50) বা বাচ্চাদের বয়স (০-৬ মাস থেকে ১৩-১৪ বছর) অনুযায়ী আলাদা আলাদা <strong>বিক্রি মূল্য (Rate)</strong>, <strong>এমআরপি (MRP)</strong> ও <strong>স্টক</strong> নির্ধারণ করুন:
+            </p>
+
+            <!-- Preset Category Selector Tabs -->
+            <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+              <button type="button" class="btn-fast-action active" id="tabBtnWomenSizes" onclick="switchSizeStudioCategory('women')" style="background:#7e22ce; color:#fff; font-size:0.78rem; padding:6px 12px;">
+                <i class="fa-solid fa-person-dress"></i> 👩 মহিলাদের পোশাকের সাইজ (Women Sizes)
+              </button>
+              <button type="button" class="btn-fast-action" id="tabBtnKidsSizes" onclick="switchSizeStudioCategory('kids')" style="background:#1e293b; color:#cbd5e1; font-size:0.78rem; padding:6px 12px; border:1px solid #334155;">
+                <i class="fa-solid fa-child"></i> 👧 বাচ্চাদের বয়স অনুযায়ী (Kids Age Groups)
+              </button>
+              <button type="button" class="btn-fast-action" onclick="bulkApplyDefaultPriceToSizes()" style="background:#065f46; border:1px solid #10b981; color:#a7f3d0; font-size:0.78rem; padding:6px 12px; margin-left:auto;">
+                <i class="fa-solid fa-bolt"></i> ⚡ সব সাইজে মূল রেট ও MRP বসান
+              </button>
+            </div>
+
+            <!-- Panel 1: Women Clothing Sizes Chips -->
+            <div id="panelWomenSizesPreset" style="display:block; margin-bottom:14px; background:#0b0f19; border:1px solid #1f2937; border-radius:12px; padding:12px;">
+              <div style="font-size:0.74rem; color:#a855f7; font-weight:800; margin-bottom:6px;">
+                👚 কুর্তি, কামিজ, গাউন, টপস ও পোশাকের সাইজ (ট্যাপ করে যোগ করুন):
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('XS (34)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">XS (34)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('S (36)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">S (36)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('M (38)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">M (38)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('L (40)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">L (40)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('XL (42)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">XL (42)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('XXL (44)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">XXL (44)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('3XL (46)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">3XL (46)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('4XL (48)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">4XL (48)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('5XL (50)')" style="background:#1e293b; border:1px solid #a855f7; color:#e9d5ff; font-size:0.74rem; padding:5px 9px;">5XL (50)</button>
+              </div>
+
+              <div style="font-size:0.74rem; color:#38bdf8; font-weight:800; margin-bottom:6px;">
+                🪡 ব্লাউজ ও ইনার সাইজ (Chest Inches):
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('30 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">30 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('32 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">32 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('34 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">34 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('36 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">36 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('38 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">38 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('40 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">40 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('42 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">42 Chest</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('44 Chest')" style="background:#1e293b; border:1px solid #38bdf8; color:#bae6fd; font-size:0.74rem; padding:5px 9px;">44 Chest</button>
+              </div>
+
+              <div style="font-size:0.74rem; color:#fde047; font-weight:800; margin-bottom:6px;">
+                🥻 শাড়ি ও ফ্রি সাইজ / বটমস:
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('Free Size (ফ্রি সাইজ)')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">Free Size (ফ্রি সাইজ)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৬.৩ মি (ব্লাউজ সহ)')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">৬.৩ মি (ব্লাউজ সহ)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৫.৫ মি (ব্লাউজ ছাড়া)')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">৫.৫ মি (ব্লাউজ ছাড়া)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('সেমি-স্টিচড')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">সেমি-স্টিচড</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('Free Size (28-38)')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">Free Size (28-38 প্লাজো)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('Plus Size (38-46)')" style="background:#1e293b; border:1px solid #eab308; color:#fef08a; font-size:0.74rem; padding:5px 9px;">Plus Size (38-46 প্লাজো)</button>
+              </div>
+            </div>
+
+            <!-- Panel 2: Kids Age Groups Chips -->
+            <div id="panelKidsSizesPreset" style="display:none; margin-bottom:14px; background:#0b0f19; border:1px solid #1f2937; border-radius:12px; padding:12px;">
+              <div style="font-size:0.74rem; color:#ec4899; font-weight:800; margin-bottom:6px;">
+                👧 বাচ্চাদের বয়স অনুযায়ী সাইজ (ট্যাপ করে যুক্ত করুন):
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('০-৬ মাস (0-6M)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">০-৬ মাস (0-6M)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৬-১২ মাস (6-12M)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৬-১২ মাস (6-12M)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('১-২ বছর (1-2Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">১-২ বছর (1-2Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('২-৩ বছর (2-3Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">২-৩ বছর (2-3Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৩-৪ বছর (3-4Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৩-৪ বছর (3-4Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৪-৫ বছর (4-5Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৪-৫ বছর (4-5Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৫-৬ বছর (5-6Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৫-৬ বছর (5-6Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৬-৭ বছর (6-7Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৬-৭ বছর (6-7Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৭-৮ বছর (7-8Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৭-৮ বছর (7-8Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৮-৯ বছর (8-9Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৮-৯ বছর (8-9Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('৯-১০ বছর (9-10Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">৯-১০ বছর (9-10Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('১১-১২ বছর (11-12Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">১১-১২ বছর (11-12Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('১৩-১৪ বছর (13-14Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">১৩-১৪ বছর (13-14Y)</button>
+                <button type="button" class="btn-fast-action" onclick="addSizeVariantPreset('১৫-১৬ বছর (15-16Y)')" style="background:#1e293b; border:1px solid #ec4899; color:#fbcfe8; font-size:0.74rem; padding:5px 9px;">১৫-১৬ বছর (15-16Y)</button>
+              </div>
+            </div>
+
+            <!-- Custom Size Input Row -->
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+              <input type="text" id="customSizeNameInput" class="form-ctrl" placeholder="অন্য কোনো নির্দিষ্ট সাইজ বা বয়স লিখুন (যেমন: 2-3 Years বা XL)..." style="font-size:0.82rem; padding:8px 12px;">
+              <button type="button" class="btn-fast-action" style="background:#7e22ce; color:#fff; padding:8px 16px; font-size:0.82rem; font-weight:800; white-space:nowrap;" onclick="addCustomSizeFromInput()">
+                <i class="fa-solid fa-plus"></i> সাইজ যোগ করুন
+              </button>
+            </div>
+
+            <!-- Size-wise Pricing & MRP Table Header -->
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:10px 10px 0 0; padding:8px 12px; display:grid; grid-template-columns: 2fr 1.3fr 1.3fr 1fr 40px; gap:8px; font-size:0.75rem; font-weight:800; color:#cbd5e1;">
+              <div>সাইজ / বয়স (Size / Age)</div>
+              <div>রেট (বিক্রি ₹)</div>
+              <div>এমআরপি (MRP ₹)</div>
+              <div>স্টক (পিস)</div>
+              <div style="text-align:center;">মুছুন</div>
+            </div>
+
+            <!-- Active Size Pricing Rows Container -->
+            <div id="selectedSizePricingList" style="display:flex; flex-direction:column; gap:4px; background:#0b0f19; border:1px solid #1f2937; border-top:none; border-radius:0 0 10px 10px; padding:8px; min-height:60px;">
+              <!-- Dynamically populated rows -->
+            </div>
+          </div>
+
+                    <!-- 3.8 COIN REDEEM POLICY (কয়েন রিডিম সুবিধা) -->
+          <div class="form-group" style="background:#090d16; border:1px solid #f59e0b; border-radius:14px; padding:12px; margin-bottom:14px;">
+            <label class="form-label" style="font-size:0.85rem; color:#fde68a; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-coins" style="color:#f59e0b;"></i>
+              <span>কয়েন রিডিম সুবিধা (Max Coins Redeemable per Order):</span>
+            </label>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <input type="number" id="op_max_coins" class="form-ctrl" value="2000" placeholder="যেমন: 2000 (মান: ₹20)" style="color:#fde047; font-weight:800; font-size:0.9rem;">
+              <span style="font-size:0.75rem; color:#cbd5e1; white-space:nowrap;">(১০০ কয়েন = ₹১ ছাড়)</span>
+            </div>
+            <small style="color:#94a3b8; font-size:0.72rem; display:block; margin-top:4px;">
+              গ্রাহক এই প্রোডাক্টটি কেনার সময় তার জমানো ব্যালেন্স থেকে সর্বোচ্চ এত কয়েন ব্যবহার করে ছাড় পেতে পারবে।
+            </small>
+          </div>
+
           <!-- 4. STORAGE RACK / SLOT -->
           <div class="form-group" style="background:#090d16; border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:14px;">
             <label class="form-label" style="font-size:0.82rem; color:#cbd5e1; margin-bottom:4px;">
@@ -4122,13 +4257,28 @@
         if (variantTotal > 0) stock = variantTotal;
       }
 
-      const sizes = (typeof selectedSizes !== 'undefined' && Array.isArray(selectedSizes) && selectedSizes.length > 0)
-        ? [...selectedSizes]
+      const hasConfiguredSizes = (activeSizeVariantsList && activeSizeVariantsList.length > 0);
+      let sizes = hasConfiguredSizes
+        ? activeSizeVariantsList.map(v => v.size)
         : (cat === 'saree' ? ['Free Size (5.5m + Blouse)'] : ['Free Size', 'M', 'L', 'XL']);
+
+      let finalPrice = price;
+      let finalMrp = mrp;
+      if (hasConfiguredSizes) {
+        const vPrices = activeSizeVariantsList.map(v => v.price).filter(p => p > 0);
+        if (vPrices.length > 0) finalPrice = Math.min(...vPrices);
+        const vMrps = activeSizeVariantsList.map(v => v.mrp).filter(m => m > 0);
+        if (vMrps.length > 0) finalMrp = Math.max(...vMrps);
+        const vTotalStock = activeSizeVariantsList.reduce((s, v) => s + (v.stock || 0), 0);
+        if (vTotalStock > 0) stock = vTotalStock;
+      }
 
       const prodId = 'NC-' + Math.floor(100 + Math.random() * 900);
       const upiOfferPrice = Math.round(price * 0.95);
       const prodType = (cat === 'girls' ? 'girls' : (cat === 'jewel' || cat === 'bangles' ? 'jewel' : (cat === 'kurti' ? 'kurti' : 'saree')));
+
+      const maxCoinsInp = document.getElementById('op_max_coins');
+      const maxCoins = parseInt(maxCoinsInp ? maxCoinsInp.value : 2000) || 2000;
 
       const newProd = {
         id: prodId,
@@ -4136,9 +4286,11 @@
         category: cat,
         type: prodType,
         fabric: fabric,
-        price: price,
-        mrp: mrp,
-        upiOffer: upiOfferPrice,
+        price: finalPrice,
+        mrp: finalMrp,
+        maxCoins: maxCoins,
+        upiOffer: Math.round(finalPrice * 0.95),
+        sizeVariants: hasConfiguredSizes ? JSON.parse(JSON.stringify(activeSizeVariantsList)) : [],
         stock: stock,
         initialStock: stock,
         inStock: stock > 0,
@@ -4208,6 +4360,194 @@
     // =========================================================================
     // FULL PRODUCT EDITING CONTROLLER (প্রোডাক্ট এডিট মোডাল)
     // =========================================================================
+    
+    // =========================================================================
+    // SIZE & AGE-WISE PRICING & MRP ENGINE (মহিলাদের পোশাক ও বাচ্চাদের বয়স রেট)
+    // =========================================================================
+    let activeSizeVariantsList = [];
+    let editModalSizeVariantsList = [];
+
+    function switchSizeStudioCategory(cat) {
+      const pWomen = document.getElementById('panelWomenSizesPreset');
+      const pKids = document.getElementById('panelKidsSizesPreset');
+      const bWomen = document.getElementById('tabBtnWomenSizes');
+      const bKids = document.getElementById('tabBtnKidsSizes');
+
+      if (cat === 'women') {
+        if (pWomen) pWomen.style.display = 'block';
+        if (pKids) pKids.style.display = 'none';
+        if (bWomen) { bWomen.style.background = '#7e22ce'; bWomen.style.color = '#fff'; }
+        if (bKids) { bKids.style.background = '#1e293b'; bKids.style.color = '#cbd5e1'; }
+      } else {
+        if (pWomen) pWomen.style.display = 'none';
+        if (pKids) pKids.style.display = 'block';
+        if (bWomen) { bWomen.style.background = '#1e293b'; bWomen.style.color = '#cbd5e1'; }
+        if (bKids) { bKids.style.background = '#7e22ce'; bKids.style.color = '#fff'; }
+      }
+    }
+
+    function addSizeVariantPreset(sizeName) {
+      if (!sizeName) return;
+      const exists = activeSizeVariantsList.some(v => v.size === sizeName);
+      if (exists) {
+        alert(`সাইজ '${sizeName}' ইতিমধ্যে তালিকায় যোগ করা আছে!`);
+        return;
+      }
+      const baseP = parseInt(document.getElementById('op_price')?.value) || 350;
+      const baseMrp = parseInt(document.getElementById('op_mrp')?.value) || (baseP * 2);
+
+      activeSizeVariantsList.push({
+        size: sizeName,
+        price: baseP,
+        mrp: baseMrp,
+        stock: 10
+      });
+      renderActiveSizeVariantsList();
+    }
+
+    function addCustomSizeFromInput() {
+      const inp = document.getElementById('customSizeNameInput');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        alert("দয়া করে সাইজের নাম বা বাচ্চাদের বয়স লিখুন (যেমন: 2-3 Years বা XL)!");
+        return;
+      }
+      addSizeVariantPreset(val);
+      if (inp) inp.value = '';
+    }
+
+    function removeSizeVariant(idx) {
+      activeSizeVariantsList.splice(idx, 1);
+      renderActiveSizeVariantsList();
+    }
+
+    function updateSizeVariantField(idx, field, val) {
+      if (activeSizeVariantsList[idx]) {
+        activeSizeVariantsList[idx][field] = parseInt(val) || 0;
+        updateSizeVariantsBadge();
+      }
+    }
+
+    function bulkApplyDefaultPriceToSizes() {
+      const baseP = parseInt(document.getElementById('op_price')?.value) || 0;
+      if (baseP <= 0) {
+        alert("আগে উপরে প্রোডাক্টের সঠিক 'বিক্রি মূল্য' লিখুন, তারপর এখানে চাপ দিন!");
+        return;
+      }
+      const baseMrp = parseInt(document.getElementById('op_mrp')?.value) || (baseP * 2);
+      activeSizeVariantsList.forEach(v => {
+        v.price = baseP;
+        v.mrp = baseMrp;
+      });
+      renderActiveSizeVariantsList();
+      alert(`✅ সমস্ত সাইজে বিক্রয়মূল্য ₹${baseP} এবং এমআরপি ₹${baseMrp} সেট করা হয়েছে!`);
+    }
+
+    function updateSizeVariantsBadge() {
+      const badge = document.getElementById('activeTotalSizeVariantsBadge');
+      if (!badge) return;
+      if (activeSizeVariantsList.length === 0) {
+        badge.textContent = "০টি সাইজ কনফিগার করা হয়েছে";
+        badge.style.background = "#7e22ce";
+      } else {
+        const prices = activeSizeVariantsList.map(v => v.price);
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        const totalStk = activeSizeVariantsList.reduce((s, v) => s + (v.stock || 0), 0);
+        badge.textContent = `${activeSizeVariantsList.length}টি সাইজ (রেট: ₹${minP}${minP !== maxP ? '-' + maxP : ''} • স্টক: ${totalStk})`;
+        badge.style.background = "#059669";
+      }
+    }
+
+    function renderActiveSizeVariantsList() {
+      const container = document.getElementById('selectedSizePricingList');
+      if (!container) return;
+
+      if (activeSizeVariantsList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:18px 10px; color:#64748b; font-size:0.78rem;">
+            <i class="fa-solid fa-ruler" style="font-size:1.5rem; color:#475569; margin-bottom:4px; display:block;"></i>
+            কোনো সাইজ যুক্ত করা হয়নি। উপরের বোতাম থেকে মহিলাদের পোশাকের সাইজ বা বাচ্চাদের বয়স যোগ করুন।
+          </div>
+        `;
+        updateSizeVariantsBadge();
+        return;
+      }
+
+      container.innerHTML = activeSizeVariantsList.map((v, idx) => `
+        <div style="display:grid; grid-template-columns: 2fr 1.3fr 1.3fr 1fr 40px; gap:8px; align-items:center; background:#111827; border:1px solid #1f2937; padding:6px 10px; border-radius:8px;">
+          <div>
+            <strong style="color:#d8b4fe; font-size:0.85rem;">${v.size}</strong>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:2px; background:#0b0f19; border:1px solid #334155; border-radius:6px; padding:2px 6px;">
+              <span style="color:#10b981; font-size:0.75rem; font-weight:800;">₹</span>
+              <input type="number" value="${v.price}" onchange="updateSizeVariantField(${idx}, 'price', this.value)" style="width:100%; background:transparent; border:none; color:#10b981; font-weight:800; font-size:0.82rem; outline:none;">
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:2px; background:#0b0f19; border:1px solid #334155; border-radius:6px; padding:2px 6px;">
+              <span style="color:#94a3b8; font-size:0.75rem;">₹</span>
+              <input type="number" value="${v.mrp}" onchange="updateSizeVariantField(${idx}, 'mrp', this.value)" style="width:100%; background:transparent; border:none; color:#94a3b8; font-size:0.82rem; outline:none;">
+            </div>
+          </div>
+          <div>
+            <input type="number" value="${v.stock}" onchange="updateSizeVariantField(${idx}, 'stock', this.value)" style="width:100%; background:#0b0f19; border:1px solid #334155; border-radius:6px; padding:3px 6px; color:#fde047; font-weight:800; font-size:0.82rem; text-align:center;">
+          </div>
+          <div style="text-align:center;">
+            <button type="button" onclick="removeSizeVariant(${idx})" style="background:#fee2e2; border:none; color:#dc2626; width:26px; height:26px; border-radius:50%; font-size:0.75rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateSizeVariantsBadge();
+    }
+
+    // Modal Size Variants Logic
+    function promptAddSizeInEditModal() {
+      const s = prompt("নতুন সাইজের নাম বা বয়স লিখুন (যেমন: XL বা ৩-৪ বছর):", "M (38)");
+      if (s && s.trim()) {
+        const baseP = parseInt(document.getElementById('edit_prod_price')?.value) || 350;
+        const baseMrp = parseInt(document.getElementById('edit_prod_mrp')?.value) || (baseP * 2);
+        editModalSizeVariantsList.push({
+          size: s.trim(),
+          price: baseP,
+          mrp: baseMrp,
+          stock: 10
+        });
+        renderEditModalSizeVariants();
+      }
+    }
+
+    function removeEditModalSize(idx) {
+      editModalSizeVariantsList.splice(idx, 1);
+      renderEditModalSizeVariants();
+    }
+
+    function updateEditModalSizeField(idx, field, val) {
+      if (editModalSizeVariantsList[idx]) {
+        editModalSizeVariantsList[idx][field] = parseInt(val) || 0;
+      }
+    }
+
+    function renderEditModalSizeVariants() {
+      const container = document.getElementById('editModalSizeVariantsList');
+      if (!container) return;
+      if (editModalSizeVariantsList.length === 0) {
+        container.innerHTML = `<div style="color:#64748b; font-size:0.75rem; text-align:center; padding:10px;">কোনো নির্দিষ্ট সাইজ নেই (ফ্রি সাইজ হিসাবে গণ্য হবে)।</div>`;
+        return;
+      }
+      container.innerHTML = editModalSizeVariantsList.map((v, idx) => `
+        <div style="display:grid; grid-template-columns: 2fr 1.3fr 1.3fr 1fr 30px; gap:6px; align-items:center; background:#1e293b; padding:5px 8px; border-radius:6px;">
+          <div style="font-size:0.8rem; font-weight:bold; color:#d8b4fe;">${v.size}</div>
+          <div><input type="number" value="${v.price}" onchange="updateEditModalSizeField(${idx}, 'price', this.value)" style="width:100%; background:#090d16; border:1px solid #475569; color:#10b981; font-weight:bold; padding:2px 4px; border-radius:4px; font-size:0.78rem;"></div>
+          <div><input type="number" value="${v.mrp}" onchange="updateEditModalSizeField(${idx}, 'mrp', this.value)" style="width:100%; background:#090d16; border:1px solid #475569; color:#94a3b8; padding:2px 4px; border-radius:4px; font-size:0.78rem;"></div>
+          <div><input type="number" value="${v.stock}" onchange="updateEditModalSizeField(${idx}, 'stock', this.value)" style="width:100%; background:#090d16; border:1px solid #475569; color:#fde047; font-weight:bold; padding:2px 4px; border-radius:4px; font-size:0.78rem; text-align:center;"></div>
+          <button type="button" onclick="removeEditModalSize(${idx})" style="background:#ef4444; color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-size:0.7rem; cursor:pointer;">✕</button>
+        </div>
+      `).join('');
+    }
+
     function openFullProductEditModal(id) {
       let prods = [];
       try {
@@ -4227,7 +4567,12 @@
       document.getElementById('edit_prod_stock').value = p.stock !== undefined ? p.stock : 25;
       document.getElementById('edit_prod_price').value = p.price || 0;
       document.getElementById('edit_prod_mrp').value = p.mrp || (p.price ? p.price * 2 : 0);
+      const editMaxCoins = document.getElementById('edit_prod_max_coins');
+      if (editMaxCoins) editMaxCoins.value = p.maxCoins !== undefined ? p.maxCoins : 2000;
       document.getElementById('edit_prod_img').value = p.img || '';
+
+      editModalSizeVariantsList = (p.sizeVariants && Array.isArray(p.sizeVariants)) ? JSON.parse(JSON.stringify(p.sizeVariants)) : [];
+      renderEditModalSizeVariants();
 
       const modal = document.getElementById('adminFullProductEditModal');
       if (modal) modal.style.display = 'flex';
@@ -4255,6 +4600,7 @@
       const stock = parseInt(document.getElementById('edit_prod_stock').value) || 0;
       const price = parseInt(document.getElementById('edit_prod_price').value) || 0;
       const mrp = parseInt(document.getElementById('edit_prod_mrp').value) || (price * 2);
+      const editMaxCoins = parseInt(document.getElementById('edit_prod_max_coins')?.value || 2000) || 2000;
       const img = document.getElementById('edit_prod_img').value.trim();
 
       if (!title || price <= 0) {
@@ -4277,10 +4623,20 @@
         prods[idx].inStock = (stock > 0);
         prods[idx].price = price;
         prods[idx].mrp = mrp;
+        prods[idx].maxCoins = editMaxCoins;
         prods[idx].upiOffer = Math.round(price * 0.95);
         if (img) {
           prods[idx].img = img;
           prods[idx].images = [img];
+        }
+        if (editModalSizeVariantsList && editModalSizeVariantsList.length > 0) {
+          prods[idx].sizeVariants = editModalSizeVariantsList;
+          prods[idx].sizes = editModalSizeVariantsList.map(v => v.size);
+          // If variants have distinct prices, adjust starting price
+          const vPrices = editModalSizeVariantsList.map(v => v.price).filter(pr => pr > 0);
+          if (vPrices.length > 0) prods[idx].price = Math.min(...vPrices);
+          const vMrps = editModalSizeVariantsList.map(v => v.mrp).filter(m => m > 0);
+          if (vMrps.length > 0) prods[idx].mrp = Math.max(...vMrps);
         }
       }
 
@@ -4656,7 +5012,23 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
-          <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
+          
+        <!-- Size Variants in Edit Modal -->
+        <div style="background:#0b0f19; border:1px solid #a855f7; border-radius:12px; padding:12px; margin-top:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.82rem; font-weight:800; color:#d8b4fe;">
+              <i class="fa-solid fa-ruler-combined"></i> সাইজ অনুযায়ী রেট ও এমআরপি তালিকা (Edit Size Variants):
+            </span>
+            <button type="button" onclick="promptAddSizeInEditModal()" style="background:#7e22ce; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:800; cursor:pointer;">
+              + সাইজ যোগ করুন
+            </button>
+          </div>
+          <div id="editModalSizeVariantsList" style="display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto;">
+            <!-- Rows populated in openFullProductEditModal -->
+          </div>
+        </div>
+
+        <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
             <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
           </button>
           <button type="button" onclick="closeFullProductEditModal()" style="background:#334155; color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
@@ -5545,7 +5917,23 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
-          <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
+          
+        <!-- Size Variants in Edit Modal -->
+        <div style="background:#0b0f19; border:1px solid #a855f7; border-radius:12px; padding:12px; margin-top:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.82rem; font-weight:800; color:#d8b4fe;">
+              <i class="fa-solid fa-ruler-combined"></i> সাইজ অনুযায়ী রেট ও এমআরপি তালিকা (Edit Size Variants):
+            </span>
+            <button type="button" onclick="promptAddSizeInEditModal()" style="background:#7e22ce; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:800; cursor:pointer;">
+              + সাইজ যোগ করুন
+            </button>
+          </div>
+          <div id="editModalSizeVariantsList" style="display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto;">
+            <!-- Rows populated in openFullProductEditModal -->
+          </div>
+        </div>
+
+        <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
             <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
           </button>
           <button type="button" onclick="closeFullProductEditModal()" style="background:#334155; color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
@@ -5618,7 +6006,23 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
-          <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
+          
+        <!-- Size Variants in Edit Modal -->
+        <div style="background:#0b0f19; border:1px solid #a855f7; border-radius:12px; padding:12px; margin-top:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.82rem; font-weight:800; color:#d8b4fe;">
+              <i class="fa-solid fa-ruler-combined"></i> সাইজ অনুযায়ী রেট ও এমআরপি তালিকা (Edit Size Variants):
+            </span>
+            <button type="button" onclick="promptAddSizeInEditModal()" style="background:#7e22ce; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:800; cursor:pointer;">
+              + সাইজ যোগ করুন
+            </button>
+          </div>
+          <div id="editModalSizeVariantsList" style="display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto;">
+            <!-- Rows populated in openFullProductEditModal -->
+          </div>
+        </div>
+
+        <button type="button" onclick="saveFullProductEdit()" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
             <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
           </button>
           <button type="button" onclick="closeFullProductEditModal()" style="background:#334155; color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:800; font-size:0.92rem; cursor:pointer;">
