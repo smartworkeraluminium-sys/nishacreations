@@ -729,15 +729,6 @@
             <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
           </a>
 
-          <a href="delivery.html" class="drawer-link-item">
-            <div class="drawer-link-icon" style="background:#0284c7; color:#fff;"><i class="fa-solid fa-motorcycle"></i></div>
-            <div>
-              <div class="drawer-link-title" id="d-deliveryTitle">ডেলিভারি রাইডার হাব</div>
-              <div class="drawer-link-desc" id="d-deliveryDesc">ক্যাশ হিসাব ও লাস্ট-মাইল ট্র্যাকিং</div>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#64748b; font-size:0.8rem;"></i>
-          </a>
-
           <a href="index.html" class="drawer-link-item">
             <div class="drawer-link-icon" style="background:#f59e0b; color:#0f172a;"><i class="fa-solid fa-store"></i></div>
             <div>
@@ -1849,7 +1840,7 @@
     }
 
     function updatePackStats() {
-      const pending = allOrders.filter(o => o.status === 'Order Placed');
+      const pending = allOrders.filter(o => o.status === 'Order Placed' || o.status === 'Ordered' || o.status === 'Pending' || o.status === 'Pending Packing');
       const packed = allOrders.filter(o => o.status === 'Packed');
 
       document.getElementById('tabCountPending').textContent = pending.length;
@@ -1976,7 +1967,7 @@
       let filtered = allOrders;
 
       if (currentPackFilter === 'pending') {
-        filtered = allOrders.filter(o => o.status === 'Order Placed');
+        filtered = allOrders.filter(o => o.status === 'Order Placed' || o.status === 'Ordered' || o.status === 'Pending' || o.status === 'Pending Packing');
       } else if (currentPackFilter === 'packed') {
         filtered = allOrders.filter(o => o.status === 'Packed');
       }
@@ -2002,24 +1993,27 @@
         const isPacked = (ord.status === 'Packed');
         const isDelivered = (ord.status === 'Delivered');
 
-        let itemsHtml = (ord.items || []).map(it => {
-          const bin = getWarehouseBinLocation(it);
-          return `
-            <div style="display:flex; align-items:center; gap:10px; background:#0b0f19; padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid #1f2937;">
-              <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
-              <div style="flex:1;">
-                <div style="font-size:0.85rem; font-weight:800; color:#fff;">${it.title}</div>
-                <div style="font-size:0.72rem; color:#9ca3af;">
-                  ${currentLang === 'en' ? 'Size' : 'সাইজ'}: <strong>${it.selectedSize || 'Free Size'}</strong> • ${currentLang === 'en' ? 'Qty' : 'পরিমাণ'}: <strong>${it.qty || 1}</strong>
-                </div>
-                <div style="font-size:0.75rem; font-weight:800; color:#a5b4fc; margin-top:2px;">
-                  <i class="fa-solid fa-location-dot"></i> ${currentLang === 'en' ? 'Pick from Rack' : 'যে তাক থেকে তুলবেন'}: <strong>${bin}</strong>
-                </div>
+              let itemsHtml = (ord.items || []).map(it => {
+        const bin = getWarehouseBinLocation(it);
+        const colorText = it.selectedColor ? (currentLang === 'en' ? ` • Color: <strong style="color:#c084fc;">${it.selectedColor}</strong>` : ` • রং: <strong style="color:#c084fc;">${it.selectedColor}</strong>`) : '';
+        const sizeText = it.selectedSize ? (currentLang === 'en' ? ` • Size: <strong>${it.selectedSize}</strong>` : ` • সাইজ: <strong>${it.selectedSize}</strong>`) : '';
+        const qtyText = (currentLang === 'en' ? ` • Qty: <strong style="color:#38bdf8;">${it.qty || 1} pcs</strong>` : ` • সংখ্যা: <strong style="color:#38bdf8;">${it.qty || 1} পিস</strong>`);
+        return `
+          <div style="display:flex; align-items:center; gap:12px; background:#0b0f19; padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid #1f2937;">
+            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" style="width:55px; height:55px; border-radius:8px; object-fit:cover; border:1px solid #374151; flex-shrink:0;">
+            <div style="flex:1;">
+              <div style="font-size:0.88rem; font-weight:800; color:#fff; line-height:1.3;">${it.title}</div>
+              <div style="font-size:0.75rem; color:#cbd5e1; margin:3px 0;">
+                ${sizeText}${colorText}${qtyText}
               </div>
-              <div style="font-weight:800; color:#f59e0b; font-size:0.88rem;">₹${(it.price||0)*(it.qty||1)}</div>
+              <div style="font-size:0.78rem; font-weight:800; color:#a5b4fc; margin-top:2px;">
+                <i class="fa-solid fa-location-dot" style="color:#818cf8;"></i> ${currentLang === 'en' ? 'Pick from Rack:' : 'যে তাক/র্যাক থেকে তুলবেন:'} <span style="background:#1e1b4b; color:#c7d2fe; padding:2px 8px; border-radius:6px; border:1px solid #4338ca;">${bin}</span>
+              </div>
             </div>
-          `;
-        }).join('');
+            <div style="font-weight:800; color:#f59e0b; font-size:0.95rem; white-space:nowrap;">₹${(it.price || 0) * (it.qty || 1)}</div>
+          </div>
+        `;
+      }).join('');
 
         const card = document.createElement('div');
         card.className = `order-pack-card ${isPacked ? 'packed' : ''}`;

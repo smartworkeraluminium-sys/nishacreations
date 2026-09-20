@@ -5869,37 +5869,40 @@ function goToCheckoutStep2() {
 
   const nameEl = document.getElementById('cust_name');
   const phoneEl = document.getElementById('cust_phone');
-  const addrEl = document.getElementById('cust_address');
+  const addrEl = document.getElementById('cust_addr') || document.getElementById('cust_address');
   const pinEl = document.getElementById('cust_pincode');
 
   const nameVal = nameEl ? nameEl.value.trim() : '';
   const phoneVal = phoneEl ? phoneEl.value.trim() : '';
   const addrVal = addrEl ? addrEl.value.trim() : '';
-  const pinVal = pinEl ? pinEl.value.trim() : '711401';
+  const pinVal = (pinEl && pinEl.value.trim()) ? pinEl.value.trim() : (localStorage.getItem('nc_cust_pincode') || '711401');
 
-  if (!nameVal || !phoneVal || !addrVal) {
-    const savedName = localStorage.getItem('nc_cust_name');
-    const savedPhone = localStorage.getItem('nc_cust_phone');
-    const savedAddr = localStorage.getItem('nc_cust_addr');
-    if (!savedName || !savedPhone || !savedAddr) {
-      alert("দয়া করে আপনার নাম, মোবাইল নম্বর এবং ডেলিভারি ঠিকানা পূরণ করুন!");
-      const form = document.getElementById('inlineAddressEditForm');
-      if (form) form.style.display = 'block';
-      return;
-    }
+  const savedName = localStorage.getItem('nc_cust_name') || '';
+  const savedPhone = localStorage.getItem('nc_cust_phone') || '';
+  const savedAddr = localStorage.getItem('nc_cust_addr') || '';
+
+  const finalName = nameVal || savedName;
+  const finalPhone = phoneVal || savedPhone;
+  const finalAddr = addrVal || savedAddr;
+
+  if (!finalName || !finalPhone || !finalAddr) {
+    alert("দয়া করে আপনার নাম, মোবাইল নম্বর এবং ডেলিভারি ঠিকানা পূরণ করুন!");
+    const form = document.getElementById('inlineAddressEditForm');
+    if (form) form.style.display = 'block';
+    return;
   }
 
   const dName = document.getElementById('displayCustName');
   const dPhone = document.getElementById('displayCustPhone');
   const dAddr = document.getElementById('displayCustAddr');
-  if (dName && nameVal) dName.textContent = nameVal;
-  if (dPhone && phoneVal) dPhone.textContent = '📞 ' + phoneVal;
-  if (dAddr && addrVal) dAddr.textContent = '📍 ' + addrVal + (pinVal ? ' - ' + pinVal : '');
+  if (dName) dName.textContent = finalName;
+  if (dPhone) dPhone.textContent = '📞 ' + finalPhone;
+  if (dAddr) dAddr.textContent = '📍 ' + finalAddr + ' - ' + pinVal;
 
-  if (nameVal) localStorage.setItem('nc_cust_name', nameVal);
-  if (phoneVal) localStorage.setItem('nc_cust_phone', phoneVal);
-  if (addrVal) localStorage.setItem('nc_cust_addr', addrVal);
-  if (pinVal) localStorage.setItem('nc_cust_pincode', pinVal);
+  localStorage.setItem('nc_cust_name', finalName);
+  localStorage.setItem('nc_cust_phone', finalPhone);
+  localStorage.setItem('nc_cust_addr', finalAddr);
+  localStorage.setItem('nc_cust_pincode', pinVal);
 
   const step1 = document.getElementById('checkoutStep1View');
   const step2 = document.getElementById('checkoutStep2View');
@@ -5916,17 +5919,24 @@ function goToCheckoutStep2() {
 
   const payCodAmount = document.getElementById('payCodFinalAmount');
   const payUpiAmount = document.getElementById('payUpiFinalAmount');
+  const payUpiStriked = document.getElementById('payUpiStrikedAmount');
+  const upiLink = document.getElementById('upiDirectPayLink');
 
   if (payCodAmount) payCodAmount.textContent = `₹${total}`;
   if (payUpiAmount) payUpiAmount.textContent = `₹${upiTotal}`;
+  if (payUpiStriked) payUpiStriked.textContent = `₹${total}`;
+  if (upiLink) {
+    upiLink.href = `upi://pay?pa=9239413517@ybl&pn=Nisha%20Creations&am=${upiTotal}&cu=INR&tn=Nisha%20Boutique%20Order`;
+  }
 
-  selectPaymentMethod(selectedPayMethod);
+  selectPaymentMethod(selectedPayMethod || 'UPI');
 }
 
 function selectPaymentMethod(method) {
   selectedPayMethod = method;
   const cardUpi = document.getElementById('payOptCardUpi');
   const cardCod = document.getElementById('payOptCardCod');
+  const upiBox = document.getElementById('upiPaymentActionBox');
   const savingsBanner = document.getElementById('paymentSavingsBannerText');
   const confirmBtnLbl = document.getElementById('finalConfirmBtnLabel');
   const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -5935,11 +5945,13 @@ function selectPaymentMethod(method) {
   if (method === 'UPI') {
     if (cardUpi) cardUpi.classList.add('active');
     if (cardCod) cardCod.classList.remove('active');
+    if (upiBox) upiBox.style.display = 'block';
     if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'flex';
     if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${upiTotal})`;
   } else {
     if (cardCod) cardCod.classList.add('active');
     if (cardUpi) cardUpi.classList.remove('active');
+    if (upiBox) upiBox.style.display = 'none';
     if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'none';
     if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${total} COD)`;
   }
@@ -5955,13 +5967,13 @@ function toggleAddressEdit() {
 function saveAddressInline() {
   const nameEl = document.getElementById('cust_name');
   const phoneEl = document.getElementById('cust_phone');
-  const addrEl = document.getElementById('cust_address');
+  const addrEl = document.getElementById('cust_addr') || document.getElementById('cust_address');
   const pinEl = document.getElementById('cust_pincode');
 
   const nameVal = nameEl ? nameEl.value.trim() : '';
   const phoneVal = phoneEl ? phoneEl.value.trim() : '';
   const addrVal = addrEl ? addrEl.value.trim() : '';
-  const pinVal = pinEl ? pinEl.value.trim() : '711401';
+  const pinVal = (pinEl && pinEl.value.trim()) ? pinEl.value.trim() : (localStorage.getItem('nc_cust_pincode') || '711401');
 
   if (!nameVal || !phoneVal || !addrVal) {
     alert("অনুগ্রহ করে নাম, মোবাইল নম্বর এবং ঠিকানা পূরণ করুন!");
@@ -5974,7 +5986,7 @@ function saveAddressInline() {
 
   if (dName) dName.textContent = nameVal;
   if (dPhone) dPhone.textContent = '📞 ' + phoneVal;
-  if (dAddr) dAddr.textContent = '📍 ' + addrVal + (pinVal ? ' - ' + pinVal : '');
+  if (dAddr) dAddr.textContent = '📍 ' + addrVal + ' - ' + pinVal;
 
   localStorage.setItem('nc_cust_name', nameVal);
   localStorage.setItem('nc_cust_phone', phoneVal);
@@ -6001,7 +6013,7 @@ function submitFinalOrder() {
 
   const name = localStorage.getItem('nc_cust_name') || document.getElementById('cust_name')?.value?.trim() || 'সম্মানীয় গ্রাহক';
   const phone = localStorage.getItem('nc_cust_phone') || document.getElementById('cust_phone')?.value?.trim() || '9239413517';
-  const addr = localStorage.getItem('nc_cust_addr') || document.getElementById('cust_address')?.value?.trim() || 'আমতা, হাওড়া';
+  const addr = localStorage.getItem('nc_cust_addr') || document.getElementById('cust_addr')?.value?.trim() || document.getElementById('cust_address')?.value?.trim() || 'আমতা, হাওড়া';
   const pin = localStorage.getItem('nc_cust_pincode') || document.getElementById('cust_pincode')?.value?.trim() || '711401';
 
   const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
@@ -6024,7 +6036,7 @@ function submitFinalOrder() {
     savings: selectedPayMethod === 'UPI' ? 38 : 0,
     paymentMode: selectedPayMethod,
     paymentMethod: selectedPayMethod,
-    status: 'Ordered',
+    status: 'Order Placed',
     warehouseStatus: 'Pending Packing',
     binLocation: cart[0]?.binLocation || 'র‍্যাক A-01 (বুটিক জোন)'
   };
@@ -6035,6 +6047,20 @@ function submitFinalOrder() {
   } catch(e) { orders = []; }
   orders.unshift(newOrder);
   localStorage.setItem('nc_orders', JSON.stringify(orders));
+
+
+  // Auto deduct stock for ordered items
+  try {
+    cart.forEach(cartItem => {
+      const prod = (typeof products !== 'undefined' ? products : []).find(p => p.id === cartItem.id);
+      if (prod) {
+        const qty = cartItem.qty || 1;
+        prod.stock = Math.max(0, (prod.stock !== undefined ? prod.stock : 10) - qty);
+        prod.sold = (prod.sold || 0) + qty;
+      }
+    });
+    localStorage.setItem('nc_products', JSON.stringify(products));
+  } catch(e) {}
 
   // Clear cart
   cart = [];
@@ -6152,3 +6178,26 @@ if (typeof document !== 'undefined') {
 // Run boot once immediately
 bootNishaApp();
 
+
+
+// SuperCoins Redeem Toggle Function
+function toggleSuperCoinsRedeem() {
+  const chk = document.getElementById('useSuperCoinsCheck');
+  const isChecked = chk ? chk.checked : false;
+  const statusMsg = document.getElementById('coinAppliedStatusMsg');
+  const coinRow = document.getElementById('billCoinDiscountRow');
+  const coinVal = document.getElementById('billCoinDiscountVal');
+  if (statusMsg) statusMsg.style.display = isChecked ? 'block' : 'none';
+  if (coinRow) coinRow.style.display = isChecked ? 'flex' : 'none';
+  if (coinVal) coinVal.textContent = '-₹5';
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const finalTotal = isChecked ? Math.max(0, total - 5) : total;
+  const billTotal = document.getElementById('billStep1Total');
+  if (billTotal) billTotal.textContent = '₹' + finalTotal;
+}
+
+function updateAllSuperCoinsDisplays() {
+  const coins = parseInt(localStorage.getItem('nc_super_coins') || '500');
+  const dCoins = document.querySelectorAll('#checkoutCoinBal, #drawerCoinsDisplay');
+  dCoins.forEach(el => { if (el) el.textContent = coins; });
+}

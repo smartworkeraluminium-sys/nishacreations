@@ -1,11 +1,11 @@
 // Nisha Creations PWA Service Worker v3 (Immediate Cache Purge & Live Sync)
-const CACHE_NAME = 'nisha-creations-pwa-v4';
+const CACHE_NAME = 'nisha-creations-pwa-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
-  './app.js?v=20260920_v2',
-  './products.js?v=20260920_v2',
+  './app.js?v=20260920_v3',
+  './products.js?v=20260920_v3',
   './logo.png',
   './manifest.json'
 ];

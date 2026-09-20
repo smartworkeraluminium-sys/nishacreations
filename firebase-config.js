@@ -258,6 +258,29 @@ window.CloudSync = {
     }
   },
 
+  clearAllCloudData: async function() {
+    if (!this.isReady()) return false;
+    try {
+      // 1. Delete all products in cloud
+      const prodSnap = await ncDb.collection('products').get();
+      const batch = ncDb.batch();
+      prodSnap.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      // 2. Delete all orders in cloud
+      const orderSnap = await ncDb.collection('orders').get();
+      orderSnap.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      console.log("☁️ All demo products and orders wiped from Google Cloud Firestore!");
+      return true;
+    } catch(e) {
+      console.warn("Notice during cloud clean:", e);
+      return false;
+    }
+  },
+
   removeBanner: async function() {
     try {
       localStorage.removeItem('nc_custom_banner');
