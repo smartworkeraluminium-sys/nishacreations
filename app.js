@@ -1969,10 +1969,19 @@ function adminQuickRestock(idx) {
 
             <div>
               <div class="p-price-row">
-                <span class="p-price">₹${p.price}</span>
+                ${(p.sizeVariants && Array.isArray(p.sizeVariants) && p.sizeVariants.length > 1 && Math.min(...p.sizeVariants.map(v => v.price)) !== Math.max(...p.sizeVariants.map(v => v.price))) ? `
+                  <span class="p-price" style="font-size:0.92rem;">₹${Math.min(...p.sizeVariants.map(v => v.price))} - ₹${Math.max(...p.sizeVariants.map(v => v.price))}</span>
+                ` : `
+                  <span class="p-price">₹${p.price}</span>
+                `}
                 <span class="p-mrp">₹${p.mrp}</span>
                 <span class="p-off">${offPct}% off</span>
               </div>
+              ${(p.sizeVariants && Array.isArray(p.sizeVariants) && p.sizeVariants.length > 1 && Math.min(...p.sizeVariants.map(v => v.price)) !== Math.max(...p.sizeVariants.map(v => v.price))) ? `
+                <div style="font-size:0.66rem; color:#7e22ce; font-weight:800; margin-top:2px;">
+                  <i class="fa-solid fa-ruler-combined"></i> সাইজ অনুযায়ী রেট
+                </div>
+              ` : ''}
               <div class="upi-badge">
                 <i class="fa-solid fa-tag"></i> <span>₹${p.upiOffer || Math.round((p.price || 0) * 0.95)} with UPI</span>
               </div>
@@ -2512,10 +2521,19 @@ function filterByCategory(cat) {
             </div>
             <div>
               <div class="p-price-row">
-                <span class="p-price">₹${p.price}</span>
+                ${(p.sizeVariants && Array.isArray(p.sizeVariants) && p.sizeVariants.length > 1 && Math.min(...p.sizeVariants.map(v => v.price)) !== Math.max(...p.sizeVariants.map(v => v.price))) ? `
+                  <span class="p-price" style="font-size:0.92rem;">₹${Math.min(...p.sizeVariants.map(v => v.price))} - ₹${Math.max(...p.sizeVariants.map(v => v.price))}</span>
+                ` : `
+                  <span class="p-price">₹${p.price}</span>
+                `}
                 <span class="p-mrp">₹${p.mrp}</span>
                 <span class="p-off">${offPct}% off</span>
               </div>
+              ${(p.sizeVariants && Array.isArray(p.sizeVariants) && p.sizeVariants.length > 1 && Math.min(...p.sizeVariants.map(v => v.price)) !== Math.max(...p.sizeVariants.map(v => v.price))) ? `
+                <div style="font-size:0.66rem; color:#7e22ce; font-weight:800; margin-top:2px;">
+                  <i class="fa-solid fa-ruler-combined"></i> সাইজ অনুযায়ী রেট
+                </div>
+              ` : ''}
               <button onclick="event.stopPropagation(); addWishlistToCart('${p.id}')" style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px 0; border-radius:6px; font-size:0.75rem; font-weight:800; margin-top:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
                 <i class="fa-solid fa-bag-shopping"></i> ${isEn ? 'Move to Bag' : 'ব্যাগে নিন'}
               </button>
@@ -2852,7 +2870,53 @@ function selectReturnChoice(type) {
   }
 }
 
-function openPdp(id) {
+
+// =========================================================================
+// PDP SIZE SELECTION & DYNAMIC PRICE SWITCHER
+// =========================================================================
+let currentPdpSelectedPrice = 0;
+let currentPdpSelectedMrp = 0;
+
+function selectPdpSize(sz) {
+  selectedPdpSize = sz;
+  document.querySelectorAll('#pdpSizeBtnGroup .size-pill-btn').forEach(btn => {
+    if (btn.getAttribute('data-size') === sz) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  if (currentPdpProduct && Array.isArray(currentPdpProduct.sizeVariants) && currentPdpProduct.sizeVariants.length > 0) {
+    const variant = currentPdpProduct.sizeVariants.find(v => v.size === sz);
+    if (variant && variant.price) {
+      currentPdpSelectedPrice = variant.price;
+      currentPdpSelectedMrp = variant.mrp || (variant.price * 2);
+
+      const priceEl = document.getElementById('pdpPrice');
+      const mrpEl = document.getElementById('pdpMrp');
+      const discEl = document.getElementById('pdpDiscount');
+      const upiEl = document.getElementById('pdpUpiOffer');
+      const rPriceAll = document.getElementById('returnPriceAll');
+      const rPriceDef = document.getElementById('returnPriceDefective');
+
+      if (priceEl) priceEl.textContent = `₹${variant.price}`;
+      if (mrpEl) mrpEl.textContent = `₹${currentPdpSelectedMrp}`;
+      if (discEl) {
+        const offPct = Math.round(((currentPdpSelectedMrp - variant.price) / currentPdpSelectedMrp) * 100);
+        discEl.textContent = `${offPct}% off`;
+      }
+      if (upiEl) {
+        const upiOff = Math.round(variant.price * 0.95);
+        upiEl.textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${upiOff}`;
+      }
+      if (rPriceAll) rPriceAll.textContent = `₹${variant.price}`;
+      if (rPriceDef) rPriceDef.textContent = `₹${Math.max(0, variant.price - 10)}`;
+    }
+  }
+}
+
+    function openPdp(id) {
       // Record current active screen before navigating to PDP
       const curActive = document.querySelector('.screen-view.active');
       if (curActive && curActive.id && curActive.id !== 'screen-pdp') {
@@ -3051,31 +3115,61 @@ function openPdp(id) {
         cvSection.style.display = 'none';
       }
 
-      // 2. Render Size Selection: Use Admin Defined Available Sizes if present!
+      // 2. Render Size Selection: Size-Wise Pricing & MRP Support
       selectedReturnChoice = 'all';
       const sizeGroup = document.getElementById('pdpSizeBtnGroup');
       if (sizeGroup) {
         sizeGroup.innerHTML = '';
-        let sizesToRender = [];
-        if (p.availableSizes && Array.isArray(p.availableSizes) && p.availableSizes.length > 0) {
-          sizesToRender = p.availableSizes;
-        } else if (effectiveChart === 'kids_frock') {
-          sizesToRender = ['1-2 Yrs', '3-4 Yrs', '5-6 Yrs', '7-8 Yrs', '9-10 Yrs'];
-        } else if (effectiveChart === 'kurti') {
-          sizesToRender = ['S (36)', 'M (38)', 'L (40)', 'XL (42)', 'XXL (44)'];
-        } else if (effectiveChart === 'palazzo') {
-          sizesToRender = ['Free Size (28-38)', 'Plus Size (38-46)'];
-        } else if (effectiveChart === 'none') {
-          sizesToRender = ['Standard Size'];
-        } else {
-          sizesToRender = ['Free Size (শাড়ি)'];
-        }
+        
+        if (p.sizeVariants && Array.isArray(p.sizeVariants) && p.sizeVariants.length > 0) {
+          // Product has custom size-wise pricing!
+          selectedPdpSize = p.sizeVariants[0].size;
+          currentPdpSelectedPrice = p.sizeVariants[0].price || p.price;
+          currentPdpSelectedMrp = p.sizeVariants[0].mrp || p.mrp || (currentPdpSelectedPrice * 2);
 
-        selectedPdpSize = sizesToRender[0];
-        sizesToRender.forEach((sz, idx) => {
-          const act = idx === 0 ? 'active' : '';
-          sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
-        });
+          // Update initial PDP price with first size's price
+          document.getElementById('pdpPrice').textContent = `₹${currentPdpSelectedPrice}`;
+          document.getElementById('pdpMrp').textContent = `₹${currentPdpSelectedMrp}`;
+          const offPct = Math.round(((currentPdpSelectedMrp - currentPdpSelectedPrice) / currentPdpSelectedMrp) * 100);
+          document.getElementById('pdpDiscount').textContent = `${offPct}% off`;
+          document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${Math.round(currentPdpSelectedPrice * 0.95)}`;
+
+          p.sizeVariants.forEach((v, idx) => {
+            const act = idx === 0 ? 'active' : '';
+            const rateTxt = v.price ? ` (₹${v.price})` : '';
+            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${v.size}" onclick="selectPdpSize('${v.size}')" style="display:inline-flex; align-items:center; gap:4px;">
+              <span>${v.size}</span>
+              <span style="font-weight:800; color:#10b981; font-size:0.75rem;">${rateTxt}</span>
+            </button>`;
+          });
+        } else {
+          // Default Standard sizes
+          let sizesToRender = [];
+          if (p.availableSizes && Array.isArray(p.availableSizes) && p.availableSizes.length > 0) {
+            sizesToRender = p.availableSizes;
+          } else if (p.sizes && Array.isArray(p.sizes) && p.sizes.length > 0) {
+            sizesToRender = p.sizes;
+          } else if (effectiveChart === 'kids_frock') {
+            sizesToRender = ['1-2 Yrs', '3-4 Yrs', '5-6 Yrs', '7-8 Yrs', '9-10 Yrs'];
+          } else if (effectiveChart === 'kurti') {
+            sizesToRender = ['S (36)', 'M (38)', 'L (40)', 'XL (42)', 'XXL (44)'];
+          } else if (effectiveChart === 'palazzo') {
+            sizesToRender = ['Free Size (28-38)', 'Plus Size (38-46)'];
+          } else if (effectiveChart === 'none') {
+            sizesToRender = ['Standard Size'];
+          } else {
+            sizesToRender = ['Free Size (শাড়ি)'];
+          }
+
+          selectedPdpSize = sizesToRender[0];
+          currentPdpSelectedPrice = p.price;
+          currentPdpSelectedMrp = p.mrp || (p.price * 2);
+
+          sizesToRender.forEach((sz, idx) => {
+            const act = idx === 0 ? 'active' : '';
+            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${sz}" onclick="selectPdpSize('${sz}')">${sz}</button>`;
+          });
+        }
       }
 
       // Configure Return Choice Cards (ছবি 4)
@@ -3129,12 +3223,19 @@ function openPdp(id) {
 
     function addCurrentToCart() {
       if (!currentPdpProduct) return;
-      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
+      const basePrice = (typeof currentPdpSelectedPrice !== 'undefined' && currentPdpSelectedPrice > 0)
+        ? currentPdpSelectedPrice
+        : (currentPdpProduct.price || 0);
+      const baseMrp = (typeof currentPdpSelectedMrp !== 'undefined' && currentPdpSelectedMrp > 0)
+        ? currentPdpSelectedMrp
+        : (currentPdpProduct.mrp || (basePrice * 2));
+      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, basePrice - 10) : basePrice;
       const itemToPush = {
         ...currentPdpProduct,
         price: effectivePrice,
-        originalPrice: currentPdpProduct.price,
-        selectedSize: selectedPdpSize,
+        mrp: baseMrp,
+        originalPrice: basePrice,
+        selectedSize: selectedPdpSize || 'Free Size',
         selectedColor: selectedPdpColor || 'মূল কালার',
         img: selectedPdpColorImg || currentPdpProduct.img,
         returnChoice: selectedReturnChoice,
@@ -3148,12 +3249,19 @@ function openPdp(id) {
 
     function buyCurrentNow() {
       if (!currentPdpProduct) return;
-      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, currentPdpProduct.price - 10) : currentPdpProduct.price;
+      const basePrice = (typeof currentPdpSelectedPrice !== 'undefined' && currentPdpSelectedPrice > 0)
+        ? currentPdpSelectedPrice
+        : (currentPdpProduct.price || 0);
+      const baseMrp = (typeof currentPdpSelectedMrp !== 'undefined' && currentPdpSelectedMrp > 0)
+        ? currentPdpSelectedMrp
+        : (currentPdpProduct.mrp || (basePrice * 2));
+      const effectivePrice = selectedReturnChoice === 'defective' ? Math.max(0, basePrice - 10) : basePrice;
       const itemToPush = {
         ...currentPdpProduct,
         price: effectivePrice,
-        originalPrice: currentPdpProduct.price,
-        selectedSize: selectedPdpSize,
+        mrp: baseMrp,
+        originalPrice: basePrice,
+        selectedSize: selectedPdpSize || 'Free Size',
         selectedColor: selectedPdpColor || 'মূল কালার',
         img: selectedPdpColorImg || currentPdpProduct.img,
         returnChoice: selectedReturnChoice,
