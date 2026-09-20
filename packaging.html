@@ -2056,21 +2056,27 @@
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="pack-actions-grid">
-            ${!isPacked ? `
-              <button type="button" class="btn-pack-action btn-pack-complete" onclick="verifyAndCompletePacking('${ord.id}')">
-                <i class="fa-solid fa-check-double"></i> ${currentLang === 'en' ? 'Complete Packing' : 'প্যাকিং ও সিল সম্পন্ন'}
-              </button>
-            ` : `
-              <button type="button" class="btn-pack-action" style="background:#1e293b; color:#10b981; border:1px solid #059669;">
-                <i class="fa-solid fa-circle-check"></i> ${currentLang === 'en' ? 'Sealed & Packed' : 'সিল সম্পন্ন'}
-              </button>
-            `}
-            <button type="button" class="btn-pack-action btn-pack-waybill" onclick="openWaybillModal('${ord.id}')">
-              <i class="fa-solid fa-print"></i> ${currentLang === 'en' ? 'Shipping Label' : 'শিপিং লেবেল / বিল'}
+                  <!-- Action Buttons (Strict Barcode / QR Scan Verification) -->
+        <div class="pack-actions-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button type="button" class="btn-pack-action btn-pack-waybill" onclick="openWaybillModal('${ord.id}')" style="justify-content:center;">
+            <i class="fa-solid fa-print"></i> ${currentLang === 'en' ? 'Print Label & QR' : '🖨️ লেবেল ও QR প্রিন্ট'}
+          </button>
+          ${!isPacked ? `
+            <button type="button" class="btn-pack-action" onclick="focusScannerForOrder('${ord.id}')" style="background:linear-gradient(135deg, #4f46e5, #4338ca); color:#fff; justify-content:center;">
+              <i class="fa-solid fa-barcode"></i> ${currentLang === 'en' ? 'Scan to Pack' : '📷 স্ক্যান করে প্যাক করুন'}
             </button>
+          ` : `
+            <button type="button" class="btn-pack-action" style="background:#1e293b; color:#10b981; border:1px solid #065f46; cursor:default; justify-content:center;">
+              <i class="fa-solid fa-circle-check"></i> ${currentLang === 'en' ? 'Verified & Packed' : '✅ ভেরিফাইড ও সিলড'}
+            </button>
+          `}
+        </div>
+        ${!isPacked ? `
+          <div style="font-size:0.72rem; color:#f59e0b; background:rgba(245,158,11,0.1); border:1px dashed rgba(245,158,11,0.3); border-radius:6px; padding:6px 10px; margin-top:8px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>${currentLang === 'en' ? 'Strict Scan Rule: 1-click packing disabled. Scan label QR code or enter barcode ID above to complete.' : 'কড়া ভেরিফিকেশন নিয়ম: ১-ক্লিকে প্যাকিং বন্ধ। উপরের ক্যামেরা দিয়ে QR স্ক্যান করুন অথবা বারকোড আইডি লিখে ভেরিফাই করুন।'}</span>
           </div>
+        ` : ''}
         `;
         container.appendChild(card);
       });
@@ -2231,10 +2237,34 @@
       window.print();
     }
 
-    // Init
+    // Init with Realtime Cloud Firestore Sync
     window.addEventListener('DOMContentLoaded', () => {
       applyLanguage(currentLang);
       loadPackagingData();
+
+      // Attach Realtime Cloud Orders Listener
+      let retries = 0;
+      const packCloudSyncInterval = setInterval(() => {
+        retries++;
+        if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+          clearInterval(packCloudSyncInterval);
+          console.log('☁️ Attaching Realtime Orders Sync in Packaging Station...');
+          CloudSync.syncOrders((liveOrders) => {
+            if (Array.isArray(liveOrders)) {
+              console.log('☁️ Packaging station received live orders:', liveOrders.length);
+              allOrders = liveOrders;
+              try {
+                localStorage.setItem('nc_orders', JSON.stringify(liveOrders));
+              } catch(e) {}
+              updatePackStats();
+              renderPackCards();
+              if (typeof renderInboundProducts === 'function') renderInboundProducts();
+              if (typeof generateDigitalPickList === 'function') generateDigitalPickList();
+            }
+          });
+        }
+        if (retries > 25) clearInterval(packCloudSyncInterval);
+      }, 500);
     });
   
     // ==========================================

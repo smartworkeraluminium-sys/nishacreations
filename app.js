@@ -1789,15 +1789,15 @@ function adminQuickRestock(idx) {
       orders = orders.map(o => o.id === id ? { ...o, status: newStatus } : o);
       localStorage.setItem('nc_orders', JSON.stringify(orders));
 
-  // Sync order to Google Cloud Firestore
-  if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
-    try {
-      CloudSync.saveOrder(newOrder);
-      console.log('☁️ Order dispatched to Cloud Firestore successfully!');
-    } catch(e) {
-      console.warn('Notice during cloud order dispatch:', e);
-    }
-  }
+      // Sync order status to Google Cloud Firestore
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        try {
+          CloudSync.updateOrderStatus(id, newStatus);
+          console.log('☁️ Order status updated in Cloud Firestore successfully!');
+        } catch(e) {
+          console.warn('Notice during cloud order status dispatch:', e);
+        }
+      }
       alert("✅ অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
       renderCustomerAccountOrders();
     }
@@ -4169,6 +4169,16 @@ function openPdp(id) {
       orders.unshift(newOrder);
       localStorage.setItem('nc_orders', JSON.stringify(orders));
 
+      // Sync order to Google Cloud Firestore in real-time
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        try {
+          CloudSync.saveOrder(newOrder);
+          console.log('☁️ [submitOrder] Order #' + newOrder.id + ' dispatched to Cloud Firestore!');
+        } catch(e) {
+          console.warn('Notice during cloud order dispatch:', e);
+        }
+      }
+
       // AUTOMATIC STOCK DEDUCTION (Subtract ordered quantity from stock)
       cart.forEach(cartItem => {
         const prod = products.find(p => p.id === cartItem.id);
@@ -6058,6 +6068,16 @@ function submitFinalOrder() {
   orders.unshift(newOrder);
   localStorage.setItem('nc_orders', JSON.stringify(orders));
 
+  // Sync order to Google Cloud Firestore in real-time
+  if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+    try {
+      CloudSync.saveOrder(newOrder);
+      console.log('☁️ [submitFinalOrder] Order #' + newOrder.id + ' dispatched to Cloud Firestore!');
+    } catch(e) {
+      console.warn('Notice during cloud order dispatch:', e);
+    }
+  }
+
 
   // Auto deduct stock for ordered items
   try {
@@ -6199,6 +6219,19 @@ function bootNishaApp() {
 
       CloudSync.syncBanner(() => {
         if (typeof loadAndRenderBanners === 'function') loadAndRenderBanners();
+      });
+
+      CloudSync.syncOrders((liveOrders) => {
+        if (Array.isArray(liveOrders)) {
+          console.log('☁️ Live orders received from Firestore on Customer Phone:', liveOrders.length);
+          orders = liveOrders;
+          try {
+            localStorage.setItem('nc_orders', JSON.stringify(liveOrders));
+          } catch(e) {}
+          if (typeof renderOrders === 'function') renderOrders();
+          if (typeof renderCustomerAccountOrders === 'function') renderCustomerAccountOrders();
+          if (typeof renderAdminDashboardLive === 'function') renderAdminDashboardLive();
+        }
       });
     }
     if (fbRetries > 20) clearInterval(startCloudSyncInterval);
