@@ -1,3 +1,20 @@
+var products = [];
+if (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS)) {
+  products = [...INITIAL_PRODUCTS];
+}
+var currentCategoryTab = 'popular';
+var orders = [];
+try {
+  const storedO = localStorage.getItem('nc_orders');
+  orders = storedO ? JSON.parse(storedO) : [];
+} catch(e) { orders = []; }
+var currentCustomer = null;
+try {
+  const storedCust = localStorage.getItem('nc_customer_profile');
+  currentCustomer = storedCust ? JSON.parse(storedCust) : null;
+} catch(e) { currentCustomer = null; }
+
+var currentPdpProduct = null;
 // =========================================================================
 // RUNTIME BRAND SANITIZER & LOCALSTORAGE MIGRATION
 // =========================================================================
@@ -35,7 +52,7 @@ try {
   cart = storedC ? JSON.parse(storedC) : [];
 } catch(e) { cart = []; }
 
-let wishlist = [];
+var wishlist = [];
 try {
   const storedW = localStorage.getItem('nc_wishlist');
   wishlist = storedW ? JSON.parse(storedW) : [];
@@ -2571,22 +2588,62 @@ function filterByCategory(cat) {
     }
 
     function toggleWishlist(id) {
-      if (wishlist.includes(id)) {
-        wishlist = wishlist.filter(x => x !== id);
-      } else {
-        wishlist.push(id);
-      }
-      localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
-      updateWishlistBadgesGlobal();
-      sanitizeBoutiqueRuntime();
-    initBrandLogo();
-    applyLanguage();
-    loadAllProducts();
-      renderCustomOfferBanner();
-    renderReels();
-    loadCustomerAccountHub();
-      syncCheckoutWithProfile();
+  if (!id) return;
+  const idx = wishlist.indexOf(id);
+  const isAdding = (idx === -1);
+  if (isAdding) {
+    wishlist.push(id);
+  } else {
+    wishlist.splice(idx, 1);
+  }
+
+  try {
+    localStorage.setItem('nc_wishlist', JSON.stringify(wishlist));
+  } catch(e) {}
+
+  // 1. Update all heart buttons for this product in the DOM immediately
+  const wishButtons = document.querySelectorAll(`button[onclick*="${id}"].wish-btn, .wish-btn[onclick*="${id}"], .wishlist-btn-circle[onclick*="${id}"]`);
+  wishButtons.forEach(btn => {
+    btn.classList.toggle('active', isAdding);
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.className = isAdding ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+      icon.style.color = isAdding ? '#ef4444' : '';
     }
+  });
+
+  // Also check product cards
+  const allCards = document.querySelectorAll('.product-card');
+  allCards.forEach(card => {
+    if (card.getAttribute('onclick')?.includes(id)) {
+      const btn = card.querySelector('.wish-btn, .wishlist-btn-circle');
+      if (btn) {
+        btn.classList.toggle('active', isAdding);
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.className = isAdding ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+          icon.style.color = isAdding ? '#ef4444' : '';
+        }
+      }
+    }
+  });
+
+  // 2. Update PDP button if current product matches
+  if (typeof currentPdpProduct !== 'undefined' && currentPdpProduct && currentPdpProduct.id === id) {
+    updatePdpWishBtnState();
+  }
+
+  // 3. Update global badges
+  updateWishlistBadgesGlobal();
+
+  // 4. Update wishlist screen if currently visible
+  try {
+    const wishScreen = document.getElementById('screen-wishlist');
+    if (wishScreen && wishScreen.classList.contains('active') && typeof renderWishlistScreen === 'function') {
+      renderWishlistScreen();
+    }
+  } catch(e) {}
+}
 
     // Open PDP
         // PDP Wishlist Sync & Toggle
@@ -6053,14 +6110,45 @@ function closeCustomerModal(id) {
   if (el) el.style.display = 'none';
 }
 
-// Auto-run on DOM load
+// =========================================================================
+// 🌟 REALTIME LIVE SYNC & BULLETPROOF APP BOOTSTRAPPER
+// =========================================================================
+try {
+  const bc = new BroadcastChannel('nc_banner_sync');
+  bc.onmessage = (msg) => {
+    if (msg && msg.data && msg.data.type === 'BANNER_UPDATED') {
+      loadAndRenderBanners();
+    }
+  };
+} catch(e) {}
+
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => {
-    sanitizeBoutiqueRuntime();
-    initBrandLogo();
-    applyLanguage();
-    loadAllProducts();
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'nc_banners') {
+      loadAndRenderBanners();
+    }
+  });
+  window.addEventListener('focus', () => {
     loadAndRenderBanners();
-    updateCartBadges();
   });
 }
+
+function bootNishaApp() {
+  try { sanitizeBoutiqueRuntime(); } catch(e) { console.warn('Runtime sanitize:', e); }
+  try { initBrandLogo(); } catch(e) { console.warn('Logo init:', e); }
+  try { applyLanguage(); } catch(e) { console.warn('Lang apply:', e); }
+  try { loadAllProducts(); } catch(e) { console.warn('Products load:', e); }
+  try { loadAndRenderBanners(); } catch(e) { console.warn('Banners load:', e); }
+  try { updateCartBadges(); } catch(e) { console.warn('Cart badges:', e); }
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootNishaApp);
+  } else {
+    bootNishaApp();
+  }
+}
+// Run boot once immediately
+bootNishaApp();
+

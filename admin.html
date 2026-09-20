@@ -2235,7 +2235,11 @@
               active: true
             }
           ];
-          localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+                localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
         }
       }
 
@@ -2380,7 +2384,11 @@
         adminBanners.unshift(newBanner);
       }
 
-      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+            localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
       renderAdminBanners();
       openAddBannerForm();
       alert("🎉 ব্যানার সফলভাবে সেভ করা হয়েছে এবং লাইভ শপে আপডেট হয়েছে!");
@@ -2389,7 +2397,11 @@
     function deleteAdminBanner(id) {
       if (!confirm("আপনি কি নিশ্চিত এই ব্যানারটি ডিলিট করতে চান?")) return;
       adminBanners = adminBanners.filter(b => b.id !== id);
-      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+            localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
       renderAdminBanners();
     }
 
@@ -2397,7 +2409,11 @@
       const b = adminBanners.find(item => item.id === id);
       if (!b) return;
       b.active = (b.active === false);
-      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+            localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
       renderAdminBanners();
     }
 
@@ -2411,7 +2427,11 @@
       adminBanners[idx] = adminBanners[targetIdx];
       adminBanners[targetIdx] = temp;
 
-      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+            localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
       renderAdminBanners();
     }
 
@@ -2422,7 +2442,11 @@
       } else {
         adminBanners = [];
       }
-      localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+            localStorage.setItem('nc_banners', JSON.stringify(adminBanners));
+      try {
+        const bc = new BroadcastChannel('nc_banner_sync');
+        bc.postMessage({ type: 'BANNER_UPDATED' });
+      } catch(e) {}
       renderAdminBanners();
       openAddBannerForm();
       alert("ডিফল্ট ব্যানার সফলভাবে রিস্টোর হয়েছে!");
@@ -4664,12 +4688,16 @@
 
       const compressedList = [];
       for (let i = 0; i < files.length; i++) {
-        const comp = await compressImageFile(files[i]);
-        if (comp) compressedList.push(comp);
+        try {
+          const comp = await compressImageFile(files[i], 600, 600, 0.75);
+          if (comp) compressedList.push(comp);
+        } catch(err) {
+          console.warn("Compression error:", err);
+        }
       }
 
       if (compressedList.length > 0) {
-        uploadedStudioPhoto = compressedList;
+        uploadedStudioPhoto = compressedList[0];
         uploadedPhotoList = [...compressedList];
         showPhotoUploadPreview(compressedList);
       }

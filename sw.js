@@ -1,11 +1,11 @@
-// Nisha Creations PWA Service Worker v2
-const CACHE_NAME = 'nisha-creations-pwa-v2';
+// Nisha Creations PWA Service Worker v3 (Immediate Cache Purge & Live Sync)
+const CACHE_NAME = 'nisha-creations-pwa-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
-  './app.js',
-  './products.js',
+  './app.js?v=20260920_v2',
+  './products.js?v=20260920_v2',
   './logo.png',
   './manifest.json'
 ];
@@ -31,6 +31,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log('Purging outdated PWA cache:', key);
             return caches.delete(key);
           }
         })
@@ -40,6 +41,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Always fetch fresh from network for app logic
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => networkResponse)
