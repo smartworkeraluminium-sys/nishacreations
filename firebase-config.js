@@ -145,15 +145,23 @@ window.CloudSync = {
   // ==========================================
   // 2. ORDERS SYNC
   // ==========================================
-  syncOrders: function(onUpdate) {
+    syncOrders: function(onUpdate) {
     if (!this.isReady()) return null;
     try {
-      return ncDb.collection('orders').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+      // Listen to all orders without strict order index requirement
+      return ncDb.collection('orders').onSnapshot((snapshot) => {
         if (!snapshot) return;
         const cloudOrders = [];
         snapshot.forEach(doc => {
           const ord = doc.data();
           if (ord && ord.id) cloudOrders.push(ord);
+        });
+
+        // Sort descending by timestamp or date
+        cloudOrders.sort((a, b) => {
+          const tA = new Date(a.createdAt || a.date || 0).getTime();
+          const tB = new Date(b.createdAt || b.date || 0).getTime();
+          return tB - tA;
         });
 
         if (cloudOrders.length > 0) {
@@ -175,6 +183,9 @@ window.CloudSync = {
 
   saveOrder: async function(order) {
     if (!order || !order.id) return false;
+    if (!order.createdAt) order.createdAt = new Date().toISOString();
+    order.updatedAt = new Date().toISOString();
+    
     // Always update local cache first
     try {
       let localOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');

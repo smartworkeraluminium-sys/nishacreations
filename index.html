@@ -1426,19 +1426,36 @@
 </div>
 </div>
 <!-- Inline UPI Payment Box -->
-<div id="upiPaymentActionBox" style="background:#faf5ff; border:1px solid #f0abfc; border-radius:10px; padding:12px; margin-bottom:12px; text-align:center;">
-<div id="t-cartUpiInstructions" style="font-size:0.78rem; font-weight:800; color:#7e22ce; margin-bottom:6px;">
-              📲 যেকোনো UPI অ্যাপ দিয়ে সরাসরি পেমেন্ট করুন:
-            </div>
-<div style="display:flex; justify-content:center; gap:12px; font-size:1.8rem; margin:6px 0;">
-<i class="fa-brands fa-google-pay" style="color:#4285f4;"></i>
-<span style="font-weight:900; font-size:1.3rem; color:#5f259f; display:flex; align-items:center;">PhonePe</span>
-<span style="font-weight:900; font-size:1.3rem; color:#00b9f5; display:flex; align-items:center;">Paytm</span>
-</div>
-<div id="t-cartUpiOfficialText" style="font-size:0.72rem; color:#64748b;">নিশা ক্রিয়েশনস অফিসিয়াল UPI ID: <strong>9239413517@ybl</strong></div>
-<a href="#" id="upiDirectPayLink" style="display:inline-flex; align-items:center; gap:6px; background:#7e22ce; color:#fff; text-decoration:none; padding:7px 16px; border-radius:20px; font-size:0.75rem; font-weight:800; margin-top:8px;">
-<i class="fa-solid fa-mobile-screen"></i> <span id="t-cartUpiOpenBtn">UPI অ্যাপে খুলুন</span>
-</a>
+<div id="upiPaymentActionBox" style="background:#faf5ff; border:1px solid #c084fc; border-radius:14px; padding:14px; margin-bottom:14px; text-align:center;">
+  <div style="display:inline-flex; align-items:center; gap:6px; background:#dcfce7; border:1px solid #86efac; color:#15803d; padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800; margin-bottom:8px;">
+    <i class="fa-solid fa-circle-check"></i> পাঞ্জাব অ্যান্ড সিন্ধ ব্যাংক • নিশা সিং (Nisha Singh)
+  </div>
+  
+  <div id="t-cartUpiInstructions" style="font-size:0.85rem; font-weight:800; color:#6b21a8; margin-bottom:6px;">
+    📲 Navi / PhonePe / Google Pay / Paytm দিয়ে পেমেন্ট করুন
+  </div>
+
+  <!-- Realtime Dynamic UPI QR Code -->
+  <div style="background:#fff; border:2px solid #e9d5ff; border-radius:12px; padding:10px; width:190px; margin:8px auto; box-shadow:0 4px 12px rgba(126,34,206,0.1);">
+    <img id="cartDynamicUpiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3D9239413517-1%40naviaxis%26pn%3DNisha%2520Singh%26cu%3DINR" alt="Nisha Creations UPI QR" style="width:170px; height:170px; display:block; margin:0 auto; border-radius:8px;">
+    <div style="font-size:0.68rem; color:#64748b; font-weight:700; margin-top:4px;">ক্যামেরা দিয়ে স্ক্যান করে পে করুন</div>
+  </div>
+
+  <div id="t-cartUpiOfficialText" style="font-size:0.75rem; color:#475569; margin:6px 0;">
+    অফিসিয়াল UPI ID: <strong style="color:#7e22ce; font-size:0.85rem;" id="activeUpiIdDisplay">9239413517-1@naviaxis</strong>
+    <button type="button" onclick="copyUpiIdToClipboard()" style="background:#ede9fe; color:#7e22ce; border:1px solid #c4b5fd; padding:3px 8px; border-radius:6px; font-size:0.7rem; font-weight:800; cursor:pointer; margin-left:6px;">
+      <i class="fa-regular fa-copy"></i> কপি
+    </button>
+  </div>
+
+  <div style="margin-top:10px;">
+    <a href="#" id="upiDirectPayLink" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; max-width:280px; background:linear-gradient(135deg, #7e22ce, #9333ea); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px; font-size:0.84rem; font-weight:800; box-shadow:0 4px 12px rgba(126,34,206,0.35);">
+      <i class="fa-solid fa-mobile-screen"></i> <span id="t-cartUpiOpenBtn">সরাসরি UPI অ্যাপে খুলুন (Pay via App)</span>
+    </a>
+  </div>
+  <div style="font-size:0.7rem; color:#7e22ce; margin-top:6px; font-weight:600;">
+    💡 টাকা পাঠানো হলে নিচে <strong>"অর্ডার কনফার্ম করুন"</strong> বাটনে চাপ দিন।
+  </div>
 </div>
 <!-- Option 2: Cash on Delivery (COD) -->
 <div class="payment-option-card" id="payOptCardCod" onclick="selectPaymentMethod('COD')">

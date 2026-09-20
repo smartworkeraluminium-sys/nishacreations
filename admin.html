@@ -5126,13 +5126,57 @@
       try {
         const isUnlocked = (sessionStorage.getItem('nc_owner_unlocked') === 'true');
         const isPinDisabled = (localStorage.getItem('nc_pin_disabled') === 'true');
-        // Start Cloud Firestore Realtime Sync
+        
+    function saveBoutiqueUpiId() {
+      const val = (document.getElementById('cfgBoutiqueUpiId')?.value || '').trim();
+      if (!val || !val.includes('@')) {
+        alert("দয়া করে একটি সঠিক UPI ID লিখুন (যেমন: 9239413517@ibl বা 9239413517@axl)");
+        return;
+      }
+      localStorage.setItem('nc_official_upi_id', val);
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        try {
+          ncDb.collection('settings').doc('payment').set({ upiId: val, updatedAt: new Date().toISOString() }, { merge: true });
+        } catch(e) {}
+      }
+      alert(`✅ অফিসিয়াল UPI ID সফলভাবে আপডেট হয়েছে: ${val}\nএখন কাস্টমাররা পেমেন্ট করার সময় এই আইডিতে টাকা পাঠাবে।`);
+    }
+
+    function loadBoutiqueUpiId() {
+      const inp = document.getElementById('cfgBoutiqueUpiId');
+      if (inp) {
+        inp.value = localStorage.getItem('nc_official_upi_id') || '9239413517-1@naviaxis';
+      }
+    }
+
+      loadBoutiqueUpiId();
+      // Start Cloud Firestore Realtime Sync
       try {
         if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+          let prevOrderCount = 0;
           CloudSync.syncOrders((liveOrders) => {
-            ordersList = liveOrders;
-            renderFinanceOverview();
-            renderOwnerOrders();
+            if (Array.isArray(liveOrders)) {
+              if (prevOrderCount > 0 && liveOrders.length > prevOrderCount) {
+                // Play notification bell
+                try {
+                  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                  const osc = audioCtx.createOscillator();
+                  const gain = audioCtx.createGain();
+                  osc.connect(gain);
+                  gain.connect(audioCtx.destination);
+                  osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                  osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                  osc.start();
+                  osc.stop(audioCtx.currentTime + 0.6);
+                } catch(e) {}
+              }
+              prevOrderCount = liveOrders.length;
+              ordersList = liveOrders;
+              renderFinanceOverview();
+              renderOwnerOrders();
+            }
           });
           CloudSync.syncProducts((liveProducts) => {
             renderOwnerStock();

@@ -5945,36 +5945,20 @@ function goToCheckoutStep2() {
   if (payCodAmount) payCodAmount.textContent = `₹${total}`;
   if (payUpiAmount) payUpiAmount.textContent = `₹${upiTotal}`;
   if (payUpiStriked) payUpiStriked.textContent = `₹${total}`;
+    const officialUpiId = localStorage.getItem('nc_official_upi_id') || '9239413517-1@naviaxis';
+  const payeeName = 'Nisha Singh';
   if (upiLink) {
-    upiLink.href = `upi://pay?pa=9239413517@ybl&pn=Nisha%20Creations&am=${upiTotal}&cu=INR&tn=Nisha%20Boutique%20Order`;
+    upiLink.href = `upi://pay?pa=${encodeURIComponent(officialUpiId)}&pn=${encodeURIComponent(payeeName)}&am=${upiTotal}&cu=INR&tn=Nisha%20Creations%20Order`;
   }
+  const qrImg = document.getElementById('cartDynamicUpiQrImg');
+  if (qrImg) {
+    const upiUri = `upi://pay?pa=${officialUpiId}&pn=${encodeURIComponent(payeeName)}&am=${upiTotal}&cu=INR&tn=Nisha%20Creations%20Order`;
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUri)}`;
+  }
+  const activeUpiDisp = document.getElementById('activeUpiIdDisplay');
+  if (activeUpiDisp) activeUpiDisp.textContent = officialUpiId;
 
   selectPaymentMethod(selectedPayMethod || 'UPI');
-}
-
-function selectPaymentMethod(method) {
-  selectedPayMethod = method;
-  const cardUpi = document.getElementById('payOptCardUpi');
-  const cardCod = document.getElementById('payOptCardCod');
-  const upiBox = document.getElementById('upiPaymentActionBox');
-  const savingsBanner = document.getElementById('paymentSavingsBannerText');
-  const confirmBtnLbl = document.getElementById('finalConfirmBtnLabel');
-  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
-  const upiTotal = Math.max(0, total - 38);
-
-  if (method === 'UPI') {
-    if (cardUpi) cardUpi.classList.add('active');
-    if (cardCod) cardCod.classList.remove('active');
-    if (upiBox) upiBox.style.display = 'block';
-    if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'flex';
-    if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${upiTotal})`;
-  } else {
-    if (cardCod) cardCod.classList.add('active');
-    if (cardUpi) cardUpi.classList.remove('active');
-    if (upiBox) upiBox.style.display = 'none';
-    if (savingsBanner && savingsBanner.parentElement) savingsBanner.parentElement.style.display = 'none';
-    if (confirmBtnLbl) confirmBtnLbl.textContent = `অর্ডার কনফার্ম করুন (Pay ₹${total} COD)`;
-  }
 }
 
 function toggleAddressEdit() {
@@ -6043,6 +6027,8 @@ function submitFinalOrder() {
 
   const newOrder = {
     id: orderId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     date: dateStr,
     name: name,
     customerName: name,
@@ -6270,4 +6256,13 @@ function updateAllSuperCoinsDisplays() {
   const coins = parseInt(localStorage.getItem('nc_super_coins') || '500');
   const dCoins = document.querySelectorAll('#checkoutCoinBal, #drawerCoinsDisplay');
   dCoins.forEach(el => { if (el) el.textContent = coins; });
+}
+
+function copyUpiIdToClipboard() {
+  const upiId = localStorage.getItem('nc_official_upi_id') || '9239413517-1@naviaxis';
+  navigator.clipboard.writeText(upiId).then(() => {
+    alert(`✅ UPI ID (${upiId}) সফলভাবে কপি হয়েছে! PhonePe বা GPay অ্যাপে গিয়ে পেস্ট করুন।`);
+  }).catch(() => {
+    prompt("নিচের UPI ID-টি কপি করে নিন:", upiId);
+  });
 }
