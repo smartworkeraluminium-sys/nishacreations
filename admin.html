@@ -3904,6 +3904,16 @@
 
       localStorage.setItem('nc_demo_cleared', 'true');
 
+      // Realtime Cloud Firestore Push for New Product
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        try {
+          CloudSync.saveProduct(newProd);
+          console.log('☁️ New product saved to Cloud Firestore:', newProd.id);
+        } catch(e) {
+          console.warn('Failed to push new product to cloud:', e);
+        }
+      }
+
       if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
         CloudSync.saveProduct(newProd);
       }
@@ -5125,6 +5135,17 @@
             renderOwnerStock();
             renderWarehouseOperations();
           });
+
+          // Auto-seed existing custom products to Firestore
+          try {
+            const existingCust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+            if (Array.isArray(existingCust) && existingCust.length > 0) {
+              existingCust.forEach(cp => {
+                if (cp && cp.id) CloudSync.saveProduct(cp);
+              });
+              console.log('☁️ Auto-synced custom products to Firestore!');
+            }
+          } catch(e) {}
         }
       } catch(e) {}
 
