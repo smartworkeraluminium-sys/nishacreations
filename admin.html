@@ -3989,13 +3989,45 @@
     function setOwnerOrderStatus(orderId, newStatus) {
       const idx = ordersList.findIndex(o => o.id === orderId);
       if (idx === -1) return;
+      
+      const nowStr = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
       ordersList[idx].status = newStatus;
-      if (newStatus === 'Delivered') ordersList[idx].deliveredDate = new Date().toLocaleDateString('bn-IN');
+      ordersList[idx].updatedAt = new Date().toISOString();
+      if (newStatus === 'Delivered') {
+        ordersList[idx].deliveredDate = nowStr;
+      } else if (newStatus === 'Packed') {
+        ordersList[idx].packedDate = nowStr;
+      } else if (newStatus === 'Out for Delivery') {
+        ordersList[idx].outForDeliveryDate = nowStr;
+      }
 
+      // 1. Save to LocalStorage immediately (0ms Local DB)
       localStorage.setItem('nc_orders', JSON.stringify(ordersList));
+
+      // 2. Save to Google Cloud Firestore immediately (Live Cloud DB)
+      if (window.CloudSync && typeof CloudSync.updateOrderStatus === 'function') {
+        CloudSync.updateOrderStatus(orderId, newStatus, {
+          deliveredDate: ordersList[idx].deliveredDate || '',
+          packedDate: ordersList[idx].packedDate || '',
+          outForDeliveryDate: ordersList[idx].outForDeliveryDate || '',
+          updatedAt: ordersList[idx].updatedAt
+        });
+      }
+
+      // 3. Broadcast to all open tabs/windows (Customer view, Rider view, etc.)
+      try {
+        const bc = new BroadcastChannel('nc_orders_sync_channel');
+        bc.postMessage({ type: 'order_status_updated', orderId: orderId, status: newStatus, order: ordersList[idx] });
+      } catch(e) {}
+
+      // Trigger local storage event for older browsers
+      try {
+        window.dispatchEvent(new StorageEvent('storage', { key: 'nc_orders', newValue: JSON.stringify(ordersList) }));
+      } catch(e) {}
+
       renderFinanceOverview();
       renderOwnerOrders();
-      alert(`✅ অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে "${newStatus}" করা হয়েছে!`);
+      alert(`✅ অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে "${newStatus}" করা হয়েছে!\n\n☁️ কাস্টমার ও ডেলিভারি পোর্টালেও রিয়েল-টাইমে আপডেট পাঠানো হয়েছে।`);
     }
 
     // Stock
@@ -4422,9 +4454,11 @@
         })) : [],
         colorVariants: (typeof activeColorVariantsList !== 'undefined' && Array.isArray(activeColorVariantsList)) ? activeColorVariantsList.map((c, i) => ({
           colorName: c.name,
-          img: c.img || (allImages && allImages[i]) || coverImg,
+          name: c.name,
           code: c.code,
-          qty: c.qty || 0
+          qty: c.qty || 0,
+          img: (c.images && c.images[0]) || c.img || (allImages && allImages[i]) || coverImg,
+          images: (c.images && c.images.length > 0) ? c.images : [c.img || (allImages && allImages[i]) || coverImg]
         })) : [],
         sizes: sizes,
         desc: desc,
@@ -5426,51 +5460,131 @@
       if (badge) badge.textContent = `মোট স্টক: ${total} পিস`;
     }
 
+    function renderColorPhotoThumbnails(c, colorIdx) {
+      const imgs = (c.images && c.images.length > 0) ? c.images : (c.img ? [c.img] : []);
+      let html = '';
+      
+      imgs.forEach((imgSrc, imgIdx) => {
+        html += `
+          <div style="position:relative; width:52px; height:52px; border-radius:8px; overflow:hidden; border:1.5px solid #38bdf8; background:#0f172a; flex-shrink:0;">
+            <img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover; display:block;">
+            <button type="button" onclick="removeColorPhoto(${colorIdx}, ${imgIdx})" style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#ef4444; color:#fff; border:none; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1;" title="ছবি মুছুন">✕</button>
+            <span style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.65); color:#fff; font-size:8px; text-align:center; font-weight:700;">ছবি ${imgIdx + 1}</span>
+          </div>
+        `;
+      });
+
+      // Show slot to add more if under 5
+      if (imgs.length < 5) {
+        html += `
+          <label style="width:52px; height:52px; border-radius:8px; border:1.5px dashed #475569; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#1e293b; color:#38bdf8; flex-shrink:0; transition:all 0.15s;" title="এই রঙের আরেকটি ছবি যোগ করুন">
+            <i class="fa-solid fa-plus" style="font-size:0.9rem;"></i>
+            <span style="font-size:8px; font-weight:700; color:#cbd5e1; margin-top:2px;">ছবি ${imgs.length + 1}</span>
+            <input type="file" accept="image/*" multiple style="display:none;" onchange="handleColorVariantMultiImageUpload(${colorIdx}, event)">
+          </label>
+        `;
+      }
+
+      return html;
+    }
+
+    async function handleColorVariantMultiImageUpload(idx, event) {
+      const files = event.target.files;
+      if (!files || !files.length || !activeColorVariantsList[idx]) return;
+
+      activeColorVariantsList[idx].images = activeColorVariantsList[idx].images || [];
+      if (activeColorVariantsList[idx].img && activeColorVariantsList[idx].images.length === 0) {
+        activeColorVariantsList[idx].images.push(activeColorVariantsList[idx].img);
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        if (activeColorVariantsList[idx].images.length >= 5) break;
+        const comp = await compressImageFile(files[i]);
+        if (comp) {
+          activeColorVariantsList[idx].images.push(comp);
+        }
+      }
+
+      if (activeColorVariantsList[idx].images.length > 0) {
+        activeColorVariantsList[idx].img = activeColorVariantsList[idx].images[0];
+      }
+      renderActiveColorStockList();
+    }
+
+    function removeColorPhoto(colorIdx, photoIdx) {
+      if (!activeColorVariantsList[colorIdx] || !activeColorVariantsList[colorIdx].images) return;
+      activeColorVariantsList[colorIdx].images.splice(photoIdx, 1);
+      activeColorVariantsList[colorIdx].img = activeColorVariantsList[colorIdx].images[0] || '';
+      renderActiveColorStockList();
+    }
+
     function renderActiveColorStockList() {
       const container = document.getElementById('selectedColorStockList');
       if (!container) return;
 
+      if (!activeColorVariantsList || activeColorVariantsList.length === 0) {
+        container.innerHTML = '<div style="color:#94a3b8; font-size:0.75rem; text-align:center; padding:10px;">কোনো রঙ নির্বাচন করা হয়নি। ওপরের প্যালেট থেকে রঙ বেছে নিন।</div>';
+        updateTotalColorStockBadge();
+        return;
+      }
+
       container.innerHTML = activeColorVariantsList.map((c, idx) => {
-        // Auto assign uploaded photo if available
-        const assignedImg = c.img || (uploadedPhotoList && uploadedPhotoList[idx]) || uploadedStudioPhoto || '';
+        c.images = c.images || (c.img ? [c.img] : []);
+        const photoCount = c.images.length;
+        const statusBadge = (photoCount >= 2) 
+          ? `<span style="background:#065f46; color:#a7f3d0; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:800;">✓ ${photoCount}টি ছবি প্রস্তুত</span>`
+          : (photoCount === 1 
+              ? `<span style="background:#78350f; color:#fde68a; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:700;">⚠️ ১টি ছবি (আরও ১টি দিন)</span>`
+              : `<span style="background:#334155; color:#cbd5e1; padding:2px 8px; border-radius:10px; font-size:0.7rem;">ছবি খালি (২-৫টি ছবি দিন)</span>`);
+
         return `
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0b0f19; padding:8px 12px; border-radius:10px; border:1px solid #1f2937;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label style="cursor:pointer; position:relative; display:inline-block;" title="এই রঙের আলাদা ছবি আপলোড করুন">
-              ${assignedImg ? `
-                <img src="${assignedImg}" style="width:34px; height:46px; border-radius:6px; object-fit:cover; border:1.5px solid #38bdf8; display:block;">
-              ` : `
-                <span style="display:inline-block; width:16px; height:16px; border-radius:50%; background:${c.code || '#a855f7'}; border:1px solid #cbd5e1; flex-shrink:0;"></span>
-              `}
-              <input type="file" accept="image/*" style="display:none;" onchange="handleColorVariantImageUpload(${idx}, event)">
-            </label>
-            <div>
-              <span style="font-size:0.85rem; font-weight:800; color:#fff;">${c.name}</span>
-              ${assignedImg ? '<div style="font-size:0.68rem; color:#34d399;"><i class="fa-solid fa-check"></i> ফটো সংযুক্ত</div>' : '<div style="font-size:0.68rem; color:#94a3b8;">গ্যালারির ফটো বাছুন</div>'}
+        <div style="background:#0b0f19; border:1px solid #1f2937; border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:18px; height:18px; border-radius:50%; background:${c.code || '#a855f7'}; border:2px solid #cbd5e1; flex-shrink:0;"></span>
+              <span style="font-size:0.9rem; font-weight:800; color:#fff;">${c.name}</span>
+              ${statusBadge}
+            </div>
+
+            <!-- Qty Counter & Delete -->
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.72rem; color:#94a3b8;">স্টক:</span>
+              <button type="button" class="btn-fast-action" style="padding:2px 7px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, -1)">-</button>
+              <input type="number" min="0" value="${c.qty || 0}" style="width:44px; text-align:center; background:#1e293b; border:1px solid #475569; color:#fde047; font-weight:800; border-radius:6px; padding:2px; font-size:0.82rem;" onchange="updateColorQtyDirect(${idx}, this.value)">
+              <button type="button" class="btn-fast-action" style="padding:2px 7px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, 1)">+</button>
+              <button type="button" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; margin-left:4px;" onclick="removeColorVariant(${idx})" title="কালার মুছুন">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
           </div>
 
-          <div style="display:flex; align-items:center; gap:6px;">
-            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, -1)">-</button>
-            <input type="number" min="0" value="${c.qty || 0}" style="width:48px; text-align:center; background:#1e293b; border:1px solid #475569; color:#fde047; font-weight:800; border-radius:6px; padding:4px; font-size:0.85rem;" onchange="updateColorQtyDirect(${idx}, this.value)">
-            <button type="button" class="btn-fast-action" style="padding:4px 8px; font-size:0.75rem; background:#334155; color:#fff;" onclick="adjustColorQty(${idx}, 1)">+</button>
-            <button type="button" style="background:transparent; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:4px 6px;" onclick="removeColorVariant(${idx})">✕</button>
+          <!-- 2 to 5 Photos Upload Gallery Container -->
+          <div style="background:#090d16; border:1px dashed #334155; border-radius:10px; padding:8px 10px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:0.72rem; color:#cbd5e1; font-weight:700;">
+                <i class="fa-solid fa-camera" style="color:#38bdf8;"></i> ${c.name}-এর ছবি (২ থেকে ৫টি ফটো):
+              </span>
+              ${photoCount < 5 ? `
+                <label style="background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:3px 10px; border-radius:8px; font-size:0.7rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> গ্যালারি থেকে ছবি যোগ করুন
+                  <input type="file" accept="image/*" multiple style="display:none;" onchange="handleColorVariantMultiImageUpload(${idx}, event)">
+                </label>
+              ` : ''}
+            </div>
+
+            <!-- Thumbnails Strip -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              ${renderColorPhotoThumbnails(c, idx)}
+            </div>
           </div>
         </div>
-      `;}).join('');
+        `;
+      }).join('');
 
       updateTotalColorStockBadge();
     }
 
-    async function handleColorVariantImageUpload(idx, event) {
-      const file = event.target.files && event.target.files;
-      if (!file || !activeColorVariantsList[idx]) return;
-      const comp = await compressImageFile(file);
-      if (comp) {
-        activeColorVariantsList[idx].img = comp;
-        renderActiveColorStockList();
-      }
-    }
+
 
     // Modal Edit Color Stock for Existing Products
     let currentModalEditingProdId = null;

@@ -4387,6 +4387,37 @@ function selectPdpSize(sz) {
     }
 
     // Live Order Tracking
+    
+    // =========================================================================
+    // REAL-TIME ORDER TRACKING SYNC (BroadcastChannel, Storage & Visibility)
+    // =========================================================================
+    try {
+      const ncOrderBc = new BroadcastChannel('nc_orders_sync_channel');
+      ncOrderBc.onmessage = function(ev) {
+        if (ev && ev.data && ev.data.type === 'order_status_updated') {
+          console.log("⚡ Realtime Broadcast received for Order #", ev.data.orderId, "Status:", ev.data.status);
+          loadAndRenderOrdersSafe();
+        }
+      };
+    } catch(e) {}
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'nc_orders') {
+        console.log("⚡ Storage event received for nc_orders, re-rendering customer tracking...");
+        loadAndRenderOrdersSafe();
+      }
+    });
+
+    window.addEventListener('focus', function() {
+      loadAndRenderOrdersSafe();
+    });
+
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        loadAndRenderOrdersSafe();
+      }
+    });
+
     function loadAndRenderOrdersSafe() {
       let storedOrders = JSON.parse(localStorage.getItem('nc_orders') || '[]');
       
@@ -4676,25 +4707,34 @@ function selectPdpSize(sz) {
               </div>
               
               <div class="timeline" style="margin-left:8px;">
+                <!-- Step 1: Order Placed -->
                 <div class="timeline-step completed">
                   <div class="timeline-dot"><i class="fa-solid fa-check"></i></div>
                   <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">${isEn ? "1. Order Placed" : "1. অর্ডার গৃহীত হয়েছে"}</div>
                   <div style="font-size:0.68rem; color:#64748b;">${isEn ? "Order booking verified in system" : "সিস্টেমে অর্ডার বুকিং ভেরিফাই হয়েছে"}</div>
                 </div>
-                <div class="timeline-step ${isPacked || isOut ? 'completed' : ''}">
-                  <div class="timeline-dot"><i class="fa-solid fa-box"></i></div>
-                  <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">${isEn ? "2. Packed & Quality Checked" : "2. প্যাকিং ও কোয়ালিটি চেক"}</div>
+
+                <!-- Step 2: Packed & Quality Checked -->
+                <div class="timeline-step ${isPacked || isOut || isDelivered ? 'completed' : ''}">
+                  <div class="timeline-dot"><i class="${isPacked || isOut || isDelivered ? 'fa-solid fa-check' : 'fa-solid fa-box'}"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:${isPacked || isOut || isDelivered ? '#0f172a' : '#94a3b8'};">${isEn ? "2. Packed & Quality Checked" : "2. প্যাকিং ও কোয়ালিটি চেক"}</div>
                   <div style="font-size:0.68rem; color:#64748b;">${isEn ? "Thoroughly checked by Nisha Creations Boutique" : "নিশা ক্রিয়েশনস বুটিক দ্বারা নিখুঁতভাবে চেক করা হয়েছে"}</div>
                 </div>
-                <div class="timeline-step ${isOut ? 'completed' : ''}">
-                  <div class="timeline-dot"><i class="fa-solid fa-motorcycle"></i></div>
-                  <div style="font-size:0.78rem; font-weight:800; color:#0f172a;">${isEn ? "3. Out for Delivery" : "3. ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)"}</div>
+
+                <!-- Step 3: Out for Delivery -->
+                <div class="timeline-step ${isOut || isDelivered ? 'completed' : ''}">
+                  <div class="timeline-dot"><i class="${isOut || isDelivered ? 'fa-solid fa-check' : 'fa-solid fa-motorcycle'}"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:${isOut || isDelivered ? '#0f172a' : '#94a3b8'};">${isEn ? "3. Out for Delivery" : "3. ডেলিভারির জন্য বেরিয়েছে (Out for Delivery)"}</div>
                   <div style="font-size:0.68rem; color:#64748b;">${isEn ? "With Amta delivery partner" : "আমতার ডেলিভারি পার্টনারের কাছে রয়েছে"}</div>
                 </div>
-                <div class="timeline-step">
-                  <div class="timeline-dot"><i class="fa-solid fa-house-chimney"></i></div>
-                  <div style="font-size:0.78rem; font-weight:800; color:#94a3b8;">${isEn ? "4. Delivered" : "4. ডেলিভারি সম্পন্ন (Delivered)"}</div>
-                  <div style="font-size:0.68rem; color:#94a3b8;">${isEn ? "Parcel will reach your address" : "পার্সেল আপনার ঠিকানায় পৌঁছাবে"}</div>
+
+                <!-- Step 4: Delivered -->
+                <div class="timeline-step ${isDelivered ? 'completed' : ''}">
+                  <div class="timeline-dot"><i class="${isDelivered ? 'fa-solid fa-check' : 'fa-solid fa-house-chimney'}"></i></div>
+                  <div style="font-size:0.78rem; font-weight:800; color:${isDelivered ? '#15803d' : '#94a3b8'};">${isEn ? "4. Delivered" : "4. ডেলিভারি সম্পন্ন (Delivered)"}</div>
+                  <div style="font-size:0.68rem; color:${isDelivered ? '#16a34a' : '#94a3b8'}; font-weight:${isDelivered ? '700' : '400'};">
+                    ${isDelivered ? (isEn ? "🎉 Parcel successfully delivered to your address!" : "🎉 পার্সেল সফলভাবে আপনার ঠিকানায় পৌঁছে গেছে!") : (isEn ? "Parcel will reach your address" : "পার্সেল আপনার ঠিকানায় পৌঁছাবে")}
+                  </div>
                 </div>
               </div>
 
@@ -5196,13 +5236,39 @@ function selectPdpSize(sz) {
     }
 
 
-    function selectPdpColorVariant(imgSrc, colorName, el) {
-      selectedPdpColor = colorName;
-      selectedPdpColorImg = imgSrc;
+    function selectPdpColorVariant(variantOrImg, colorNameOrEl, elOrNone) {
+      let vImg = '';
+      let vName = '';
+      let vImages = [];
+      let el = null;
+
+      if (typeof variantOrImg === 'object' && variantOrImg !== null) {
+        vImg = variantOrImg.img || (variantOrImg.images && variantOrImg.images[0]) || '';
+        vName = variantOrImg.colorName || variantOrImg.name || 'কালার';
+        vImages = (variantOrImg.images && variantOrImg.images.length > 0) ? variantOrImg.images : (vImg ? [vImg] : []);
+        el = colorNameOrEl;
+      } else {
+        vImg = variantOrImg;
+        vName = colorNameOrEl;
+        el = elOrNone;
+        // Search in current product's colorVariants for images array
+        if (currentPdpProduct && currentPdpProduct.colorVariants) {
+          const matchedV = currentPdpProduct.colorVariants.find(v => (v.colorName || v.name) === vName);
+          if (matchedV && matchedV.images && matchedV.images.length > 0) {
+            vImages = matchedV.images;
+          }
+        }
+        if (vImages.length === 0 && vImg) vImages = [vImg];
+      }
+
+      selectedPdpColor = vName;
+      selectedPdpColorImg = vImg;
+
       const mainImg = document.getElementById('pdpMainImg');
-      if (mainImg) mainImg.src = imgSrc;
+      if (mainImg && vImg) mainImg.src = vImg;
+
       const cvBadge = document.getElementById('pdpSelectedColorNameBadge');
-      if (cvBadge) cvBadge.textContent = colorName;
+      if (cvBadge) cvBadge.textContent = vName;
       
       const strip = document.getElementById('pdpColorVariantsStrip');
       if (strip) {
@@ -5214,6 +5280,18 @@ function selectPdpSize(sz) {
       if (el) {
         el.style.border = '2px solid #0f172a';
         el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+      }
+
+      // Update Sub Images Strip with all 2-5 photos of this selected color!
+      const subStrip = document.getElementById('pdpSubImagesStrip');
+      if (subStrip && vImages.length > 1) {
+        subStrip.innerHTML = '';
+        vImages.forEach((imgSrc, i) => {
+          subStrip.innerHTML += `
+            <img src="${imgSrc}" onclick="document.getElementById('pdpMainImg').src='${imgSrc}'" style="width:55px; height:55px; object-fit:cover; border-radius:8px; border:1.5px solid var(--primary); cursor:pointer; background:#f8fafc;" title="ছবি ${i+1}">
+          `;
+        });
+        subStrip.style.display = 'flex';
       }
     }
 
