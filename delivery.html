@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Nisha Creations • ডেলিভারি পার্টনার হাব (Delivery Partner Hub)</title>
+  
+  <!-- Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
+      
+      --brand: #0284c7;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 70px;
+    }
+
+    /* Rider Top Bar */
+    .rider-header {
+      background: #0284c7;
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      color: #ffffff;
+      padding: 16px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.3);
+    }
+
+    .rider-header-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rider-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rider-icon {
+      width: 42px;
+      height: 42px;
+      background: #ffffff;
+      color: #0369a1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-rider-refresh {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* End-of-Day Cash & Task Summary (দিনের শেষে ক্যাশ হিসাব) */
+    .cash-summary-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid #38bdf8;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .cash-main-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cash-main-amount {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #34d399;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 4px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .cash-note {
+      font-size: 0.75rem;
+      color: #fde68a;
+      background: rgba(245, 158, 11, 0.15);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rider-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #334155;
+    }
+
+    .r-stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .r-stat-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .r-stat-lbl {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    /* Filter Tabs */
+    .filter-pills-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-pill.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    /* Delivery Task Card */
+    .delivery-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .delivery-card.completed {
+      border-color: #059669;
+      background: rgba(16, 185, 129, 0.06);
+    }
+
+    .card-top-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .order-tag {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #38bdf8;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .status-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .badge-out {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .badge-delivered {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    /* Customer Info Block */
+    .cust-info-block {
+      margin-bottom: 14px;
+    }
+
+    .cust-name-row {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cust-address-row {
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      line-height: 1.4;
+      background: #0f172a;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      margin: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* Big Direct Contact Buttons (Call & WhatsApp) */
+    .contact-action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .btn-contact {
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-contact-call {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-contact-call:hover { background: #059669; }
+
+    .btn-contact-wa {
+      background: #25d366;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+    .btn-contact-wa:hover { background: #1eb957; }
+
+    /* Payment Alert Box (High Visibility) */
+    .payment-alert-box {
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pay-box-cod {
+      background: linear-gradient(135deg, #78350f, #92400e);
+      border: 1.5px solid #f59e0b;
+      color: #fff;
+    }
+
+    .pay-box-upi {
+      background: linear-gradient(135deg, #064e3b, #047857);
+      border: 1.5px solid #10b981;
+      color: #fff;
+    }
+
+    .pay-alert-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .pay-alert-amt {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Items Accordion */
+    .items-preview-strip {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-mini-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-mini-thumb {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #334155;
+    }
+
+    .item-mini-info {
+      flex: 1;
+    }
+
+    .item-mini-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .item-mini-meta {
+      font-size: 0.7rem;
+      color: #94a3b8;
+    }
+
+    /* Primary Action Buttons (Mark as Delivered) */
+    .delivery-actions-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-mark-delivered {
+      width: 100%;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-mark-delivered:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    .btn-mark-out {
+      width: 100%;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .empty-rider-box {
+      background: var(--surface);
+      border: 1.5px dashed var(--border);
+      border-radius: 20px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+  <!-- Google Cloud Firestore Integration (nisha-creations) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js?v=20260921_v1"></script>
+
+</head>
+<body>
+
+  <!-- Rider Header -->
+    <!-- Rider Top Bar -->
+  <header class="rider-header">
+    <div class="rider-header-inner">
+      <div class="rider-brand">
+        <div class="rider-icon"><i class="fa-solid fa-motorcycle"></i></div>
+        <div>
+          <div style="font-size:1.1rem; font-weight:800; letter-spacing:-0.3px;">নিশা ক্রিয়েশনস ডেলিভারি হাব</div>
+          <div style="font-size:0.75rem; opacity:0.9;" id="riderSubText">আমতা ও লোকাল মাইক্রো-হাব রুট • রাইডার পোর্টাল</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="btn-rider-refresh" onclick="loadRiderData()" title="রিফ্রেশ">
+          <i class="fa-solid fa-rotate"></i> রিফ্রেশ
+        </button>
+        <a href="admin.html" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); color:#fff; text-decoration:none; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">
+          <i class="fa-solid fa-gauge-high"></i> অ্যাডমিন
+        </a>
+      </div>
+    </div>
+
+    <!-- Active Hub & Rider Quick Switcher Strip -->
+    <div style="max-width:600px; margin:10px auto 0 auto; background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-user-tag" style="color:#38bdf8; font-size:0.85rem;"></i>
+        <span style="font-size:0.75rem; font-weight:700;">বর্তমান রাইডার:</span>
+        <select id="riderSelectDropdown" onchange="onRiderProfileChange(this.value)" style="background:#0f172a; color:#38bdf8; border:1px solid #38bdf8; border-radius:8px; padding:3px 8px; font-size:0.78rem; font-weight:800;">
+          <option value="all">🛵 সমস্ত রাইডার ও অর্ডার</option>
+        </select>
+      </div>
+      <div id="firebaseSyncBadge"></div>
+    </div>
+  </header>
+
+
+  <main class="container">
+
+    <!-- 1. End-of-Day Cash & Task Summary (দিনের শেষে ক্যাশ হিসাব) -->
+    <section class="cash-summary-card">
+      <div class="cash-main-title">
+        <span><i class="fa-solid fa-sack-dollar" style="color:#f59e0b;"></i> আজকের ক্যাশ কালেকশন</span>
+        <span style="font-size:0.7rem; color:#94a3b8;">(মালিককে জমা দিতে হবে)</span>
+      </div>
+
+      <div class="cash-main-amount">
+        <span id="riderCodCashTotal">₹0</span>
+      </div>
+
+      <div class="cash-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>ক্যাশ অন ডেলিভারির (COD) যতগুলো পার্সেল আপনি সফলভাবে দিয়েছেন, শুধু সেই টাকার মোট হিসাব।</span>
+      </div>
+
+      <div class="rider-stats-grid">
+        <div class="r-stat-box">
+          <div class="r-stat-val" id="riderPendingCount" style="color:#f59e0b;">0</div>
+          <div class="r-stat-lbl">বাকি ডেলিভারি</div>
+        </div>
+        <div class="r-stat-box">
+          <div class="r-stat-val" id="riderDeliveredCount" style="color:#34d399;">0</div>
+          <div class="r-stat-lbl">সম্পন্ন ডেলিভারি</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Filter Tabs -->
+    <div class="filter-pills-row">
+      <button type="button" class="filter-pill active" id="fPending" onclick="setRiderFilter('pending', this)">
+        ⏳ বাকি ডেলিভারি (<span id="cntPending">0</span>)
+      </button>
+      <button type="button" class="filter-pill" id="fDelivered" onclick="setRiderFilter('delivered', this)">
+        ✅ সম্পন্ন ডেলিভারি (<span id="cntDelivered">0</span>)
+      </button>
+      <button type="button" class="filter-pill" id="fAll" onclick="setRiderFilter('all', this)">
+        📋 সব অর্ডার (<span id="cntAll">0</span>)
+      </button>
+    </div>
+
+    <!-- 3. Delivery Tasks Container -->
+    <div id="riderTasksContainer">
+      <!-- Populated by JavaScript -->
+    </div>
+
+  </main>
+
+  <script>
+    let riderOrders = [];
+    let currentRiderFilter = 'pending';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadRiderData();
+      
+      // Live Google Cloud Firestore Sync
+      if (window.CloudSync) {
+        // Sync Staff for rider dropdown
+        if (typeof CloudSync.syncStaff === 'function') {
+          CloudSync.syncStaff(() => {
+            populateRiderDropdown();
+          });
+        }
+        // Sync Orders in real-time
+        if (typeof CloudSync.syncOrders === 'function') {
+          CloudSync.syncOrders((orders) => {
+            riderOrders = orders || [];
+            calculateRiderCash();
+            renderRiderTasks();
+            updateDeliverySyncBadge(CloudSync.isReady());
+          });
+        }
+      }
+
+      // Local cross-tab storage listener
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'nc_orders' || e.key === 'nc_staff') {
+          loadRiderData();
+        }
+      });
+    });
+
+    function updateDeliverySyncBadge(isReady) {
+      const badge = document.getElementById('firebaseSyncBadge');
+      if (!badge) return;
+      if (isReady) {
+        badge.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800;"><i class="fa-solid fa-cloud-arrow-up" style="color:#10b981;"></i> ফায়ারবেস ক্লাউড কানেক্টেড</span>`;
+      } else {
+        badge.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-hard-drive" style="color:#f59e0b;"></i> অফলাইন মোড (লোকাল স্টোরেজ)</span>`;
+      }
+    }
+
+    
+    let currentActiveRiderId = 'all';
+
+    // Populate Riders dropdown from nc_staff
+    function populateRiderDropdown() {
+      const staffList = (typeof getStoredStaff === 'function') ? getStoredStaff() : [];
+      const dropdown = document.getElementById('riderSelectDropdown');
+      if (!dropdown) return;
+      
+      dropdown.innerHTML = `<option value="all">🛵 সমস্ত রাইডার ও অর্ডার</option>`;
+      staffList.filter(s => s.role === 'rider' && s.status === 'active').forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = `🛵 ${r.name} (${r.hubName || 'আমতা'})`;
+        dropdown.appendChild(opt);
+      });
+
+      // Restore saved rider
+      const saved = localStorage.getItem('nc_active_rider_id') || 'all';
+      dropdown.value = saved;
+      currentActiveRiderId = saved;
+    }
+
+    function onRiderProfileChange(val) {
+      currentActiveRiderId = val;
+      localStorage.setItem('nc_active_rider_id', val);
+      renderRiderTasks();
+    }
+
+    function loadRiderData() {
+      try {
+        const stored = localStorage.getItem('nc_orders');
+        riderOrders = stored ? JSON.parse(stored) : [];
+        populateRiderDropdown();
+      } catch(e) {
+        riderOrders = [];
+      }
+      calculateRiderCash();
+      renderRiderTasks();
+    }
+
+    // Calculate Cash Collected & Task Counts
+    function calculateRiderCash() {
+      // Cash collected today = delivered COD orders
+      const codCollected = riderOrders
+        .filter(o => o.status === 'Delivered' && o.paymentMode === 'COD')
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      const pendingOrders = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery');
+      const deliveredOrders = riderOrders.filter(o => o.status === 'Delivered');
+
+      document.getElementById('riderCodCashTotal').textContent = '₹' + codCollected.toLocaleString('en-IN');
+      document.getElementById('riderPendingCount').textContent = pendingOrders.length;
+      document.getElementById('riderDeliveredCount').textContent = deliveredOrders.length;
+
+      document.getElementById('cntPending').textContent = pendingOrders.length;
+      document.getElementById('cntDelivered').textContent = deliveredOrders.length;
+      document.getElementById('cntAll').textContent = riderOrders.length;
+    }
+
+    // Filter Handler
+    function setRiderFilter(type, btn) {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      currentRiderFilter = type;
+      renderRiderTasks();
+    }
+
+    // Render Tasks
+    function renderRiderTasks() {
+      const container = document.getElementById('riderTasksContainer');
+      if (!container) return;
+
+      let filtered = riderOrders;
+      if (typeof currentActiveRiderId !== 'undefined' && currentActiveRiderId && currentActiveRiderId !== 'all') {
+        filtered = filtered.filter(o => o.assignedRiderId === currentActiveRiderId || !o.assignedRiderId);
+      }
+
+      if (currentRiderFilter === 'pending') {
+        filtered = riderOrders.filter(o => o.status === 'Order Placed' || o.status === 'Packed' || o.status === 'Out for Delivery');
+      } else if (currentRiderFilter === 'delivered') {
+        filtered = riderOrders.filter(o => o.status === 'Delivered');
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-rider-box">
+            <i class="fa-solid fa-box-open" style="font-size:2.8rem; color:#475569; margin-bottom:10px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">কোনো ডেলিভারি টাস্ক নেই</h3>
+            <p style="font-size:0.8rem; margin-top:4px;">নতুন অর্ডার আসলে এই তালিকায় দেখা যাবে।</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(ord => {
+        const isDelivered = ord.status === 'Delivered';
+        const isCod = ord.paymentMode === 'COD';
+        const phoneClean = (ord.phone || '').replace(/[^0-9]/g, '');
+
+        // WhatsApp message for delivery boy
+        const waMsg = encodeURIComponent(`নমস্কার ${ord.name || 'গ্রাহক'}, নিশা ক্রিয়েশনস (আমতা) থেকে আপনার শাড়ির পার্সেল (#${ord.id}) নিয়ে ডেলিভারি পার্টনার আসছি। 
+১০ মিনিটের মধ্যে পৌঁছাব। অনুগ্রহ করে প্রস্তুত থাকুন।
+প্রদেয় বিল: ₹${ord.total} (${isCod ? 'ক্যাশ অন ডেলিভারি' : 'অনলাইন পেইড'})।`);
+
+        // Items mini HTML
+        let itemsHtml = (ord.items || []).map(it => `
+          <div class="item-mini-row">
+            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=80'}" class="item-mini-thumb">
+            <div class="item-mini-info">
+              <div class="item-mini-name">${it.title}</div>
+              <div class="item-mini-meta">সাইজ: ${it.selectedSize || 'Free Size'} • পরিমাণ: ${it.qty || 1} টি</div>
+            </div>
+            <div style="font-size:0.85rem; font-weight:800; color:#fff;">₹${(it.price||0)*(it.qty||1)}</div>
+          </div>
+        `).join('');
+
+        const card = document.createElement('div');
+        card.className = `delivery-card ${isDelivered ? 'completed' : ''}`;
+        card.innerHTML = `
+          <div class="card-top-strip">
+            <div class="order-tag">#${ord.id}</div>
+            <div class="status-badge ${isDelivered ? 'badge-delivered' : (ord.status === 'Out for Delivery' ? 'badge-out' : 'badge-pending')}">
+              ${isDelivered ? '✅ ডেলিভারি সম্পন্ন' : (ord.status === 'Out for Delivery' ? '🚚 পথে আছে' : '⏳ ডেলিভারি বাকি')}
+            </div>
+          </div>
+
+          <!-- Customer Name & Address -->
+          <div class="cust-info-block">
+            
+          <!-- Assigned Hub & Rider Info -->
+          ${ord.assignedHubName || ord.assignedRiderName ? `
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+              ${ord.assignedHubName ? `<span style="background:#1e293b; color:#f59e0b; border:1px solid #f59e0b; padding:2px 8px; border-radius:6px; font-size:0.72rem; font-weight:800;"><i class="fa-solid fa-warehouse"></i> ${ord.assignedHubName}</span>` : ''}
+              ${ord.assignedRiderName ? `<span style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:6px; font-size:0.72rem; font-weight:800;"><i class="fa-solid fa-motorcycle"></i> ${ord.assignedRiderName}</span>` : ''}
+            </div>
+          ` : ''}
+          <div class="cust-name-row">
+              <i class="fa-solid fa-user" style="color:#38bdf8;"></i>
+              <span>${ord.name || 'সম্মানিত গ্রাহক'}</span>
+            </div>
+
+            <div class="cust-address-row">
+              <i class="fa-solid fa-location-dot" style="color:#ef4444; font-size:1.1rem; margin-top:2px;"></i>
+              <div>
+                <strong>ডেলিভারি ঠিকানা:</strong><br>
+                ${ord.address || 'আমতা, হাওড়া - 711401'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Call & WhatsApp Buttons -->
+          <div class="contact-action-row">
+            <a href="tel:${phoneClean}" class="btn-contact btn-contact-call">
+              <i class="fa-solid fa-phone"></i> কল করুন
+            </a>
+            <a href="https://wa.me/91${phoneClean}?text=${waMsg}" target="_blank" class="btn-contact btn-contact-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp মেসেজ
+            </a>
+          </div>
+
+          <!-- Payment Alert Box (High Visibility) -->
+          <div class="payment-alert-box ${isCod ? 'pay-box-cod' : 'pay-box-upi'}">
+            <div>
+              <div class="pay-alert-title">
+                ${isCod ? '💵 কাস্টমারের থেকে ক্যাশ সংগ্রহ করুন:' : '✅ অনলাইন পেমেন্ট সম্পন্ন:'}
+              </div>
+              <div style="font-size:0.75rem; opacity:0.9;">
+                ${isCod ? 'শাড়ি বুঝিয়ে দিয়ে নগদ টাকা নিন' : 'কোনো টাকা নিতে হবে না (PAID)'}
+              </div>
+            </div>
+            <div class="pay-alert-amt">
+              ${isCod ? `₹${ord.total}` : 'FREE (PAID)'}
+            </div>
+          </div>
+
+          <!-- Items Strip -->
+          <div class="items-preview-strip">
+            <div style="font-size:0.72rem; font-weight:800; color:#94a3b8; margin-bottom:4px;">
+              <i class="fa-solid fa-bag-shopping"></i> পার্সেলের ভেতরের শাড়ি:
+            </div>
+            ${itemsHtml}
+          </div>
+
+          <!-- Delivery Actions -->
+          <div class="delivery-actions-bar">
+            ${!isDelivered ? `
+              ${ord.status !== 'Out for Delivery' ? `
+                <button type="button" class="btn-mark-out" onclick="setOrderStatusRider('${ord.id}', 'Out for Delivery')">
+                  <i class="fa-solid fa-motorcycle"></i> ডেলিভারি দিতে রওনা হলাম (Out for Delivery)
+                </button>
+              ` : ''}
+
+              <button type="button" class="btn-mark-delivered" onclick="markDeliveredPrompt('${ord.id}', ${isCod ? ord.total : 0})">
+                <i class="fa-solid fa-circle-check"></i>
+                ${isCod ? `ক্যাশ ₹${ord.total} সংগ্রহ করলাম ও ডেলিভারি সম্পন্ন` : 'ডেলিভারি সম্পন্ন (Mark as Delivered)'}
+              </button>
+            ` : `
+              <div style="text-align:center; padding:8px; font-size:0.8rem; font-weight:800; color:#34d399; background:rgba(16,185,129,0.1); border-radius:10px;">
+                🎉 এই অর্ডারটি সফলভাবে ডেলিভারি করা হয়েছে!
+              </div>
+            `}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Rider Action: Mark Delivered
+    function markDeliveredPrompt(orderId, codAmount) {
+      let confirmMsg = `আপনি কি নিশ্চিত যে অর্ডার #${orderId} কাস্টমারকে সঠিক ঠিকানায় ডেলিভারি দিয়েছেন?`;
+      if (codAmount > 0) {
+        confirmMsg += `\n\n⚠️ নিশ্চিত করুন: কাস্টমারের থেকে নগদ ₹${codAmount} বুঝে পেয়েছেন তো?`;
+      }
+
+      if (!confirm(confirmMsg)) return;
+
+      setOrderStatusRider(orderId, 'Delivered');
+    }
+
+    function setOrderStatusRider(orderId, status) {
+      const idx = riderOrders.findIndex(o => o.id === orderId);
+      if (idx === -1) return;
+
+      riderOrders[idx].status = status;
+      if (status === 'Delivered') {
+        riderOrders[idx].deliveredDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      // Save to local cache & Cloud Firestore live!
+      localStorage.setItem('nc_orders', JSON.stringify(riderOrders));
+      if (window.CloudSync && typeof CloudSync.updateOrderStatus === 'function') {
+        CloudSync.updateOrderStatus(orderId, status, {
+          deliveredDate: riderOrders[idx].deliveredDate || ''
+        });
+      }
+
+      calculateRiderCash();
+      renderRiderTasks();
+
+      alert(status === 'Delivered' 
+        ? `✅ অর্ডার #${orderId} সফলভাবে ডেলিভারি মার্ক করা হয়েছে! ক্যাশ হিসাবে জমা হয়েছে।` 
+        : `🚚 অর্ডার #${orderId} এখন "পথে আছে (Out for Delivery)" স্ট্যাটাসে রাখা হয়েছে।`);
+    }
+  </script>
+</body>
+</html>

@@ -1443,13 +1443,15 @@
     </button>
   </div>
 
-  <div style="margin-top:10px;">
-    <a href="#" id="upiDirectPayLink" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; max-width:280px; background:linear-gradient(135deg, #7e22ce, #9333ea); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px; font-size:0.84rem; font-weight:800; box-shadow:0 4px 12px rgba(126,34,206,0.35);">
-      <i class="fa-solid fa-mobile-screen"></i> <span id="t-cartUpiOpenBtn">সরাসরি UPI অ্যাপে খুলুন (Pay via App)</span>
+  <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px; align-items:center;">
+    <a href="#" id="upiDirectPayLink" onclick="handleUpiAppPayClick()" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; max-width:320px; background:linear-gradient(135deg, #7e22ce, #9333ea); color:#fff; text-decoration:none; padding:12px 18px; border-radius:12px; font-size:0.9rem; font-weight:800; box-shadow:0 4px 14px rgba(126,34,206,0.35);">
+      <i class="fa-solid fa-mobile-screen"></i> <span id="t-cartUpiOpenBtn">📲 PhonePe / GPay তে পেমেন্ট করুন</span>
     </a>
-  </div>
-  <div style="font-size:0.7rem; color:#7e22ce; margin-top:6px; font-weight:600;">
-    💡 টাকা পাঠানো হলে নিচে <strong>"অর্ডার কনফার্ম করুন"</strong> বাটনে চাপ দিন।
+    
+    <!-- Instant Booking Button right inside UPI box so user never has to scroll down! -->
+    <button type="button" onclick="submitFinalOrder()" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; max-width:320px; background:linear-gradient(135deg, #16a34a, #15803d); color:#fff; border:none; padding:12px 18px; border-radius:12px; font-size:0.88rem; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(22,163,74,0.3);">
+      <i class="fa-solid fa-circle-check"></i> <span>পেমেন্ট করেছি - অর্ডার বুক করুন</span>
+    </button>
   </div>
 </div>
 <!-- Option 2: Cash on Delivery (COD) -->
@@ -1641,6 +1643,31 @@
 <div style="flex:1;">
 <div id="drawerAuthItemTitle" style="font-size:0.82rem; font-weight:800; color:#0f172a;">লগইন বা সাইন-আপ</div>
 <div id="drawerAuthItemSub" style="font-size:0.68rem; color:#64748b;">মোবাইল নম্বর ও ওটিপি দিয়ে প্রবেশ করুন</div>
+<!-- 9. Owner & Staff Portals -->
+<div style="margin-top:10px; padding-top:10px; border-top:1.5px dashed #e2e8f0; display:flex; flex-direction:column; gap:8px;">
+  <div style="font-size:0.72rem; font-weight:800; color:#64748b; padding-left:4px;">দোকান ও ডেলিভারি কন্ট্রোল</div>
+  <a href="admin.html" target="_blank" style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; text-decoration:none; color:#0f172a;">
+    <div style="width:34px; height:34px; border-radius:10px; background:#4338ca; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1rem;">
+      <i class="fa-solid fa-user-shield"></i>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:0.82rem; font-weight:800;">মালিক অ্যাডমিন প্যানেল</div>
+      <div style="font-size:0.68rem; color:#64748b;">সেলস, স্টক ও ওয়্যারহাউস</div>
+    </div>
+    <i class="fa-solid fa-chevron-right" style="color:#cbd5e1; font-size:0.75rem;"></i>
+  </a>
+  <a href="delivery.html" target="_blank" style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; text-decoration:none; color:#0369a1;">
+    <div style="width:34px; height:34px; border-radius:10px; background:#0284c7; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1rem;">
+      <i class="fa-solid fa-motorcycle"></i>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:0.82rem; font-weight:800;">ডেলিভারি হাব ও রাইডার পোর্টাল</div>
+      <div style="font-size:0.68rem; color:#0284c7;">পার্সেল ডেলিভারি ও ক্যাশ কালেকশন</div>
+    </div>
+    <i class="fa-solid fa-chevron-right" style="color:#7dd3fc; font-size:0.75rem;"></i>
+  </a>
+</div>
+
 </div>
 <i class="fa-solid fa-chevron-right" style="color:#cbd5e1; font-size:0.75rem;"></i>
 </div>
@@ -1699,32 +1726,55 @@
 </div>
 </div>
 
-<div id="orderSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:260; align-items:center; justify-content:center; padding:16px;">
-<div style="background:#fff; width:100%; max-width:420px; border-radius:20px; overflow:hidden; box-shadow:0 12px 35px rgba(0,0,0,0.3); text-align:center; animation:slideUp 0.25s ease-out;">
-<div style="background:linear-gradient(135deg, #16a34a, #15803d); padding:24px 20px; color:#fff;">
-<div style="width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto; font-size:2rem;">
-          🎉
+<div id="orderSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+  <!-- Celebration Fireworks Canvas -->
+  <canvas id="fireworksCanvas" style="position:absolute; inset:0; pointer-events:none; z-index:1;"></canvas>
+
+  <div style="position:relative; z-index:2; background:#fff; width:100%; max-width:440px; border-radius:24px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.4); text-align:center; animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+    
+    <!-- Top Celebration Header -->
+    <div style="background:linear-gradient(135deg, #16a34a, #15803d); padding:22px 20px; color:#fff; position:relative; overflow:hidden;">
+      <div style="font-size:2.8rem; margin-bottom:4px; animation:bounce 1s infinite alternate;">🎉 🎆</div>
+      <div style="font-size:1.35rem; font-weight:900; letter-spacing:0.3px;">অর্ডার সফলভাবে বুক হয়েছে!</div>
+      <div style="font-size:0.8rem; opacity:0.95; margin-top:2px;">নিশা ক্রিয়েশনস বুটিক • আমতা, হাওড়া</div>
+    </div>
+
+    <div style="padding:18px 20px; max-height:80vh; overflow-y:auto;">
+
+      <!-- SAVINGS BADGE (ক টাকা সেভ করেছে সেটার বড় ডিসপ্লে) -->
+      <div id="successSavingsCard" style="background:linear-gradient(135deg, #fefce8, #fef08a); border:2px solid #eab308; border-radius:14px; padding:12px; margin-bottom:14px; text-align:center; box-shadow:0 4px 14px rgba(234,179,8,0.25);">
+        <div style="font-size:1.05rem; font-weight:900; color:#854d0e; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span>💰 এই অর্ডারে আপনার মোট সাশ্রয়:</span>
+          <span style="font-size:1.3rem; color:#b45309; background:#fff; padding:2px 10px; border-radius:8px; border:1.5px solid #f59e0b;">₹<span id="successSavingsAmount">0</span></span>
         </div>
-<div style="font-size:1.25rem; font-weight:800;">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</div>
-<div style="font-size:0.8rem; opacity:0.95; margin-top:2px;">নিশা ক্রিয়েশনস বুটিক • আমতা</div>
-</div>
-<div style="padding:20px;">
-<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; margin-bottom:16px; text-align:left;">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-<span style="font-size:0.75rem; color:#64748b; font-weight:700;">অর্ডার আইডি:</span>
-<span id="successOrderId" style="font-size:0.95rem; font-weight:800; color:var(--primary);">#NC-5019</span>
-</div>
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-<span style="font-size:0.75rem; color:#64748b; font-weight:700;">সর্বমোট প্রদেয় বিল:</span>
-<span id="successOrderTotal" style="font-size:0.95rem; font-weight:800; color:#15803d;">₹0</span>
-</div>
-<div id="successCustomerDetails" style="font-size:0.75rem; color:#64748b; margin-top:4px;">
-            কাস্টমার: নাম ও ফোন নম্বর
-          </div>
-</div>
-<div style="font-size:0.78rem; color:#15803d; background:#dcfce7; border:1px solid #86efac; padding:8px 10px; border-radius:8px; margin-bottom:14px; font-weight:700;">
-          ✓ আপনার অর্ডারটি সফলভাবে নিশা ক্রিয়েশনস অ্যাপ ও অ্যাডমিন প্যানেলে গৃহীত হয়েছে!
+        <div style="font-size:0.72rem; color:#a16207; margin-top:4px; font-weight:700;">
+          (এমআরপি বিশেষ ছাড় + কয়েন ও অনলাইন পেমেন্ট অফার)
         </div>
+      </div>
+
+      <!-- DYNAMIC PAYMENT STATUS CARD (ক্যাশ অন ডেলিভারি বা ইউপিআই বড় করে প্রদর্শন) -->
+      <div id="successPaymentStatusCard" style="background:#f0fdf4; border:2px solid #86efac; border-radius:14px; padding:14px; margin-bottom:14px; text-align:center;">
+        <div id="successPayModeTitle" style="font-size:1.15rem; font-weight:900; color:#15803d; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span>💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)</span>
+        </div>
+        <div style="margin-top:6px; font-size:0.88rem; color:#166534; font-weight:700;">
+          ডেলিভারির সময় নগদ প্রদেয় বিল: <span id="successOrderTotal" style="font-size:1.25rem; font-weight:900; color:#15803d;">₹0</span>
+        </div>
+        <div id="successPayModeDesc" style="font-size:0.75rem; color:#4b5563; margin-top:6px; background:#fff; padding:6px 10px; border-radius:8px; border:1px solid #bbf7d0;">
+          📦 পার্সেল যখন আপনার দরজায় পৌঁছাবে, তখন ডেলিভারি বয়কে এই টাকা দেবেন।
+        </div>
+      </div>
+
+      <!-- Order Meta Box -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:14px; text-align:left; font-size:0.8rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span style="color:#64748b; font-weight:700;">অর্ডার আইডি:</span>
+          <span id="successOrderId" style="font-weight:900; color:var(--primary); font-size:0.95rem;">#NC-5019</span>
+        </div>
+        <div id="successCustomerDetails" style="color:#475569; margin-top:4px; line-height:1.4;">
+          গ্রাহক বিবরণ
+        </div>
+      </div>
 <!-- Primary In-App View Order Button -->
 <button onclick="closeOrderSuccessModal(); showScreen('orders');" style="width:100%; background:linear-gradient(135deg, var(--primary), #9333ea); color:#fff; border:none; padding:14px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(147,51,234,0.3); margin-bottom:10px;" type="button">
 <i class="fa-solid fa-bag-shopping"></i> 📦 আমার অর্ডার ও ট্র্যাকিং দেখুন
@@ -2349,8 +2399,8 @@
   <!-- Google Firebase Cloud Firestore (Nisha Creations) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js?v=20260920_v6"></script>
-  <script src="products.js?v=20260920_v6"></script>
-  <script src="app.js?v=20260920_v6"></script>
+  <script src="firebase-config.js?v=20260920_v8"></script>
+  <script src="products.js?v=20260920_v8"></script>
+  <script src="app.js?v=20260920_v8"></script>
 </body>
 </html>

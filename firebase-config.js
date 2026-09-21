@@ -306,4 +306,151 @@ window.CloudSync = {
       return false;
     }
   }
+,
+ // ==========================================
+  // 5. WAREHOUSE HUBS & STAFF SYNC
+  // ==========================================
+  syncWarehouses: function(onUpdate) {
+    // Default warehouses
+    const getDefaults = () => [
+      { id: 'wh_main', name: 'সেন্ট্রাল ওয়্যারহাউস (আমতা মূল শাখা)', location: 'আমতা চাঁদনী বাজার, হাওড়া', incharge: 'নিশা ঘাঁটি', phone: '9641405426', isDefault: true },
+      { id: 'wh_bagnan', name: 'হাব ২ - বাগনান মাইক্রো-পয়েন্ট', location: 'বাগনান স্টেশন রোড', incharge: 'রাহুল সেন', phone: '9832000001', isDefault: false },
+      { id: 'wh_uday', name: 'হাব ৩ - উদয়নারায়ণপুর হাব', location: 'উদয়নারায়ণপুর বাজার', incharge: 'সৌরভ দাস', phone: '9832000002', isDefault: false }
+    ];
+
+    if (!localStorage.getItem('nc_warehouses')) {
+      localStorage.setItem('nc_warehouses', JSON.stringify(getDefaults()));
+    }
+
+    if (!this.isReady()) {
+      try {
+        const local = JSON.parse(localStorage.getItem('nc_warehouses') || '[]');
+        if (typeof onUpdate === 'function') onUpdate(local.length ? local : getDefaults());
+      } catch(e) {}
+      return null;
+    }
+
+    try {
+      return ncDb.collection('warehouses').onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+          localStorage.setItem('nc_warehouses', JSON.stringify(list));
+          if (typeof onUpdate === 'function') onUpdate(list);
+        } else {
+          // Seed defaults
+          const defs = getDefaults();
+          defs.forEach(d => {
+            const { id, ...data } = d;
+            ncDb.collection('warehouses').doc(id).set(data);
+          });
+          if (typeof onUpdate === 'function') onUpdate(defs);
+        }
+      }, (err) => {
+        console.warn("Warehouses snapshot fallback:", err);
+      });
+    } catch(e) {
+      return null;
+    }
+  },
+
+  saveWarehouse: async function(wh) {
+    if (!wh || !wh.id) return false;
+    try {
+      let list = JSON.parse(localStorage.getItem('nc_warehouses') || '[]');
+      const idx = list.findIndex(h => h.id === wh.id);
+      if (idx !== -1) list[idx] = wh;
+      else list.push(wh);
+      localStorage.setItem('nc_warehouses', JSON.stringify(list));
+    } catch(e) {}
+
+    if (!this.isReady()) return false;
+    try {
+      const { id, ...data } = wh;
+      await ncDb.collection('warehouses').doc(String(id)).set(data, { merge: true });
+      return true;
+    } catch(e) {
+      return false;
+    }
+  },
+
+  syncStaff: function(onUpdate) {
+    const getDefaults = () => [
+      { id: 'staff_1', name: 'সাহেব ঘাঁটি (হেড ডেলিভারি)', phone: '9641405426', role: 'rider', hubId: 'wh_main', hubName: 'সেন্ট্রাল ওয়্যারহাউস (আমতা)', status: 'active' },
+      { id: 'staff_2', name: 'নিশা ঘাঁটি (ম্যানেজার)', phone: '9641405426', role: 'admin', hubId: 'wh_main', hubName: 'সেন্ট্রাল ওয়্যারহাউস (আমতা)', status: 'active' },
+      { id: 'staff_3', name: 'শুভঙ্কর পাত্র (রাইডার)', phone: '9874561230', role: 'rider', hubId: 'wh_bagnan', hubName: 'হাব ২ - বাগনান', status: 'active' }
+    ];
+
+    if (!localStorage.getItem('nc_staff')) {
+      localStorage.setItem('nc_staff', JSON.stringify(getDefaults()));
+    }
+
+    if (!this.isReady()) {
+      try {
+        const local = JSON.parse(localStorage.getItem('nc_staff') || '[]');
+        if (typeof onUpdate === 'function') onUpdate(local.length ? local : getDefaults());
+      } catch(e) {}
+      return null;
+    }
+
+    try {
+      return ncDb.collection('staff').onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+          localStorage.setItem('nc_staff', JSON.stringify(list));
+          if (typeof onUpdate === 'function') onUpdate(list);
+        } else {
+          const defs = getDefaults();
+          defs.forEach(d => {
+            const { id, ...data } = d;
+            ncDb.collection('staff').doc(id).set(data);
+          });
+          if (typeof onUpdate === 'function') onUpdate(defs);
+        }
+      }, (err) => {
+        console.warn("Staff snapshot fallback:", err);
+      });
+    } catch(e) {
+      return null;
+    }
+  },
+
+  saveStaff: async function(staffMember) {
+    if (!staffMember || !staffMember.id) return false;
+    try {
+      let list = JSON.parse(localStorage.getItem('nc_staff') || '[]');
+      const idx = list.findIndex(s => s.id === staffMember.id);
+      if (idx !== -1) list[idx] = staffMember;
+      else list.push(staffMember);
+      localStorage.setItem('nc_staff', JSON.stringify(list));
+    } catch(e) {}
+
+    if (!this.isReady()) return false;
+    try {
+      const { id, ...data } = staffMember;
+      await ncDb.collection('staff').doc(String(id)).set(data, { merge: true });
+      return true;
+    } catch(e) {
+      return false;
+    }
+  },
+
+  deleteStaff: async function(staffId) {
+    if (!staffId) return false;
+    try {
+      let list = JSON.parse(localStorage.getItem('nc_staff') || '[]');
+      list = list.filter(s => String(s.id) !== String(staffId));
+      localStorage.setItem('nc_staff', JSON.stringify(list));
+    } catch(e) {}
+
+    if (!this.isReady()) return false;
+    try {
+      await ncDb.collection('staff').doc(String(staffId)).delete();
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
 };
+

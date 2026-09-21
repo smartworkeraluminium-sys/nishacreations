@@ -6230,16 +6230,47 @@ function submitFinalOrder() {
 
   closeCartModal();
 
-  // Populate Order Success Modal
+  // Populate Order Success Modal & Celebrate with Fireworks
   const successModal = document.getElementById('orderSuccessModal');
   const sId = document.getElementById('successOrderId');
   const sTot = document.getElementById('successOrderTotal');
   const sCust = document.getElementById('successCustomerDetails');
   const sWa = document.getElementById('successWhatsAppLink');
+  const sSavings = document.getElementById('successSavingsAmount');
+  const sPayTitle = document.getElementById('successPayModeTitle');
+  const sPayDesc = document.getElementById('successPayModeDesc');
+  const sPayCard = document.getElementById('successPaymentStatusCard');
 
   if (sId) sId.textContent = '#' + orderId;
-  if (sTot) sTot.textContent = '₹' + finalTotal + (selectedPayMethod === 'UPI' ? ' (UPI অনলাইন)' : ' (ক্যাশ অন ডেলিভারি)');
-  if (sCust) sCust.textContent = `গ্রাহক: ${name} • 📞 ${phone} • 📍 ${addr}`;
+  if (sTot) sTot.textContent = '₹' + finalTotal;
+  if (sCust) sCust.innerHTML = `<strong>${name}</strong> • 📞 ${phone}<br>📍 ${newOrder.address}`;
+
+  // Calculate Total Savings (MRP discount + coin discount + online discount)
+  let totalMrpVal = newOrder.items.reduce((sum, it) => sum + (it.mrp || (it.price ? it.price * 2 : 700)), 0);
+  let totalCalculatedSavings = Math.max(0, totalMrpVal - finalTotal);
+  if (totalCalculatedSavings <= 0) totalCalculatedSavings = (totalSavings || 38);
+  if (sSavings) sSavings.textContent = totalCalculatedSavings;
+
+  if (isUpi) {
+    if (sPayTitle) sPayTitle.innerHTML = `<i class="fa-solid fa-mobile-screen" style="color:#7e22ce;"></i> <span>📲 অনলাইন পেমেন্ট (UPI - পেইড)</span>`;
+    if (sPayDesc) sPayDesc.innerHTML = `✓ পাঞ্জাব অ্যান্ড সিন্ধ ব্যাংক (নিশা সিং)-এ পেমেন্ট সম্পন্ন হয়েছে। অতিরিক্ত ₹৩৮ সাশ্রয় করা হয়েছে!`;
+    if (sPayCard) {
+      sPayCard.style.background = '#faf5ff';
+      sPayCard.style.borderColor = '#c084fc';
+    }
+  } else {
+    if (sPayTitle) sPayTitle.innerHTML = `<i class="fa-solid fa-truck" style="color:#15803d;"></i> <span>💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)</span>`;
+    if (sPayDesc) sPayDesc.innerHTML = `📦 পার্সেল যখন আপনার দরজায় পৌঁছাবে, তখন ডেলিভারি বয়কে ঠিক <strong>₹${finalTotal}</strong> নগদ দেবেন।`;
+    if (sPayCard) {
+      sPayCard.style.background = '#f0fdf4';
+      sPayCard.style.borderColor = '#86efac';
+    }
+  }
+
+  // Trigger Celebration Fireworks
+  try {
+    launchCelebrationFireworks();
+  } catch(e) {}
 
   if (sWa) {
     const waText = encodeURIComponent(`নমস্কার নিশা ক্রিয়েশনস, আমি একটি নতুন অর্ডার করেছি:
@@ -6551,4 +6582,106 @@ function copyUpiIdToClipboard() {
   }).catch(() => {
     prompt("নিচের UPI ID-টি কপি করে নিন:", upiId);
   });
+}
+
+// =========================================================================
+// UPI AUTO RETURN & INSTANT CONFIRM HELPER
+// =========================================================================
+let isWaitingForUpiReturn = false;
+
+function handleUpiAppPayClick() {
+  isWaitingForUpiReturn = true;
+  console.log("UPI App launched, waiting for customer return to auto-confirm...");
+}
+
+// Listen for customer returning to browser tab from PhonePe / GPay
+window.addEventListener('focus', () => {
+  if (isWaitingForUpiReturn && cart.length > 0) {
+    isWaitingForUpiReturn = false;
+    const proceed = confirm("পেমেন্ট কি সম্পন্ন হয়েছে?\nহ্যাঁ হলে 'OK' চাপুন, আপনার অর্ডারটি সাথে সাথে বুক হয়ে যাবে!");
+    if (proceed) {
+      submitFinalOrder();
+    }
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && isWaitingForUpiReturn && cart.length > 0) {
+    isWaitingForUpiReturn = false;
+    setTimeout(() => {
+      const proceed = confirm("পেমেন্ট কি সম্পন্ন হয়েছে?\nহ্যাঁ হলে 'OK' চাপুন, আপনার অর্ডারটি সাথে সাথে বুক হয়ে যাবে!");
+      if (proceed) {
+        submitFinalOrder();
+      }
+    }, 400);
+  }
+});
+
+// =========================================================================
+// CELEBRATION FIREWORKS & CONFETTI ENGINE (বাজি বাজি ফাটবে)
+// =========================================================================
+function launchCelebrationFireworks() {
+  const canvas = document.getElementById('fireworksCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#3b82f6', '#ec4899', '#fde047'];
+
+  function createFirework(x, y) {
+    const count = 45;
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i;
+      const speed = Math.random() * 5 + 2;
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 4 + 2,
+        alpha: 1,
+        gravity: 0.08
+      });
+    }
+  }
+
+  // Launch initial bursts
+  createFirework(canvas.width * 0.25, canvas.height * 0.4);
+  createFirework(canvas.width * 0.75, canvas.height * 0.4);
+  setTimeout(() => createFirework(canvas.width * 0.5, canvas.height * 0.3), 300);
+  setTimeout(() => createFirework(canvas.width * 0.35, canvas.height * 0.45), 600);
+  setTimeout(() => createFirework(canvas.width * 0.65, canvas.height * 0.45), 900);
+
+  let animFrame;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.alpha -= 0.015;
+
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    if (particles.length > 0) {
+      animFrame = requestAnimationFrame(animate);
+    }
+  }
+  animate();
 }
