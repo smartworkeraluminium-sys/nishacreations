@@ -735,6 +735,12 @@
               <div>
                 <strong>ডেলিভারি ঠিকানা:</strong><br>
                 ${ord.address || 'আমতা, হাওড়া - 711401'}
+                ${(ord.address && ord.address.includes('ল্যান্ডমার্ক:')) ? `
+                  <div style="background:rgba(245,158,11,0.2); border:1.5px solid #f59e0b; color:#fde047; padding:6px 10px; border-radius:8px; font-size:0.8rem; font-weight:800; margin-top:6px; display:flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-landmark" style="color:#f59e0b;"></i>
+                    <span>${ord.address.match(/\(ল্যান্ডমার্ক: [^)]+\)/) ? ord.address.match(/\(ল্যান্ডমার্ক: [^)]+\)/)[0] : 'ল্যান্ডমার্ক চিহ্নিত'}</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
           </div>

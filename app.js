@@ -1,3 +1,71 @@
+
+// =========================================================================
+// PERMANENT CUSTOMER SESSION PERSISTENCE (Survives Updates & Cache Purges)
+// =========================================================================
+function setPersistentCookie(name, value, days = 365) {
+  try {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+  } catch(e) {}
+}
+
+function getPersistentCookie(name) {
+  try {
+    const cookies = document.cookie.split('; ');
+    for (const c of cookies) {
+      const parts = c.split('=');
+      if (parts[0] === name) return decodeURIComponent(parts[1]);
+    }
+  } catch(e) {}
+  return null;
+}
+
+function restorePersistentCustomerSession() {
+  if (typeof currentCustomer !== 'undefined' && currentCustomer && currentCustomer.loggedIn) return;
+
+  // 1. Check LocalStorage
+  try {
+    const stored = localStorage.getItem('nc_customer_profile');
+    if (stored) {
+      currentCustomer = JSON.parse(stored);
+      if (currentCustomer && currentCustomer.loggedIn) {
+        if (typeof syncCheckoutWithProfile === 'function') syncCheckoutWithProfile();
+        if (typeof loadCustomerAccountHub === 'function') loadCustomerAccountHub();
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // 2. Check Long-Lived 1-Year Cookie (Survives PWA & Website Updates!)
+  const savedPhone = getPersistentCookie('nc_session_phone');
+  const savedName = getPersistentCookie('nc_session_name');
+  const savedAddr = getPersistentCookie('nc_session_addr');
+  const savedLandmark = getPersistentCookie('nc_session_landmark');
+
+  if (savedPhone) {
+    currentCustomer = {
+      id: 'CUST-' + savedPhone.slice(-6),
+      name: savedName || 'সম্মানীয় গ্রাহক',
+      phone: savedPhone,
+      address: savedAddr || 'আমতা, হাওড়া - 711401',
+      landmark: savedLandmark || '',
+      coins: parseInt(localStorage.getItem('nc_super_coins') || '500'),
+      loggedIn: true,
+      restoredFromCookie: true
+    };
+    try {
+      localStorage.setItem('nc_customer_profile', JSON.stringify(currentCustomer));
+        setPersistentCookie('nc_session_phone', phone, 365);
+        setPersistentCookie('nc_session_name', name, 365);
+        setPersistentCookie('nc_session_addr', fullDeliveryAddr, 365);
+        setPersistentCookie('nc_session_landmark', landmark, 365);
+    } catch(e) {}
+    if (typeof syncCheckoutWithProfile === 'function') syncCheckoutWithProfile();
+    if (typeof loadCustomerAccountHub === 'function') loadCustomerAccountHub();
+    console.log('🔄 [Nisha Creations] Customer session successfully auto-restored after site update!');
+  }
+}
+
 var products = [];
 if (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS)) {
   products = [...INITIAL_PRODUCTS];
@@ -1997,7 +2065,114 @@ function adminQuickRestock(idx) {
       });
     }
 
-    function filterByUnifiedCat(catKey, element) {
+    
+// =========================================================================
+// DYNAMIC CATEGORY ENGINE & DIRECT LIVE SEARCH (নিশা ক্রিয়েশনস)
+// =========================================================================
+
+const DEFAULT_CATEGORIES = [
+  { id: 'all', key: 'all', name: 'সব কালেকশন', icon: 'fa-solid fa-wand-magic-sparkles', isIcon: true },
+  { id: 'women', key: 'women', name: '👩 Women', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70' },
+  { id: 'girls', key: 'girls', name: '👧 Girls ফ্রক', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70' },
+  { id: 'jamdani', key: 'jamdani', name: 'ঢাকাই জামদানি', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70' },
+  { id: 'silk', key: 'silk', name: 'সফট সিল্ক', img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=160&auto=format&fit=crop&q=70' },
+  { id: 'tant', key: 'tant', name: 'সুতি তাঁত', img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=160&auto=format&fit=crop&q=70' },
+  { id: 'kurti', key: 'kurti', name: 'কুর্তি ও সেট', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=160&auto=format&fit=crop&q=70' },
+  { id: 'jewel', key: 'jewel', name: 'গহনা ও চোকার', img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70' },
+  { id: 'bangles', key: 'bangles', name: 'বালা ও চুড়ি', img: 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=160&auto=format&fit=crop&q=70' }
+];
+
+function getStoredCategories() {
+  try {
+    const raw = localStorage.getItem('nc_categories');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch(e) {}
+  localStorage.setItem('nc_categories', JSON.stringify(DEFAULT_CATEGORIES));
+  return DEFAULT_CATEGORIES;
+}
+
+let currentActiveCategoryKey = 'all';
+
+function renderDynamicCategoryStrip() {
+  const container = document.getElementById('unifiedCategoryScrollStrip');
+  if (!container) return;
+
+  const cats = getStoredCategories();
+
+  container.innerHTML = cats.map((c, idx) => {
+    const isAct = (c.key === currentActiveCategoryKey);
+    const innerBubble = (c.isIcon || !c.img)
+      ? `<i class="${c.icon || 'fa-solid fa-shapes'}" style="font-size:1.4rem; color:var(--primary);"></i>`
+      : `<img src="${c.img}" alt="${c.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+
+    return `
+      <div class="unified-cat-item ${isAct ? 'active' : ''}" id="ucat-${c.key}" onclick="filterByUnifiedCat('${c.key}', this)">
+        <div class="unified-cat-bubble">
+          ${innerBubble}
+        </div>
+        <div class="unified-cat-name">${c.name}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 1. Direct Live Search Handlers
+function handleSearchInputChange(val) {
+  const clearBtn = document.getElementById('searchClearBtn');
+  const q = (val || '').trim().toLowerCase();
+
+  if (clearBtn) {
+    clearBtn.style.display = q ? 'block' : 'none';
+  }
+
+  if (!q) {
+    renderProducts(products);
+    return;
+  }
+
+  // Live real-time filter across all active products
+  const matched = products.filter(p => {
+    const title = (p.title || '').toLowerCase();
+    const cat = (p.category || '').toLowerCase();
+    const type = (p.type || '').toLowerCase();
+    const fabric = (p.fabric || '').toLowerCase();
+    const desc = (p.desc || '').toLowerCase();
+    return title.includes(q) || cat.includes(q) || type.includes(q) || fabric.includes(q) || desc.includes(q);
+  });
+
+  renderProducts(matched);
+}
+
+function submitSearchInput() {
+  const inp = document.getElementById('searchInput');
+  const val = inp ? inp.value.trim() : '';
+  if (!val) {
+    renderProducts(products);
+    return;
+  }
+  executeBoutiqueSearch(val);
+}
+
+function clearSearchInput() {
+  const inp = document.getElementById('searchInput');
+  if (inp) {
+    inp.value = '';
+    inp.focus();
+  }
+  const clearBtn = document.getElementById('searchClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  renderProducts(products);
+  if (typeof showScreen === 'function') {
+    showScreen('home');
+  }
+}
+
+function filterByUnifiedCat(catKey, element) {
+  currentActiveCategoryKey = catKey;
   document.querySelectorAll('.unified-cat-item').forEach(el => el.classList.remove('active'));
   if (element && element.classList) element.classList.add('active');
   const targetBubble = document.getElementById('ucat-' + catKey);
@@ -3972,153 +4147,26 @@ function selectPdpSize(sz) {
 
       const existing = savedProfiles[rawPhone] || (currentCustomer && currentCustomer.phone === rawPhone ? currentCustomer : null);
       const nameInp = document.getElementById('auth_name');
-      const addrInp = document.getElementById('auth_addr');
-
-      if (existing) {
-        if (nameInp) nameInp.value = existing.name || '';
-        if (addrInp) addrInp.value = existing.address || '';
-      } else {
-        if (nameInp && !nameInp.value) nameInp.value = '';
-        if (addrInp && !addrInp.value) addrInp.value = isEn ? 'Amta, Howrah - 711401' : 'আমতা, হাওড়া - 711401';
-      }
-
-      // Focus first OTP box
-      const b1 = document.getElementById('otp_box_1');
-      if (b1) setTimeout(() => b1.focus(), 150);
-
-      // Start 30s countdown timer
-      startOtpResendTimer();
-
-      // Show instant notification on screen
-      showToast(`💬 ${isEn ? 'Your Login OTP is' : 'নিশা ক্রিয়েশনস লগইন ওটিপি:'} <b style="color:#fde047; font-size:1.15rem; letter-spacing:3px;">${otpCode}</b>`);
-    }
-
-    function handleOtpBoxInput(index) {
-      const b = document.getElementById('otp_box_' + index);
-      if (!b) return;
-      b.value = b.value.replace(/[^0-9]/g, '').slice(-1);
-      if (b.value && index < 4) {
-        const next = document.getElementById('otp_box_' + (index + 1));
-        if (next) next.focus();
-      }
-    }
-
-    function handleOtpBoxKey(e, index) {
-      if (e.key === 'Backspace') {
-        const b = document.getElementById('otp_box_' + index);
-        if (b && !b.value && index > 1) {
-          const prev = document.getElementById('otp_box_' + (index - 1));
-          if (prev) {
-            prev.focus();
-            prev.value = '';
-          }
-        }
-      }
-    }
-
-    function autoFillOtp() {
-      if (!window.activeOtp) return;
-      for (let i = 0; i < 4; i++) {
-        const b = document.getElementById('otp_box_' + (i + 1));
-        if (b) {
-          b.value = window.activeOtp.charAt(i);
-          b.style.borderColor = '#10b981';
-        }
-      }
-      const nameInp = document.getElementById('auth_name');
-      if (nameInp && !nameInp.value) {
-        nameInp.focus();
-      }
-    }
-
-    function startOtpResendTimer() {
-      clearInterval(window.otpResendInterval);
-      let timeLeft = 30;
-      const btn = document.getElementById('btnResendOtpTimer');
-      const isEn = (currentLang === 'en');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = isEn 
-          ? `Resend OTP in <span style="font-weight:800; color:var(--primary);">${timeLeft}s</span>` 
-          : `পুনরায় ওটিপি পাঠান (<span style="font-weight:800; color:var(--primary);">${timeLeft} সেকেন্ড</span> পর)`;
-      }
-      window.otpResendInterval = setInterval(() => {
-        timeLeft--;
-        if (timeLeft <= 0) {
-          clearInterval(window.otpResendInterval);
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = isEn 
-              ? `Didn't get OTP? <span style="font-weight:800; color:var(--primary); text-decoration:underline;">Resend OTP</span>` 
-              : `ওটিপি পাননি? <span style="font-weight:800; color:var(--primary); text-decoration:underline;">পুনরায় ওটিপি পাঠান</span>`;
-          }
-        } else if (btn) {
-          btn.innerHTML = isEn 
-            ? `Resend OTP in <span style="font-weight:800; color:var(--primary);">${timeLeft}s</span>` 
-            : `পুনরায় ওটিপি পাঠান (<span style="font-weight:800; color:var(--primary);">${timeLeft} সেকেন্ড</span> পর)`;
-        }
-      }, 1000);
-    }
-
-    function resendCustomerOtp() {
-      if (!window.activeOtpPhone) return;
-      const isEn = (currentLang === 'en');
-      const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
-      window.activeOtp = newOtp;
-      
-      const liveOtp = document.getElementById('liveOtpDisplayCode');
-      if (liveOtp) liveOtp.textContent = newOtp;
-      const autoVal = document.getElementById('autoFillOtpVal');
-      if (autoVal) autoVal.textContent = newOtp;
-
-      for (let i = 1; i <= 4; i++) {
-        const b = document.getElementById('otp_box_' + i);
-        if (b) {
-          b.value = '';
-          b.style.borderColor = '#cbd5e1';
-        }
-      }
-      const b1 = document.getElementById('otp_box_1');
-      if (b1) b1.focus();
-
-      startOtpResendTimer();
-      showToast(`💬 ${isEn ? 'New OTP code is' : 'নতুন ওটিপি কোড:'} <b style="color:#fde047; font-size:1.15rem; letter-spacing:3px;">${newOtp}</b>`);
-    }
-
-    function verifyCustomerOtpAndLogin() {
-      const isEn = (currentLang === 'en');
-      let enteredOtp = '';
-      for (let i = 1; i <= 4; i++) {
-        const b = document.getElementById('otp_box_' + i);
-        enteredOtp += (b ? b.value.trim() : '');
-      }
-
-      if (enteredOtp.length !== 4) {
-        alert(isEn ? 'Please enter the complete 4-digit OTP!' : 'অনুগ্রহ করে সম্পূর্ণ ৪ ডিজিটের ওটিপি কোডটি লিখুন!');
-        return;
-      }
-
-      if (enteredOtp !== window.activeOtp) {
-        alert(isEn ? '❌ Incorrect OTP code! Please check the code shown in notification.' : '❌ ভুল ওটিপি কোড! অনুগ্রহ করে নোটিফিকেশনে দেখানো সঠিক ৪ ডিজিটের ওটিপি দিন।');
-        for (let i = 1; i <= 4; i++) {
-          const b = document.getElementById('otp_box_' + i);
-          if (b) {
-            b.value = '';
-            b.style.borderColor = '#ef4444';
-          }
-        }
-        const b1 = document.getElementById('otp_box_1');
-        if (b1) b1.focus();
-        return;
-      }
-
-      // OTP verified successfully!
-      const nameInp = document.getElementById('auth_name');
-      const addrInp = document.getElementById('auth_addr');
+      const houseInp = document.getElementById('auth_house');
+      const roadInp = document.getElementById('auth_road');
+      const landmarkInp = document.getElementById('auth_landmark');
+      const villageInp = document.getElementById('auth_village');
+      const pinInp = document.getElementById('auth_pincode');
 
       const name = nameInp ? nameInp.value.trim() : '';
-      const addr = addrInp ? addrInp.value.trim() : '';
+      const house = houseInp ? houseInp.value.trim() : '';
+      const road = roadInp ? roadInp.value.trim() : '';
+      const landmark = landmarkInp ? landmarkInp.value.trim() : '';
+      const village = villageInp ? villageInp.value.trim() : 'আমতা';
+      const pin = pinInp ? pinInp.value.trim() : '711401';
 
+      let fullDeliveryAddr = '';
+      if (house || road || landmark) {
+        fullDeliveryAddr = `${house ? house + ', ' : ''}${road ? road + ', ' : ''}${landmark ? '(ল্যান্ডমার্ক: ' + landmark + '), ' : ''}${village}, পিন-${pin}`;
+      } else {
+        fullDeliveryAddr = (document.getElementById('auth_addr')?.value?.trim()) || 'আমতা, হাওড়া - 711401';
+      }
+      const addr = fullDeliveryAddr;
       if (!name) {
         alert(isEn ? 'Please enter your full name!' : 'অনুগ্রহ করে আপনার পুরো নাম লিখুন!');
         if (nameInp) nameInp.focus();
@@ -4402,7 +4450,9 @@ function selectPdpSize(sz) {
     } catch(e) {}
 
     window.addEventListener('storage', function(e) {
-      if (e.key === 'nc_orders') {
+      if (e.key === 'nc_categories') {
+        renderDynamicCategoryStrip();
+      } else if (e.key === 'nc_orders') {
         console.log("⚡ Storage event received for nc_orders, re-rendering customer tracking...");
         loadAndRenderOrdersSafe();
       }
@@ -6430,6 +6480,7 @@ if (typeof window !== 'undefined') {
 }
 
 function bootNishaApp() {
+  try { restorePersistentCustomerSession(); } catch(e){}
   try { sanitizeBoutiqueRuntime(); } catch(e) { console.warn('Runtime sanitize:', e); }
   try { initBrandLogo(); } catch(e) { console.warn('Logo init:', e); }
   try { applyLanguage(); } catch(e) { console.warn('Lang apply:', e); }

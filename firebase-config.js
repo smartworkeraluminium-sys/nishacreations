@@ -452,5 +452,51 @@ window.CloudSync = {
       return false;
     }
   }
-};
+,
+ // ==========================================
+  // 6. CATEGORIES SYNC (Add & Delete Categories)
+  // ==========================================
+  syncCategories: function(onUpdate) {
+    if (!this.isReady()) {
+      try {
+        const local = JSON.parse(localStorage.getItem('nc_categories') || '[]');
+        if (typeof onUpdate === 'function') onUpdate(local);
+      } catch(e) {}
+      return null;
+    }
 
+    try {
+      return ncDb.collection('settings').doc('categories').onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data && Array.isArray(data.list) && data.list.length > 0) {
+            localStorage.setItem('nc_categories', JSON.stringify(data.list));
+            if (typeof onUpdate === 'function') onUpdate(data.list);
+          }
+        }
+      }, (err) => {
+        console.warn("Categories snapshot notice:", err);
+      });
+    } catch(e) {
+      return null;
+    }
+  },
+
+  saveCategories: async function(catList) {
+    if (!Array.isArray(catList)) return false;
+    try {
+      localStorage.setItem('nc_categories', JSON.stringify(catList));
+    } catch(e) {}
+
+    if (!this.isReady()) return false;
+    try {
+      await ncDb.collection('settings').doc('categories').set({
+        list: catList,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+};
