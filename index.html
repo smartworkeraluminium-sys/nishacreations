@@ -1,6 +1,51 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+  <!-- Legacy Browser Polyfills (For 2014-2016 Android 4.4 - 6.0 devices) -->
+  <script>
+    if (!String.prototype.includes) {
+      String.prototype.includes = function(search, start) {
+        'use strict';
+        if (typeof start !== 'number') { start = 0; }
+        if (start + search.length > this.length) { return false; }
+        return this.indexOf(search, start) !== -1;
+      };
+    }
+    if (!Array.prototype.includes) {
+      Array.prototype.includes = function(searchElement, fromIndex) {
+        return this.indexOf(searchElement, fromIndex) !== -1;
+      };
+    }
+    if (!Object.assign) {
+      Object.assign = function(target) {
+        if (target == null) throw new TypeError('Cannot convert undefined or null to object');
+        var to = Object(target);
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+          if (nextSource != null) {
+            for (var nextKey in nextSource) {
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+        return to;
+      };
+    }
+    if (!String.prototype.startsWith) {
+      String.prototype.startsWith = function(search, pos) {
+        return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+      };
+    }
+    if (!String.prototype.endsWith) {
+      String.prototype.endsWith = function(search, this_len) {
+        if (this_len === undefined || this_len > this.length) { this_len = this.length; }
+        return this.substring(this_len - search.length, this_len) === search;
+      };
+    }
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Nisha Creations (নিশা ক্রিয়েশনস) - Saree & Jewellery Boutique • Amta</title>
@@ -22,7 +67,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <link rel="stylesheet" href="style.css?v=20260920_v6">
+  <link rel="stylesheet" href="style.css?v=20260923_v16">
   <!-- Web App Manifest & PWA App Icons (ফোনের হোমস্ক্রিন ও ব্রাউজার লোগো) -->
   <link rel="manifest" href="manifest.json?v=2">
   <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
@@ -32,14 +77,25 @@
   <link rel="apple-touch-icon" sizes="192x192" href="logo.png">
   <link rel="apple-touch-icon" sizes="512x512" href="logo.png">
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration with Instant Auto-Reload on Update -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=2', { scope: './' }).then(function(reg) {
-          console.log('Nisha Creations PWA Service Worker Registered:', reg.scope);
+        navigator.serviceWorker.register('./sw.js?v=20260923_v16', { scope: './' }).then(function(reg) {
+          reg.update();
+          reg.onupdatefound = function() {
+            var newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.onstatechange = function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('🔄 New app version detected! Auto-reloading...');
+                  window.location.reload();
+                }
+              };
+            }
+          };
         }).catch(function(err) {
-          console.log('SW registration error:', err);
+          console.warn('SW registration:', err);
         });
       });
     }
@@ -110,7 +166,13 @@
           </button>
         </div>
       </div>
-    </div>
+  </header>
+
+  <!-- ================= 2. MAIN HOME SCREEN (Categories, Banners, Products) ================= -->
+  <main class="main-content screen-view active" id="screen-home" style="padding-bottom: 75px;">
+
+    <!-- 🌸 Single Unified Horizontal Scrollable Category Strip -->
+    <div class="category-scroll-unified" id="unifiedCategoryScrollStrip"></div>
 
     
     <!-- 🌟 Auto-Sliding Dynamic Banner Carousel (নিশা ক্রিয়েশনস প্রিমিয়াম অটো-স্লাইডার ব্যানার) -->
@@ -2334,9 +2396,9 @@
   <!-- Google Firebase Cloud Firestore (Nisha Creations) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js?v=20260920_v8"></script>
-  <script src="products.js?v=20260920_v8"></script>
-  <script src="app.js?v=20260920_v8"></script>
+  <script src="firebase-config.js?v=20260923_v16"></script>
+  <script src="products.js?v=20260923_v16"></script>
+  <script src="app.js?v=20260923_v16"></script>
 
   <!-- Secret Owner PIN Dialog (Hidden from customers) -->
   <div id="secretOwnerModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.8); z-index:999999; align-items:center; justify-content:center; padding:16px;">
@@ -2395,7 +2457,7 @@
     }
 
     function verifySecretPinAndGo(targetPage) {
-      const pin = document.getElementById('secretOwnerPinInput')?.value?.trim();
+      const pin = (document.getElementById('secretOwnerPinInput') ? document.getElementById('secretOwnerPinInput').value.trim() : '');
       if (pin === '1234') {
         closeSecretOwnerModal();
         window.location.href = targetPage;

@@ -1,28 +1,8 @@
-// Nisha Creations PWA Service Worker v3 (Immediate Cache Purge & Live Sync)
-const CACHE_NAME = 'nisha-creations-pwa-v8';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './style.css',
-  './app.js?v=20260920_v8',
-  './products.js?v=20260920_v8',
-  './logo.png',
-  './manifest.json'
-];
+// Nisha Creations PWA Service Worker (Always Fresh Network-First with Immediate Cache Purge)
+const CACHE_NAME = 'nisha-pwa-v20260923_v16';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      for (const asset of ASSETS_TO_CACHE) {
-        try {
-          await cache.add(asset);
-        } catch(err) {
-          console.warn('PWA Asset cache skip:', asset);
-        }
-      }
-    })
-  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -30,10 +10,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log('Purging outdated PWA cache:', key);
-            return caches.delete(key);
-          }
+          console.log('Deleting legacy cache:', key);
+          return caches.delete(key);
         })
       );
     }).then(() => self.clients.claim())
@@ -41,10 +19,14 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Always fetch fresh from network for app logic
+  // Always fetch fresh network version first so updates appear instantly on phone
   event.respondWith(
     fetch(event.request)
-      .then((networkResponse) => networkResponse)
-      .catch(() => caches.match(event.request))
+      .then((networkResponse) => {
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

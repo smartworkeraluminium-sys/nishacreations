@@ -2818,7 +2818,7 @@ function filterByCategory(cat) {
   // Also check product cards
   const allCards = document.querySelectorAll('.product-card');
   allCards.forEach(card => {
-    if (card.getAttribute('onclick')?.includes(id)) {
+    if ((card.getAttribute('onclick') && card.getAttribute('onclick').indexOf(id) !== -1)) {
       const btn = card.querySelector('.wish-btn, .wishlist-btn-circle');
       if (btn) {
         btn.classList.toggle('active', isAdding);
@@ -4164,7 +4164,7 @@ function selectPdpSize(sz) {
       if (house || road || landmark) {
         fullDeliveryAddr = `${house ? house + ', ' : ''}${road ? road + ', ' : ''}${landmark ? '(ল্যান্ডমার্ক: ' + landmark + '), ' : ''}${village}, পিন-${pin}`;
       } else {
-        fullDeliveryAddr = (document.getElementById('auth_addr')?.value?.trim()) || 'আমতা, হাওড়া - 711401';
+        fullDeliveryAddr = ((document.getElementById('auth_addr') ? document.getElementById('auth_addr').value.trim() : '')) || 'আমতা, হাওড়া - 711401';
       }
       const addr = fullDeliveryAddr;
       if (!name) {
@@ -6076,6 +6076,34 @@ var selectedPayMethod = 'UPI';
 
 function renderCheckoutStep1() {
   const countSpan = document.getElementById('cartModalCount');
+  
+  // Dynamic Realtime Delivery Date Calculation (2 days ahead)
+  const estElem = document.getElementById('estimatedDeliveryDateText');
+  if (estElem) {
+    const today = new Date();
+    const deliveryDate = new Date(today);
+    deliveryDate.setDate(today.getDate() + 2);
+    const daysBn = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+    const monthsBn = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+    const dayName = daysBn[deliveryDate.getDay()];
+    const dateNum = deliveryDate.getDate();
+    const monthName = monthsBn[deliveryDate.getMonth()];
+    estElem.textContent = `ডেলিভারি: ${dayName}, ${dateNum}ই ${monthName} (২ দিনে এক্সপ্রেস ডেলিভারি)`;
+  }
+
+  // Pre-fill Customer Delivery Details if available
+  const nameInp = document.getElementById('cust_name');
+  const phoneInp = document.getElementById('cust_phone');
+  const addrInp = document.getElementById('cust_addr');
+  if (nameInp && !nameInp.value) {
+    nameInp.value = localStorage.getItem('nc_cust_name') || '';
+  }
+  if (phoneInp && !phoneInp.value) {
+    phoneInp.value = localStorage.getItem('nc_cust_phone') || '';
+  }
+  if (addrInp && !addrInp.value) {
+    addrInp.value = localStorage.getItem('nc_cust_addr') || localStorage.getItem('nc_session_addr') || '';
+  }
   const list = document.getElementById('cartStep1ItemsList') || document.getElementById('cartItemsList');
   const billTotal = document.getElementById('billStep1Total');
   const billProdTotal = document.getElementById('billStep1ProdTotal');
@@ -6267,10 +6295,10 @@ function submitFinalOrder() {
     return;
   }
 
-  const name = localStorage.getItem('nc_cust_name') || document.getElementById('cust_name')?.value?.trim() || 'সম্মানীয় গ্রাহক';
-  const phone = localStorage.getItem('nc_cust_phone') || document.getElementById('cust_phone')?.value?.trim() || '9239413517';
-  const addr = localStorage.getItem('nc_cust_addr') || document.getElementById('cust_addr')?.value?.trim() || document.getElementById('cust_address')?.value?.trim() || 'আমতা, হাওড়া';
-  const pin = localStorage.getItem('nc_cust_pincode') || document.getElementById('cust_pincode')?.value?.trim() || '711401';
+  const name = localStorage.getItem('nc_cust_name') || (document.getElementById('cust_name') ? document.getElementById('cust_name').value.trim() : '') || 'সম্মানীয় গ্রাহক';
+  const phone = localStorage.getItem('nc_cust_phone') || (document.getElementById('cust_phone') ? document.getElementById('cust_phone').value.trim() : '') || '9239413517';
+  const addr = localStorage.getItem('nc_cust_addr') || (document.getElementById('cust_addr') ? document.getElementById('cust_addr').value.trim() : '') || (document.getElementById('cust_address') ? document.getElementById('cust_address').value.trim() : '') || 'আমতা, হাওড়া';
+  const pin = localStorage.getItem('nc_cust_pincode') || (document.getElementById('cust_pincode') ? document.getElementById('cust_pincode').value.trim() : '') || '711401';
 
   const orderId = "NC-" + Math.floor(1000 + Math.random() * 9000);
   const rawSubtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -6305,7 +6333,7 @@ function submitFinalOrder() {
     paymentMethod: isUpi ? 'অনলাইন UPI' : 'ক্যাশ অন ডেলিভারি (Cash on Delivery)',
     status: 'Order Placed',
     warehouseStatus: 'Pending Packing',
-    binLocation: cart[0]?.binLocation || 'র‍্যাক A-01 (বুটিক জোন)'
+    binLocation: (cart[0] && cart[0].binLocation) || 'র‍্যাক A-01 (বুটিক জোন)'
   };
 
   // Deduct coins if used
@@ -6484,6 +6512,8 @@ function bootNishaApp() {
   try { sanitizeBoutiqueRuntime(); } catch(e) { console.warn('Runtime sanitize:', e); }
   try { initBrandLogo(); } catch(e) { console.warn('Logo init:', e); }
   try { applyLanguage(); } catch(e) { console.warn('Lang apply:', e); }
+  try { if (typeof renderDynamicCategoryStrip === 'function') renderDynamicCategoryStrip(); } catch(e) { console.warn('Category strip:', e); }
+  try { if (typeof selectCategoryTab === 'function') selectCategoryTab('popular'); } catch(e) { console.warn('Category tab:', e); }
   try { loadAllProducts(); } catch(e) { console.warn('Products load:', e); }
   try { loadAndRenderBanners(); } catch(e) { console.warn('Banners load:', e); }
   try { updateCartBadges(); } catch(e) { console.warn('Cart badges:', e); }
