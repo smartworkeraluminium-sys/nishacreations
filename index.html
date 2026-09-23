@@ -77,23 +77,12 @@
   <link rel="apple-touch-icon" sizes="192x192" href="logo.png">
   <link rel="apple-touch-icon" sizes="512x512" href="logo.png">
 
-  <!-- PWA Service Worker Registration with Instant Auto-Reload on Update -->
+  <!-- PWA Service Worker Registration (Safe & Stable, Zero-Loop) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=20260923_v16', { scope: './' }).then(function(reg) {
-          reg.update();
-          reg.onupdatefound = function() {
-            var newWorker = reg.installing;
-            if (newWorker) {
-              newWorker.onstatechange = function() {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('🔄 New app version detected! Auto-reloading...');
-                  window.location.reload();
-                }
-              };
-            }
-          };
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg) {
+          console.log('Nisha Creations Service Worker active.');
         }).catch(function(err) {
           console.warn('SW registration:', err);
         });
