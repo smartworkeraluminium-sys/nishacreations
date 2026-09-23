@@ -3273,11 +3273,13 @@ function selectPdpSize(sz) {
           const isAct = (idx === 0);
           const vImg = v.img || p.img;
           const vName = v.colorName || v.name || `কালার ${idx + 1}`;
+          const isColorOut = (v.qty !== undefined && parseInt(v.qty) <= 0);
           cvStrip.innerHTML += `
             <div class="pdp-color-card ${isAct ? 'active' : ''}" 
-                 onclick="selectPdpColorVariant('${vImg}', '${vName}', this)" 
-                 style="display:flex; flex-direction:column; align-items:center; cursor:pointer; flex-shrink:0; width:58px; height:82px; border-radius:10px; border:${isAct ? '2px solid #0f172a' : '1.5px solid #cbd5e1'}; overflow:hidden; box-shadow:${isAct ? '0 2px 8px rgba(0,0,0,0.18)' : 'none'}; background:#ffffff; transition:all 0.2s;">
+                 onclick="${isColorOut ? "alert('দুঃখিত, এই রঙের স্টক শেষ!')" : `selectPdpColorVariant('${vImg}', '${vName}', this)`}" 
+                 style="position:relative; display:flex; flex-direction:column; align-items:center; cursor:${isColorOut ? 'not-allowed' : 'pointer'}; flex-shrink:0; width:58px; height:82px; border-radius:10px; border:${isAct ? '2px solid #0f172a' : '1.5px solid #cbd5e1'}; overflow:hidden; box-shadow:${isAct ? '0 2px 8px rgba(0,0,0,0.18)' : 'none'}; background:#ffffff; opacity:${isColorOut ? '0.5' : '1'}; transition:all 0.2s;">
               <img src="${vImg}" alt="${vName}" style="width:100%; height:100%; object-fit:cover; display:block;">
+              ${isColorOut ? '<span style="position:absolute; bottom:0; left:0; right:0; background:rgba(239,68,68,0.9); color:#fff; font-size:0.55rem; font-weight:800; text-align:center; padding:2px 0;">স্টক শেষ</span>' : ''}
             </div>
           `;
         });
@@ -3310,11 +3312,14 @@ function selectPdpSize(sz) {
           document.getElementById('pdpUpiOffer').textContent = `UPI দিয়ে পেমেন্ট করলে মাত্র ₹${Math.round(currentPdpSelectedPrice * 0.95)}`;
 
           p.sizeVariants.forEach((v, idx) => {
-            const act = idx === 0 ? 'active' : '';
+            const isSizeOut = (v.stock !== undefined && parseInt(v.stock) <= 0);
+            const act = (!isSizeOut && idx === 0) ? 'active' : '';
             const rateTxt = v.price ? ` (₹${v.price})` : '';
-            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${v.size}" onclick="selectPdpSize('${v.size}')" style="display:inline-flex; align-items:center; gap:4px;">
+            const outTxt = isSizeOut ? ' <span style="color:#ef4444; font-size:0.65rem;">(স্টক শেষ)</span>' : '';
+            sizeGroup.innerHTML += `<button type="button" class="size-pill-btn ${act}" data-size="${v.size}" ${isSizeOut ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : `onclick="selectPdpSize('${v.size}')"`} style="display:inline-flex; align-items:center; gap:4px;">
               <span>${v.size}</span>
               <span style="font-weight:800; color:#10b981; font-size:0.75rem;">${rateTxt}</span>
+              ${outTxt}
             </button>`;
           });
         } else {
@@ -4349,13 +4354,36 @@ function selectPdpSize(sz) {
         }
       }
 
-      // AUTOMATIC STOCK DEDUCTION (Subtract ordered quantity from stock)
+      // AUTOMATIC COLOR & SIZE VARIANT STOCK DEDUCTION
       cart.forEach(cartItem => {
         const prod = products.find(p => p.id === cartItem.id);
         if (prod) {
           const qty = cartItem.qty || 1;
           prod.stock = Math.max(0, (prod.stock !== undefined ? prod.stock : 100) - qty);
           prod.sold = (prod.sold || 0) + qty;
+
+          // 1. Deduct exact Color Variant Stock
+          if (prod.colors && Array.isArray(prod.colors) && cartItem.selectedColor) {
+            const matchedColor = prod.colors.find(c => {
+              const cName = (c.name || c.colorName || '').toLowerCase();
+              const selName = (cartItem.selectedColor || '').toLowerCase();
+              return cName === selName || cName.includes(selName) || selName.includes(cName);
+            });
+            if (matchedColor) {
+              matchedColor.qty = Math.max(0, (parseInt(matchedColor.qty) || 0) - qty);
+              console.log(`📉 Color stock reduced for ${matchedColor.name}: now ${matchedColor.qty}`);
+            }
+          }
+
+          // 2. Deduct exact Size Variant Stock
+          if (prod.sizeVariants && Array.isArray(prod.sizeVariants) && cartItem.selectedSize) {
+            const matchedSize = prod.sizeVariants.find(v => (v.size || '').toLowerCase() === (cartItem.selectedSize || '').toLowerCase());
+            if (matchedSize) {
+              matchedSize.stock = Math.max(0, (parseInt(matchedSize.stock) || 0) - qty);
+              console.log(`📉 Size stock reduced for ${matchedSize.size}: now ${matchedSize.stock}`);
+            }
+          }
+
           if (prod.stock <= 0) {
             prod.stock = 0;
             prod.inStock = false;

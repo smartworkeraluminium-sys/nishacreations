@@ -1,4 +1,62 @@
-<!DOCTYPE html>
+// Continuous Realtime Cloud Firestore Sync for Admin Portal
+      let adminSyncRetries = 0;
+      const startAdminCloudSync = setInterval(() => {
+        adminSyncRetries++;
+        if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+          clearInterval(startAdminCloudSync);
+          console.log('☁️ Attaching Realtime Cloud Sync in Admin Portal...');
+
+          let prevOrderCount = 0;
+          CloudSync.syncOrders((liveOrders) => {
+            if (Array.isArray(liveOrders)) {
+              if (prevOrderCount > 0 && liveOrders.length > prevOrderCount) {
+                // Play notification bell
+                try {
+                  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                  const osc = audioCtx.createOscillator();
+                  const gain = audioCtx.createGain();
+                  osc.connect(gain);
+                  gain.connect(audioCtx.destination);
+                  osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                  osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+                  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                  osc.start();
+                  osc.stop(audioCtx.currentTime + 0.6);
+                } catch(e) {}
+                alert('🔔 নতুন কাস্টমার অর্ডার এসেছে! অর্ডার তালিকা রিফ্রেশ হয়েছে।');
+              }
+              prevOrderCount = liveOrders.length;
+              ordersList = liveOrders;
+              try {
+                localStorage.setItem('nc_orders', JSON.stringify(liveOrders));
+              } catch(e) {}
+              renderAdminOrders();
+              renderOrderKpiMetrics();
+            }
+          });
+
+          CloudSync.syncProducts((liveProducts) => {
+            renderOwnerStock();
+            renderWarehouseOperations();
+          });
+
+          // Auto-seed existing custom products to Firestore
+          try {
+            const existingCust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+            if (existingCust && existingCust.length > 0) {
+              existingCust.forEach(cp => {
+                if (cp && cp.id) CloudSync.saveProduct(cp);
+              });
+              console.log('☁️ Auto-synced custom products to Firestore!');
+            }
+          } catch(e) {}
+        }
+        if (adminSyncRetries > 40) {
+          clearInterval(startAdminCloudSync);
+          console.warn('Admin CloudSync retry timeout reached.');
+        }
+      }, 500);<!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
@@ -950,7 +1008,7 @@
   <!-- Google Firebase Cloud Firestore (Nisha Creations) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js?v=20260919_v1"></script>
+  <script src="firebase-config.js?v=20260923_v16"></script>
   <script src="products.js?v=20260919_v2"></script>
 </head>
 <body>
@@ -4465,8 +4523,13 @@
       const maxCoinsInp = document.getElementById('op_max_coins');
       const maxCoins = parseInt(maxCoinsInp ? maxCoinsInp.value : 2000) || 2000;
 
+      const chosenStatus = (document.getElementById('op_lifecycle') ? document.getElementById('op_lifecycle').value : 'Live');
+      const customSkuVal = (document.getElementById('op_sku') ? document.getElementById('op_sku').value.trim() : '');
+
       const newProd = {
-        id: prodId,
+        id: customSkuVal || prodId,
+        sku: customSkuVal || prodId,
+        status: chosenStatus,
         title: title,
         category: cat,
         type: prodType,
@@ -4528,6 +4591,21 @@
       } catch(err) {}
 
       localStorage.setItem('nc_demo_cleared', 'true');
+
+      // Realtime Cloud Firestore Push for New Product
+      if (typeof CloudSync !== 'undefined') {
+        if (CloudSync.isReady()) {
+          CloudSync.saveProduct(newProd);
+          console.log('☁️ New product saved to Cloud Firestore:', newProd.id);
+        } else {
+          console.warn('CloudSync not ready yet, queueing Firestore save...');
+          setTimeout(() => {
+            if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+              CloudSync.saveProduct(newProd);
+            }
+          }, 2000);
+        }
+      }
 
       // Clear studio photos and reset form
       clearSelectedUploadPhoto();
@@ -5226,6 +5304,68 @@
     </div>
   </div>
 
+
+  <!-- Custom SKU & Status Selection Dialog with Cancel Button -->
+  <div id="skuStatusModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); z-index:999999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#1e293b; border:1.5px solid #38bdf8; border-radius:18px; max-width:380px; width:100%; padding:20px; box-shadow:0 12px 36px rgba(0,0,0,0.6);">
+      
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <div style="width:38px; height:38px; border-radius:10px; background:#0284c7; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+          <i class="fa-solid fa-barcode"></i>
+        </div>
+        <div>
+          <h3 style="font-size:1rem; font-weight:800; color:#fff; margin:0;">নতুন SKU ও স্ট্যাটাস</h3>
+          <p style="font-size:0.72rem; color:#94a3b8; margin:0;">স্ট্যাটাস নির্বাচন করে নিশ্চিত করুন</p>
+        </div>
+      </div>
+
+      <!-- Generated SKU display -->
+      <div style="background:#0f172a; border:1px dashed #38bdf8; border-radius:10px; padding:10px; text-align:center; margin-bottom:14px;">
+        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:2px;">প্রস্তাবিত নতুন SKU কোড:</span>
+        <strong id="modalGeneratedSku" style="font-size:1.05rem; color:#fde047; letter-spacing:1px;">NC-PROD-001</strong>
+      </div>
+
+      <!-- 3 Status Radio Options as requested -->
+      <label style="font-size:0.75rem; color:#cbd5e1; font-weight:700; margin-bottom:6px; display:block;">প্রোডাক্টের স্ট্যাটাস বাছুন:</label>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+        <label style="display:flex; align-items:center; justify-content:space-between; background:#0f172a; padding:10px 12px; border-radius:10px; border:1px solid #334155; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1rem;">🟢</span>
+            <span style="color:#f8fafc; font-size:0.82rem; font-weight:700;">স্ট্যাটাস: Live (সক্রিয়)</span>
+          </div>
+          <input type="radio" name="modal_prod_status" value="Live" checked style="accent-color:#22c55e;">
+        </label>
+
+        <label style="display:flex; align-items:center; justify-content:space-between; background:#0f172a; padding:10px 12px; border-radius:10px; border:1px solid #334155; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1rem;">🟡</span>
+            <span style="color:#f8fafc; font-size:0.82rem; font-weight:700;">স্ট্যাটাস: Draft (খসড়া)</span>
+          </div>
+          <input type="radio" name="modal_prod_status" value="Draft" style="accent-color:#eab308;">
+        </label>
+
+        <label style="display:flex; align-items:center; justify-content:space-between; background:#0f172a; padding:10px 12px; border-radius:10px; border:1px solid #334155; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1rem;">🔴</span>
+            <span style="color:#f8fafc; font-size:0.82rem; font-weight:700;">স্ট্যাটাস: Archived</span>
+          </div>
+          <input type="radio" name="modal_prod_status" value="Archived" style="accent-color:#ef4444;">
+        </label>
+      </div>
+
+      <!-- Action Buttons: Cancel & OK -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button type="button" onclick="closeSkuStatusModal()" style="background:#334155; color:#cbd5e1; border:none; padding:10px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          ❌ ক্যানসেল
+        </button>
+        <button type="button" onclick="confirmSkuStatusModal()" style="background:#0284c7; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          ✓ ঠিক আছে (OK)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>`;
 
@@ -5781,6 +5921,49 @@
       alert(`✅ অফিসিয়াল UPI ID সফলভাবে আপডেট হয়েছে: ${val}\nএখন কাস্টমাররা পেমেন্ট করার সময় এই আইডিতে টাকা পাঠাবে।`);
     }
 
+    
+    // ☁️ 1-Click Sync All Local Products To Firebase Cloud Firestore
+    async function syncAllLocalProductsToCloudDirect() {
+      if (typeof CloudSync === 'undefined' || !CloudSync.isReady()) {
+        alert('⚠️ ফায়ারবেস ক্লাউড ডেটাবেস এখনো কানেক্ট হয়নি! অনুগ্রহ করে ইন্টারনেট কানেকশন চেক করুন বা ২ সেকেন্ড পর আবার চেষ্টা করুন।');
+        return;
+      }
+
+      let localProds = [];
+      try {
+        localProds = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      if (!localProds || localProds.length === 0) {
+        try {
+          localProds = JSON.parse(localStorage.getItem('nc_custom_products') || '[]');
+        } catch(e) {}
+      }
+
+      if (!localProds || localProds.length === 0) {
+        alert('আপনার ফোনে আপলোড করা কোনো প্রোডাক্ট নেই!');
+        return;
+      }
+
+      const btn = event?.currentTarget;
+      if (btn) btn.disabled = true;
+
+      let successCount = 0;
+      for (const p of localProds) {
+        if (p && p.id) {
+          try {
+            const ok = await CloudSync.saveProduct(p);
+            if (ok) successCount++;
+          } catch(err) {
+            console.warn('Failed to sync item:', p.id, err);
+          }
+        }
+      }
+
+      if (btn) btn.disabled = false;
+      alert(`🎉 সফল! আপনার ফোনের ${successCount}টি প্রোডাক্ট সফলভাবে ফায়ারবেস ক্লাউডে আপলোড হয়েছে! এখন সমস্ত গ্রাহকের ফোনে প্রোডাক্টগুলো পৌঁছে গেছে।`);
+    }
+
     function loadBoutiqueUpiId() {
       const inp = document.getElementById('cfgBoutiqueUpiId');
       if (inp) {
@@ -5999,17 +6182,62 @@
     // ==========================================
     // CATALOG PIM & SKU HELPER (ফিচার ১-১০)
     // ==========================================
-    function autoGenerateSkuCode() {
+    let pendingGeneratedSku = '';
+
+    function openSkuStatusModal() {
       const cat = document.getElementById('op_cat')?.value || 'DRESS';
       const title = document.getElementById('op_title')?.value.trim() || 'PROD';
       const codePart = title.substring(0, 4).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
       const randomNum = Math.floor(100 + Math.random() * 900);
-      const sku = `NC-${cat.toUpperCase().substring(0,4)}-${codePart}-${randomNum}`;
+      pendingGeneratedSku = `NC-${cat.toUpperCase().substring(0,4)}-${codePart}-${randomNum}`;
+      
+      const skuLabel = document.getElementById('modalGeneratedSku');
+      if (skuLabel) skuLabel.textContent = pendingGeneratedSku;
+      
+      const modal = document.getElementById('skuStatusModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeSkuStatusModal() {
+      const modal = document.getElementById('skuStatusModal');
+      if (modal) modal.style.display = 'none';
+      pendingGeneratedSku = '';
+    }
+
+    function confirmSkuStatusModal() {
+      const selectedStatus = document.querySelector('input[name="modal_prod_status"]:checked')?.value || 'Live';
+      
       const skuInput = document.getElementById('op_sku');
-      if (skuInput) {
-        skuInput.value = sku;
-        alert(`✓ নতুন SKU তৈরি হয়েছে: ${sku}`);
+      if (skuInput && pendingGeneratedSku) {
+        skuInput.value = pendingGeneratedSku;
       }
+      
+      const lifecycleInput = document.getElementById('op_lifecycle');
+      if (lifecycleInput) {
+        lifecycleInput.value = selectedStatus;
+      }
+
+      const badge = document.getElementById('op_status_badge');
+      if (badge) {
+        if (selectedStatus === 'Live') {
+          badge.textContent = '🟢 Live (সক্রিয়)';
+          badge.style.color = '#4ade80';
+          badge.style.background = 'rgba(34,197,94,0.15)';
+          badge.style.borderColor = '#22c55e';
+        } else if (selectedStatus === 'Draft') {
+          badge.textContent = '🟡 Draft (খসড়া)';
+          badge.style.color = '#fde047';
+          badge.style.background = 'rgba(234,179,8,0.15)';
+          badge.style.borderColor = '#eab308';
+        } else {
+          badge.textContent = '🔴 Archived';
+          badge.style.color = '#f87171';
+          badge.style.background = 'rgba(239,68,68,0.15)';
+          badge.style.borderColor = '#ef4444';
+        }
+      }
+
+      closeSkuStatusModal();
     }
 
     function exportCatalogCsv() {
