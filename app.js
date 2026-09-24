@@ -6870,3 +6870,10 @@ function launchCelebrationFireworks() {
   }
   animate();
 }
+    function resendCustomerOtp() {
+      if (typeof autoFillOtp === 'function') autoFillOtp();
+      showToast(currentLang === 'en' ? '✅ OTP resent successfully: 1234' : '✅ নতুন ওটিপি সফলভাবে পাঠানো হয়েছে: 1234');
+    }
+
+
+    
