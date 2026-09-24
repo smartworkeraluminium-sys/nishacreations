@@ -1513,12 +1513,12 @@
 
       if (prods.length === 0) {
         prods = [
-          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 799, stock: 45, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120', binLocation: 'Rack A-01 (জামদানি শাড়ি ব্লক)' },
-          { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 950, stock: 30, img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=120', binLocation: 'Rack A-02 (সফট সিল্ক ও কাতান তাক)' },
-          { id: 'NC-103', title: 'Bengal Handloom Tant Cotton Saree', category: 'saree', price: 499, stock: 60, img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=120', binLocation: 'Rack B-01 (তাঁত কটন শাড়ি তাক)' },
-          { id: 'NC-104', title: 'Princess Designer Baby Frock (বাচ্চাদের ফ্রক জামা)', category: 'girls', price: 450, stock: 35, img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=120', binLocation: 'Rack B-02 (বাচ্চাদের ফ্রক ও বেবি ড্রেস তাক)' },
-          { id: 'NC-106', title: 'Designer Handcrafted Gold-Plated Churi / Bangles (কাঁচ ও মেটাল চুড়ি)', category: 'jewel', price: 299, stock: 80, img: 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=120', binLocation: 'Shelf J-02 (ডিজাইনার চুড়ি ও বালা বক্স)' },
-          { id: 'NC-109', title: 'Designer Embroidered Anarkali Kurti & Blouse', category: 'kurti', price: 650, stock: 25, img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=120', binLocation: 'Rack C-01 (টপ, কুর্তি ও ব্লাউজ হ্যাঙ্গার)' }
+          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', category: 'saree', price: 799, stock: 45, img: 'logo.png', binLocation: 'Rack A-01 (জামদানি শাড়ি ব্লক)' },
+          { id: 'NC-102', title: 'Soft Silk Katan Saree', category: 'saree', price: 950, stock: 30, img: 'logo.png', binLocation: 'Rack A-02 (সফট সিল্ক ও কাতান তাক)' },
+          { id: 'NC-103', title: 'Bengal Handloom Tant Cotton Saree', category: 'saree', price: 499, stock: 60, img: 'logo.png', binLocation: 'Rack B-01 (তাঁত কটন শাড়ি তাক)' },
+          { id: 'NC-104', title: 'Princess Designer Baby Frock (বাচ্চাদের ফ্রক জামা)', category: 'girls', price: 450, stock: 35, img: 'logo.png', binLocation: 'Rack B-02 (বাচ্চাদের ফ্রক ও বেবি ড্রেস তাক)' },
+          { id: 'NC-106', title: 'Designer Handcrafted Gold-Plated Churi / Bangles (কাঁচ ও মেটাল চুড়ি)', category: 'jewel', price: 299, stock: 80, img: 'logo.png', binLocation: 'Shelf J-02 (ডিজাইনার চুড়ি ও বালা বক্স)' },
+          { id: 'NC-109', title: 'Designer Embroidered Anarkali Kurti & Blouse', category: 'kurti', price: 650, stock: 25, img: 'logo.png', binLocation: 'Rack C-01 (টপ, কুর্তি ও ব্লাউজ হ্যাঙ্গার)' }
         ];
         try { localStorage.setItem('nc_products', JSON.stringify(prods)); } catch(e){}
       }
@@ -1568,7 +1568,7 @@
         return `
           <div class="inbound-product-tile">
             <div class="inbound-top-row">
-              <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" class="inbound-img">
+              <img src="${p.img || 'logo.png'}" class="inbound-img">
               <div style="flex:1;">
                 <div style="font-size:0.92rem; font-weight:800; color:#ffffff; line-height:1.25;">${p.title}</div>
                 <div style="font-size:0.72rem; color:#9ca3af; margin-top:2px;">#${p.id} • ${currentLang === 'en' ? 'Price' : 'বিক্রি মূল্য'}: <strong>₹${p.price}</strong></div>
@@ -1683,10 +1683,10 @@
 
       // Default high-quality images if omitted
       if (!img) {
-        if (cat === 'girls') img = 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=200';
-        else if (cat === 'jewel') img = 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=200';
-        else if (cat === 'kurti') img = 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200';
-        else img = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200';
+        if (cat === 'girls') img = 'logo.png';
+        else if (cat === 'jewel') img = 'logo.png';
+        else if (cat === 'kurti') img = 'logo.png';
+        else img = 'logo.png';
       }
 
       const pId = 'NC-' + Math.floor(100 + Math.random() * 900);
@@ -2008,7 +2008,7 @@
         const qtyText = (currentLang === 'en' ? ` • Qty: <strong style="color:#38bdf8;">${it.qty || 1} pcs</strong>` : ` • সংখ্যা: <strong style="color:#38bdf8;">${it.qty || 1} পিস</strong>`);
         return `
           <div style="display:flex; align-items:center; gap:12px; background:#0b0f19; padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid #1f2937;">
-            <img src="${it.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100'}" style="width:55px; height:55px; border-radius:8px; object-fit:cover; border:1px solid #374151; flex-shrink:0;">
+            <img src="${it.img || 'logo.png'}" style="width:55px; height:55px; border-radius:8px; object-fit:cover; border:1px solid #374151; flex-shrink:0;">
             <div style="flex:1;">
               <div style="font-size:0.88rem; font-weight:800; color:#fff; line-height:1.3;">${it.title}</div>
               <div style="font-size:0.75rem; color:#cbd5e1; margin:3px 0;">
@@ -2222,9 +2222,9 @@
         paymentMode: 'COD',
         status: 'Order Placed',
         items: [
-          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', price: 799, qty: 1, selectedSize: 'Free Size', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100', binLocation: 'Rack A-01 (জামদানি শাড়ি ব্লক)' },
-          { id: 'NC-104', title: 'Princess Designer Baby Frock (বাচ্চাদের ফ্রক জামা)', price: 450, qty: 1, selectedSize: '3-4 Yrs', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=100', binLocation: 'Rack B-02 (বাচ্চাদের ফ্রক ও বেবি ড্রেস তাক)' },
-          { id: 'NC-106', title: 'Designer Handcrafted Gold-Plated Churi / Bangles (কাঁচ ও মেটাল চুড়ি)', price: 299, qty: 1, selectedSize: '2.6', img: 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=100', binLocation: 'Shelf J-02 (ডিজাইনার চুড়ি ও বালা বক্স)' }
+          { id: 'NC-101', title: 'Pure Dhakai Jamdani Saree', price: 799, qty: 1, selectedSize: 'Free Size', img: 'logo.png', binLocation: 'Rack A-01 (জামদানি শাড়ি ব্লক)' },
+          { id: 'NC-104', title: 'Princess Designer Baby Frock (বাচ্চাদের ফ্রক জামা)', price: 450, qty: 1, selectedSize: '3-4 Yrs', img: 'logo.png', binLocation: 'Rack B-02 (বাচ্চাদের ফ্রক ও বেবি ড্রেস তাক)' },
+          { id: 'NC-106', title: 'Designer Handcrafted Gold-Plated Churi / Bangles (কাঁচ ও মেটাল চুড়ি)', price: 299, qty: 1, selectedSize: '2.6', img: 'logo.png', binLocation: 'Shelf J-02 (ডিজাইনার চুড়ি ও বালা বক্স)' }
         ]
       };
 

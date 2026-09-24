@@ -1721,7 +1721,7 @@ try {
                   </div>
                   ${(o.items && o.items.length > 0) ? o.items.map(item => `
                     <div style="display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px dashed #e2e8f0;">
-                      <img src="${item.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120'}" style="width:52px; height:52px; object-fit:cover; border-radius:8px; border:1.5px solid #cbd5e1; flex-shrink:0;">
+                      <img src="${item.img || 'logo.png'}" style="width:52px; height:52px; object-fit:cover; border-radius:8px; border:1.5px solid #cbd5e1; flex-shrink:0;">
                       <div style="flex:1; min-width:0;">
                         <div style="font-weight:800; color:#0f172a; font-size:0.8rem; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
                         <div style="font-size:0.7rem; margin-top:3px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
@@ -1736,7 +1736,7 @@ try {
                     </div>
                   `).join('') : `
                     <div style="display:flex; align-items:center; gap:10px; padding:4px 0;">
-                      <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120" style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
+                      <img src="logo.png" style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
                       <div>
                         <div style="font-weight:700; font-size:0.78rem;">বুটিক পোশাক / শাড়ি অর্ডার</div>
                         <div style="font-size:0.7rem; color:#64748b;">স্ট্যান্ডার্ড সাইজ • ক্যাশ অন ডেলিভারি</div>
@@ -1956,8 +1956,6 @@ function adminQuickRestock(idx) {
       try { cust = JSON.parse(localStorage.getItem('nc_custom_products') || '[]'); } catch(e) {}
       if (Array.isArray(cust) && cust.length > 0) {
         products = cust;
-      } else if (typeof INITIAL_PRODUCTS !== 'undefined' && Array.isArray(INITIAL_PRODUCTS) && INITIAL_PRODUCTS.length > 0) {
-        products = [...INITIAL_PRODUCTS];
       } else {
         products = [];
       }
@@ -1980,7 +1978,13 @@ function adminQuickRestock(idx) {
           `;
           list = products; // Render all available products so user can keep shopping!
         } else {
-          grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:#94a3b8;">${currentLang === 'bn' ? 'কোনো পণ্য পাওয়া যায়নি!' : 'No products found!'}</div>`;
+          grid.innerHTML = `
+            <div style="grid-column:span 2; text-align:center; padding:50px 20px; background:#fff; border-radius:16px; border:1.5px dashed #cbd5e1; margin:14px 0;">
+              <i class="fa-solid fa-shirt" style="font-size:2.8rem; color:#cbd5e1; margin-bottom:12px; display:block;"></i>
+              <h3 style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-bottom:4px;">${currentLang === 'bn' ? 'নতুন শাড়ি ও পোশাক কালেকশন আসছে!' : 'New Collection Arriving Soon!'}</h3>
+              <p style="font-size:0.78rem; color:#64748b; margin:0;">${currentLang === 'bn' ? 'দোকানের নতুন প্রোডাক্ট আপলোড হচ্ছে। খুব শীঘ্রই কেনাকাটা শুরু হবে।' : 'Exclusive boutique items are being uploaded. Shopping starts shortly.'}</p>
+            </div>
+          `;
           return;
         }
       }
@@ -1999,7 +2003,7 @@ function adminQuickRestock(idx) {
 
         card.innerHTML = `
           <div class="product-img-wrap" style="position:relative;">
-            <img src="${p.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600'}" alt="${p.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600';" style="${isOutOfStock ? 'filter: grayscale(80%) opacity(0.6);' : ''}">
+            <img src="${p.img || 'logo.png'}" alt="${p.title}" loading="lazy" onerror="this.onerror=null; this.src='logo.png';" style="${isOutOfStock ? 'filter: grayscale(80%) opacity(0.6);' : ''}">
             
             ${isOutOfStock ? `
               <div class="card-out-of-stock-overlay" style="position:absolute; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(2px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; z-index:2; border-radius:12px;">
@@ -2072,14 +2076,10 @@ function adminQuickRestock(idx) {
 
 const DEFAULT_CATEGORIES = [
   { id: 'all', key: 'all', name: 'সব কালেকশন', icon: 'fa-solid fa-wand-magic-sparkles', isIcon: true },
-  { id: 'women', key: 'women', name: '👩 Women', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70' },
-  { id: 'girls', key: 'girls', name: '👧 Girls ফ্রক', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=160&auto=format&fit=crop&q=70' },
-  { id: 'jamdani', key: 'jamdani', name: 'ঢাকাই জামদানি', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=160&auto=format&fit=crop&q=70' },
-  { id: 'silk', key: 'silk', name: 'সফট সিল্ক', img: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=160&auto=format&fit=crop&q=70' },
-  { id: 'tant', key: 'tant', name: 'সুতি তাঁত', img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=160&auto=format&fit=crop&q=70' },
-  { id: 'kurti', key: 'kurti', name: 'কুর্তি ও সেট', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=160&auto=format&fit=crop&q=70' },
-  { id: 'jewel', key: 'jewel', name: 'গহনা ও চোকার', img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=160&auto=format&fit=crop&q=70' },
-  { id: 'bangles', key: 'bangles', name: 'বালা ও চুড়ি', img: 'https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=160&auto=format&fit=crop&q=70' }
+  { id: 'saree', key: 'saree', name: 'শাড়ি কালেকশন', icon: 'fa-solid fa-person-dress', isIcon: true },
+  { id: 'kurti', key: 'kurti', name: 'কুর্তি ও গাউন', icon: 'fa-solid fa-vest', isIcon: true },
+  { id: 'girls', key: 'girls', name: 'ছোটদের ফ্রক', icon: 'fa-solid fa-child', isIcon: true },
+  { id: 'jewel', key: 'jewel', name: 'জুয়েলারি ও গহনা', icon: 'fa-solid fa-gem', isIcon: true }
 ];
 
 function getStoredCategories() {
@@ -2275,16 +2275,16 @@ function filterByCategory(cat) {
 
       // Base predefined searchable queries with thumbnails
       const defaultSuggestions = [
-        { title: "Pure Dhakai Jamdani Saree", cat: "Women's Sarees", tag: "jamdani", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100" },
-        { title: "Soft Silk Katan Saree", cat: "Women's Sarees", tag: "silk", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=100" },
-        { title: "Bengal Handloom Tant Cotton", cat: "Women's Sarees", tag: "tant", img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=100" },
-        { title: "Semi-Katan Party Saree", cat: "Women's Sarees", tag: "silk", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=100" },
-        { title: "Gold-Plated Bridal Jewellery Choker", cat: "Jewellery & Sets", tag: "jewel", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100" },
-        { title: "Antique Silver Oxidised Choker Set", cat: "Jewellery & Sets", tag: "jewel", img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=100" },
-        { title: "Handcrafted Gold-Plated Bangles / Churi", cat: "Jewellery & Bangles", tag: "bangles", img: "https://images.unsplash.com/photo-1611591475836-e822e1b12b5f?w=100" },
-        { title: "Kundan Floral Drop Earrings / Jhumka", cat: "Jewellery & Earrings", tag: "earrings", img: "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=100" },
-        { title: "Designer Embroidered Anarkali Kurti", cat: "Women's Kurtis", tag: "kurti", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=100" },
-        { title: "Princess Butterfly Party Frock", cat: "Kids & Girls", tag: "frock", img: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=100" }
+        { title: "Pure Dhakai Jamdani Saree", cat: "Women's Sarees", tag: "jamdani", img: "logo.png" },
+        { title: "Soft Silk Katan Saree", cat: "Women's Sarees", tag: "silk", img: "logo.png" },
+        { title: "Bengal Handloom Tant Cotton", cat: "Women's Sarees", tag: "tant", img: "logo.png" },
+        { title: "Semi-Katan Party Saree", cat: "Women's Sarees", tag: "silk", img: "logo.png" },
+        { title: "Gold-Plated Bridal Jewellery Choker", cat: "Jewellery & Sets", tag: "jewel", img: "logo.png" },
+        { title: "Antique Silver Oxidised Choker Set", cat: "Jewellery & Sets", tag: "jewel", img: "logo.png" },
+        { title: "Handcrafted Gold-Plated Bangles / Churi", cat: "Jewellery & Bangles", tag: "bangles", img: "logo.png" },
+        { title: "Kundan Floral Drop Earrings / Jhumka", cat: "Jewellery & Earrings", tag: "earrings", img: "logo.png" },
+        { title: "Designer Embroidered Anarkali Kurti", cat: "Women's Kurtis", tag: "kurti", img: "logo.png" },
+        { title: "Princess Butterfly Party Frock", cat: "Kids & Girls", tag: "frock", img: "logo.png" }
       ];
 
       if (!q) {
@@ -2914,7 +2914,7 @@ function filterByCategory(cat) {
             ratingLabelEn: 'Extremely beautiful fabric!',
             comment: 'আমতায় মাত্র 3 ঘণ্টায় শাড়িটি হাতে পেলাম। কাপড় খুব নরম আর জেনুইন জরির কাজ। নিশা দিদির ব্যবহারও খুব ভালো।',
             commentEn: 'Received the saree in Amta within 3 hours. Fabric is very soft with genuine zari work. Highly recommended!',
-            photo: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400',
+            photo: 'logo.png',
             date: '15/09/2026'
           },
           {
@@ -2928,7 +2928,7 @@ function filterByCategory(cat) {
             ratingLabelEn: 'Just like the photo, stunning!',
             comment: 'পুজোর জন্য ক্যাটালগ দেখে অর্ডার করেছিলাম। হুবহু ছবির মতোই সুন্দর আর উজ্জ্বল রং। ক্যাশ অন ডেলিভারিতে পেয়েছি।',
             commentEn: 'Ordered for Puja from catalog. Exact match with picture, vibrant colors. Got it with COD.',
-            photo: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400',
+            photo: 'logo.png',
             date: '14/09/2026'
           }
         ];
@@ -2948,10 +2948,10 @@ function filterByCategory(cat) {
         if (r.photo && !photoUrls.includes(r.photo)) photoUrls.push(r.photo);
       });
       const defaultPhotos = [
-        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200',
-        'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=200',
-        'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200',
-        'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200'
+        'logo.png',
+        'logo.png',
+        'logo.png',
+        'logo.png'
       ];
       defaultPhotos.forEach(dp => {
         if (!photoUrls.includes(dp)) photoUrls.push(dp);
@@ -3478,7 +3478,7 @@ function selectPdpSize(sz) {
           badge: "★ পুজো স্পেশাল ভিডিও",
           price: 799,
           mrp: 1599,
-          coverImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600"
+          coverImg: "logo.png"
         },
         {
           id: "NC-102",
@@ -3486,7 +3486,7 @@ function selectPdpSize(sz) {
           badge: "★ বিয়ে ও পার্টি রিলস",
           price: 950,
           mrp: 1899,
-          coverImg: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600"
+          coverImg: "logo.png"
         }
       ];
 
@@ -4643,7 +4643,7 @@ function selectPdpSize(sz) {
           container.innerHTML += `
             <div class="nisha-order-card" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; margin-bottom:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.04);">
               <div class="nisha-prod-meta-row" style="display:flex; gap:12px; align-items:center; padding:14px; border-bottom:1px solid #f1f5f9;">
-                <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
+                <img src="${firstItem.img || 'logo.png'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
                 <div class="nisha-prod-meta-info">
                   <div class="nisha-order-num-id">Order #${ord.id} • ${displayDate}</div>
                   <div class="nisha-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
@@ -4758,7 +4758,7 @@ function selectPdpSize(sz) {
           <div class="nisha-order-card" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; margin-bottom:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.04);">
             <!-- Product Header -->
             <div class="nisha-prod-meta-row" style="display:flex; gap:12px; align-items:center; padding:14px; border-bottom:1px solid #f1f5f9;">
-              <img src="${firstItem.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=150'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
+              <img src="${firstItem.img || 'logo.png'}" class="nisha-prod-thumb" alt="Product" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; background:#f8fafc;">
               <div class="nisha-prod-meta-info">
                 <div class="nisha-order-num-id">Order #${ord.id} • ${displayDate}</div>
                 <div class="nisha-prod-name-title">${firstItem.title || 'Pure Dhakai Jamdani Saree'}</div>
@@ -5130,7 +5130,7 @@ function selectPdpSize(sz) {
       const category = document.getElementById('new_category').value;
       const price = parseFloat(document.getElementById('new_price').value);
       const mrp = parseFloat(document.getElementById('new_mrp').value) || price * 1.5;
-      const img = uploadedProductImgBase64 || document.getElementById('new_img').value.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600";
+      const img = uploadedProductImgBase64 || document.getElementById('new_img').value.trim() || "logo.png";
       const desc = document.getElementById('new_desc').value.trim() || "100% প্রিমিয়াম বুটিক কালেকশন।";
 
       if (!title || !price) {
@@ -5438,7 +5438,7 @@ function selectPdpSize(sz) {
       const firstItem = ord.items && ord.items[0] ? ord.items[0] : {};
       if (previewBox) {
         previewBox.innerHTML = `
-          <img src="${firstItem.img || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120"}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1;">
+          <img src="${firstItem.img || "logo.png"}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #cbd5e1;">
           <div style="flex:1;">
             <div style="font-weight:800; font-size:0.8rem; color:#0f172a;">${firstItem.title || "বুটিক পোশাক"}</div>
             <div style="font-size:0.7rem; color:#64748b; margin-top:2px;">
@@ -5700,7 +5700,7 @@ function loadAndRenderBanners() {
           title: "শারদীয়া উৎসব মেগা অফার",
           subtitle: "খাঁটি ঢাকাই জামদানি শাড়িতে 40% - 60% ছাড়!",
           badge: "🔥 ফেস্টিভ্যাল ধামাকা",
-          image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #701a75, #9333ea, #db2777)",
           targetCategory: "jamdani",
           active: true
@@ -5710,7 +5710,7 @@ function loadAndRenderBanners() {
           title: "রয়েল সফট সিল্ক ও বেনারসি",
           subtitle: "জরি বর্ডার ও প্রিমিয়াম ডিজাইনার আঁচল কালেকশন",
           badge: "✨ প্রিমিয়াম কোয়ালিটি",
-          image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #831843, #be185d, #f43f5e)",
           targetCategory: "silk",
           active: true
@@ -5720,7 +5720,7 @@ function loadAndRenderBanners() {
           title: "শান্তিপুরী ও ফুলিয়া সুতি তাঁত",
           subtitle: "দৈনন্দিন ও উৎসবের সেরা আরামদায়ক হ্যান্ডলুম",
           badge: "🌿 100% খাঁটি সুতি",
-          image: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #065f46, #059669, #10b981)",
           targetCategory: "tant",
           active: true
@@ -5730,7 +5730,7 @@ function loadAndRenderBanners() {
           title: "ট্রেন্ডি কুর্তি ও লং গাউন",
           subtitle: "মাত্র ₹499 থেকে শুরু • আধুনিক ফিটিং ও ফ্যাব্রিক",
           badge: "⚡ বেস্টসেলার",
-          image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8)",
           targetCategory: "kurti",
           active: true
@@ -5740,7 +5740,7 @@ function loadAndRenderBanners() {
           title: "ব্রাইডাল জুয়েলারি ও চোকার সেট",
           subtitle: "কুন্দন নেকলেস ও গোল্ড প্লেটেড নিখুঁত বালা কালেকশন",
           badge: "💎 রয়্যাল ফিনিশিং",
-          image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #78350f, #b45309, #f59e0b)",
           targetCategory: "jewel",
           active: true
@@ -5750,7 +5750,7 @@ function loadAndRenderBanners() {
           title: "কিউট বেবি ফ্রক ও উৎসব সেট",
           subtitle: "ছোট্ট সোনাদের জন্য আকর্ষণীয় কালারফুল ফ্রক",
           badge: "👧 স্পেশাল কিডস কালেকশন",
-          image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=600&auto=format&fit=crop&q=80",
+          image: "logo.png",
           bgGradient: "linear-gradient(135deg, #581c87, #7c3aed, #ec4899)",
           targetCategory: "girls",
           active: true
@@ -5786,7 +5786,7 @@ function loadAndRenderBanners() {
         </div>
       </div>
       <div class="banner-slide-image-wrap">
-        <img class="banner-slide-img" src="${b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80'}" alt="${b.title || 'Banner'}">
+        <img class="banner-slide-img" src="${b.image || 'logo.png'}" alt="${b.title || 'Banner'}">
       </div>
     `;
     track.appendChild(slide);
@@ -6054,27 +6054,27 @@ function selectCategoryTab(tabKey) {
 
   const subcats = {
     popular: [
-      { name: "ঢাকাই জামদানি", cat: "jamdani", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&auto=format&fit=crop&q=70" },
-      { name: "সফট সিল্ক ও কাতান", cat: "silk", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=300&auto=format&fit=crop&q=70" },
-      { name: "ট্রেন্ডি কুর্তি ও গাউন", cat: "kurti", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300&auto=format&fit=crop&q=70" },
-      { name: "বাচ্চাদের ফ্রক", cat: "girls", img: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=300&auto=format&fit=crop&q=70" },
-      { name: "ব্রাইডাল জুয়েলারি", cat: "jewel", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=70" }
+      { name: "ঢাকাই জামদানি", cat: "jamdani", icon: "fa-solid fa-wand-magic-sparkles" },
+      { name: "সফট সিল্ক ও কাতান", cat: "silk", icon: "fa-solid fa-person-dress" },
+      { name: "ট্রেন্ডি কুর্তি ও গাউন", cat: "kurti", icon: "fa-solid fa-vest" },
+      { name: "বাচ্চাদের ফ্রক", cat: "girls", icon: "fa-solid fa-child" },
+      { name: "ব্রাইডাল জুয়েলারি", cat: "jewel", icon: "fa-solid fa-gem" }
     ],
     saree_kurti: [
-      { name: "খাঁটি ঢাকাই জামদানি", cat: "jamdani", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&auto=format&fit=crop&q=70" },
-      { name: "সফট সিল্ক শাড়ি", cat: "silk", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=300&auto=format&fit=crop&q=70" },
-      { name: "শান্তিপুরী সুতি তাঁত", cat: "tant", img: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=300&auto=format&fit=crop&q=70" },
-      { name: "ডিজাইনার কুর্তি সেট", cat: "kurti", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300&auto=format&fit=crop&q=70" }
+      { name: "খাঁটি ঢাকাই জামদানি", cat: "jamdani", icon: "fa-solid fa-wand-magic-sparkles" },
+      { name: "সফট সিল্ক শাড়ি", cat: "silk", icon: "fa-solid fa-person-dress" },
+      { name: "শান্তিপুরী সুতি তাঁত", cat: "tant", icon: "fa-solid fa-feather" },
+      { name: "ডিজাইনার কুর্তি সেট", cat: "kurti", icon: "fa-solid fa-vest" }
     ],
     jewellery: [
-      { name: "চোকার ও নেকলেস সেট", cat: "jewel", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=70" },
-      { name: "গোল্ড প্লেটেড বালা ও চুড়ি", cat: "bangles", img: "https://images.unsplash.com/photo-1611591475837-7f9999557a66?w=300&auto=format&fit=crop&q=70" }
+      { name: "চোকার ও নেকলেস সেট", cat: "jewel", icon: "fa-solid fa-gem" },
+      { name: "গোল্ড প্লেটেড বালা ও চুড়ি", cat: "bangles", icon: "fa-solid fa-ring" }
     ],
     bags: [
-      { name: "বুটিক হ্যান্ডব্যাগ ও ক্লাচ", cat: "all", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&auto=format&fit=crop&q=70" }
+      { name: "বুটিক হ্যান্ডব্যাগ ও ক্লাচ", cat: "all", icon: "fa-solid fa-bag-shopping" }
     ],
     perfume: [
-      { name: "রয়েল আতর ও বডি মিস্ট", cat: "all", img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=300&auto=format&fit=crop&q=70" }
+      { name: "রয়েল আতর ও বডি মিস্ট", cat: "all", icon: "fa-solid fa-spray-can-sparkles" }
     ]
   };
 
@@ -6086,9 +6086,11 @@ function selectCategoryTab(tabKey) {
   `;
   currentList.forEach(item => {
     html += `
-      <div onclick="showScreen('home'); filterByUnifiedCat('${item.cat}');" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.04); text-align:center;">
-        <img src="${item.img}" style="width:100%; height:110px; object-fit:cover;">
-        <div style="padding:8px 6px; font-size:0.78rem; font-weight:700; color:#0f172a;">${item.name}</div>
+      <div onclick="showScreen('home'); filterByUnifiedCat('${item.cat}');" style="background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:20px 10px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.04); text-align:center;">
+        <div style="width:48px; height:48px; border-radius:50%; background:#fdf4ff; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto; color:var(--primary); font-size:1.3rem;">
+          <i class="${item.icon || 'fa-solid fa-shapes'}"></i>
+        </div>
+        <div style="padding:4px 6px; font-size:0.8rem; font-weight:800; color:#0f172a;">${item.name}</div>
       </div>
     `;
   });
@@ -6096,10 +6098,6 @@ function selectCategoryTab(tabKey) {
   contentArea.innerHTML = html;
 }
 
-
-// =========================================================================
-// 🌟 5. CHECKOUT FLOW, PAYMENT & ORDER SUBMISSION
-// =========================================================================
 var selectedPayMethod = 'UPI';
 
 function renderCheckoutStep1() {
@@ -6489,7 +6487,7 @@ function updateCartBadges() {
 }
 
 function buyCurrentLiveProduct() {
-  const liveProduct = products[0] || { id: 'NC-101', title: 'লাইভ স্পেশাল ঢাকাই জামদানি', price: 799, img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&q=75' };
+  const liveProduct = products[0] || { id: 'NC-101', title: 'লাইভ স্পেশাল ঢাকাই জামদানি', price: 799, img: 'logo.png' };
   cart.push(liveProduct);
   localStorage.setItem('nc_cart', JSON.stringify(cart));
   updateCartBadges();
