@@ -681,6 +681,39 @@
     </div>
   </header>
 
+  <!-- ========================================================================= -->
+  <!-- 📦 AMAZON-STYLE WORKER ACCOUNTABILITY & TROLLEY BAR -->
+  <!-- ========================================================================= -->
+  <div style="background:#090d16; border-bottom:1px solid #1e293b; padding:10px 16px;">
+    <div style="max-width:900px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:#10b981; color:#fff; font-size:0.75rem;">
+          <i class="fa-solid fa-user-check"></i>
+        </span>
+        <div>
+          <span style="color:#94a3b8; font-size:0.72rem;">দায়িত্বপ্রাপ্ত কর্মী (Accountable Worker):</span>
+          <strong id="barWorkerEmailDisplay" style="color:#38bdf8; display:block; font-size:0.82rem;">sahebghanti669@gmail.com</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="background:#1e293b; border:1px solid #334155; padding:4px 10px; border-radius:8px; font-size:0.78rem; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-cart-shopping" style="color:#f59e0b;"></i>
+          <span style="color:#94a3b8;">অ্যাক্টিভ ট্রলি:</span>
+          <strong id="barActiveTrolleyDisplay" style="color:#fde047;">TROLLEY-01</strong>
+        </div>
+
+        <button type="button" onclick="openWorkerLoginModal()" style="background:#1e293b; border:1px solid #475569; color:#cbd5e1; padding:6px 10px; border-radius:8px; font-size:0.74rem; font-weight:700; cursor:pointer;" title="কর্মী বা জিমেইল পরিবর্তন করুন">
+          <i class="fa-solid fa-user-pen"></i> কর্মী বদলান
+        </button>
+
+        <button type="button" onclick="openTrolleyStickersModal()" style="background:linear-gradient(135deg, #7c3aed, #9333ea); border:none; color:#fff; padding:6px 12px; border-radius:8px; font-size:0.74rem; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(124,58,237,0.4);" title="৬টি ট্রলি/বাস্কেটের কিউআর স্টিকার প্রিন্ট করুন">
+          <i class="fa-solid fa-qrcode"></i> ৬টি ট্রলি স্টিকার
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- SLIDE-OVER NAVIGATION DRAWER (তিনটি দাঁড়ি মেনু) -->
   <div id="navDrawerOverlay" class="drawer-overlay" onclick="closeNavDrawer()">
     <div class="drawer-content" onclick="event.stopPropagation()">
@@ -806,6 +839,35 @@
         </div>
       </div>
 
+      <!-- ========================================================================= -->
+      <!-- 🏬 AMAZON CHAOTIC STORAGE: DYNAMIC VACANT RACK SPACE OPTIMIZER -->
+      <!-- ========================================================================= -->
+      <div id="dynamicVacantRackOptimizerCard" style="background:#090d16; border:1.5px solid #10b981; border-radius:16px; padding:14px; margin-bottom:16px; box-shadow:0 4px 16px rgba(16,185,129,0.15);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1px solid #1e293b; padding-bottom:10px; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg, #059669, #10b981); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem;">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </div>
+            <div>
+              <h4 style="font-size:0.92rem; font-weight:800; color:#fff; margin:0;">
+                🏬 অ্যামাজন ডায়নামিক স্পেস অপ্টিমাইজার (খালি তাক অটো-শনাক্তকারী)
+              </h4>
+              <p style="font-size:0.72rem; color:#94a3b8; margin:0;">
+                কোনো মালের স্টক বিক্রি হয়ে ০ হলেই সেই তাকটি স্বয়ংক্রিয়ভাবে খালি হয়ে যাবে এবং নতুন স্টক রাখার প্রস্তাব দেবে।
+              </p>
+            </div>
+          </div>
+          <span id="vacantRacksCountBadge" style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:8px;">
+            ✓ ২ টি তাক এখন সম্পূর্ণ খালি
+          </span>
+        </div>
+
+        <!-- Vacant Racks Grid -->
+        <div id="vacantRacksLiveGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+          <!-- Dynamically populated by renderRackOccupancyBoard() -->
+        </div>
+      </div>
+
       <!-- Storage Slot Filter Chips (র্যাক ও ড্রয়ার ফিল্টার) -->
       <div style="display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px;">
         <button type="button" class="btn-pack-pill active" id="filterRackAll" onclick="filterInboundByRack('all', this)">
@@ -836,10 +898,10 @@
       <div class="panel-header-row">
         <div>
           <h3 class="panel-title" id="t-step2Heading">
-            <i class="fa-solid fa-boxes-packing" style="color:#10b981;"></i> কাস্টমার অর্ডার প্যাকিং ও কিউআর স্ক্যানার
+            <i class="fa-solid fa-boxes-packing" style="color:#10b981;"></i> অ্যামাজন ডিজিটাল প্যাকিং স্টেশন ও ট্রলি ডক
           </h3>
           <p class="panel-desc" id="t-step2Desc">
-            কাস্টমার অর্ডার দিলে নির্দিষ্ট র‍্যাক থেকে শাড়ি/চুড়ি তুলে এনে ক্যামেরা দিয়ে স্ক্যান করুন এবং প্যাক করুন।
+            ট্রলি বা পণ্যের কিউআর স্ক্যান করলেই অর্ডারটি নিজের লাইনে চলে আসবে। প্যাকিং শেষে প্যাকেটের কিউআর স্ক্যান করলেই স্ক্রিন থেকে অটো উধাও হয়ে যাবে।
           </p>
         </div>
         <div style="display:flex; gap:6px;">
@@ -866,6 +928,42 @@
       </div>
 
       <!-- Camera Scanner Hero Box -->
+            <!-- 🛒 Amazon Trolley / Basket Quick Switcher Strip -->
+      <div style="background:#090d16; border:1.5px solid #334155; border-radius:14px; padding:12px 14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-dolly" style="color:#f59e0b; font-size:1.1rem;"></i>
+            <span style="font-size:0.85rem; font-weight:800; color:#fff;">পিকিং ট্রলি / বাস্কেট নির্বাচন (Trolley 1 to 6):</span>
+          </div>
+          <span style="font-size:0.72rem; color:#94a3b8;">ট্রলি স্টিকার স্ক্যান করলেও অটো সিলেক্ট হবে</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px;">
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-01')" id="btnTrolley01" style="background:#1e293b; border:1.5px solid #ef4444; color:#fca5a5; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span> ট্রলি ০১ (লাল)
+          </button>
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-02')" id="btnTrolley02" style="background:#1e293b; border:1px solid #3b82f6; color:#93c5fd; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#3b82f6;"></span> ট্রলি ০২ (নীল)
+          </button>
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-03')" id="btnTrolley03" style="background:#1e293b; border:1px solid #10b981; color:#6ee7b7; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span> ট্রলি ০৩ (সবুজ)
+          </button>
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-04')" id="btnTrolley04" style="background:#1e293b; border:1px solid #f59e0b; color:#fde68a; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#f59e0b;"></span> ট্রলি ০৪ (হলুদ)
+          </button>
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-05')" id="btnTrolley05" style="background:#1e293b; border:1px solid #8b5cf6; color:#ddd6fe; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#8b5cf6;"></span> ট্রলি ০৫ (বেগুনি)
+          </button>
+          <button type="button" class="btn-fast-action" onclick="selectActiveTrolley('TROLLEY-06')" id="btnTrolley06" style="background:#1e293b; border:1px solid #64748b; color:#cbd5e1; padding:8px 6px; font-size:0.76rem; font-weight:800; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:5px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#94a3b8;"></span> ট্রলি ০৬ (কালো)
+          </button>
+        </div>
+      </div>
+
+      <!-- ⚡ ACTIVE PACKING BENCH ("নিজের লাইনে চলে আসা" অ্যামাজন ডক) -->
+      <div id="amazonActivePackingLineDock" style="display:none; background:linear-gradient(135deg, #090d16, #111827); border:2px solid #10b981; border-radius:18px; padding:18px; margin-bottom:18px; box-shadow:0 8px 24px rgba(16,185,129,0.25); animation:slideInDown 0.3s ease-out;">
+        <!-- Populated dynamically when item/order is scanned into the line -->
+      </div>
+
       <div class="scanner-hero-card">
         <button type="button" id="btnToggleCamera" class="btn-toggle-camera" onclick="toggleQrCamera()">
           <i class="fa-solid fa-camera"></i>
@@ -1413,6 +1511,7 @@
       if (inp) inp.placeholder = d.manualPlaceholder;
 
       renderInboundProducts();
+      renderRackOccupancyBoard();
       renderPackCards();
       renderDispatchBags();
     }
@@ -1605,9 +1704,135 @@
     }
 
     // Modal: Add Unique Product & Assign Rack
-    function openAddProductSlotModal() {
+    
+    // =========================================================================
+    // 🏬 AMAZON CHAOTIC STORAGE: DYNAMIC VACANT RACK DETECTOR & REALLOCATION
+    // =========================================================================
+    const DEFAULT_KNOWN_RACKS = [
+      { id: "Rack A-01", name: "Rack A-01 (জামদানি শাড়ি ব্লক)", defaultCat: "saree" },
+      { id: "Rack A-02", name: "Rack A-02 (সফট সিল্ক ও কাতান তাক)", defaultCat: "saree" },
+      { id: "Rack B-01", name: "Rack B-01 (তাঁত কটন শাড়ি তাক)", defaultCat: "saree" },
+      { id: "Rack B-02", name: "Rack B-02 (বাচ্চাদের ফ্রক ও বেবি ড্রেস তাক)", defaultCat: "girls" },
+      { id: "Shelf J-02", name: "Shelf J-02 (ডিজাইনার চুড়ি ও বালা ড্রয়ার)", defaultCat: "jewel" },
+      { id: "Rack C-01", name: "Rack C-01 (টপ, কুর্তি ও ব্লাউজ হ্যাঙ্গার)", defaultCat: "kurti" },
+      { id: "Rack D-01", name: "Rack D-01 (লেডিস ব্যাগ ও ক্লাচ তাক)", defaultCat: "bags" }
+    ];
+
+    function getAllWarehouseRacks() {
+      let customRacks = [];
+      try {
+        customRacks = JSON.parse(localStorage.getItem('nc_custom_racks') || '[]');
+      } catch(e) {}
+      const combined = [...DEFAULT_KNOWN_RACKS];
+      customRacks.forEach(cr => {
+        if (!combined.some(r => r.id === cr || r.name === cr)) {
+          combined.push({ id: cr, name: cr, defaultCat: 'general' });
+        }
+      });
+      return combined;
+    }
+
+    function renderRackOccupancyBoard() {
+      const container = document.getElementById('vacantRacksLiveGrid');
+      const countBadge = document.getElementById('vacantRacksCountBadge');
+      if (!container) return;
+
+      let prods = [];
+      try {
+        prods = JSON.parse(localStorage.getItem('nc_products') || '[]');
+      } catch(e) {}
+
+      const allRacks = getAllWarehouseRacks();
+      const rackMap = {};
+
+      allRacks.forEach(r => {
+        rackMap[r.name] = { rack: r, currentStock: 0, products: [], lastSoldItem: '' };
+      });
+
+      prods.forEach(p => {
+        const bin = (p.binLocation || '').trim();
+        if (bin && rackMap[bin]) {
+          const stk = parseInt(p.stock) || 0;
+          rackMap[bin].currentStock += stk;
+          rackMap[bin].products.push(p);
+          if (stk === 0) {
+            rackMap[bin].lastSoldItem = p.title || '';
+          }
+        }
+      });
+
+      const vacantList = [];
+      const occupiedList = [];
+
+      Object.keys(rackMap).forEach(k => {
+        if (rackMap[k].currentStock === 0) {
+          vacantList.push(rackMap[k]);
+        } else {
+          occupiedList.push(rackMap[k]);
+        }
+      });
+
+      if (countBadge) {
+        countBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${vacantList.length}টি তাক সম্পূর্ণ ফাঁকা (নতুন মাল রাখার জন্য রেডি)`;
+      }
+
+      if (vacantList.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column:span 2; background:#1e293b; padding:12px 14px; border-radius:10px; color:#94a3b8; font-size:0.8rem; text-align:center;">
+            বর্তমানে সমস্ত তকে মাল রয়েছে। কোনো মালের স্টক বিক্রি হয়ে ০ হলেই সেই তাকটি এখানে স্বয়ংক্রিয়ভাবে ফাঁকা হিসেবে দেখাবে।
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = vacantList.map(item => `
+        <div style="background:#111827; border:1.5px solid #059669; border-radius:12px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+              <strong style="color:#f8fafc; font-size:0.82rem;">${item.rack.name}</strong>
+            </div>
+            <div style="font-size:0.72rem; color:#a7f3d0; margin-top:3px;">
+              ${item.lastSoldItem ? `আগের মাল বিক্রি হয়ে শেষ: <span style="color:#fde047;">${item.lastSoldItem}</span>` : 'বর্তমানে কোনো স্টক নেই • সম্পূর্ণ খালি তাক'}
+            </div>
+          </div>
+          <button type="button" class="btn-fast-action" onclick="quickAssignNewStockToRack('${item.rack.name}')" style="background:linear-gradient(135deg, #059669, #10b981); color:#fff; padding:6px 12px; border-radius:8px; font-size:0.74rem; font-weight:800; white-space:nowrap; box-shadow:0 2px 8px rgba(16,185,129,0.35);">
+            <i class="fa-solid fa-plus"></i> এই তকে মাল রাখুন
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function quickAssignNewStockToRack(rackName) {
+      openAddProductSlotModal(rackName);
+    }
+
+
+    function openAddProductSlotModal(targetRack) {
       const modal = document.getElementById('addProductSlotModal');
       if (modal) modal.style.display = 'flex';
+
+      const binInp = document.getElementById('newProdBinCustom');
+      const preset = document.getElementById('presetRackSelect');
+
+      if (targetRack) {
+        if (binInp) binInp.value = targetRack;
+        if (preset) preset.value = targetRack;
+      } else {
+        // Automatically check if there is a vacant rack!
+        const allRacks = getAllWarehouseRacks();
+        let prods = [];
+        try { prods = JSON.parse(localStorage.getItem('nc_products') || '[]'); } catch(e) {}
+        const occupied = new Set();
+        prods.forEach(p => {
+          if ((parseInt(p.stock) || 0) > 0 && p.binLocation) occupied.add(p.binLocation.trim());
+        });
+        const firstVacant = allRacks.find(r => !occupied.has(r.name));
+        if (firstVacant) {
+          if (binInp) binInp.value = firstVacant.name;
+          if (preset) preset.value = firstVacant.name;
+        }
+      }
     }
 
     function closeAddProductSlotModal() {
@@ -1912,61 +2137,314 @@
       }
     }
 
+        // =========================================================================
+    // AMAZON-GRADE TROLLEY & SCAN-TO-PACK AUTOMATION SUITE
+    // =========================================================================
+    let currentActiveTrolley = localStorage.getItem('nc_active_trolley') || 'TROLLEY-01';
+    let currentActiveWorker = JSON.parse(localStorage.getItem('nc_active_worker') || '{"email":"sahebghanti669@gmail.com","name":"সাহেব ঘাঁটি"}');
+    let activePackingLineOrder = null;
+
+    // 1. Worker Accountability Modal Controls
+    function openWorkerLoginModal() {
+      const m = document.getElementById('modalWorkerLogin');
+      if (m) {
+        m.style.display = 'flex';
+        document.getElementById('inputWorkerGmail').value = currentActiveWorker.email || '';
+        document.getElementById('inputWorkerName').value = currentActiveWorker.name || '';
+      }
+    }
+
+    function closeWorkerLoginModal() {
+      const m = document.getElementById('modalWorkerLogin');
+      if (m) m.style.display = 'none';
+    }
+
+    function saveWorkerLogin() {
+      const email = (document.getElementById('inputWorkerGmail')?.value || '').trim();
+      const name = (document.getElementById('inputWorkerName')?.value || '').trim() || email;
+      if (!email || !email.includes('@')) {
+        alert('অনুগ্রহ করে একটি সঠিক জিমেইল অ্যাড্রেস লিখুন (যেমন: rahul.pack@gmail.com)');
+        return;
+      }
+      currentActiveWorker = { email, name, loginTime: new Date().toISOString() };
+      localStorage.setItem('nc_active_worker', JSON.stringify(currentActiveWorker));
+      updateWorkerAndTrolleyBar();
+      closeWorkerLoginModal();
+      alert('✅ কর্মী সফলভাবে সক্রিয় হয়েছেন: ' + name + ' (' + email + ')\nএখন থেকে প্রতিটি প্যাক হওয়া পার্সেলের সাথে আপনার পরিচয় লগ থাকবে।');
+    }
+
+    // 2. Trolley / Basket Switcher & Barcode Stickers Modal
+    function selectActiveTrolley(trolleyId) {
+      currentActiveTrolley = trolleyId;
+      localStorage.setItem('nc_active_trolley', trolleyId);
+      updateWorkerAndTrolleyBar();
+
+      // Highlight active trolley button
+      for (let i = 1; i <= 6; i++) {
+        const btn = document.getElementById('btnTrolley0' + i);
+        if (btn) {
+          if (('TROLLEY-0' + i) === trolleyId) {
+            btn.style.boxShadow = '0 0 12px rgba(245,158,11,0.6)';
+            btn.style.transform = 'scale(1.04)';
+          } else {
+            btn.style.boxShadow = 'none';
+            btn.style.transform = 'scale(1)';
+          }
+        }
+      }
+
+      playAudioFeedback(600, 0.1);
+      const toast = document.getElementById('scanSuccessToast');
+      if (toast) {
+        toast.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> <span>🛒 ' + trolleyId + ' সক্রিয় হয়েছে! র্যাক থেকে মাল তোলা শুরু করুন।</span>';
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2500);
+      }
+    }
+
+    function openTrolleyStickersModal() {
+      const m = document.getElementById('modalTrolleyStickers');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeTrolleyStickersModal() {
+      const m = document.getElementById('modalTrolleyStickers');
+      if (m) m.style.display = 'none';
+    }
+
+    function printTrolleyStickersSheet() {
+      window.print();
+    }
+
+    function updateWorkerAndTrolleyBar() {
+      const wEl = document.getElementById('barWorkerEmailDisplay');
+      if (wEl) wEl.textContent = (currentActiveWorker.name || currentActiveWorker.email) + ' (' + currentActiveWorker.email + ')';
+      const tEl = document.getElementById('barActiveTrolleyDisplay');
+      if (tEl) tEl.textContent = currentActiveTrolley;
+    }
+
+    // 3. Render Active Line Dock ("নিজের লাইনে চলে আসা" অ্যামাজন ডক)
+    function renderActivePackingLineDock() {
+      const dock = document.getElementById('amazonActivePackingLineDock');
+      if (!dock) return;
+
+      if (!activePackingLineOrder) {
+        dock.style.display = 'none';
+        dock.innerHTML = '';
+        return;
+      }
+
+      const o = activePackingLineOrder;
+      const items = Array.isArray(o.items) ? o.items : [{ title: o.productTitle || 'শাড়ি কালেকশন', quantity: o.quantity || 1, price: o.total || 0, img: o.img || 'logo.png', color: o.color || '', size: o.size || '' }];
+      const totalPcs = items.reduce((sum, it) => sum + (it.quantity || 1), 0);
+      const recBox = totalPcs > 1 ? 'বক্স সাইজ M (30x25x8 cm) • বাবল র‍্যাপ আবশ্যক' : 'পলিব্যাগ সাইজ S2 (25x20 cm) • সিলিং টেপ';
+
+      dock.style.display = 'block';
+      dock.style.transform = 'none';
+      dock.style.opacity = '1';
+      dock.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; border-bottom:1px solid #1e293b; padding-bottom:12px; margin-bottom:12px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:900; padding:3px 8px; border-radius:6px; text-transform:uppercase;">
+                <i class="fa-solid fa-arrow-down"></i> অ্যাক্টিভ প্যাকিং লাইন
+              </span>
+              <strong style="color:#fde047; font-size:1.15rem; font-family:monospace;">#${o.id}</strong>
+            </div>
+            <div style="font-size:0.8rem; color:#cbd5e1; margin-top:4px;">
+              গ্রাহক: <strong>${o.customerName || 'সম্মানিত ক্রেতা'}</strong> • 📍 ${o.city || 'আমতা, হাওড়া'}
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <span style="background:#1e293b; border:1px solid #f59e0b; color:#fde68a; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:6px;">
+              <i class="fa-solid fa-cart-shopping"></i> ট্রলি: ${currentActiveTrolley}
+            </span>
+            <div style="font-size:0.72rem; color:#94a3b8; margin-top:3px;">কর্মী: ${currentActiveWorker.name}</div>
+          </div>
+        </div>
+
+        <div style="background:#0b0f19; border:1px solid #334155; border-radius:10px; padding:10px 12px; margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+          <i class="fa-solid fa-box" style="font-size:1.5rem; color:#38bdf8;"></i>
+          <div>
+            <div style="font-size:0.82rem; font-weight:800; color:#38bdf8;">প্রস্তাবিত প্যাকেজিং: ${recBox}</div>
+            <div style="font-size:0.72rem; color:#cbd5e1;">ইনভয়েস স্লিপ ও থ্যাঙ্ক ইউ কার্ড ব্যাগে ভরে সিল করুন</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+          ${items.map(it => `
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#1e293b; border:1px solid #334155; padding:8px 10px; border-radius:10px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${it.img || 'logo.png'}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid #475569;" onerror="this.src='logo.png'">
+                <div>
+                  <div style="color:#fff; font-size:0.85rem; font-weight:800;">${it.title}</div>
+                  <div style="font-size:0.72rem; color:#94a3b8;">
+                    ${it.color ? 'রং: <b style="color:#fde047;">' + it.color + '</b> • ' : ''}
+                    ${it.size ? 'সাইজ: <b style="color:#38bdf8;">' + it.size + '</b> • ' : ''}
+                    পরিমাণ: <b style="color:#34d399;">${it.quantity || 1} পিস</b>
+                  </div>
+                </div>
+              </div>
+              <span style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#a7f3d0; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:6px; display:flex; align-items:center; gap:4px;">
+                <i class="fa-solid fa-check"></i> ভেরিফাইড
+              </span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" class="btn-fast-action" onclick="completeActiveLineOrder('${o.id}')" style="flex:1; background:linear-gradient(135deg, #059669, #10b981); color:#fff; padding:12px; font-weight:800; font-size:0.9rem; border-radius:10px; justify-content:center; box-shadow:0 4px 14px rgba(16,185,129,0.4);">
+            <i class="fa-solid fa-qrcode"></i> 📦 প্যাকেটের কিউআর স্ক্যান সম্পন্ন ও ডিসপ্যাচ
+          </button>
+          <button type="button" onclick="cancelActiveLineOrder()" style="background:#1e293b; border:1px solid #475569; color:#cbd5e1; padding:12px 14px; border-radius:10px; font-weight:700; font-size:0.8rem; cursor:pointer;" title="লাইন থেকে ফেরত পাঠান">
+            ফেরত
+          </button>
+        </div>
+      `;
+    }
+
+    function cancelActiveLineOrder() {
+      activePackingLineOrder = null;
+      renderActivePackingLineDock();
+    }
+
+    // 4. Amazon Two-Step Scan-to-Pack Engine
     function handleScannedData(dataStr) {
       if (!dataStr) return;
-      let cleanId = dataStr.trim();
-      if (cleanId.includes('scan=')) cleanId = cleanId.split('scan=')[1].split('&')[0];
-      cleanId = cleanId.replace('#', '').trim();
-      verifyAndCompletePacking(cleanId);
+      let clean = String(dataStr).trim();
+      if (clean.includes('scan=')) clean = clean.split('scan=')[1].split('&')[0];
+      clean = clean.replace('#', '').trim();
+
+      // Case A: Scanned a Trolley Code (TROLLEY-01 to TROLLEY-06)
+      if (clean.toUpperCase().startsWith('TROLLEY-')) {
+        selectActiveTrolley(clean.toUpperCase());
+        return;
+      }
+
+      // Case B: Scanned an Order ID / Shipping Label (e.g. NC-5019)
+      const orderMatch = allOrders.find(o => (o.id || '').toLowerCase() === clean.toLowerCase());
+      if (orderMatch) {
+        if (activePackingLineOrder && (activePackingLineOrder.id || '').toLowerCase() === clean.toLowerCase()) {
+          completeActiveLineOrder(clean);
+        } else {
+          activePackingLineOrder = orderMatch;
+          renderActivePackingLineDock();
+          playAudioFeedback(750, 0.15);
+          const toast = document.getElementById('scanSuccessToast');
+          if (toast) {
+            toast.innerHTML = '<i class="fa-solid fa-box-open"></i> <span>অর্ডার #' + clean + ' নিজের প্যাকিং লাইনে আনা হয়েছে! পলিব্যাগে সিল করে ফাইনাল স্ক্যান করুন।</span>';
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+          }
+        }
+        return;
+      }
+
+      // Case C: Scanned a Product Barcode / SKU / Tag
+      const pendingOrders = allOrders.filter(o => o.status === 'Order Placed' || o.status === 'Ordered' || o.status === 'Pending' || o.status === 'Pending Packing');
+      let targetOrder = null;
+      for (const o of pendingOrders) {
+        const items = Array.isArray(o.items) ? o.items : [{ title: o.productTitle || '', sku: o.sku || '' }];
+        const matches = items.some(it => 
+          (it.sku && it.sku.toLowerCase() === clean.toLowerCase()) || 
+          (it.title && it.title.toLowerCase().includes(clean.toLowerCase()))
+        );
+        if (matches) {
+          targetOrder = o;
+          break;
+        }
+      }
+
+      if (targetOrder) {
+        activePackingLineOrder = targetOrder;
+        renderActivePackingLineDock();
+        playAudioFeedback(880, 0.2);
+        const toast = document.getElementById('scanSuccessToast');
+        if (toast) {
+          toast.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span>আইটেম ভেরিফাইড! অর্ডার #' + targetOrder.id + ' নিজের প্যাকিং লাইনে চলে এসেছে।</span>';
+          toast.style.display = 'block';
+          setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+        return;
+      }
+
+      verifyAndCompletePacking(clean);
     }
 
     function handleManualVerify() {
       const inp = document.getElementById('manualScanInput');
       const val = inp ? inp.value.trim() : '';
       if (!val) {
-        alert(currentLang === 'en' ? 'Please enter Order ID (e.g., NC-5019)' : 'অনুগ্রহ করে অর্ডার আইডি লিখুন (যেমন: NC-5019)');
+        alert(currentLang === 'en' ? 'Please enter Order ID or SKU (e.g., NC-5019)' : 'অনুগ্রহ করে অর্ডার আইডি বা বারকোড লিখুন (যেমন: NC-5019 বা TROLLEY-01)');
         return;
       }
-      verifyAndCompletePacking(val);
+      handleScannedData(val);
       if (inp) inp.value = '';
     }
 
-    function verifyAndCompletePacking(orderId) {
-      const cleanId = orderId.replace('#', '').trim();
+    // 5. Final Pack Scan & Auto-Disappear from Monitor
+    function completeActiveLineOrder(orderId) {
+      const cleanId = String(orderId).replace('#', '').trim();
       const idx = allOrders.findIndex(o => (o.id || '').toLowerCase() === cleanId.toLowerCase());
 
       if (idx === -1) {
-        alert(currentLang === 'en' ? `❌ Order #${cleanId} not found in database!` : `❌ অর্ডার #${cleanId} সিস্টেমে পাওয়া যায়নি!`);
+        alert('❌ অর্ডার #' + cleanId + ' সিস্টেমে পাওয়া যায়নি!');
         return;
       }
 
       allOrders[idx].status = 'Packed';
-        if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
-          CloudSync.updateOrderStatus(orderId, 'Packed', { packedDate: allOrders[idx].packedDate });
-        }
+      allOrders[idx].trolleyId = currentActiveTrolley;
+      allOrders[idx].pickedBy = allOrders[idx].pickedBy || currentActiveWorker.email;
+      allOrders[idx].packedBy = currentActiveWorker.email;
+      allOrders[idx].packerName = currentActiveWorker.name;
       allOrders[idx].packedDate = new Date().toLocaleDateString('bn-IN') + ', ' + new Date().toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit' });
+
+      if (typeof CloudSync !== 'undefined' && CloudSync.isReady()) {
+        CloudSync.updateOrderStatus(cleanId, 'Packed', {
+          packedDate: allOrders[idx].packedDate,
+          packedBy: currentActiveWorker.email,
+          packerName: currentActiveWorker.name,
+          trolleyId: currentActiveTrolley
+        });
+      }
 
       localStorage.setItem('nc_orders', JSON.stringify(allOrders));
 
       try {
-        if ('vibrate' in navigator) navigator.vibrate([100, 50, 100]);
+        playAudioFeedback(600, 0.1);
+        setTimeout(() => playAudioFeedback(900, 0.18), 120);
+        if ('vibrate' in navigator) navigator.vibrate([80, 40, 80]);
       } catch(e) {}
+
+      // AUTO-DISAPPEAR ANIMATION
+      const dock = document.getElementById('amazonActivePackingLineDock');
+      if (dock) {
+        dock.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        dock.style.transform = 'translateX(-100%) scale(0.9)';
+        dock.style.opacity = '0';
+        setTimeout(() => {
+          activePackingLineOrder = null;
+          dock.style.display = 'none';
+          dock.style.transform = 'none';
+          dock.style.opacity = '1';
+        }, 360);
+      }
 
       const toast = document.getElementById('scanSuccessToast');
       if (toast) {
-        toast.innerHTML = `
-          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
-            <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i>
-            <span>${currentLang === 'en' ? `🎉 Parcel #${cleanId} packed & sealed successfully!` : `🎉 পার্সেল #${cleanId} প্যাকিং ও বারকোড সিল সম্পন্ন!`}</span>
-          </div>
-        `;
+        toast.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:#a7f3d0;"></i><span>🎉 পার্সেল #' + cleanId + ' প্যাকিং সম্পন্ন! স্ক্রিন থেকে ডিসপ্যাচ লাইনে স্থানান্তরিত।</span></div>';
         toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
       }
 
       updatePackStats();
       renderPackCards();
     }
+
+    function verifyAndCompletePacking(orderId) {
+      completeActiveLineOrder(orderId);
+    }
+
 
     function renderPackCards() {
       const container = document.getElementById('packagingOrdersList');
@@ -2452,5 +2930,133 @@
     }
 
 </script>
+
+  <!-- ========================================================================= -->
+  <!-- 🖨️ 1. PRINTABLE 6 TROLLEY / BASKET BARCODE STICKERS MODAL (AMAZON FC) -->
+  <!-- ========================================================================= -->
+  <div id="modalTrolleyStickers" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:14px; overflow-y:auto;">
+    <div style="background:#0f172a; border:2px solid #a855f7; border-radius:18px; max-width:800px; width:100%; padding:20px; box-shadow:0 10px 30px rgba(168,85,247,0.4); max-height:92vh; overflow-y:auto;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg, #7c3aed, #9333ea); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem;">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div>
+            <h3 style="color:#fff; font-size:1.05rem; font-weight:800; margin:0;">৬টি ট্রলি ও বাস্কেটের কিউআর স্টিকার</h3>
+            <p style="color:#cbd5e1; font-size:0.75rem; margin:0;">কাগজ বা স্টিকারে প্রিন্ট করে আপনার ৫-৬টি প্লাস্টিকের বাস্কেট, ঝুড়ি বা ট্রলিতে লাগিয়ে নিন</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeTrolleyStickersModal()" style="background:#1e293b; border:none; color:#94a3b8; width:34px; height:34px; border-radius:50%; font-size:1.1rem; cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Printable Grid (Visible in Print View) -->
+      <div id="trolleyStickersPrintArea" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:18px;">
+        
+        <!-- Trolley 01 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #ef4444; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#ef4444; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-01</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০১ (লাল)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-01" alt="TROLLEY-01 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| | ||||| || ||||||||</div>
+        </div>
+
+        <!-- Trolley 02 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #3b82f6; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-02</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০২ (নীল)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-02" alt="TROLLEY-02 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| ||| ||| || ||||||||</div>
+        </div>
+
+        <!-- Trolley 03 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #10b981; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#10b981; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-03</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০৩ (সবুজ)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-03" alt="TROLLEY-03 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| | ||||| ||| |||||||</div>
+        </div>
+
+        <!-- Trolley 04 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #f59e0b; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#d97706; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-04</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০৪ (হলুদ)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-04" alt="TROLLEY-04 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| ||| || ||| ||||||||</div>
+        </div>
+
+        <!-- Trolley 05 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #8b5cf6; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#7c3aed; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-05</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০৫ (বেগুনি)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-05" alt="TROLLEY-05 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| | |||| || |||||||||</div>
+        </div>
+
+        <!-- Trolley 06 -->
+        <div style="background:#ffffff; color:#000; padding:14px; border-radius:12px; border:2px solid #475569; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="font-size:0.7rem; font-weight:800; color:#334155; text-transform:uppercase; letter-spacing:0.5px;">NISHA CREATIONS • FC HUB</div>
+          <div style="font-size:1.2rem; font-weight:900; color:#111; margin:4px 0;">TROLLEY-06</div>
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:8px;">পিকিং বাস্কেট ০৬ (কালো)</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=TROLLEY-06" alt="TROLLEY-06 QR" style="width:110px; height:110px; margin:0 auto; display:block; border:1px solid #e2e8f0; border-radius:6px; padding:4px;">
+          <div style="font-size:0.68rem; font-weight:700; color:#64748b; margin-top:6px; font-family:monospace;">|||| ||| |||| | ||||||||</div>
+        </div>
+
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" onclick="printTrolleyStickersSheet()" style="background:linear-gradient(135deg, #059669, #10b981); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-print"></i> 🖨️ ৬টি স্টিকার প্রিন্ট করুন
+        </button>
+        <button type="button" onclick="closeTrolleyStickersModal()" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:10px 16px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
+          বন্ধ করুন
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 👨‍🏭 2. WORKER ACCOUNTABILITY & GMAIL LOGIN MODAL -->
+  <!-- ========================================================================= -->
+  <div id="modalWorkerLogin" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:14px;">
+    <div style="background:#0f172a; border:2px solid #38bdf8; border-radius:18px; max-width:440px; width:100%; padding:20px; box-shadow:0 10px 30px rgba(56,189,248,0.3);">
+      
+      <div style="text-align:center; margin-bottom:16px;">
+        <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:8px;">
+          <i class="fa-solid fa-id-card-clip"></i>
+        </div>
+        <h3 style="color:#fff; font-size:1.1rem; font-weight:800; margin:0;">অ্যামাজন কর্মী জবাবদিহিতা লগইন</h3>
+        <p style="color:#94a3b8; font-size:0.75rem; margin-top:4px;">কাজের ভুলত্রুটি ট্র্যাকিং ও ফাঁকি রোধের জন্য প্রতিটি কর্মীর জিমেইল আইডি ও নাম দিয়ে লগইন করুন</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:0.75rem; font-weight:800; color:#cbd5e1; margin-bottom:4px;">কর্মীর জিমেইল অ্যাকাউন্ট (Gmail Address):</label>
+          <input type="email" id="inputWorkerGmail" class="form-ctrl" placeholder="যেমন: rahul.pack@gmail.com" style="width:100%; padding:10px 12px; font-size:0.85rem; background:#0b0f19; border:1.5px solid #334155; border-radius:8px; color:#fff;" value="sahebghanti669@gmail.com">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.75rem; font-weight:800; color:#cbd5e1; margin-bottom:4px;">কর্মীর পুরো নাম (Worker Name):</label>
+          <input type="text" id="inputWorkerName" class="form-ctrl" placeholder="যেমন: রাহুল রয় বা সাহেব ঘাঁটি" style="width:100%; padding:10px 12px; font-size:0.85rem; background:#0b0f19; border:1.5px solid #334155; border-radius:8px; color:#fff;" value="সাহেব ঘাঁটি (মালিক)">
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="saveWorkerLogin()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; border:none; padding:11px; border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;">
+          <i class="fa-solid fa-check"></i> কর্মী হিসেবে সক্রিয় হোন
+        </button>
+        <button type="button" onclick="closeWorkerLoginModal()" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:11px 16px; border-radius:10px; font-weight:700; font-size:0.85rem; cursor:pointer;">
+          বাতিল
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>
